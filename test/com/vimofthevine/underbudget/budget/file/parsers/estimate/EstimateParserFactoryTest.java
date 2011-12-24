@@ -15,7 +15,7 @@ public class EstimateParserFactoryTest {
 	/**
 	 * Array of file versions vs. parser classes
 	 */
-	protected EstimateDomParser[] expected;
+	protected EstimateDomParser[] expectedDomParsers;
 	
 	/**
 	 * Sets up the test objects
@@ -23,10 +23,10 @@ public class EstimateParserFactoryTest {
 	@Before
 	public void setUp()
 	{
-		expected = new EstimateDomParser[4];
-		expected[1] = new EstimateDomParserV1(null);
-		expected[2] = new EstimateDomParserV2(null);
-		expected[3] = new EstimateDomParserV3(null);
+		expectedDomParsers = new EstimateDomParser[4];
+		expectedDomParsers[1] = new EstimateDomParserV1(null);
+		expectedDomParsers[2] = new EstimateDomParserV2(null);
+		expectedDomParsers[3] = new EstimateDomParserV3(null);
 	}
 
 	/**
@@ -34,14 +34,14 @@ public class EstimateParserFactoryTest {
 	 * for each file version
 	 */
 	@Test
-	public void testCreateParser()
+	public void testCreateDomParser()
 	{
 		// Iterate through each version/parser
-		for (int i=1; i<expected.length; i++)
+		for (int i=1; i<expectedDomParsers.length; i++)
 		{
-			EstimateDomParser parser = EstimateParserFactory.createParser(i, null);
+			EstimateDomParser parser = EstimateParserFactory.createDomParser(i, null);
 			
-			assertEquals(expected[i].getClass().getName(), parser.getClass().getName());
+			assertEquals(expectedDomParsers[i].getClass().getName(), parser.getClass().getName());
 		}
 	}
 

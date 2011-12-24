@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<budget version="2">
+    <meta>
+        <name>Test Budget</name>
+        <initialBalance>12.34</initialBalance>
+        <blacklist>blacklist-acct</blacklist>
+        <month>4</month>
+        <year>2011</year>
+    </meta>
+    <income-estimates>
+        <estimate>
+            <name>Income Estimates</name>
+            <notes/>
+            <category>true</category>
+            <matches/>
+            <amount>1000.00</amount>
+            <final>false</final>
+            <estimates>
+                <estimate>
+                    <name>Income Category 1</name>
+                    <notes/>
+                    <category>true</category>
+                    <matches/>
+                    <amount>1000.00</amount>
+                    <final>false</final>
+                    <estimates>
+                        <estimate>
+                            <name>Income 1.1</name>
+                            <notes>main source of income</notes>
+                            <category>false</category>
+                            <matches>income11</matches>
+                            <amount>800.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Income 1.2</name>
+                            <notes>bonus source of income</notes>
+                            <category>false</category>
+                            <matches>income12</matches>
+                            <amount>200.00</amount>
+                            <final>true</final>
+                        </estimate>
+                    </estimates>
+                </estimate>
+            </estimates>
+        </estimate>
+    </income-estimates>
+    <expense-estimates>
+        <estimate>
+            <name>Expense Estimates</name>
+            <notes/>
+            <category>true</category>
+            <matches/>
+            <amount>2037.80</amount>
+            <final>false</final>
+            <estimates>
+                <estimate>
+                    <name>Expense Category 1</name>
+                    <notes/>
+                    <category>true</category>
+                    <matches/>
+                    <amount>40.00</amount>
+                    <final>false</final>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 1.1</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense11</matches>
+                            <amount>40.00</amount>
+                            <final>false</final>
+                        </estimate>
+                    </estimates>
+                </estimate>
+                <estimate>
+                    <name>Expense Category 2</name>
+                    <notes/>
+                    <category>true</category>
+                    <matches/>
+                    <amount>422.30</amount>
+                    <final>false</final>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 2.1</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense21</matches>
+                            <amount>12.50</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.2</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense22</matches>
+                            <amount>200.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.3</name>
+                            <notes>Occurs every 2 months</notes>
+                            <category>false</category>
+                            <matches>expense23</matches>
+                            <amount>0.0</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.4</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense24</matches>
+                            <amount>65.45</amount>
+                            <final>true</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.5</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense25</matches>
+                            <amount>120.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.6</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense26</matches>
+                            <amount>24.35</amount>
+                            <final>false</final>
+                        </estimate>
+                    </estimates>
+                </estimate>
+                <estimate>
+                    <name>Expense Category 3</name>
+                    <notes/>
+                    <category>true</category>
+                    <matches/>
+                    <amount>1040.00</amount>
+                    <final>false</final>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 3.1</name>
+                            <notes>in third category</notes>
+                            <category>false</category>
+                            <matches>expense31</matches>
+                            <amount>700.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 3.2</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense32</matches>
+                            <amount>300.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 3.3</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense33</matches>
+                            <amount>10.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 3.4</name>
+                            <notes>estimated</notes>
+                            <category>false</category>
+                            <matches>expense34</matches>
+                            <amount>30.00</amount>
+                            <final>false</final>
+                        </estimate>
+                    </estimates>
+                </estimate>
+                <estimate>
+                    <name>Expense Category 4</name>
+                    <notes/>
+                    <category>true</category>
+                    <matches/>
+                    <amount>535.50</amount>
+                    <final>false</final>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 4.1</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense41</matches>
+                            <amount>341.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 4.2</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense42</matches>
+                            <amount>160.00</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 4.3</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense43</matches>
+                            <amount>24.50</amount>
+                            <final>false</final>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 4.4</name>
+                            <notes/>
+                            <category>false</category>
+                            <matches>expense44</matches>
+                            <amount>10.00</amount>
+                            <final>false</final>
+                        </estimate>
+                    </estimates>
+                </estimate>
+            </estimates>
+        </estimate>
+    </expense-estimates>
+</budget>

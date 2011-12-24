@@ -1,7 +1,6 @@
 package com.vimofthevine.underbudget.budget.file.parsers;
 
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,17 +15,11 @@ import com.vimofthevine.underbudget.budget.Budget;
 import com.vimofthevine.underbudget.budget.BudgetMeta;
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
 import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateDomParser;
-import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateDomParserV1;
-import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateDomParserV2;
-import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateDomParserV3;
 import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateParserFactory;
 import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaDomParser;
 import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaDomParserV1;
 import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaDomParserV3;
-import com.vimofthevine.underbudget.budget.period.BudgetingPeriod;
-import com.vimofthevine.underbudget.budget.period.MonthlyBudgetingPeriod;
 import com.vimofthevine.underbudget.estimates.Estimate;
-import com.vimofthevine.underbudget.util.XmlHelper;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
 /**
@@ -86,13 +79,13 @@ public class BudgetFileDomParser implements BudgetFileParser {
 			
 			int version = parseFileVersion(doc);
 			BudgetMetaDomParser metaParser = createMetaParser(version);
-			EstimateDomParser estimateParser = EstimateParserFactory.createParser(version, progress);
+			EstimateDomParser estimateParser = EstimateParserFactory.createDomParser(version, progress);
 			
 			BudgetMeta meta  = metaParser.parse(doc, 10);
 			Estimate income  = estimateParser.parseIncomes(doc, 44);
 			Estimate expense = estimateParser.parseExpenses(doc, 45);
 			
-			budget = new Budget();
+			budget = new Budget(meta, income, expense);
 		}
 		catch (Exception e)
 		{

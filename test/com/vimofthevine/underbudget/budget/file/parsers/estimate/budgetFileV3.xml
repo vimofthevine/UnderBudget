@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<budget version="2">
+    <meta>
+        <name>Test Budget</name>
+        <initialBalance>12.34</initialBalance>
+        <blacklist>blacklist-acct</blacklist>
+        <month>4</month>
+        <year>2011</year>
+    </meta>
+    <income-estimates>
+        <estimate>
+            <name>Income Estimates</name>
+            <notes/>
+            <estimates>
+                <estimate>
+                    <name>Income Category 1</name>
+                    <notes/>
+                    <!-- keeping in these extra fields to verify they are harmless -->
+                    <category>true</category>
+                    <matches/>
+                    <amount>1000.00</amount>
+                    <final>false</final>
+                    <!-- end of extra fields -->
+                    <estimates>
+                        <estimate>
+                            <name>Income 1.1</name>
+                            <notes>main source of income</notes>
+                            <amount>800.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>withdrawal</field>
+                            		<operator>begins_with</operator>
+                            		<text>income11</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Income 1.2</name>
+                            <notes>bonus source of income</notes>
+                            <amount>200.00</amount>
+                            <final>true</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>income12</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                    </estimates>
+                </estimate>
+            </estimates>
+        </estimate>
+    </income-estimates>
+    <expense-estimates>
+        <estimate>
+            <name>Expense Estimates</name>
+            <notes/>
+            <estimates>
+                <estimate>
+                    <name>Expense Category 1</name>
+                    <notes/>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 1.1</name>
+                            <notes/>
+                            <amount>40.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>DEPOSIT</field>
+                            		<operator>EQUALS</operator>
+                            		<text>expense11</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                    </estimates>
+                </estimate>
+                <estimate>
+                    <name>Expense Category 2</name>
+                    <notes/>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 2.1</name>
+                            <notes/>
+                            <amount>12.50</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>Payee</field>
+                            		<operator>Equals_Case</operator>
+                            		<text>ExPeNsE21</text>
+                            	</rule>
+                            	<rule>
+                            		<field>Memo</field>
+                            		<operator>ends_with</operator>
+                            		<text>expense21</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.2</name>
+                            <notes/>
+                            <amount>200.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>Withdrawal</field>
+                            		<operator>equals</operator>
+                            		<text>expense22</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.3</name>
+                            <notes>Occurs every 2 months</notes>
+                            <amount>0.0</amount>
+                            <final>false</final>
+                            <!-- Verify ok if no rules listed -->
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.4</name>
+                            <notes/>
+                            <amount>65.45</amount>
+                            <final>true</final>
+                            <rules>
+                            	<rule>
+                            		<field>any</field>
+                            		<operator>contains</operator>
+                            		<text>expense24</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.5</name>
+                            <notes/>
+                            <amount>120.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>none</field>
+                            		<operator>none</operator>
+                            		<text/>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 2.6</name>
+                            <notes/>
+                            <amount>24.35</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>expense26</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                    </estimates>
+                </estimate>
+                <estimate>
+                    <name>Expense Category 3</name>
+                    <notes/>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 3.1</name>
+                            <notes>in third category</notes>
+                            <amount>700.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>expense31</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 3.2</name>
+                            <notes/>
+                            <amount>300.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>expense32</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 3.3</name>
+                            <notes/>
+                            <amount>10.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>expense33</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 3.4</name>
+                            <notes>estimated</notes>
+                            <amount>30.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>expense34</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                    </estimates>
+                </estimate>
+                <estimate>
+                    <name>Expense Category 4</name>
+                    <notes/>
+                    <estimates>
+                        <estimate>
+                            <name>Expense 4.1</name>
+                            <notes/>
+                            <amount>341.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>memo</field>
+                            		<operator>contains</operator>
+                            		<text>expense41</text>
+                            	</rule>
+                            	<rule>
+                            		<field>payee</field>
+                            		<operator>equals</operator>
+                            		<text>expense41</text>
+                            	</rule>
+                            	<rule>
+                            		<field>deposit</field>
+                            		<operator>beginswith</operator>
+                            		<text>expense41</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 4.2</name>
+                            <notes/>
+                            <amount>160.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>any</field>
+                            		<operator>contains</operator>
+                            		<text>expense42</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 4.3</name>
+                            <notes/>
+                            <amount>24.50</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>any</field>
+                            		<operator>contains</operator>
+                            		<text>expense43</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                        <estimate>
+                            <name>Expense 4.4</name>
+                            <notes/>
+                            <amount>10.00</amount>
+                            <final>false</final>
+                            <rules>
+                            	<rule>
+                            		<field>any</field>
+                            		<operator>contains</operator>
+                            		<text>expense44</text>
+                            	</rule>
+                            </rules>
+                        </estimate>
+                    </estimates>
+                </estimate>
+            </estimates>
+        </estimate>
+    </expense-estimates>
+</budget>

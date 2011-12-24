@@ -130,8 +130,6 @@ public class EstimateAssertions {
 		assertEquals("Expense 2.1", child21.getName());
 		assertEquals("", child21.getNotes());
 		assertFalse(child21.isCategory());
-		assertEquals(1, child21.getRules().size());
-		assertEquals("expense21", child21.getRules().get(0).getText());
 		assertEquals(new BigDecimal("12.50"), child21.getAmount());
 		assertFalse(child21.isFinal());
 		
@@ -148,8 +146,6 @@ public class EstimateAssertions {
 		assertEquals("Expense 2.3", child23.getName());
 		assertEquals("Occurs every 2 months", child23.getNotes());
 		assertFalse(child23.isCategory());
-		assertEquals(1, child23.getRules().size());
-		assertEquals("expense23", child23.getRules().get(0).getText());
 		assertEquals(new BigDecimal("0.0"), child23.getAmount());
 		assertFalse(child23.isFinal());
 		
@@ -166,8 +162,6 @@ public class EstimateAssertions {
 		assertEquals("Expense 2.5", child25.getName());
 		assertEquals("", child25.getNotes());
 		assertFalse(child25.isCategory());
-		assertEquals(1, child25.getRules().size());
-		assertEquals("expense25", child25.getRules().get(0).getText());
 		assertEquals(new BigDecimal("120.00"), child25.getAmount());
 		assertFalse(child25.isFinal());
 		
@@ -248,8 +242,6 @@ public class EstimateAssertions {
 		assertEquals("Expense 4.1", child41.getName());
 		assertEquals("", child41.getNotes());
 		assertFalse(child41.isCategory());
-		assertEquals(1, child41.getRules().size());
-		assertEquals("expense41", child41.getRules().get(0).getText());
 		assertEquals(new BigDecimal("341.00"), child41.getAmount());
 		assertFalse(child41.isFinal());
 		

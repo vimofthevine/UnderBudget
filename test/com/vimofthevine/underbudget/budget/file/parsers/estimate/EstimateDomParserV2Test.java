@@ -17,16 +17,16 @@ import com.vimofthevine.underbudget.stubs.StubTaskProgressListener;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
 /**
- * Unit test case for the EstimateDomParserV1 class
+ * Unit test case for the EstimateDomParserV2 class
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class EstimateDomParserV1Test {
+public class EstimateDomParserV2Test {
 	
 	/**
 	 * The class under test
 	 */
-	EstimateDomParserV1 parser;
+	EstimateDomParserV2 parser;
 	
 	/**
 	 * Task progress
@@ -50,7 +50,7 @@ public class EstimateDomParserV1Test {
 	public void setUp()
 	{
 		progress = new TaskProgress();
-		parser = new EstimateDomParserV1(progress);
+		parser = new EstimateDomParserV2(progress);
 		
 		listener = new StubTaskProgressListener();
 		progress.addTaskProgressListener(listener);
@@ -75,9 +75,9 @@ public class EstimateDomParserV1Test {
 		}
 		
 		assertEquals(100, listener.lastValue);
-		assertEquals(4, listener.numberOfUpdates);
+		assertEquals(2, listener.numberOfUpdates);
 	}
-
+	
 	/**
 	 * Verifies that the parsed expense estimates are correct
 	 */
@@ -95,7 +95,7 @@ public class EstimateDomParserV1Test {
 		}
 		
 		assertEquals(100, listener.lastValue);
-		assertEquals(20, listener.numberOfUpdates);
+		assertEquals(15, listener.numberOfUpdates);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class EstimateDomParserV1Test {
 	{
 		try
 		{
-			InputStream stream = getClass().getResourceAsStream("budgetFileV1.xml");
+			InputStream stream = getClass().getResourceAsStream("budgetFileV2.xml");
 			doc = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder().parse(stream);
 		}
@@ -114,5 +114,5 @@ public class EstimateDomParserV1Test {
 			fail("Exception occurred executing test");
 		}
 	}
-	
+
 }

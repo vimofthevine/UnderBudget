@@ -12,15 +12,15 @@ import com.vimofthevine.underbudget.util.task.TaskProgress;
 public abstract class EstimateParserFactory {
 
 	/**
-	 * Creates a new estimate parser, according
+	 * Creates a new estimate DOM parser, according
 	 * to the given version of the budget file
 	 * being read
 	 * 
 	 * @param version  budget file version
 	 * @param progress task progress
-	 * @return estimate parser
+	 * @return estimate DOM parser
 	 */
-	public static EstimateDomParser createParser(int version, TaskProgress progress)
+	public static EstimateDomParser createDomParser(int version, TaskProgress progress)
 	{
 		if (version == 1)
 			return new EstimateDomParserV1(progress);

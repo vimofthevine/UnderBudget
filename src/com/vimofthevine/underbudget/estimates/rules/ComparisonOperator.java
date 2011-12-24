@@ -28,4 +28,29 @@ public enum ComparisonOperator {
 		};
 	}
 	
+	/**
+	 * Converts a given string to the
+	 * appropriate corresponding enumeration
+	 * 
+	 * @param string string representation of an operator
+	 * @return comparison operator enumeration
+	 */
+	public static ComparisonOperator getValueOf(String string)
+	{
+		string = string.toLowerCase();
+		
+		if (string.contains("begin"))
+			return BEGINS_WITH;
+		else if (string.contains("case"))
+			return EQUALS_CASE;
+		else if (string.contains("equal"))
+			return EQUALS;
+		else if (string.contains("contain"))
+			return CONTAINS;
+		else if (string.contains("end"))
+			return ENDS_WITH;
+		else
+			return NONE;
+	}
+	
 }

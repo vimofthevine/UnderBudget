@@ -108,5 +108,33 @@ public class Rule {
 	{
 		return text;
 	}
+	
+	/**
+	 * Checks if all parameters of a given rule are
+	 * the same
+	 * 
+	 * @param object rule to compare
+	 * @return true if the rules are the same
+	 */
+	@Override
+	public boolean equals(Object object)
+	{
+		if (object instanceof Rule)
+		{
+			Rule rule = (Rule) object;
+			
+			return (field.equals(rule.field))
+				&& (operator.equals(rule.operator))
+				&& (text.equals(rule.text));
+		}
+		else
+			return super.equals(object);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return field + " " + operator + " " + text;
+	}
 
 }
