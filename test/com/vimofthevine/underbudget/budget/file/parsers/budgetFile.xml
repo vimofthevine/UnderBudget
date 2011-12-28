@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<budget version="2">
+    <meta>
+        <name>Test Budget</name>
+        <initialBalance>0.00</initialBalance>
+    </meta>
+    <income-estimates>
+        <estimate>
+            <name>Income Estimates</name>
+            <notes/>
+        </estimate>
+    </income-estimates>
+    <expense-estimates>
+        <estimate>
+            <name>Expense Estimates</name>
+            <notes/>
+        </estimate>
+    </expense-estimates>
+</budget>

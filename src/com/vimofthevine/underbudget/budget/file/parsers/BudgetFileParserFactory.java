@@ -1,7 +1,4 @@
-package com.vimofthevine.underbudget.budget.file;
-
-import com.vimofthevine.underbudget.budget.file.parsers.BudgetFileDomParser;
-import com.vimofthevine.underbudget.budget.file.parsers.BudgetFileParser;
+package com.vimofthevine.underbudget.budget.file.parsers;
 
 /**
  * Factory class for creating budget file parsers
@@ -9,7 +6,7 @@ import com.vimofthevine.underbudget.budget.file.parsers.BudgetFileParser;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public abstract class BudgetFileFactory {
+public abstract class BudgetFileParserFactory {
 	
 	/**
 	 * Create a new budget file parser

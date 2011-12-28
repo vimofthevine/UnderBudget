@@ -10,6 +10,11 @@ import com.vimofthevine.underbudget.util.task.TaskProgress;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public abstract class EstimateParserFactory {
+	
+	/**
+	 * Stub EstimateDomParser to use for unit testing
+	 */
+	public static EstimateDomParser stubDomParser = null;
 
 	/**
 	 * Creates a new estimate DOM parser, according
@@ -22,6 +27,9 @@ public abstract class EstimateParserFactory {
 	 */
 	public static EstimateDomParser createDomParser(int version, TaskProgress progress)
 	{
+		if (stubDomParser != null)
+			return stubDomParser;
+		
 		if (version == 1)
 			return new EstimateDomParserV1(progress);
 		else if (version == 2)

@@ -17,8 +17,7 @@ import com.vimofthevine.underbudget.budget.file.BudgetFileException;
 import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateDomParser;
 import com.vimofthevine.underbudget.budget.file.parsers.estimate.EstimateParserFactory;
 import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaDomParser;
-import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaDomParserV1;
-import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaDomParserV3;
+import com.vimofthevine.underbudget.budget.file.parsers.meta.BudgetMetaParserFactory;
 import com.vimofthevine.underbudget.estimates.Estimate;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
@@ -78,12 +77,14 @@ public class BudgetFileDomParser implements BudgetFileParser {
 			Document doc = db.parse(stream);
 			
 			int version = parseFileVersion(doc);
-			BudgetMetaDomParser metaParser = createMetaParser(version);
+			BudgetMetaDomParser metaParser = BudgetMetaParserFactory.createDomParser(version, progress);
 			EstimateDomParser estimateParser = EstimateParserFactory.createDomParser(version, progress);
 			
 			BudgetMeta meta  = metaParser.parse(doc, 10);
 			Estimate income  = estimateParser.parseIncomes(doc, 44);
 			Estimate expense = estimateParser.parseExpenses(doc, 45);
+			
+			progress.complete();
 			
 			budget = new Budget(meta, income, expense);
 		}
@@ -132,21 +133,6 @@ public class BudgetFileDomParser implements BudgetFileParser {
 			logger.log(Level.WARNING, "Exception parsing file version", e);
 			throw new BudgetFileException("Invalid budget definition in file");
 		}
-	}
-	
-	/**
-	 * Creates a new budget meta parser according
-	 * to the file version
-	 * 
-	 * @param version budget file version
-	 * @return BudgetMetaDomParser
-	 */
-	public BudgetMetaDomParser createMetaParser(int version)
-	{
-		if (version < 3)
-			return new BudgetMetaDomParserV1(progress);
-		else
-			return new BudgetMetaDomParserV3(progress);
 	}
 
 }

@@ -10,6 +10,21 @@ import com.vimofthevine.underbudget.estimates.Estimate;
 public class Budget {
 	
 	/**
+	 * Budget meta information
+	 */
+	public BudgetMeta meta;
+	
+	/**
+	 * Root income estimate
+	 */
+	public Estimate incomes;
+	
+	/**
+	 * Root expense estimate
+	 */
+	public Estimate expenses;
+	
+	/**
 	 * Parameterized constructor
 	 * 
 	 * @param meta     budget meta info
@@ -18,7 +33,9 @@ public class Budget {
 	 */
 	public Budget(BudgetMeta meta, Estimate incomes, Estimate expenses)
 	{
-		
+		this.meta     = meta;
+		this.incomes  = incomes;
+		this.expenses = expenses;
 	}
 
 }

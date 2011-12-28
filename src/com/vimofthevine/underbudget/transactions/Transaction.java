@@ -1,5 +1,8 @@
 package com.vimofthevine.underbudget.transactions;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * Representation of an actual financial transfer of
  * funds from a withdrawal account into a deposit
@@ -8,6 +11,36 @@ package com.vimofthevine.underbudget.transactions;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class Transaction {
+	
+	/**
+	 * Transaction date
+	 */
+	public Date date;
+	
+	/**
+	 * Transaction payee
+	 */
+	public String payee = "";
+	
+	/**
+	 * Transaction memo
+	 */
+	public String memo = "";
+	
+	/**
+	 * Transaction amount
+	 */
+	public BigDecimal value;
+	
+	/**
+	 * Transaction withdrawal account
+	 */
+	public Account withdrawal;
+	
+	/**
+	 * Transaction deposit account
+	 */
+	public Account deposit;
 	
 	/**
 	 * Returns the requested field text
@@ -20,15 +53,15 @@ public class Transaction {
 		switch (field)
 		{
 			case ANY:
-				return "";
+				return memo + "," + payee + "," + withdrawal.getName() + "," + deposit.getName();
 			case MEMO:
-				return "";
+				return memo;
 			case PAYEE:
-				return "";
+				return payee;
 			case WITHDRAWAL:
-				return "";
+				return withdrawal.getName();
 			case DEPOSIT:
-				return "";
+				return deposit.getName();
 			default:
 				return "";
 		}

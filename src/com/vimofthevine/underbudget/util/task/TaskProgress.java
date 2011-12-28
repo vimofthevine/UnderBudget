@@ -41,6 +41,16 @@ public class TaskProgress {
 	private Float lastPercentage = 0f;
 	
 	/**
+	 * Maximum value
+	 */
+	private int maxValue = 0;
+	
+	/**
+	 * Current value
+	 */
+	private int currentValue = 0;
+	
+	/**
 	 * Class constructor
 	 */
 	public TaskProgress()
@@ -101,6 +111,20 @@ public class TaskProgress {
 		
 		throttlingRate = rate;
 	}
+	
+	/**
+	 * Defines the maximum value that can be supplied. This
+	 * allows use of the progress updater without calculating
+	 * percentages.
+	 * 
+	 * @param max maximum value
+	 */
+	public void setMaximumValue(int max)
+	{
+		logger.log(Level.FINEST, "Setting maximum value to " + max);
+		
+		maxValue = max;
+	}
 
 	/**
 	 * Resets the current task completion percentage, notifying all
@@ -112,6 +136,7 @@ public class TaskProgress {
 		
 		currentPercentage = 0f;
 		lastPercentage = 0f;
+		currentValue = 0;
 		
 		fireProgressUpdate(0);
 	}
@@ -126,8 +151,36 @@ public class TaskProgress {
 	public void add(float value)
 	{
 		logger.log(Level.FINEST, "Adding " + value + " to current task percentage");
-		
+
 		currentPercentage += value;
+		
+		if (Math.abs(currentPercentage - lastPercentage) > throttlingRate)
+		{
+			lastPercentage = currentPercentage;
+			fireProgressUpdate(currentPercentage.intValue());
+		}
+	}
+	
+	/**
+	 * Increments the current value used to calculate current
+	 * percentage, notifying all listeners if the throttling rate
+	 * has been satisfied
+	 * 
+	 * @param value progress increment by which the current task
+	 *              completion has increased
+	 */
+	public void add(int value)
+	{
+		logger.log(Level.FINEST, "Adding " + value + " to current value");
+		
+		currentValue += value;
+		
+		if (currentValue > maxValue)
+		{
+			currentValue = maxValue;
+		}
+		
+		currentPercentage = (float) currentValue * 100 / (float) maxValue;
 		
 		if (Math.abs(currentPercentage - lastPercentage) > throttlingRate)
 		{
@@ -145,6 +198,7 @@ public class TaskProgress {
 		
 		currentPercentage = 100f;
 		lastPercentage = 100f;
+		currentValue = maxValue;
 		
 		fireProgressUpdate(100);
 	}

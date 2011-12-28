@@ -1,6 +1,8 @@
 package com.vimofthevine.underbudget.cli;
 
 import com.vimofthevine.underbudget.Application;
+import com.vimofthevine.underbudget.budget.file.BudgetFile;
+import com.vimofthevine.underbudget.transactions.importer.ImportFile;
 
 /**
  * Command-line interface application launcher
@@ -89,8 +91,8 @@ public class UnderBudgetCli {
 		BudgetFile budgetFile = new BudgetFile(budgetFilePath);
 		budgetFile.parse();
 		
-		ImportFile importFile = ImportFile.factory(importFilePath);
-		importFile.parse();
+		ImportFile importFile = new ImportFile(importFilePath);
+		importFile.parse(budgetFile.getBudget().meta.getPeriod());
 		
 		BudgetAnalyzer analyzer = new BudgetAnalyzer();
 		analyzer.setBudget(budgetFile.getBudget());
@@ -127,17 +129,20 @@ public class UnderBudgetCli {
 	{
 		if (reports.contains("comp"))
 		{
-			
+			ReportWriter writer = new ComparisonReportWriter(results);
+			writer.write(System.out);
 		}
 		
 		if (reports.contains("alloc"))
 		{
-			
+			ReportWriter writer = new AllocationReportWriter(results);
+			writer.write(System.out);
 		}
 		
 		if (reports.contains("work"))
 		{
-			
+			ReportWriter writer = new WorksheetReportWriter(results);
+			writer.write(System.out);
 		}
 	}
 	
