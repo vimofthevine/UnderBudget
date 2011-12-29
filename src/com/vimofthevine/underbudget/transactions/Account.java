@@ -59,7 +59,7 @@ public class Account {
 	 */
 	public String getName()
 	{
-		if (type.equalsIgnoreCase("root"))
+		if (type.equalsIgnoreCase("root") || parent == null)
 			return "";
 		else
 		{

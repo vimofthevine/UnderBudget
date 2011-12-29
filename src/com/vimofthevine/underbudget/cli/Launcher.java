@@ -195,20 +195,24 @@ public class Launcher {
 			if (budgetFilePath == null || importFilePath == null)
 				printUsageAndExit();
 			
+			long startTime = System.currentTimeMillis();
+			
 			// Read the budget file
     		BudgetFile budgetFile = new BudgetFile(budgetFilePath);
     		budgetFile.getParserProgress().addTaskProgressListener(
     			new ProgressWriter("Opening budget file", System.out));
+    		
     		budgetFile.parse();
+    		System.out.print("                                                   \r");
     		
     		// Read the import file
     		ImportFile importFile = new ImportFile(importFilePath);
     		importFile.getParserProgress().addTaskProgressListener(
     			new ProgressWriter("Importing transactions", System.out));
+    		
     		importFile.parse(budgetFile.getBudget().meta.getPeriod());
-    		
     		System.out.print("                                                   \r");
-    		
+
     		// Analyze
     		BudgetAnalyzer analyzer = new BudgetAnalyzer(
     			budgetFile.getBudget(),
@@ -219,10 +223,19 @@ public class Launcher {
     		
     		analyzer.run();
     		System.out.print("                                                   \r");
-    		
+    		System.out.println();
+
     		// Print results
     		AnalysisResults results = analyzer.getResults();
     		printResults(results);
+    		
+    		long endTime = System.currentTimeMillis();
+    		
+    		if (verbose)
+    		{
+    			System.out.println("Analysis complete in "
+    				+ (endTime - startTime) + "ms");
+    		}
 		}
 		catch (BudgetFileException bfe)
 		{
@@ -249,7 +262,7 @@ public class Launcher {
 		if (reportTypes.contains("alloc"))
 		{
 			AllocationReportWriter writer = new AllocationReportWriter(results, longMode);
-			writer.write(System.out);
+			writer.write(out);
 		}
 		
 		if (reportTypes.contains("work"))

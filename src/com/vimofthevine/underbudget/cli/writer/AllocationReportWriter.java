@@ -43,7 +43,6 @@ public class AllocationReportWriter {
 	 */
 	public void write(PrintStream stream)
 	{
-		stream.println();
 		stream.println("Allocation Report");
 		stream.println("--------------------------------------------------------------------------------");
 		stream.println("Transaction                        Estimate            Rationale                ");
@@ -62,6 +61,7 @@ public class AllocationReportWriter {
 		}
 		
 		stream.println("--------------------------------------------------------------------------------");
+		stream.println();
 	}
 	
 	/**
