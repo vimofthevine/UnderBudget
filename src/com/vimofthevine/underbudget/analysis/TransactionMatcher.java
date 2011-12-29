@@ -3,6 +3,7 @@ package com.vimofthevine.underbudget.analysis;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vimofthevine.underbudget.estimates.Estimate;
 import com.vimofthevine.underbudget.report.AllocationEntry;
 import com.vimofthevine.underbudget.transactions.Transaction;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
@@ -59,6 +60,8 @@ public class TransactionMatcher {
 		// Iterate through each transaction
 		for (Transaction transaction : transactions)
 		{
+			boolean matched = false;
+			
 			// Check against each rule
 			for (EstimateRule estimateRule : rules)
 			{
@@ -66,8 +69,17 @@ public class TransactionMatcher {
 				{
 					estimateRule.estimate.addTransaction(transaction);
 					report.add(new AllocationEntry(transaction, estimateRule));
+					
+					matched = true;
 					break;
 				}
+			}
+			
+			if ( ! matched)
+			{
+				Estimate estimate = new Estimate();
+				estimate.setName("Ignored");
+				report.add(new AllocationEntry(transaction, estimate, "No match found"));
 			}
 			
 			progress.add(portion);
