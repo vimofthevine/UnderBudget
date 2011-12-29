@@ -100,6 +100,26 @@ public class Rule {
 	}
 	
 	/**
+	 * Returns the transaction field of this rule
+	 * 
+	 * @return transaction field
+	 */
+	public TransactionField getField()
+	{
+		return field;
+	}
+	
+	/**
+	 * Returns the comparison operator of this rule
+	 * 
+	 * @return comparison operator
+	 */
+	public ComparisonOperator getOperator()
+	{
+		return operator;
+	}
+	
+	/**
 	 * Returns the comparison text of this rule
 	 * 
 	 * @return comparison text

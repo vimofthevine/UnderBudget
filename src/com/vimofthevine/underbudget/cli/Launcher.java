@@ -6,8 +6,12 @@ import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vimofthevine.underbudget.analysis.AnalysisResults;
+import com.vimofthevine.underbudget.analysis.BudgetAnalysisException;
+import com.vimofthevine.underbudget.analysis.BudgetAnalyzer;
 import com.vimofthevine.underbudget.budget.file.BudgetFile;
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
+import com.vimofthevine.underbudget.cli.writer.AllocationReportWriter;
 import com.vimofthevine.underbudget.cli.writer.ProgressWriter;
 import com.vimofthevine.underbudget.cli.writer.UsageWriter;
 import com.vimofthevine.underbudget.cli.writer.VersionWriter;
@@ -44,7 +48,7 @@ public class Launcher {
 	/**
 	 * Report types
 	 */
-	protected String reportTypes;
+	protected String reportTypes = "";
 	
 	/**
 	 * Path to transaction file
@@ -191,11 +195,13 @@ public class Launcher {
 			if (budgetFilePath == null || importFilePath == null)
 				printUsageAndExit();
 			
+			// Read the budget file
     		BudgetFile budgetFile = new BudgetFile(budgetFilePath);
     		budgetFile.getParserProgress().addTaskProgressListener(
     			new ProgressWriter("Opening budget file", System.out));
     		budgetFile.parse();
     		
+    		// Read the import file
     		ImportFile importFile = new ImportFile(importFilePath);
     		importFile.getParserProgress().addTaskProgressListener(
     			new ProgressWriter("Importing transactions", System.out));
@@ -203,16 +209,19 @@ public class Launcher {
     		
     		System.out.print("                                                   \r");
     		
-    		BudgetAnalyzer analyzer = new BudgetAnalyzer();
-    		analyzer.setBudget(budgetFile.getBudget());
-    		analyzer.setTransactions(importFile.getTransactions());
+    		// Analyze
+    		BudgetAnalyzer analyzer = new BudgetAnalyzer(
+    			budgetFile.getBudget(),
+    			importFile.getTransactions()
+    		);
     		analyzer.getProgress().addTaskProgressListener(
     			new ProgressWriter("Analyzing", System.out));
     		
     		analyzer.run();
+    		System.out.print("                                                   \r");
     		
+    		// Print results
     		AnalysisResults results = analyzer.getResults();
-    		
     		printResults(results);
 		}
 		catch (BudgetFileException bfe)
@@ -223,26 +232,30 @@ public class Launcher {
 		{
 			System.err.println("Unable to import transactions: " + ife.getMessage());
 		}
+		catch (BudgetAnalysisException bae)
+		{
+			System.err.println("Error performing analysis: " + bae.getMessage());
+		}
 	}
 	
 	protected void printResults(AnalysisResults results)
 	{
 		if (reportTypes.contains("comp"))
 		{
-			ReportWriter writer = new ComparisonReportWriter(results);
-			writer.write(System.out);
+			//ReportWriter writer = new ComparisonReportWriter(results);
+			//writer.write(System.out);
 		}
 		
 		if (reportTypes.contains("alloc"))
 		{
-			ReportWriter writer = new AllocationReportWriter(results);
+			AllocationReportWriter writer = new AllocationReportWriter(results, longMode);
 			writer.write(System.out);
 		}
 		
 		if (reportTypes.contains("work"))
 		{
-			ReportWriter writer = new WorksheetReportWriter(results);
-			writer.write(System.out);
+			//ReportWriter writer = new WorksheetReportWriter(results);
+			//writer.write(System.out);
 		}
 	}
 	

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Observable;
 
 import com.vimofthevine.underbudget.estimates.rules.Rule;
+import com.vimofthevine.underbudget.transactions.Transaction;
 
 /**
  * Representation of a user-defined estimate, which
@@ -47,6 +48,16 @@ public class Estimate extends Observable {
 	protected boolean isFinal = false;
 	
 	/**
+	 * Transactions that have been matched against this estimate
+	 */
+	protected List<Transaction> transactions;
+	
+	/**
+	 * Synchronization object
+	 */
+	private Object sync = new Object();
+	
+	/**
 	 * Default constructor, initializing the tree
 	 * node
 	 */
@@ -54,6 +65,7 @@ public class Estimate extends Observable {
 	{
 		node = new EstimateNode(this);
 		rules = new ArrayList<Rule>();
+		transactions = new ArrayList<Transaction>();
 	}
 	
 	/**
@@ -274,6 +286,78 @@ public class Estimate extends Observable {
 			this.isFinal = isFinal;
 			setChanged();
 		}
+	}
+	
+	/**
+	 * Clears the list of matched transactions
+	 */
+	public void clear()
+	{
+		synchronized(sync)
+		{
+			transactions = new ArrayList<Transaction>();
+			setChanged();
+		}
+	}
+	
+	/**
+	 * Adds a transaction to the matched transactions list
+	 * 
+	 * @param transaction transaction that has been matched
+	 *                    against this estimate
+	 */
+	public void addTransaction(Transaction transaction)
+	{
+		synchronized(sync)
+		{
+			transactions.add(transaction);
+			setChanged();
+		}
+	}
+	
+	/**
+	 * Returns the list of transactions that have been
+	 * matched against this estimate
+	 * 
+	 * @return list of matched transactions
+	 */
+	public List<Transaction> getTransactions()
+	{
+		return transactions;
+	}
+	
+	/**
+	 * Calculates the actual credits/debits against
+	 * this estimate, based on transactions that have
+	 * been matched against this estimate
+	 * 
+	 * @return actual net amount
+	 */
+	public BigDecimal getActualAmount()
+	{
+		BigDecimal amount = new BigDecimal("0");
+		
+		// Get sum of all transaction amounts
+		if ( ! isCategory())
+		{
+			synchronized(sync)
+			{
+				for (Transaction transaction : transactions)
+				{
+					amount = amount.add(transaction.value);
+				}
+			}
+		}
+		// Else get the sum of all child estimate actuals
+		else
+		{
+			for (int i=0; i<getChildCount(); i++)
+			{
+				amount = amount.add(getChildAt(i).getActualAmount());
+			}
+		}
+		
+		return amount;
 	}
 	
 	/**
