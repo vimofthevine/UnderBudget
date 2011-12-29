@@ -87,12 +87,12 @@ public class BalanceTotal {
 	{
 		BalanceTotal clone = new BalanceTotal();
 		
-		clone.estimatedIncome  = new BigDecimal(estimatedIncome.toBigInteger());
-		clone.estimatedExpense = new BigDecimal(estimatedExpense.toBigInteger());
-		clone.actualIncome     = new BigDecimal(actualIncome.toBigInteger());
-		clone.actualExpense    = new BigDecimal(actualExpense.toBigInteger());
-		clone.expectedIncome   = new BigDecimal(expectedIncome.toBigInteger());
-		clone.expectedExpense  = new BigDecimal(expectedExpense.toBigInteger());
+		clone.estimatedIncome  = new BigDecimal(estimatedIncome.toString());
+		clone.estimatedExpense = new BigDecimal(estimatedExpense.toString());
+		clone.actualIncome     = new BigDecimal(actualIncome.toString());
+		clone.actualExpense    = new BigDecimal(actualExpense.toString());
+		clone.expectedIncome   = new BigDecimal(expectedIncome.toString());
+		clone.expectedExpense  = new BigDecimal(expectedExpense.toString());
 		
 		return clone;
 	}

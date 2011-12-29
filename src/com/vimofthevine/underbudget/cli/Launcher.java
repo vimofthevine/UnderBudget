@@ -17,6 +17,7 @@ import com.vimofthevine.underbudget.cli.writer.ProgressWriter;
 import com.vimofthevine.underbudget.cli.writer.SummaryReportWriter;
 import com.vimofthevine.underbudget.cli.writer.UsageWriter;
 import com.vimofthevine.underbudget.cli.writer.VersionWriter;
+import com.vimofthevine.underbudget.cli.writer.WorksheetReportWriter;
 import com.vimofthevine.underbudget.transactions.importer.ImportFile;
 import com.vimofthevine.underbudget.transactions.importer.ImportFileException;
 
@@ -272,8 +273,8 @@ public class Launcher {
 		
 		if (reportTypes.contains("work"))
 		{
-			//ReportWriter writer = new WorksheetReportWriter(results);
-			//writer.write(System.out);
+			WorksheetReportWriter writer = new WorksheetReportWriter(results, longMode);
+			writer.write(System.out);
 		}
 	}
 	

@@ -44,5 +44,32 @@ abstract public class FormatHelper {
 		SimpleDateFormat format = new SimpleDateFormat("M/d/yy");
 		return format.format(date);
 	}
+	
+	/**
+	 * Truncates a given string to the given number
+	 * of characters, if the string length exceeds
+	 * the given length. If the string length is
+	 * less than the number of characters specified,
+	 * the remaining space is padded with spaces.
+	 * 
+	 * @param string string to truncate
+	 * @param length number of characters allowed
+	 */
+	public static String truncate(String string, int length)
+	{
+		if (string.length() > length)
+			return string.substring(0, length);
+		else
+		{
+			StringBuffer buffer = new StringBuffer(string);
+			
+			for (int i=0; i<(length - string.length()); i++)
+			{
+				buffer.append(" ");
+			}
+			
+			return buffer.toString();
+		}
+	}
 
 }

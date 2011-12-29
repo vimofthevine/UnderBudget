@@ -21,15 +21,22 @@ public class WorksheetEntry {
 	public BalanceTotal totals;
 	
 	/**
+	 * The rationale for the use of estimated vs. actual
+	 */
+	public String rationele;
+	
+	/**
 	 * Constructor
 	 * 
-	 * @param estimate entry estimate
-	 * @param totals   entry totals
+	 * @param estimate  entry estimate
+	 * @param totals    entry totals
+	 * @param rationale effective amount rationale
 	 */
-	public WorksheetEntry(Estimate estimate, BalanceTotal totals)
+	public WorksheetEntry(Estimate estimate, BalanceTotal totals, String rationale)
 	{
-		this.estimate = estimate;
-		this.totals   = totals.clone();
+		this.estimate  = estimate;
+		this.totals    = totals.clone();
+		this.rationele = rationale;
 	}
 
 }

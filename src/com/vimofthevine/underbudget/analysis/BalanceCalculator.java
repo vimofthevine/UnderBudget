@@ -107,51 +107,21 @@ public class BalanceCalculator {
     			// Ignore category estimates
     			if ( ! estimate.isCategory())
     			{
+    				String rationale = "";
+    				
     				// If an income estimate
     				if (estimate instanceof IncomeEstimate)
     				{
-    					logger.log(Level.FINE, "Adding income from " + estimate.getName());
-    					
-    					// Estimated
-    					logger.log(Level.FINEST, "Estimated: Adding " + estimate.getAmount()
-    						+ " to " + total.estimatedIncome);
-    					total.estimatedIncome = total.estimatedIncome.add(estimate.getAmount());
-    					
-    					// Actual
-    					logger.log(Level.FINEST, "Actual: Adding " + estimate.getActualAmount()
-    						+ " to " + total.actualIncome);
-    					total.actualIncome = total.actualIncome.add(estimate.getActualAmount());
-    					
-    					// Expected
-    					BigDecimal effectiveAmount = calculateEffectiveAmount(estimate);
-    					logger.log(Level.FINEST, "Expected: Adding " + effectiveAmount
-    						+ " to " + total.expectedIncome);
-    					total.expectedIncome = total.expectedIncome.add(effectiveAmount);
+    					rationale = addIncomeEstimate(estimate);
     				}
     				// Else an expense estimate
     				else
     				{
-    					logger.log(Level.FINE, "Adding expense from " + estimate.getName());
-    					
-    					// Estimated
-    					logger.log(Level.FINEST, "Estimated: Adding " + estimate.getAmount()
-    						+ " to " + total.estimatedExpense);
-    					total.estimatedExpense = total.estimatedExpense.add(estimate.getAmount());
-    					
-    					// Actual
-    					logger.log(Level.FINEST, "Actual: Adding " + estimate.getActualAmount()
-    						+ " to " + total.actualExpense);
-    					total.actualExpense = total.actualExpense.add(estimate.getActualAmount());
-    					
-    					// Expected
-    					BigDecimal effectiveAmount = calculateEffectiveAmount(estimate);
-    					logger.log(Level.FINEST, "Expected: Adding " + effectiveAmount
-    						+ " to " + total.expectedExpense);
-    					total.expectedExpense = total.expectedExpense.add(effectiveAmount);
+    					rationale = addExpenseEstimate(estimate);
     				}
 				
     				alreadyCounted.add(estimate);
-    				report.add(new WorksheetEntry(estimate, total));
+    				report.add(new WorksheetEntry(estimate, total, rationale));
     			}
     			else
     			{
@@ -167,6 +137,64 @@ public class BalanceCalculator {
 		}
 		
 		return report;
+	}
+	
+	/**
+	 * Adjusts totals to include the given income estimate
+	 * 
+	 * @param estimate income estimate
+	 * @return rationale for the effective amount used
+	 */
+	protected String addIncomeEstimate(Estimate estimate)
+	{
+		logger.log(Level.FINE, "Adding income from " + estimate.getName());
+		
+		// Estimated
+		logger.log(Level.FINEST, "Estimated: Adding " + estimate.getAmount()
+			+ " to " + total.estimatedIncome);
+		total.estimatedIncome = total.estimatedIncome.add(estimate.getAmount());
+		
+		// Actual
+		logger.log(Level.FINEST, "Actual: Adding " + estimate.getActualAmount()
+			+ " to " + total.actualIncome);
+		total.actualIncome = total.actualIncome.add(estimate.getActualAmount());
+		
+		// Expected
+		BigDecimal effectiveAmount = calculateEffectiveAmount(estimate);
+		logger.log(Level.FINEST, "Expected: Adding " + effectiveAmount
+			+ " to " + total.expectedIncome);
+		total.expectedIncome = total.expectedIncome.add(effectiveAmount);
+		
+		return getEffectiveAmountRationale(estimate);
+	}
+	
+	/**
+	 * Adjusts totals to include the given expense estimate
+	 * 
+	 * @param estimate expense estimate
+	 * @return rationale for the effective amount used
+	 */
+	protected String addExpenseEstimate(Estimate estimate)
+	{
+		logger.log(Level.FINE, "Adding expense from " + estimate.getName());
+		
+		// Estimated
+		logger.log(Level.FINEST, "Estimated: Adding " + estimate.getAmount()
+			+ " to " + total.estimatedExpense);
+		total.estimatedExpense = total.estimatedExpense.add(estimate.getAmount());
+		
+		// Actual
+		logger.log(Level.FINEST, "Actual: Adding " + estimate.getActualAmount()
+			+ " to " + total.actualExpense);
+		total.actualExpense = total.actualExpense.add(estimate.getActualAmount());
+		
+		// Expected
+		BigDecimal effectiveAmount = calculateEffectiveAmount(estimate);
+		logger.log(Level.FINEST, "Expected: Adding " + effectiveAmount
+			+ " to " + total.expectedExpense);
+		total.expectedExpense = total.expectedExpense.add(effectiveAmount);
+		
+		return getEffectiveAmountRationale(estimate);
 	}
 	
 	/**
@@ -203,6 +231,28 @@ public class BalanceCalculator {
 			return actual;
 		else
 			return estimated;
+	}
+	
+	/**
+	 * Determines the rationale for the value used in
+	 * calculating the expected total
+	 * 
+	 * @param estimate estimate whose amount will be added
+	 * @return rationale for the choise of estimated vs actual
+	 */
+	protected String getEffectiveAmountRationale(Estimate estimate)
+	{
+		BigDecimal estimated = estimate.getAmount();
+		BigDecimal actual    = estimate.getActualAmount();
+		
+		if (budgetOccursInPast)
+			return "Estimate is final (budgeting period in past)";
+		else if (estimate.isFinal())
+			return "Estimate is final";
+		else if (actual.compareTo(estimated) > 0)
+			return "Actual exceeds estimated";
+		else
+			return "Estimated exceeds or matches actual";
 	}
 	
 }
