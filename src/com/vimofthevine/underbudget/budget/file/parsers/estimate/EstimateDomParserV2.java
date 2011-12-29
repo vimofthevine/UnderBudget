@@ -12,6 +12,8 @@ import org.w3c.dom.NodeList;
 
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
 import com.vimofthevine.underbudget.estimates.Estimate;
+import com.vimofthevine.underbudget.estimates.ExpenseEstimate;
+import com.vimofthevine.underbudget.estimates.IncomeEstimate;
 import com.vimofthevine.underbudget.estimates.rules.ComparisonOperator;
 import com.vimofthevine.underbudget.estimates.rules.Rule;
 import com.vimofthevine.underbudget.transactions.TransactionField;
@@ -34,7 +36,12 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 	/**
 	 * Task progress
 	 */
-	TaskProgress progress;
+	protected TaskProgress progress;
+	
+	/**
+	 * Type of estimate being read (income or expense)
+	 */
+	protected boolean isIncome = false;
 
 	/**
 	 * Constructor, given the task progress
@@ -57,8 +64,8 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 	 * @throws BudgetFileException if any error occurs
 	 */
 	protected Estimate parse(Document doc, String type, float allocated)
-			throws BudgetFileException
-			{
+	throws BudgetFileException
+	{
 		try
 		{
 			// Get root estimate
@@ -78,7 +85,7 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 			logger.log(Level.WARNING, "Exception parsing " + type + " estimates", e);
 			throw new BudgetFileException("Invalid " + type + " estimates in file");
 		}
-			}
+	}
 
 	/**
 	 * Recursively read in the estimates under a given estimate root
@@ -154,7 +161,7 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 	protected Estimate readEstimateFromElement(Element element, Estimate parent)
 	throws BudgetFileException
 	{
-		Estimate estimate = new Estimate();
+		Estimate estimate = (isIncome ? new IncomeEstimate() : new ExpenseEstimate());
 		
 		// Check if estimate is a category
 		boolean isCategory = (element.getElementsByTagName("estimates").getLength() > 0);
@@ -188,8 +195,13 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 		// Add rule only if match text is given
 		if ( ! matches.equals(""))
 		{
-			estimate.addRule(new Rule(TransactionField.ANY,
-					ComparisonOperator.CONTAINS, matches));
+			String[] rules = matches.split(",");
+			
+			for (int i=0; i<rules.length; i++)
+			{
+				estimate.addRule(new Rule(TransactionField.ANY,
+					ComparisonOperator.CONTAINS, rules[i]));
+			}
 		}
 	}
 
@@ -197,6 +209,7 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 	public Estimate parseIncomes(Document doc, float allocated)
 	throws BudgetFileException
 	{
+		isIncome = true;
 		return parse(doc, "income", allocated);
 	}
 
@@ -204,6 +217,7 @@ public class EstimateDomParserV2 implements EstimateDomParser {
 	public Estimate parseExpenses(Document doc, float allocated)
 	throws BudgetFileException
 	{
+		isIncome = false;
 		return parse(doc, "expense", allocated);
 	}
 

@@ -12,7 +12,9 @@ import com.vimofthevine.underbudget.analysis.BudgetAnalyzer;
 import com.vimofthevine.underbudget.budget.file.BudgetFile;
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
 import com.vimofthevine.underbudget.cli.writer.AllocationReportWriter;
+import com.vimofthevine.underbudget.cli.writer.ComparisonReportWriter;
 import com.vimofthevine.underbudget.cli.writer.ProgressWriter;
+import com.vimofthevine.underbudget.cli.writer.SummaryReportWriter;
 import com.vimofthevine.underbudget.cli.writer.UsageWriter;
 import com.vimofthevine.underbudget.cli.writer.VersionWriter;
 import com.vimofthevine.underbudget.transactions.importer.ImportFile;
@@ -253,10 +255,13 @@ public class Launcher {
 	
 	protected void printResults(AnalysisResults results)
 	{
+		SummaryReportWriter summary = new SummaryReportWriter(results, longMode);
+		summary.write(out);
+		
 		if (reportTypes.contains("comp"))
 		{
-			//ReportWriter writer = new ComparisonReportWriter(results);
-			//writer.write(System.out);
+			ComparisonReportWriter writer = new ComparisonReportWriter(results, longMode);
+			writer.write(out);
 		}
 		
 		if (reportTypes.contains("alloc"))

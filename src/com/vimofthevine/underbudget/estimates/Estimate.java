@@ -361,6 +361,38 @@ public class Estimate extends Observable {
 	}
 	
 	/**
+	 * Calculates the difference between the estimated and
+	 * actual amounts
+	 * 
+	 * @return difference between estimated and actual
+	 */
+	public BigDecimal getDifferenceAmount()
+	{
+		BigDecimal estimated = getAmount();
+		BigDecimal actual    = getActualAmount();
+		
+		return estimated.subtract(actual);
+		
+		/*
+		// If under-budget
+		if (actual.compareTo(estimated) < 0)
+		{
+			// If not final, difference is 0
+			if ( ! isFinal())
+				return new BigDecimal("0.00");
+			// Otherwise unused amount is the difference
+			else
+				return estimated.subtract(actual);
+		}
+		// Else over-budget (or exactly on-budget)
+		else
+		{
+			return estimated.subtract(actual);
+		}
+		*/
+	}
+	
+	/**
 	 * Returns the estimate name as the string
 	 * representation of this estimate
 	 * 

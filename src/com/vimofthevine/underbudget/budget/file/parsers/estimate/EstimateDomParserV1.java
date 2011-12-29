@@ -11,6 +11,8 @@ import org.w3c.dom.NodeList;
 
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
 import com.vimofthevine.underbudget.estimates.Estimate;
+import com.vimofthevine.underbudget.estimates.ExpenseEstimate;
+import com.vimofthevine.underbudget.estimates.IncomeEstimate;
 import com.vimofthevine.underbudget.estimates.rules.ComparisonOperator;
 import com.vimofthevine.underbudget.estimates.rules.Rule;
 import com.vimofthevine.underbudget.transactions.TransactionField;
@@ -104,8 +106,13 @@ public class EstimateDomParserV1 implements EstimateDomParser {
 					// Add rule only if match text is given
 					if ( ! matches.equals(""))
 					{
-						root.addRule(new Rule(TransactionField.ANY,
-							ComparisonOperator.CONTAINS, matches));
+						String[] rules = matches.split(",");
+						
+						for (int j=0; j<rules.length; j++)
+						{
+							root.addRule(new Rule(TransactionField.ANY,
+								ComparisonOperator.CONTAINS, rules[j]));
+						}
 					}
 					
 					estimates.put(id, root);
@@ -120,7 +127,8 @@ public class EstimateDomParserV1 implements EstimateDomParser {
 						throw new BudgetFileException(type + " estimate missing parent");
 					}
 					
-					Estimate estimate = new Estimate();
+					Estimate estimate = (type.equalsIgnoreCase("income")
+						? new IncomeEstimate() : new ExpenseEstimate());
 					
 					estimate.setName(name);
 					estimate.setNotes(notes);
@@ -130,8 +138,13 @@ public class EstimateDomParserV1 implements EstimateDomParser {
 					// Add rule only if match text is given
 					if ( ! matches.equals(""))
 					{
-						estimate.addRule(new Rule(TransactionField.ANY,
-							ComparisonOperator.CONTAINS, matches));
+						String[] rules = matches.split(",");
+						
+						for (int j=0; j<rules.length; j++)
+						{
+							estimate.addRule(new Rule(TransactionField.ANY,
+								ComparisonOperator.CONTAINS, rules[j]));
+						}
 					}
 					
 					parentEstimate.add(estimate);

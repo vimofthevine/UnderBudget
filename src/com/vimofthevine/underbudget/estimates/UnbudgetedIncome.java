@@ -5,7 +5,7 @@ package com.vimofthevine.underbudget.estimates;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class UnbudgetedIncome extends Estimate {
+public class UnbudgetedIncome extends IncomeEstimate {
 
 	/**
 	 * Default constructor

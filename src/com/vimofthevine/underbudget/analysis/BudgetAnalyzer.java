@@ -1,7 +1,6 @@
 package com.vimofthevine.underbudget.analysis;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.vimofthevine.underbudget.budget.Budget;
 import com.vimofthevine.underbudget.transactions.Transaction;
@@ -17,11 +16,6 @@ import com.vimofthevine.underbudget.util.task.TaskProgress;
  */
 public class BudgetAnalyzer {
 
-	/**
-	 * Log handle
-	 */
-	private static final Logger logger = Logger.getLogger(BudgetAnalyzer.class.getName());
-	
 	/**
 	 * Task progress
 	 */
@@ -84,6 +78,7 @@ public class BudgetAnalyzer {
 		progress.reset();
 		
 		results = new AnalysisResults();
+		results.budget = budget;
 		
 		// Sort the rules (prioritize)
 		RuleSorter sorter = new RuleSorter(progress, 33);
@@ -94,8 +89,9 @@ public class BudgetAnalyzer {
 		results.allocation = matcher.match(transactions, results.rules);
 		
 		// Calculate balances/totals
-		//BalanceCalculator calculator = new BalanceCalculator(progress, 33);
-		//results = calculator.calculate(budget, rules, transactions);
+		BalanceCalculator calculator = new BalanceCalculator(progress, 33);
+		results.worksheet = calculator.calculate(budget, results.rules);
+		results.total = calculator.getTotals();
 		
 		progress.complete();
 	}

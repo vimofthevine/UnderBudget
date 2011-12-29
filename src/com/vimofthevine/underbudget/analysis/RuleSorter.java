@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vimofthevine.underbudget.estimates.Estimate;
+import com.vimofthevine.underbudget.estimates.UnbudgetedExpense;
+import com.vimofthevine.underbudget.estimates.UnbudgetedIncome;
 import com.vimofthevine.underbudget.estimates.rules.Rule;
+import com.vimofthevine.underbudget.estimates.rules.UnbudgetedExpenseRule;
+import com.vimofthevine.underbudget.estimates.rules.UnbudgetedIncomeRule;
 import com.vimofthevine.underbudget.transactions.TransactionField;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
@@ -94,6 +98,10 @@ public class RuleSorter {
 		rules.addAll(beginsWithList);
 		rules.addAll(endsWithList);
 		rules.addAll(containsList);
+		
+		// Add unbudgeted/catch-alls at the end
+		rules.add(new EstimateRule(new UnbudgetedIncome(), new UnbudgetedIncomeRule()));
+		rules.add(new EstimateRule(new UnbudgetedExpense(), new UnbudgetedExpenseRule()));
 		
 		return rules;
 	}
