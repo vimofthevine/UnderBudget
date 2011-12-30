@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
 import com.vimofthevine.underbudget.budget.period.BudgetingPeriod;
 import com.vimofthevine.underbudget.budget.period.MonthlyBudgetingPeriod;
+import com.vimofthevine.underbudget.budget.period.YearlyBudgetingPeriod;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
 /**
@@ -40,6 +41,7 @@ public class BudgetMetaDomParserV3 extends BudgetMetaDomParserV1 {
 		
 		types = new BudgetingPeriod[] {
 			new MonthlyBudgetingPeriod(),
+			new YearlyBudgetingPeriod(),
 		};
 	}
 	
