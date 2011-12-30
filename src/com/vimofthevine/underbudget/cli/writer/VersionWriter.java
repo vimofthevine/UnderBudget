@@ -18,7 +18,7 @@ public class VersionWriter {
 	 */
 	public void write(PrintStream stream)
 	{
-		stream.println(Application.TITLE + " " + Application.VERSION);
+		stream.println(Application.TITLE + " " + Application.VERSION + " (" + Application.CODENAME + ")");
 		stream.println("Copyright (C) " + Application.COPY_YEAR + " " + Application.COPY_AUTHOR);
 		stream.println(Application.WEBSITE);
 	}

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="UnderBudget" basedir="." default="all">
+
+	<property name="version" value="2.0a" />
+
+	<property name="src.dir"   value="src" />
+	<property name="build.dir" value="build" />
+	<property name="class.dir" value="${build.dir}/classes" />
+	<property name="data.dir"  value="data" />
+	<property name="jar.dir"   value="${build.dir}/jar" />
+	<property name="bin.dir"   value="scripts" />
+
+	<target name="clean" description="Clean build output">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile" description="Compile the Java source">
+		<mkdir dir="${class.dir}" />
+		<javac srcdir="${src.dir}" destdir="${class.dir}" />
+		<copy todir="${class.dir}">
+			<fileset dir="${src.dir}"
+				excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="cli" depends="compile" description="Create CLI jar file">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/UnderBudgetCli.jar" basedir="${class.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="com.vimofthevine.underbudget.cli.Launcher" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="pkg-win" depends="cli" description="Create a Windows package">
+		<mkdir dir="${build.dir}/win/underbudget" />
+		<copy todir="${build.dir}/win/underbudget">
+			<fileset dir="${jar.dir}" includes="*.jar" />
+			<fileset dir="${bin.dir}" includes="*.bat" />
+		</copy>
+		<mkdir dir="${build.dir}/win/underbudget/data" />
+		<copy todir="${build.dir}/win/underbudget/data">
+			<fileset dir="${data.dir}" includes="*.properties" />
+		</copy>
+		<delete file="${build.dir}/underbudget-${version}.zip" failonerror="false" />
+		<zip destfile="${build.dir}/underbudget-${version}.zip" basedir="${build.dir}/win" />
+	</target>
+
+	<target name="pkg-unix" depends="cli" description="Create a Unix package">
+		<delete file="${build.dir}/underbudget-${version}.tar.gz" failonerror="false" />
+		<tar destfile="${build.dir}/underbudget-${version}.tar.gz" compression="gzip">
+			<tarfileset dir="${jar.dir}" prefix="underbudget"
+				includes="*.jar" />
+			<tarfileset dir="${bin.dir}" prefix="underbudget"
+				includes="underbudget.sh" filemode="775" />
+			<tarfileset dir="${data.dir}" prefix="underbudget/data"
+				includes="*.properties,*.desktop,*.png" />
+		</tar>
+	</target>
+
+	<target name="run" depends="cli" description="Run application out of build directory">
+		<java jar="${jar.dir}/${ant.project.name}.jar" fork="true">
+			<env key="UNDERBUDGET_HOME" value="data" />
+		</java>
+	</target>
+
+	<target name="all" depends="clean,pkg-unix,pkg-win"
+		description="Create all packages" />
+
+</project>
