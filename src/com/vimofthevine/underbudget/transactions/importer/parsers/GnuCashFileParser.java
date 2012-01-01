@@ -394,7 +394,7 @@ public class GnuCashFileParser extends DefaultHandler implements ImportFileParse
 		{
 			for (TransactionSplit split : splits)
 			{
-				// Check for a negativve amount (or the inverse)
+				// Check for a negative amount (or the inverse)
 				if ((inverter * split.value.floatValue() < 0))
 				{
 					// If the master split has not yet been detected

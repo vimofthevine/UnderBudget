@@ -19,11 +19,11 @@ import com.vimofthevine.underbudget.stubs.StubTaskProgressListener;
 import com.vimofthevine.underbudget.transactions.Transaction;
 
 /**
- * Unit test case for the GnuCashFileParser class
+ * Unit test case for the MintCsvFileParser class
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class GnuCashFileParserTest {
+public class MIntCsvFileParserTest {
 	
 	/**
 	 * The class under test
@@ -50,10 +50,10 @@ public class GnuCashFileParserTest {
 		{
 			listener = new StubTaskProgressListener();
 			
-			parser = new GnuCashFileParser();
+			parser = new MintCsvFileParser();
 			parser.getProgress().addTaskProgressListener(listener);
 			
-			stream = getClass().getResourceAsStream("gnucash.xml");
+			stream = getClass().getResourceAsStream("mint.txt");
 		}
 		catch (Exception e)
 		{
@@ -63,7 +63,7 @@ public class GnuCashFileParserTest {
 
 	/**
 	 * Verifies that transactions are parsed correctly
-	 * from a GnuCash XML file
+	 * from a Mint CSV file
 	 */
 	@Test
 	public void testParseTransactions()
@@ -71,10 +71,7 @@ public class GnuCashFileParserTest {
 		try
         {
 			String[] expectedPayees = new String[] {
-					"Payday",
-					"Payday",
-					"Payday",
-					"Payday",
+					"Direct deposit",
 					"Mr. Mechanic",
 					"Vendor",
 					"Vendor",
@@ -82,9 +79,6 @@ public class GnuCashFileParserTest {
 				
 				String[] expectedMemos = new String[] {
 					"",
-					"",
-					"",
-					"Earned",
 					"Tires",
 					"Entertainment",
 					"Food",
@@ -93,42 +87,30 @@ public class GnuCashFileParserTest {
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				Date[] expectedDates = new Date[] {
 					format.parse("2010-11-05"),
-					format.parse("2010-11-05"),
-					format.parse("2010-11-05"),
-					format.parse("2010-11-05"),
 					format.parse("2011-12-07"),
 					format.parse("2010-07-28"),
 					format.parse("2010-07-28"),
 				};
 				
 				BigDecimal[] expectedValues = new BigDecimal[] {
-					new BigDecimal("150.0"),
-					new BigDecimal("67.25"),
-					new BigDecimal("29.76"),
 					new BigDecimal("650.03"),
 					new BigDecimal("402.44"),
-					new BigDecimal("150.0"),
+					new BigDecimal("150.00"),
 					new BigDecimal("14.68"),
 				};
 				
 				String[] expectedDepositAccts = new String[] {
-					"Expenses:Taxes:Federal",
-					"Expenses:Taxes:State",
-					"Expenses:Insurance:Health Insurance",
-					"Assets:Current Assets:Checking Account",
-					"Expenses:Auto:Repair and Maintenance",
-					"Expenses:Entertainment:Recreation",
-					"Expenses:Entertainment:Dining",
+					"My Bank",
+					"Auto Repair",
+					"Recreation",
+					"Dining",
 				};
 				
 				String[] expectedWithdrawalAccts = new String[] {
-					"Income:Salary",
-					"Income:Salary",
-					"Income:Salary",
-					"Income:Salary",
-					"Assets:Current Assets:Checking Account",
-					"Assets:Current Assets:Checking Account",
-					"Assets:Current Assets:Checking Account",
+					"Paycheck",
+					"My Bank",
+					"My Bank",
+					"My Bank",
 				};
 				
 	        parser.parse(stream, new StubBudgetingPeriod());
@@ -167,7 +149,8 @@ public class GnuCashFileParserTest {
 			parser.parse(stream, new StubBudgetingPeriod());
 			
 			assertEquals(100, listener.lastValue);
-			assertTrue(listener.numberOfUpdates > 10);
+			// Can't be certain how often the stream will be read
+			assertTrue(listener.numberOfUpdates > 1);
 		}
 		catch (Exception e)
         {

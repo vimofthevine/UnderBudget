@@ -1,6 +1,7 @@
 package com.vimofthevine.underbudget.transactions.importer;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -46,18 +47,23 @@ public class ImportFile {
 	 * to the import file
 	 * 
 	 * @param path file path
+	 * @throws ImportFileException if the file is invalid/unsupported
 	 */
-	public ImportFile(String path)
+	public ImportFile(String path) throws ImportFileException
 	{
 		this.path = path;
 		
 		try
 		{
 			parser = ImportFileParserFactory.createParser(new FileInputStream(path));
+			
+			if (parser == null)
+				throw new ImportFileException("Unsupported import file type");
 		}
-		catch (Exception e)
+		catch (FileNotFoundException e)
 		{
 			logger.log(Level.WARNING, "Error opening file", e);
+			throw new ImportFileException("Import file not found");
 		}
 	}
 	

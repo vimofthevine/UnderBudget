@@ -1,8 +1,12 @@
 package com.vimofthevine.underbudget.transactions.importer.parsers;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import com.vimofthevine.underbudget.transactions.importer.filter.GnuCashFileFilter;
+import com.vimofthevine.underbudget.transactions.importer.filter.MintCsvFileFilter;
 
 /**
  * Factory class for creating import file parsers
@@ -21,8 +25,24 @@ public class ImportFileParserFactory {
 	 */
 	public static ImportFileParser createParser(InputStream stream)
 	{
-		if (GnuCashFileFilter.check(stream))
+		String line1;
+		String line2;
+		
+		try
+		{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			line1 = reader.readLine();
+			line2 = reader.readLine();
+		}
+		catch (IOException ioe)
+		{
+			return null;
+			
+		}
+		if (GnuCashFileFilter.check(line1, line2))
 			return new GnuCashFileParser();
+		else if (MintCsvFileFilter.check(line1))
+			return new MintCsvFileParser();
 		else
 			return null;
 	}

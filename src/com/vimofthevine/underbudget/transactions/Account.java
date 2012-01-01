@@ -39,6 +39,18 @@ public class Account {
 	/**
 	 * Class constructor
 	 * 
+	 * @param name account name
+	 */
+	public Account(String name)
+	{
+		this.name = name;
+		this.type = "acct";
+		this.parent = new Account("", "Root", "root", null);
+	}
+	
+	/**
+	 * Class constructor
+	 * 
 	 * @param id     account ID
 	 * @param name   account name
 	 * @param type   account type

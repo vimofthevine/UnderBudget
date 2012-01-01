@@ -10,44 +10,41 @@ import java.io.InputStreamReader;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * File filter for GnuCash XML files
+ * File filter for Mint CSV files
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class GnuCashFileFilter extends FileFilter {
+public class MintCsvFileFilter extends FileFilter {
 	
 	/**
-	 * Checks if a given input stream represents
-	 * a valid GnuCash file
+	 * Checks if a given file is a valid Mint CSV file
 	 * 
 	 * @param stream input stream of the file to check
-	 * @return true if the file is a valid GnuCash file
+	 * @return true if the file is a valid Mint CSV file
 	 */
-	public boolean check(InputStream stream)
+	public static boolean check(InputStream stream)
 	{
 		try
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-			return check(reader.readLine(), reader.readLine());
+			return check(reader.readLine());
 		}
 		catch (IOException e) { }
 		
-		// Not a GnuCash file
+		// Not a Mint CSV file
 		return false;
 	}
 	
 	/**
-	 * Checks if the first two lines of a file
-	 * describe a valid GnuCash XML file
+	 * Checks if the first line of a file
+	 * describes a valid Mint CSV file
 	 * 
-	 * @param line1 first line of a potential GnuCash file
-	 * @param line2 seconds line of a potential GnuCash file
-	 * @return true if a valid GnuCash file is described
+	 * @param line1 first line of a potential Mint file
+	 * @return true if a valid Mint file is described
 	 */
-	public static boolean check(String line1, String line2)
+	public static boolean check(String line1)
 	{
-		return line1.startsWith("<?xml")
-			&& line2.startsWith("<gnc-v2");
+		return line1.startsWith("\"Date\",\"Description\",");
 	}
 
 	@Override
@@ -65,9 +62,9 @@ public class GnuCashFileFilter extends FileFilter {
 		try
 		{
 			InputStream stream = new FileInputStream(file);
-			boolean isGnuCashFile = check(stream);
+			boolean isMintCsvFile = check(stream);
 			stream.close();
-			return isGnuCashFile;
+			return isMintCsvFile;
 		}
 		catch (Exception e)
 		{
@@ -78,7 +75,7 @@ public class GnuCashFileFilter extends FileFilter {
 	@Override
     public String getDescription()
     {
-		return "GnuCash XML File";
+		return "Mint CSV File";
     }
 
 }
