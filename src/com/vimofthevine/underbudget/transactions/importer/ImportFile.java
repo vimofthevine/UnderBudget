@@ -4,12 +4,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vimofthevine.underbudget.budget.period.BudgetingPeriod;
 import com.vimofthevine.underbudget.transactions.Transaction;
+import com.vimofthevine.underbudget.transactions.TransactionComparator;
 import com.vimofthevine.underbudget.transactions.importer.parsers.ImportFileParser;
 import com.vimofthevine.underbudget.transactions.importer.parsers.ImportFileParserFactory;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
@@ -101,6 +103,8 @@ public class ImportFile {
 			InputStream stream = new FileInputStream(path);
 			parser.parse(stream, period);
 			transactions = parser.getTransactions();
+			
+			Collections.sort(transactions, new TransactionComparator());
 		}
 		catch (IOException ioe)
 		{
