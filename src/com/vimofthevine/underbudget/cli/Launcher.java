@@ -18,6 +18,8 @@ import com.vimofthevine.underbudget.cli.writer.SummaryReportWriter;
 import com.vimofthevine.underbudget.cli.writer.UsageWriter;
 import com.vimofthevine.underbudget.cli.writer.VersionWriter;
 import com.vimofthevine.underbudget.cli.writer.WorksheetReportWriter;
+import com.vimofthevine.underbudget.report.export.ReportExportException;
+import com.vimofthevine.underbudget.report.export.ReportXmlWriter;
 import com.vimofthevine.underbudget.transactions.importer.ImportFile;
 import com.vimofthevine.underbudget.transactions.importer.ImportFileException;
 
@@ -61,7 +63,7 @@ public class Launcher {
 	/**
 	 * Path to export file
 	 */
-	protected String exportFilePath;
+	protected String exportFilePath = "";
 	
 	/**
 	 * Path to budget file
@@ -239,6 +241,11 @@ public class Launcher {
     			System.out.println("Analysis complete in "
     				+ (endTime - startTime) + "ms");
     		}
+    		
+    		if ( ! exportFilePath.equals(""))
+    		{
+    			exportReport(results);
+    		}
 		}
 		catch (BudgetFileException bfe)
 		{
@@ -254,6 +261,11 @@ public class Launcher {
 		}
 	}
 	
+	/**
+	 * Prints analysis reports, as requested via the command-line options
+	 * 
+	 * @param results analysis results
+	 */
 	protected void printResults(AnalysisResults results)
 	{
 		SummaryReportWriter summary = new SummaryReportWriter(results, longMode);
@@ -275,6 +287,34 @@ public class Launcher {
 		{
 			WorksheetReportWriter writer = new WorksheetReportWriter(results, longMode);
 			writer.write(System.out);
+		}
+	}
+	
+	/**
+	 * Exports the analysis report, as requested via the command-line
+	 * options, to the requested file
+	 * 
+	 * @param results analysis results
+	 */
+	protected void exportReport(AnalysisResults results)
+	{
+		try
+		{
+    		FileOutputStream stream = new FileOutputStream(exportFilePath);
+    		
+    		if (exportFilePath.endsWith("xml"))
+    		{
+    			ReportXmlWriter writer = new ReportXmlWriter();
+    			writer.write(stream, results);
+    		}
+		}
+		catch (ReportExportException ree)
+		{
+			logger.log(Level.WARNING, "Error exporting the report", ree);
+		}
+		catch (IOException ioe)
+		{
+			logger.log(Level.WARNING, "Error exporting the report", ioe);
 		}
 	}
 	

@@ -1,5 +1,9 @@
 package com.vimofthevine.underbudget.util;
 
+import java.util.Calendar;
+import java.util.Date;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -30,6 +34,49 @@ public class XmlHelper {
 		}
 		else
 			return "";
+	}
+	
+	/**
+	 * Convenience method for creating a new XML element as
+	 * a child element of another element
+	 * 
+	 * @param doc      DOM document model in use
+	 * @param parent   parent element
+	 * @param tag      new element tag name
+	 * @param contents new element contents
+	 * @return the new element
+	 */
+	public static Element createElement(Document doc, Element parent,
+		String tag, Object contents)
+	{
+		Element newElement = doc.createElement(tag);
+		
+		if (contents != null)
+		{
+			newElement.appendChild(doc.createTextNode(String.valueOf(contents)));
+		}
+		
+		parent.appendChild(newElement);
+		
+		return newElement;
+	}
+	
+	/**
+	 * Convenience method for populating a given element as a
+	 * complex date element, with child year, month, and date
+	 * elements
+	 */
+	public static void createDateElement(Document doc, Element parent, Date date)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		
+		createElement(doc, parent, "year",
+			String.valueOf(calendar.get(Calendar.YEAR)));
+		createElement(doc, parent, "month",
+			String.valueOf(calendar.get(Calendar.MONTH)));
+		createElement(doc, parent, "date",
+			String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
 	}
 	
 }

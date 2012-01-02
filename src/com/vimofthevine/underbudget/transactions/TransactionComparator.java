@@ -15,7 +15,6 @@ public class TransactionComparator implements Comparator<Transaction> {
 	@Override
     public int compare(Transaction arg0, Transaction arg1)
     {
-		System.out.println("Comparing " + arg0 + " to " + arg1);
 		return arg0.date.compareTo(arg1.date);
     }
 
