@@ -12,8 +12,10 @@ import java.util.logging.Logger;
 
 import com.vimofthevine.underbudget.Application;
 import com.vimofthevine.underbudget.analysis.AnalysisResults;
+import com.vimofthevine.underbudget.estimates.Estimate;
 import com.vimofthevine.underbudget.report.AllocationEntry;
 import com.vimofthevine.underbudget.report.WorksheetEntry;
+import com.vimofthevine.underbudget.transactions.Transaction;
 import com.vimofthevine.underbudget.util.FormatHelper;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
@@ -86,10 +88,10 @@ public class HtmlReportWriter implements ReportWriter {
 			writer.write("\t\t\t<section id=\"content\">");
 			writer.newLine();
 			
-			writeSummaryReport(results, 15);
-			writeComparisonReport();
-			writeAllocationReport(results, 15);
-			writeWorksheetReport(results, 15);
+			writeSummaryReport(results, 20);
+			writeComparisonReport(results, 20);
+			writeAllocationReport(results, 20);
+			writeWorksheetReport(results, 20);
 			
 			writer.write("\t\t\t</section>");
 			writer.newLine();
@@ -291,8 +293,12 @@ public class HtmlReportWriter implements ReportWriter {
 	
 	/**
 	 * Writes the comparison report
+	 * 
+	 * @param results   analysis results
+	 * @param allocated allocated percentage of the overall task
 	 */
-	protected void writeComparisonReport() throws IOException
+	protected void writeComparisonReport(AnalysisResults results, float allocated)
+	throws IOException
 	{
 		writer.write("\t\t\t\t<article>");
 		writer.newLine();
@@ -302,8 +308,92 @@ public class HtmlReportWriter implements ReportWriter {
 		writer.newLine();
 		writer.write("\t\t\t\t\t</header>");
 		writer.newLine();
+		writer.write("\t\t\t\t\t<ul>");
+		writer.newLine();
+		
+		writer.write("\t\t\t\t\t\t<li>Income Estimates");
+		writer.newLine();
+		writer.write("\t\t\t\t\t\t\t<ul>");
+		writer.newLine();
+		
+		writeEstimateList(results.budget.incomes, 8);
+		writeEstimateList(results.rules.get(results.rules.size() - 2).estimate, 8);
+		
+		writer.write("\t\t\t\t\t\t\t</ul>");
+		writer.newLine();
+		writer.write("\t\t\t\t\t\t</li>");
+		writer.newLine();
+		writer.write("\t\t\t\t\t\t<li>Expense Estimates");
+		writer.newLine();
+		writer.write("\t\t\t\t\t\t\t<ul>");
+		writer.newLine();
+		
+		writeEstimateList(results.budget.expenses, 8);
+		writeEstimateList(results.rules.get(results.rules.size() - 1).estimate, 8);
+		
+		writer.write("\t\t\t\t\t\t\t</ul>");
+		writer.newLine();
+		writer.write("\t\t\t\t\t\t</li>");
+		writer.newLine();
+		
+		writer.write("\t\t\t\t\t</ul>");
+		writer.newLine();
 		writer.write("\t\t\t\t</article>");
 		writer.newLine();
+		writer.newLine();
+		
+		progress.add(allocated);
+	}
+	
+	/**
+	 * Writes an estimate and its child estimates as an HTML UL list
+	 * 
+	 * @param estimate the estimate to print
+	 * @param indent   current indentation level
+	 */
+	protected void writeEstimateList(Estimate estimate, int indent)
+	throws IOException
+	{
+		StringBuffer buffer = new StringBuffer();
+		for (int i=0; i<indent; i++)
+		{
+			buffer.append("\t");
+		}
+		String indentation = buffer.toString();
+		
+		buffer = new StringBuffer(indentation);
+		buffer.append("<li>");
+		buffer.append(estimate.getName() + " (" + estimate.getNotes() + ") ");
+		buffer.append("Est:" + FormatHelper.formatCurrency(estimate.getAmount()) + ", ");
+		buffer.append("Act:" + FormatHelper.formatCurrency(estimate.getActualAmount()) + ", ");
+		buffer.append("Diff:" + FormatHelper.formatCurrency(estimate.getDifferenceAmount()));
+		writer.write(buffer.toString());
+		writer.newLine();
+		
+		for (Transaction transaction : estimate.getTransactions())
+		{
+			buffer = new StringBuffer(indentation + "\t");
+			buffer.append("<br />");
+			buffer.append(transaction.toString());
+			writer.write(buffer.toString());
+			writer.newLine();
+		}
+		
+		if (estimate.isCategory())
+		{
+			writer.write(indentation + "\t<ul>");
+			writer.newLine();
+			
+			for (int i=0; i<estimate.getChildCount(); i++)
+			{
+				writeEstimateList(estimate.getChildAt(i), indent + 2);
+			}
+			
+			writer.write(indentation + "\t</ul>");
+			writer.newLine();
+		}
+		
+		writer.write(indentation + "</li>");
 		writer.newLine();
 	}
 	
