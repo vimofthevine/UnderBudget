@@ -32,7 +32,7 @@
 		</jar>
 	</target>
 
-	<target name="pkg-win" depends="cli" description="Create a Windows package">
+	<target name="pkg-win" depends="cli" description="Create a Windows package" if="unimplemented">
 		<mkdir dir="${build.dir}/win/underbudget" />
 		<copy todir="${build.dir}/win/underbudget">
 			<fileset dir="${jar.dir}" includes="*.jar" />
@@ -46,7 +46,7 @@
 		<zip destfile="${build.dir}/underbudget-${version}.zip" basedir="${build.dir}/win" />
 	</target>
 
-	<target name="pkg-unix" depends="cli" description="Create a Unix package">
+	<target name="pkg-unix" depends="cli" description="Create a Unix package" if="unimplemented">
 		<delete file="${build.dir}/underbudget-${version}.tar.gz" failonerror="false" />
 		<tar destfile="${build.dir}/underbudget-${version}.tar.gz" compression="gzip">
 			<tarfileset dir="${jar.dir}" prefix="underbudget"
