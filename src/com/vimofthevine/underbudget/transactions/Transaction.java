@@ -3,6 +3,8 @@ package com.vimofthevine.underbudget.transactions;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.vimofthevine.underbudget.util.FormatHelper;
+
 /**
  * Representation of an actual financial transfer of
  * funds from a withdrawal account into a deposit
@@ -65,6 +67,12 @@ public class Transaction {
 			default:
 				return "";
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return FormatHelper.formatDate(date) + " " + payee + " " + FormatHelper.formatCurrency(value);
 	}
 	
 }

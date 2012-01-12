@@ -23,7 +23,7 @@ public class WorksheetEntry {
 	/**
 	 * The rationale for the use of estimated vs. actual
 	 */
-	public String rationele;
+	public String rationale;
 	
 	/**
 	 * Constructor
@@ -36,7 +36,7 @@ public class WorksheetEntry {
 	{
 		this.estimate  = estimate;
 		this.totals    = totals.clone();
-		this.rationele = rationale;
+		this.rationale = rationale;
 	}
 
 }

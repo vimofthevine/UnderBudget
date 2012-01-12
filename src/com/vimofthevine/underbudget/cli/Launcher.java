@@ -18,8 +18,9 @@ import com.vimofthevine.underbudget.cli.writer.SummaryReportWriter;
 import com.vimofthevine.underbudget.cli.writer.UsageWriter;
 import com.vimofthevine.underbudget.cli.writer.VersionWriter;
 import com.vimofthevine.underbudget.cli.writer.WorksheetReportWriter;
+import com.vimofthevine.underbudget.report.export.HtmlReportWriter;
 import com.vimofthevine.underbudget.report.export.ReportExportException;
-import com.vimofthevine.underbudget.report.export.ReportXmlWriter;
+import com.vimofthevine.underbudget.report.export.XmlReportWriter;
 import com.vimofthevine.underbudget.transactions.importer.ImportFile;
 import com.vimofthevine.underbudget.transactions.importer.ImportFileException;
 
@@ -304,7 +305,12 @@ public class Launcher {
     		
     		if (exportFilePath.endsWith("xml"))
     		{
-    			ReportXmlWriter writer = new ReportXmlWriter();
+    			XmlReportWriter writer = new XmlReportWriter();
+    			writer.write(stream, results);
+    		}
+    		else if (exportFilePath.endsWith("html"))
+    		{
+    			HtmlReportWriter writer = new HtmlReportWriter();
     			writer.write(stream, results);
     		}
 		}

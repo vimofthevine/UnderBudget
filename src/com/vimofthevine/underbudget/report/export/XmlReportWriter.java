@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.ProcessingInstruction;
 
 import com.vimofthevine.underbudget.analysis.AnalysisResults;
 import com.vimofthevine.underbudget.estimates.Estimate;
@@ -32,12 +33,12 @@ import com.vimofthevine.underbudget.util.task.TaskProgress;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class ReportXmlWriter implements ReportWriter {
+public class XmlReportWriter implements ReportWriter {
 
 	/**
 	 * Log handle
 	 */
-	private static final Logger logger = Logger.getLogger(ReportXmlWriter.class.getName());
+	private static final Logger logger = Logger.getLogger(XmlReportWriter.class.getName());
 
 	/**
 	 * Current (latest) report version
@@ -57,9 +58,9 @@ public class ReportXmlWriter implements ReportWriter {
 	/**
 	 * Default constructor
 	 */
-	public ReportXmlWriter()
+	public XmlReportWriter()
 	{
-		logger.log(Level.FINE, "Creating report XML writer");
+		logger.log(Level.FINE, "Creating XML report writer");
 		progress = new TaskProgress();
 	}
 
@@ -98,6 +99,10 @@ public class ReportXmlWriter implements ReportWriter {
 			// Worksheet report
 			rootElement.appendChild(createWorksheetElement(results, 25));
 
+			// Add stylesheet to document
+			ProcessingInstruction stylesheet = doc.createProcessingInstruction("xml-stylesheet", "href=\"style.xsl\" type=\"text/xsl\"");
+			doc.insertBefore(stylesheet, doc.getFirstChild());
+			
 			// Prepare source/output
 			Source source = new DOMSource(doc);
 			Result result = new StreamResult(stream);
@@ -119,7 +124,7 @@ public class ReportXmlWriter implements ReportWriter {
 				throw (ReportExportException) e;
 			else
 			{
-				logger.log(Level.WARNING, "Error exporting report", e);
+				logger.log(Level.WARNING, "Error exporting XML report", e);
 				throw new ReportExportException("Unable to export report to file");
 			}
 		}
@@ -278,7 +283,7 @@ public class ReportXmlWriter implements ReportWriter {
 			
 			createEstimateElement(entryElement, entry.estimate);
 			createTotalElement(entryElement, entry.totals);
-			XmlHelper.createElement(doc, entryElement, "rationale", entry.rationele);
+			XmlHelper.createElement(doc, entryElement, "rationale", entry.rationale);
 		}
 		
 		return reportElement;

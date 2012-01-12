@@ -128,7 +128,7 @@ public class WorksheetReportWriter {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("  ");
-		buffer.append(FormatHelper.truncate(entry.rationele, 78));
+		buffer.append(FormatHelper.truncate(entry.rationale, 78));
 		
 		return buffer.toString();
 	}
