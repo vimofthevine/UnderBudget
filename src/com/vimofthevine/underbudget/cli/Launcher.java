@@ -288,19 +288,19 @@ public class Launcher {
 		SummaryReportWriter summary = new SummaryReportWriter(results, longMode);
 		summary.write(out);
 		
-		if (reportTypes.contains("comp"))
+		if (reportTypes.contains("comp") || reportTypes.equals("all"))
 		{
 			ComparisonReportWriter writer = new ComparisonReportWriter(results, longMode);
 			writer.write(out);
 		}
 		
-		if (reportTypes.contains("alloc"))
+		if (reportTypes.contains("alloc") || reportTypes.equals("all"))
 		{
 			AllocationReportWriter writer = new AllocationReportWriter(results, longMode);
 			writer.write(out);
 		}
 		
-		if (reportTypes.contains("work"))
+		if (reportTypes.contains("work") || reportTypes.equals("all"))
 		{
 			WorksheetReportWriter writer = new WorksheetReportWriter(results, longMode);
 			writer.write(System.out);

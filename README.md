@@ -3,7 +3,7 @@
 Advanced budget analysis using finacial data imported from GnuCash, Mint.com,
 Quickbooks, etc.
 
-License Apache License 2.0
+License: Apache License 2.0
 
 ## What does it do?
 
