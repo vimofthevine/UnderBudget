@@ -19,6 +19,7 @@ package com.vimofthevine.underbudget.cli;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,8 @@ import com.vimofthevine.underbudget.cli.writer.WorksheetReportWriter;
 import com.vimofthevine.underbudget.report.export.HtmlReportWriter;
 import com.vimofthevine.underbudget.report.export.ReportExportException;
 import com.vimofthevine.underbudget.report.export.XmlReportWriter;
+import com.vimofthevine.underbudget.transactions.Transaction;
+import com.vimofthevine.underbudget.transactions.file.TransactionFile;
 import com.vimofthevine.underbudget.transactions.importer.ImportFile;
 import com.vimofthevine.underbudget.transactions.importer.ImportFileException;
 
@@ -263,6 +266,11 @@ public class Launcher {
     		{
     			exportReport(results);
     		}
+    		
+    		if ( ! transactionFilePath.equals(""))
+    		{
+    			exportTransactions(importFile.getTransactions());
+    		}
 		}
 		catch (BudgetFileException bfe)
 		{
@@ -337,6 +345,27 @@ public class Launcher {
 		catch (IOException ioe)
 		{
 			logger.log(Level.WARNING, "Error exporting the report", ioe);
+		}
+	}
+	
+	/**
+	 * Exports all imported transactions (those that fit within the
+	 * budgeting period window) to the requested file, as specified
+	 * via the command-line options
+	 * 
+	 * @param transactions list of imported transactions
+	 */
+	protected void exportTransactions(List<Transaction> transactions)
+	{
+		try
+		{
+			TransactionFile transactionFile = new TransactionFile(transactionFilePath);
+			transactionFile.setTransactions(transactions);
+			transactionFile.write();
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.WARNING, "Error exporting transactions", e);
 		}
 	}
 	
