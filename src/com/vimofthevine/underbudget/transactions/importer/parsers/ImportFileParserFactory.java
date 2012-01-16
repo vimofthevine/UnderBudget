@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileParserFactory;
 import com.vimofthevine.underbudget.transactions.importer.filter.GnuCashFileFilter;
 import com.vimofthevine.underbudget.transactions.importer.filter.MintCsvFileFilter;
+import com.vimofthevine.underbudget.transactions.importer.filter.TransactionFileFilter;
 
 /**
  * Factory class for creating import file parsers
@@ -55,7 +57,10 @@ public class ImportFileParserFactory {
 			return null;
 			
 		}
-		if (GnuCashFileFilter.check(line1, line2))
+		
+		if (TransactionFileFilter.check(line1, line2))
+			return (ImportFileParser) TransactionFileParserFactory.createParser();
+		else if (GnuCashFileFilter.check(line1, line2))
 			return new GnuCashFileParser();
 		else if (MintCsvFileFilter.check(line1))
 			return new MintCsvFileParser();

@@ -22,12 +22,34 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileDomParserTest;
+import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileParser;
+
 /**
  * Unit test case for the ImportFileParserFactory class
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class ImportFileParserFactoryTest {
+	
+	/**
+	 * Verifies that the transaction file parser is
+	 * created for transaction XML files
+	 */
+	@Test
+	public final void testCreateParserTransactionXml()
+	{
+		try
+		{
+			InputStream stream = TransactionFileDomParserTest.class.getResourceAsStream("transactions.xml");
+			ImportFileParser parser = ImportFileParserFactory.createParser(stream);
+			assertTrue(parser instanceof TransactionFileParser);
+		}
+		catch (Exception e)
+		{
+			fail("Error occurred executing test");
+		}
+	}
 
 	/**
 	 * Verifies that the GnuCash file parser is

@@ -78,7 +78,7 @@ public class Launcher {
 	/**
 	 * Path to transaction file
 	 */
-	protected String transactionFilePath;
+	protected String transactionFilePath = "";
 	
 	/**
 	 * Path to export file

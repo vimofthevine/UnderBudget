@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.transactions.importer.parsers;
+package com.vimofthevine.underbudget.transactions.file.parsers;
 
 import static org.junit.Assert.*;
 
@@ -35,16 +35,16 @@ import com.vimofthevine.underbudget.stubs.StubTaskProgressListener;
 import com.vimofthevine.underbudget.transactions.Transaction;
 
 /**
- * Unit test case for the MintCsvFileParser class
+ * Unit test case for the TransactionFileDomParser class
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class MIntCsvFileParserTest {
+public class TransactionFileDomParserTest {
 	
 	/**
 	 * The class under test
 	 */
-	ImportFileParser parser;
+	TransactionFileDomParser parser;
 	
 	/**
 	 * The import file stream
@@ -66,26 +66,26 @@ public class MIntCsvFileParserTest {
 		{
 			listener = new StubTaskProgressListener();
 			
-			parser = new MintCsvFileParser();
+			parser = new TransactionFileDomParser();
 			parser.getProgress().addTaskProgressListener(listener);
 			
-			stream = getClass().getResourceAsStream("mint.txt");
+			stream = getClass().getResourceAsStream("transactions.xml");
 		}
 		catch (Exception e)
 		{
 			fail("Error occurred executing test");
 		}
 	}
-
+	
 	/**
 	 * Verifies that transactions are parsed correctly
-	 * from a Mint CSV file
+	 * from a transaction XML file
 	 */
 	@Test
 	public void testParseTransactions()
-	{		
+	{
 		try
-        {
+		{
 			String[] expectedPayees = new String[] {
 				"Direct deposit",
 				"Mr. Mechanic",
@@ -128,8 +128,8 @@ public class MIntCsvFileParserTest {
 				"My Bank",
 				"My Bank",
 			};
-				
-	        parser.parse(stream, new StubBudgetingPeriod());
+			
+	        parser.parse(stream);
 			
 			List<Transaction> transactions = parser.getTransactions();
 			
@@ -144,8 +144,7 @@ public class MIntCsvFileParserTest {
 				assertEquals(expectedDepositAccts[i], transaction.deposit.getName());
 				assertEquals(expectedWithdrawalAccts[i], transaction.withdrawal.getName());
 			}
-			
-        }
+		}
 		catch (Exception e)
         {
 			fail("Error occurred executing test");
@@ -162,7 +161,7 @@ public class MIntCsvFileParserTest {
 		{
 			assertEquals(0, listener.lastValue);
 			
-			parser.parse(stream, new StubBudgetingPeriod());
+			parser.parse(stream);
 			
 			assertEquals(100, listener.lastValue);
 			// Can't be certain how often the stream will be read

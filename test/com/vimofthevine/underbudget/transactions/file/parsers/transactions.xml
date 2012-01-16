@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<transactions version="1">
+    <transaction>
+        <date-posted>
+            <year>2010</year>
+            <month>10</month>
+            <date>5</date>
+        </date-posted>
+        <payee>Direct deposit</payee>
+        <memo/>
+        <amount>650.03</amount>
+        <deposit-acct>My Bank</deposit-acct>
+        <withdrawal-acct>Paycheck</withdrawal-acct>
+    </transaction>
+    <transaction>
+        <date-posted>
+            <year>2011</year>
+            <month>11</month>
+            <date>7</date>
+        </date-posted>
+        <payee>Mr. Mechanic</payee>
+        <memo>Tires</memo>
+        <amount>402.44</amount>
+        <deposit-acct>Auto Repair</deposit-acct>
+        <withdrawal-acct>My Bank</withdrawal-acct>
+    </transaction>
+    <transaction>
+        <date-posted>
+            <year>2010</year>
+            <month>6</month>
+            <date>28</date>
+        </date-posted>
+        <payee>Vendor</payee>
+        <memo>Entertainment</memo>
+        <amount>150.00</amount>
+        <deposit-acct>Recreation</deposit-acct>
+        <withdrawal-acct>My Bank</withdrawal-acct>
+    </transaction>
+    <transaction>
+        <date-posted>
+            <year>2010</year>
+            <month>6</month>
+            <date>28</date>
+        </date-posted>
+        <payee>Vendor</payee>
+        <memo>Food</memo>
+        <amount>14.68</amount>
+        <deposit-acct>Dining</deposit-acct>
+        <withdrawal-acct>My Bank</withdrawal-acct>
+    </transaction>
+</transactions>
