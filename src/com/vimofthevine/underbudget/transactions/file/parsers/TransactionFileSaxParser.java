@@ -40,17 +40,17 @@ import com.vimofthevine.underbudget.transactions.importer.parsers.ProgressMonito
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
 /**
- * Transaction file parser using the DOM XML API
+ * Transaction file parser using the SAX XML API
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class TransactionFileDomParser extends DefaultHandler
+public class TransactionFileSaxParser extends DefaultHandler
 implements TransactionFileParser {
 
 	/**
 	 * Log handle
 	 */
-	private static final Logger logger = Logger.getLogger(TransactionFileDomParser.class.getName());
+	private static final Logger logger = Logger.getLogger(TransactionFileSaxParser.class.getName());
 
 	/**
 	 * Task progress
@@ -85,7 +85,7 @@ implements TransactionFileParser {
 	/**
 	 * Default constructor
 	 */
-	public TransactionFileDomParser()
+	public TransactionFileSaxParser()
 	{
 		logger.log(Level.FINE, "Initializing transaction file parser");
 
@@ -212,7 +212,6 @@ implements TransactionFileParser {
 			return;
 		
 		String value = new String(ch, start, length);
-		logger.log(Level.INFO, "Read value " + value + " for " + currentElement);
 		
 		if (currentElement.equalsIgnoreCase("year"))
 		{

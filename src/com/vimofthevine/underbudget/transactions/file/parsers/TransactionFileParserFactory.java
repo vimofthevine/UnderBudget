@@ -30,7 +30,7 @@ public abstract class TransactionFileParserFactory {
 	 */
 	public static TransactionFileParser createParser()
 	{
-		return new TransactionFileDomParser();
+		return new TransactionFileSaxParser();
 	}
 	
 }

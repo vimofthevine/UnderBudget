@@ -35,16 +35,16 @@ import com.vimofthevine.underbudget.stubs.StubTaskProgressListener;
 import com.vimofthevine.underbudget.transactions.Transaction;
 
 /**
- * Unit test case for the TransactionFileDomParser class
+ * Unit test case for the TransactionFileSaxParser class
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class TransactionFileDomParserTest {
+public class TransactionFileSaxParserTest {
 	
 	/**
 	 * The class under test
 	 */
-	TransactionFileDomParser parser;
+	TransactionFileParser parser;
 	
 	/**
 	 * The import file stream
@@ -66,7 +66,7 @@ public class TransactionFileDomParserTest {
 		{
 			listener = new StubTaskProgressListener();
 			
-			parser = new TransactionFileDomParser();
+			parser = new TransactionFileSaxParser();
 			parser.getProgress().addTaskProgressListener(listener);
 			
 			stream = getClass().getResourceAsStream("transactions.xml");

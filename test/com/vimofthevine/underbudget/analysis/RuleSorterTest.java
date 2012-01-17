@@ -19,6 +19,8 @@ package com.vimofthevine.underbudget.analysis;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,8 @@ import org.junit.Test;
 import com.vimofthevine.underbudget.estimates.Estimate;
 import com.vimofthevine.underbudget.estimates.rules.ComparisonOperator;
 import com.vimofthevine.underbudget.estimates.rules.Rule;
+import com.vimofthevine.underbudget.estimates.rules.UnbudgetedExpenseRule;
+import com.vimofthevine.underbudget.estimates.rules.UnbudgetedIncomeRule;
 import com.vimofthevine.underbudget.stubs.StubTaskProgressListener;
 import com.vimofthevine.underbudget.transactions.TransactionField;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
@@ -36,6 +40,11 @@ import com.vimofthevine.underbudget.util.task.TaskProgress;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class RuleSorterTest {
+	
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(RuleSorterTest.class.getName());
 	
 	/**
 	 * The class under test
@@ -90,6 +99,8 @@ public class RuleSorterTest {
 				new Rule(TransactionField.ANY, ComparisonOperator.ENDS_WITH, "expense11"),
 				new Rule(TransactionField.MEMO, ComparisonOperator.CONTAINS, "expense21"),
 				new Rule(TransactionField.ANY, ComparisonOperator.CONTAINS, "income21"),
+				new UnbudgetedIncomeRule(),
+				new UnbudgetedExpenseRule(),
 			};
 			
 			List<EstimateRule> sorted = sorter.sort(income, expense);
@@ -102,6 +113,7 @@ public class RuleSorterTest {
 		}
 		catch (Exception e)
 		{
+			logger.log(Level.WARNING, "Error executing test", e);
 			fail("Error occurred executing test");
 		}
 	}

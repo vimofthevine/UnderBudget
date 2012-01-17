@@ -3,39 +3,85 @@
 
 	<property name="version" value="2.0a" />
 
-	<property name="src.dir"   value="src" />
-	<property name="build.dir" value="build" />
-	<property name="class.dir" value="${build.dir}/classes" />
-	<property name="data.dir"  value="data" />
-	<property name="jar.dir"   value="${build.dir}/jar" />
-	<property name="bin.dir"   value="scripts" />
+	<property name="src.dir"         value="src" />
+	<property name="test.dir"        value="test" />
+	<property name="data.dir"        value="data" />
+	<property name="bin.dir"         value="scripts" />
+	<property name="build.dir"       value="build" />
+	<property name="build.class.dir" value="${build.dir}/classes" />
+	<property name="build.test.dir"  value="${build.dir}/test" />
+	<property name="build.junit.dir" value="${build.dir}/test/junit" />
+	<property name="build.jar.dir"   value="${build.dir}/jar" />
 
+	<!-- Clean up the build directory -->
 	<target name="clean" description="Clean build output">
 		<delete dir="${build.dir}" />
 	</target>
 
+	<!-- Compile the application source -->
 	<target name="compile" description="Compile the Java source">
-		<mkdir dir="${class.dir}" />
-		<javac srcdir="${src.dir}" destdir="${class.dir}" />
-		<copy todir="${class.dir}">
+		<mkdir dir="${build.class.dir}" />
+
+		<javac srcdir="${src.dir}" destdir="${build.class.dir}" />
+
+		<copy todir="${build.class.dir}">
 			<fileset dir="${src.dir}"
 				excludes="**/*.java" />
 		</copy>
 	</target>
 
+	<!-- Compile the test source -->
+	<target name="compile_tests" depends="compile"
+			description="Compile the Java unit test source">
+		<mkdir dir="${build.test.dir}" />
+
+		<javac srcdir="${test.dir}" destdir="${build.test.dir}">
+			<classpath>
+				<pathelement location="${build.class.dir}" />
+			</classpath>
+		</javac>
+
+		<copy todir="${build.test.dir}">
+			<fileset dir="${test.dir}"
+				excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<!-- Run the unit tests -->
+	<target name="test" depends="compile_tests" description="Run JUnit tests">
+		<mkdir dir="${build.junit.dir}" />
+
+		<junit fork="true" haltonfailure="true" printsummary="true">
+			<classpath>
+				<pathelement location="${build.class.dir}" />
+				<pathelement location="${build.test.dir}" />
+			</classpath>
+
+			<formatter type="plain" />
+
+			<batchtest todir="${build.junit.dir}">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- Create the CLI jar -->
 	<target name="cli" depends="compile" description="Create CLI jar file">
-		<mkdir dir="${jar.dir}" />
-		<jar destfile="${jar.dir}/UnderBudgetCli.jar" basedir="${class.dir}">
+		<mkdir dir="${build.jar.dir}" />
+		<jar destfile="${build.jar.dir}/UnderBudgetCli.jar" basedir="${build.class.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="com.vimofthevine.underbudget.cli.Launcher" />
 			</manifest>
 		</jar>
 	</target>
 
+	<!-- Create the Windows package -->
 	<target name="pkg-win" depends="cli" description="Create a Windows package" if="unimplemented">
 		<mkdir dir="${build.dir}/win/underbudget" />
 		<copy todir="${build.dir}/win/underbudget">
-			<fileset dir="${jar.dir}" includes="*.jar" />
+			<fileset dir="${build.jar.dir}" includes="*.jar" />
 			<fileset dir="${bin.dir}" includes="*.bat" />
 		</copy>
 		<mkdir dir="${build.dir}/win/underbudget/data" />
@@ -46,10 +92,11 @@
 		<zip destfile="${build.dir}/underbudget-${version}.zip" basedir="${build.dir}/win" />
 	</target>
 
+	<!-- Create the Unix package -->
 	<target name="pkg-unix" depends="cli" description="Create a Unix package" if="unimplemented">
 		<delete file="${build.dir}/underbudget-${version}.tar.gz" failonerror="false" />
 		<tar destfile="${build.dir}/underbudget-${version}.tar.gz" compression="gzip">
-			<tarfileset dir="${jar.dir}" prefix="underbudget"
+			<tarfileset dir="${build.jar.dir}" prefix="underbudget"
 				includes="*.jar" />
 			<tarfileset dir="${bin.dir}" prefix="underbudget"
 				includes="underbudget.sh" filemode="775" />
@@ -58,12 +105,14 @@
 		</tar>
 	</target>
 
+	<!-- Run the application -->
 	<target name="run" depends="cli" description="Run application out of build directory">
-		<java jar="${jar.dir}/${ant.project.name}.jar" fork="true">
+		<java jar="${build.jar.dir}/${ant.project.name}.jar" fork="true">
 			<env key="UNDERBUDGET_HOME" value="data" />
 		</java>
 	</target>
 
+	<!-- Create all packages -->
 	<target name="all" depends="clean,pkg-unix,pkg-win"
 		description="Create all packages" />
 

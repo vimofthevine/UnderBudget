@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
-import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileDomParserTest;
+import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileSaxParserTest;
 import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileParser;
 
 /**
@@ -41,7 +41,7 @@ public class ImportFileParserFactoryTest {
 	{
 		try
 		{
-			InputStream stream = TransactionFileDomParserTest.class.getResourceAsStream("transactions.xml");
+			InputStream stream = TransactionFileSaxParserTest.class.getResourceAsStream("transactions.xml");
 			ImportFileParser parser = ImportFileParserFactory.createParser(stream);
 			assertTrue(parser instanceof TransactionFileParser);
 		}
