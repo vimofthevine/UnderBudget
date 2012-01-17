@@ -9,3 +9,4 @@ pkg/
 underbudget-*.pkg.tar.xz
 # Personal files
 data/template.xml
+build.properties

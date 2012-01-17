@@ -3,14 +3,24 @@
 
 	<property name="version" value="2.0a" />
 
+	<property file="build.properties" />
+
+	<!-- Build properties -->
+	<property name="debug" value="true" />
+
+	<!-- Source directories -->
 	<property name="src.dir"         value="src" />
 	<property name="test.dir"        value="test" />
 	<property name="data.dir"        value="data" />
 	<property name="bin.dir"         value="scripts" />
+
+	<!-- Build output directories -->
 	<property name="build.dir"       value="build" />
 	<property name="build.class.dir" value="${build.dir}/classes" />
 	<property name="build.test.dir"  value="${build.dir}/test" />
-	<property name="build.junit.dir" value="${build.dir}/test/junit" />
+	<property name="build.logs.dir"  value="${build.dir}/logs" />
+	<property name="build.instr.dir" value="${build.dir}/instr" />
+	<property name="build.cov.dir"   value="${build.dir}/coverage" />
 	<property name="build.jar.dir"   value="${build.dir}/jar" />
 
 	<!-- Clean up the build directory -->
@@ -22,7 +32,7 @@
 	<target name="compile" description="Compile the Java source">
 		<mkdir dir="${build.class.dir}" />
 
-		<javac srcdir="${src.dir}" destdir="${build.class.dir}" />
+		<javac srcdir="${src.dir}" destdir="${build.class.dir}" debug="${debug}" />
 
 		<copy todir="${build.class.dir}">
 			<fileset dir="${src.dir}"
@@ -49,22 +59,63 @@
 
 	<!-- Run the unit tests -->
 	<target name="test" depends="compile_tests" description="Run JUnit tests">
-		<mkdir dir="${build.junit.dir}" />
+		<mkdir dir="${build.logs.dir}" />
 
 		<junit fork="true" haltonfailure="true" printsummary="true">
 			<classpath>
+				<pathelement location="${build.instr.dir}" />
 				<pathelement location="${build.class.dir}" />
 				<pathelement location="${build.test.dir}" />
+				<pathelement location="${emma.dir}/emma.jar" />
 			</classpath>
 
 			<formatter type="plain" />
 
-			<batchtest todir="${build.junit.dir}">
+			<batchtest todir="${build.logs.dir}">
 				<fileset dir="${test.dir}">
 					<include name="**/*Test.java" />
 				</fileset>
 			</batchtest>
+
+			<jvmarg value="-Demma.coverage.out.file=${build.cov.dir}/coverage.emma" />
+			<jvmarg value="-Demma.coverage.out.merge=true" />
 		</junit>
+	</target>
+
+	<!-- Instrument source with emma -->
+	<target name="instr" depends="compile"
+			description="Prepare source for code coverage analysis with emma">
+		<fail unless="emma.dir" message="The property emma.dir must be set" />
+
+		<path id="emma.lib">
+			<pathelement location="${emma.dir}/emma.jar" />
+			<pathelement location="${emma.dir}/emma_ant.jar" />
+		</path>
+
+		<taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+
+		<mkdir dir="${build.instr.dir}" />
+		<mkdir dir="${build.cov.dir}" />
+
+		<emma>
+			<instr instrpath="${build.class.dir}" destdir="${build.instr.dir}"
+				metadatafile="${build.cov.dir}/metadata.emma" mode="copy" />
+		</emma>
+	</target>
+
+	<!-- Run emma code coverage analysis -->
+	<target name="coverage" depends="instr, test"
+			description="Run unit tests for code coverage analysis">
+		<emma>
+			<report sourcepath="${src.dir}">
+				<fileset dir="${build.cov.dir}">
+					<include name="**/*.emma" />
+				</fileset>
+
+				<txt outfile="${build.cov.dir}/coverage.txt" />
+				<html outfile="${build.cov.dir}/coverage.html" />
+			</report>
+		</emma>
 	</target>
 
 	<!-- Create the CLI jar -->
