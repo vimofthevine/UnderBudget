@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 
 import com.vimofthevine.underbudget.transactions.file.parsers.TransactionFileParserFactory;
 import com.vimofthevine.underbudget.transactions.importer.filter.GnuCashFileFilter;
-import com.vimofthevine.underbudget.transactions.importer.filter.MintCsvFileFilter;
+import com.vimofthevine.underbudget.transactions.importer.filter.CsvFileFilter;
 import com.vimofthevine.underbudget.transactions.importer.filter.TransactionFileFilter;
 
 /**
@@ -62,8 +62,8 @@ public class ImportFileParserFactory {
 			return (ImportFileParser) TransactionFileParserFactory.createParser();
 		else if (GnuCashFileFilter.check(line1, line2))
 			return new GnuCashFileParser();
-		else if (MintCsvFileFilter.check(line1))
-			return new MintCsvFileParser();
+		else if (CsvFileFilter.check(line1, line2))
+			return new CsvFileParser();
 		else
 			return null;
 	}

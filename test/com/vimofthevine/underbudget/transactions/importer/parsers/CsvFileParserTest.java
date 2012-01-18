@@ -35,11 +35,11 @@ import com.vimofthevine.underbudget.stubs.StubTaskProgressListener;
 import com.vimofthevine.underbudget.transactions.Transaction;
 
 /**
- * Unit test case for the MintCsvFileParser class
+ * Unit test case for the CsvFileParser class
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class MIntCsvFileParserTest {
+public class CsvFileParserTest {
 	
 	/**
 	 * The class under test
@@ -66,10 +66,8 @@ public class MIntCsvFileParserTest {
 		{
 			listener = new StubTaskProgressListener();
 			
-			parser = new MintCsvFileParser();
+			parser = new CsvFileParser();
 			parser.getProgress().addTaskProgressListener(listener);
-			
-			stream = getClass().getResourceAsStream("mint.txt");
 		}
 		catch (Exception e)
 		{
@@ -82,7 +80,7 @@ public class MIntCsvFileParserTest {
 	 * from a Mint CSV file
 	 */
 	@Test
-	public void testParseTransactions()
+	public void testParseMintCsvTransactions()
 	{		
 		try
         {
@@ -128,7 +126,8 @@ public class MIntCsvFileParserTest {
 				"My Bank",
 				"My Bank",
 			};
-				
+			
+			stream = getClass().getResourceAsStream("mint.txt");
 	        parser.parse(stream, new StubBudgetingPeriod());
 			
 			List<Transaction> transactions = parser.getTransactions();
@@ -153,6 +152,62 @@ public class MIntCsvFileParserTest {
 	}
 	
 	/**
+	 * Verifies that transactions are parsed correctly
+	 * from a generic CSV file
+	 */
+	@Test
+	public void testParseGenericCsvTransactions()
+	{		
+		try
+        {
+			String[] expectedPayees = new String[] {
+				"Direct deposit",
+				"Mr. Mechanic",
+				"Vendor",
+				"Vendor",
+			};
+				
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Date[] expectedDates = new Date[] {
+				format.parse("2010-11-05"),
+				format.parse("2011-12-07"),
+				format.parse("2010-07-28"),
+				format.parse("2010-07-28"),
+			};
+				
+			BigDecimal[] expectedValues = new BigDecimal[] {
+				new BigDecimal("650.03"),
+				new BigDecimal("402.44"),
+				new BigDecimal("150.00"),
+				new BigDecimal("14.68"),
+			};
+			
+			stream = getClass().getResourceAsStream("bank.txt");
+	        parser.parse(stream, new StubBudgetingPeriod());
+			
+			List<Transaction> transactions = parser.getTransactions();
+			
+			for (int i=0; i<transactions.size(); i++)
+			{
+				Transaction transaction = transactions.get(i);
+				
+				assertEquals(expectedPayees[i], transaction.payee);
+				assertEquals("", transaction.memo);
+				assertEquals(expectedDates[i], transaction.date);
+				assertEquals(expectedValues[i], transaction.value);
+				assertEquals("", transaction.deposit.getName());
+				assertEquals("", transaction.withdrawal.getName());
+			}
+			
+        }
+		catch (Exception e)
+        {
+			e.printStackTrace();
+			fail("Error occurred executing test");
+        }
+	}
+	
+	/**
 	 * Verifies that task progress is updated while parsing
 	 */
 	@Test
@@ -162,6 +217,7 @@ public class MIntCsvFileParserTest {
 		{
 			assertEquals(0, listener.lastValue);
 			
+			stream = getClass().getResourceAsStream("mint.txt");
 			parser.parse(stream, new StubBudgetingPeriod());
 			
 			assertEquals(100, listener.lastValue);
@@ -183,6 +239,7 @@ public class MIntCsvFileParserTest {
 	{
 		try
 		{
+			stream = getClass().getResourceAsStream("mint.txt");
 			parser.parse(stream, new MonthlyBudgetingPeriod(11, 2011));
 			
 			assertEquals(1, parser.getTransactions().size());

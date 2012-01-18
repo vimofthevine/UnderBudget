@@ -26,41 +26,43 @@ import java.io.InputStreamReader;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * File filter for Mint CSV files
+ * File filter for CSV files
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class MintCsvFileFilter extends FileFilter {
+public class CsvFileFilter extends FileFilter {
 	
 	/**
-	 * Checks if a given file is a valid Mint CSV file
+	 * Checks if a given file is a valid CSV file
 	 * 
 	 * @param stream input stream of the file to check
-	 * @return true if the file is a valid Mint CSV file
+	 * @return true if the file is a valid CSV file
 	 */
 	public static boolean check(InputStream stream)
 	{
 		try
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-			return check(reader.readLine());
+			return check(reader.readLine(), reader.readLine());
 		}
 		catch (IOException e) { }
 		
-		// Not a Mint CSV file
+		// Not a CSV file
 		return false;
 	}
 	
 	/**
 	 * Checks if the first line of a file
-	 * describes a valid Mint CSV file
+	 * describes a valid CSV file (presence of commas)
 	 * 
-	 * @param line1 first line of a potential Mint file
-	 * @return true if a valid Mint file is described
+	 * @param line1 first line of a potential CSV file
+	 * @param line2 second line of a potential CSV file
+	 * @return true if a valid CSV file is described
 	 */
-	public static boolean check(String line1)
+	public static boolean check(String line1, String line2)
 	{
-		return line1.startsWith("\"Date\",\"Description\",");
+		int numOfFields = line1.split(",").length;
+		return (numOfFields > 2) && numOfFields == line2.split(",").length;
 	}
 
 	@Override
@@ -78,9 +80,9 @@ public class MintCsvFileFilter extends FileFilter {
 		try
 		{
 			InputStream stream = new FileInputStream(file);
-			boolean isMintCsvFile = check(stream);
+			boolean isCsvFile = check(stream);
 			stream.close();
-			return isMintCsvFile;
+			return isCsvFile;
 		}
 		catch (Exception e)
 		{
@@ -91,7 +93,7 @@ public class MintCsvFileFilter extends FileFilter {
 	@Override
     public String getDescription()
     {
-		return "Mint CSV File";
+		return "CSV File";
     }
 
 }

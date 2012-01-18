@@ -61,6 +61,15 @@ public class Transaction {
 	public Account deposit;
 	
 	/**
+	 * Constructor
+	 */
+	public Transaction()
+	{
+		withdrawal = new Account("");
+		deposit = new Account("");
+	}
+	
+	/**
 	 * Returns the requested field text
 	 * 
 	 * @param field requested transaction field

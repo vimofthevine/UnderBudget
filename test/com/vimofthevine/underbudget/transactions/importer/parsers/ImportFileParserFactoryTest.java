@@ -71,17 +71,17 @@ public class ImportFileParserFactoryTest {
 	}
 	
 	/**
-	 * Verifies that the Mint CSV file parser is
-	 * created for Mint CSV files
+	 * Verifies that the CSV file parser is
+	 * created for CSV files
 	 */
 	@Test
-	public final void testCreateParserMintCsv()
+	public final void testCreateParserCsv()
 	{
 		try
 		{
 			InputStream stream = getClass().getResourceAsStream("mint.txt");
 			ImportFileParser parser = ImportFileParserFactory.createParser(stream);
-			assertTrue(parser instanceof MintCsvFileParser);
+			assertTrue(parser instanceof CsvFileParser);
 		}
 		catch (Exception e)
 		{
