@@ -6,18 +6,34 @@ fullname=UnderBudget
 pkgver=2.0a
 pkgrel=1
 pkgdesc="Budget analysis designed to work with GnuCash, Quicken, mint.com, etc."
-arch=(i686 x86_64)
+arch=('i686' 'x86_64')
 depends=('java-runtime')
+makedepends=('git' 'apache-ant')
 license=('Apache')
 
+_gitroot="git://github.com/vimofthevine/UnderBudget.git"
+_gitname="underbudget"
+
 build() {
-  cd ${srcdir}/../
-  pwd
-  ${ANT_HOME}/bin/ant cli
+	cd $srcdir
+	msg "Connecting to git server..."
+
+	if [ -d $_gitname ] ; then
+		cd $_gitname && git pull origin
+		msg "The local files are updated."
+	else
+		git clone $_gitroot $_gitname
+	fi
+
+	msg "Git checkout done or server timeout"
+	msg "Building jars..."
+
+	cd $_gitname
+	ant cli
 }
 
 package() {
-  cd ${srcdir}/../
+  cd $srcdir/$_gitname
 
   install -Dm644 data/underbudgetcli.desktop ${pkgdir}/usr/share/applications/underbudgetcli.desktop
   install -Dm644 data/underbudget.png ${pkgdir}/usr/share/pixmaps/underbudget.png
@@ -28,5 +44,5 @@ package() {
   #install -Dm644 data/template.xml ${pkgdir}/usr/share/underbudget/template.xml
 
   install -Dm755 scripts/underbudgetcli ${pkgdir}/usr/bin/underbudgetcli
-
 }
+
