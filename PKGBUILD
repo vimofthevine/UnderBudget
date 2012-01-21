@@ -1,7 +1,7 @@
 # UnderBudget: Installer: Arch
 # Maintainer: Kyle Treubig <kyle [at] vimofthevine [dot] com>
 
-pkgname=underbudget
+pkgname=underbudget-git
 fullname=UnderBudget
 pkgver=2.0a
 pkgrel=1
