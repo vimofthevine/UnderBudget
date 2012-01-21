@@ -9,6 +9,7 @@ pkgdesc="Budget analysis designed to work with GnuCash, Quicken, mint.com, etc."
 arch=('i686' 'x86_64')
 depends=('java-runtime')
 makedepends=('git' 'apache-ant')
+url=('http://underbudget.vimofthevine.com')
 license=('Apache')
 
 _gitroot="git://github.com/vimofthevine/UnderBudget.git"
