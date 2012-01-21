@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=UnderBudget
+Comment=Budget analysis with GnuCash
+Icon=underbudget
+TryExec=underbudgetcli
+Exec=underbudgetcli %F
+Terminal=true
+Categories=Office;

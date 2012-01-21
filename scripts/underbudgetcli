@@ -1,0 +1,5 @@
+#!/bin/sh
+export UNDERBUDGET_HOME=/usr/share/underbudget
+$JAVA_HOME/bin/java \
+    -Djava.util.logging.config.file=$UNDERBUDGET_HOME/logging.properties \
+    -jar /usr/share/java/underbudget/UnderBudgetCli.jar "$@"
