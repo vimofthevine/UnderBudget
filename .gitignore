@@ -6,6 +6,7 @@
 bin/
 build/
 pkg/
+_site/
 underbudget-*.pkg.tar.xz
 # Personal files
 data/template.xml
