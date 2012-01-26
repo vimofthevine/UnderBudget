@@ -200,6 +200,16 @@ public class Launcher {
 				
 				importFilePath = args[++i];
 			}
+			// Create a new budget file
+			else if (arg.equals("-g"))
+			{
+				if (args.length == (i+1))
+				{
+					printUsageAndExit();
+				}
+				
+				createBudgetFileFromTemplateAndExit(args[++i]);
+			}
 		}
 	}
 	
@@ -211,6 +221,11 @@ public class Launcher {
 		UsageWriter usage = new UsageWriter();
 		usage.write(System.err);
 		System.exit(0);
+	}
+	
+	protected void createBudgetFileFromTemplateAndExit(String file)
+	{
+		
 	}
 	
 	public void execute()
