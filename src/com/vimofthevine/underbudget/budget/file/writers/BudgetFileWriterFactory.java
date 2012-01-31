@@ -33,4 +33,14 @@ public abstract class BudgetFileWriterFactory {
 		return new BudgetFileDomWriter();
 	}
 	
+	/**
+	 * Creates a new template file writer
+	 * 
+	 * @return BudgetFileWriter implementation
+	 */
+	public static BudgetFileWriter createTemplateWriter()
+	{
+		return new BudgetTemplateDomWriter();
+	}
+	
 }

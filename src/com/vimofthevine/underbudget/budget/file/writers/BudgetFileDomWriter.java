@@ -225,7 +225,7 @@ public class BudgetFileDomWriter implements BudgetFileWriter {
 			
 			for (int i=0; i<estimate.getChildCount(); i++)
 			{
-				Estimate child = estimate.getChildAt(0);
+				Estimate child = estimate.getChildAt(i);
 				estimatesElement.appendChild(createEstimateElement(child));
 			}
 		}

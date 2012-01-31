@@ -223,9 +223,34 @@ public class Launcher {
 		System.exit(0);
 	}
 	
+	/**
+	 * Creates a new budget file, based on the template file
+	 * specified in the application data directory, or as embedded
+	 * in the jar file if there is none in the data directory
+	 * 
+	 * @param file name of the budget file to be created
+	 */
 	protected void createBudgetFileFromTemplateAndExit(String file)
 	{
-		
+		try
+		{
+			BudgetFile newBudgetFile = new BudgetFile(file);
+			
+			newBudgetFile.getParserProgress().addTaskProgressListener(
+				new ProgressWriter("Parsing template budget", System.out));
+			newBudgetFile.getWriterProgress().addTaskProgressListener(
+				new ProgressWriter("Saving budget file", System.out));
+			
+			newBudgetFile.createFromTemplate();
+			newBudgetFile.write();
+			
+			System.exit(0);
+		}
+		catch (BudgetFileException bfe)
+		{
+			System.err.println("Unable to create budget file: " + bfe.getMessage());
+			System.exit(1);
+		}
 	}
 	
 	public void execute()

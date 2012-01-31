@@ -28,6 +28,12 @@ import com.vimofthevine.underbudget.util.XmlHelper;
 /**
  * Budget template writer using the DOM XML API
  * 
+ * This class extends the default budget file writer since
+ * there are only a few minor differences between normal
+ * budget files and a template. When saving a budget as a
+ * template, all estimates are left as NOT final, no initial
+ * balance is recorded, and the name is reset.
+ * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class BudgetTemplateDomWriter extends BudgetFileDomWriter {
