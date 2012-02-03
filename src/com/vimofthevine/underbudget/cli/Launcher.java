@@ -28,6 +28,7 @@ import com.vimofthevine.underbudget.analysis.BudgetAnalysisException;
 import com.vimofthevine.underbudget.analysis.BudgetAnalyzer;
 import com.vimofthevine.underbudget.budget.file.BudgetFile;
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
+import com.vimofthevine.underbudget.budget.file.TemplateFile;
 import com.vimofthevine.underbudget.cli.writer.AllocationReportWriter;
 import com.vimofthevine.underbudget.cli.writer.ComparisonReportWriter;
 import com.vimofthevine.underbudget.cli.writer.ProgressWriter;
@@ -234,15 +235,15 @@ public class Launcher {
 	{
 		try
 		{
-			BudgetFile newBudgetFile = new BudgetFile(file);
+			TemplateFile newBudgetFile = new TemplateFile();
 			
 			newBudgetFile.getParserProgress().addTaskProgressListener(
 				new ProgressWriter("Parsing template budget", System.out));
 			newBudgetFile.getWriterProgress().addTaskProgressListener(
 				new ProgressWriter("Saving budget file", System.out));
 			
-			newBudgetFile.createFromTemplate();
-			newBudgetFile.write();
+			newBudgetFile.parse();
+			newBudgetFile.write(file);
 			
 			System.exit(0);
 		}

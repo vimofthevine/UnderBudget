@@ -16,7 +16,6 @@
 
 package com.vimofthevine.underbudget.budget.file;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.vimofthevine.underbudget.Application;
 import com.vimofthevine.underbudget.budget.Budget;
 import com.vimofthevine.underbudget.budget.file.parsers.BudgetFileParser;
 import com.vimofthevine.underbudget.budget.file.parsers.BudgetFileParserFactory;
@@ -111,35 +109,6 @@ public class BudgetFile {
 	}
 	
 	/**
-	 * Parses the budget from the template file specified
-	 * by the system property, underbudget.template.file, or
-	 * in the same working directory as the application, or
-	 * as embedded in the jar
-	 */
-	public void createFromTemplate() throws BudgetFileException
-	{
-		try
-		{
-			// TODO this shouldn't be a hard-coded value (need a top-level class to store it)
-			String templateFilePath = System.getProperty("underbudget.template.file", "./template.xml");
-			File templateFile = new File(templateFilePath);
-			
-			InputStream templateStream = templateFile.exists()
-				? new FileInputStream(templateFile)
-				: Application.class.getResourceAsStream("resources/template.xml");
-				
-			BudgetFileParser templateParser = BudgetFileParserFactory.createParser();
-			templateParser.parse(templateStream);
-			budget = templateParser.getBudget();
-		}
-		catch (IOException ioe)
-		{
-			logger.log(Level.WARNING, "Error parsing template", ioe);
-			throw new BudgetFileException("Unable to parse template");
-		}
-	}
-	
-	/**
 	 * Parses the budget file, extracting the
 	 * budget defined in the file
 	 * 
@@ -149,15 +118,33 @@ public class BudgetFile {
 	{
 		try
 		{
-			InputStream stream = new FileInputStream(path);
+			parse(new FileInputStream(path));
+		}
+		catch (IOException ioe)
+		{
+			logger.log(Level.WARNING, "Error opening file", ioe);
+			throw new BudgetFileException("Unable to open budget file, " + path);
+		}
+	}
+	
+	/**
+	 * Parses the budget file from the given input stream
+	 * 
+	 * @param stream input stream from which to read the budget
+	 * @throws BudgetFileException if any error occurs
+	 */
+	protected void parse(InputStream stream) throws BudgetFileException
+	{
+		try
+		{
 			parser.parse(stream);
 			budget = parser.getBudget();
 			stream.close();
 		}
 		catch (IOException ioe)
 		{
-			logger.log(Level.WARNING, "Error opening file", ioe);
-			throw new BudgetFileException("Unable to open budget file, " + path);
+			logger.log(Level.WARNING, "Error reading from stream", ioe);
+			throw new BudgetFileException("Unable to read budget from stream, " + stream);
 		}
 	}
 	
@@ -168,16 +155,35 @@ public class BudgetFile {
 	 */
 	public void write() throws BudgetFileException
 	{
+		
 		try
 		{
-			OutputStream stream = new FileOutputStream(path);
+			write(new FileOutputStream(path));
+		}
+		catch (IOException ioe)
+		{
+			logger.log(Level.WARNING, "Error writing to file", ioe);
+			throw new BudgetFileException("Unable to save budget to file, " + path);
+		}
+	}
+	
+	/**
+	 * Writes the budget to the given output stream
+	 * 
+	 * @param stream output stream to which to write the budget
+	 * @throws BudgetFileException if any error occurs
+	 */
+	protected void write(OutputStream stream) throws BudgetFileException
+	{
+		try
+		{
 			writer.write(stream, budget);
 			stream.close();
 		}
 		catch (IOException ioe)
 		{
-			logger.log(Level.WARNING, "Error writing file", ioe);
-			throw new BudgetFileException("Unable to save budget to file, " + path);
+			logger.log(Level.WARNING, "Error writing to stream", ioe);
+			throw new BudgetFileException("Unable to write budget to stream, " + stream);
 		}
 	}
 
