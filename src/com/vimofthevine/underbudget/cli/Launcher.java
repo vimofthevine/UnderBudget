@@ -202,7 +202,7 @@ public class Launcher {
 				importFilePath = args[++i];
 			}
 			// Create a new budget file
-			else if (arg.equals("-g"))
+			else if (arg.equals("-n") || arg.equals("--new"))
 			{
 				if (args.length == (i+1))
 				{
@@ -210,6 +210,16 @@ public class Launcher {
 				}
 				
 				createBudgetFileFromTemplateAndExit(args[++i]);
+			}
+			// Save a budget as the new template
+			else if (arg.equals("-t") || arg.equals("--template"))
+			{
+				if (args.length == (i+1))
+				{
+					printUsageAndExit();
+				}
+				
+				saveBudgetAsTemplateAndExit(args[++i]);
 			}
 		}
 	}
@@ -243,13 +253,46 @@ public class Launcher {
 				new ProgressWriter("Saving budget file", System.out));
 			
 			newBudgetFile.parse();
+			System.out.print("                                                   \r");
 			newBudgetFile.write(file);
+			System.out.print("                                                   \r");
 			
 			System.exit(0);
 		}
 		catch (BudgetFileException bfe)
 		{
 			System.err.println("Unable to create budget file: " + bfe.getMessage());
+			System.exit(1);
+		}
+	}
+	
+	/**
+	 * Reads the specified budget file and saves its budget contents
+	 * as the template file
+	 * 
+	 * @param file budget to be used as the new template
+	 */
+	protected void saveBudgetAsTemplateAndExit(String file)
+	{
+		try
+		{
+			BudgetFile baseFile = new BudgetFile(file);
+			baseFile.getParserProgress().addTaskProgressListener(
+				new ProgressWriter("Opening budget file", System.out));
+			baseFile.parse();
+			System.out.print("                                                   \r");
+			
+			TemplateFile templateFile = new TemplateFile();
+			templateFile.getWriterProgress().addTaskProgressListener(
+				new ProgressWriter("Saving as template", System.out));
+			templateFile.write(baseFile.getBudget());
+			System.out.print("                                                   \r");
+			
+			System.exit(0);
+		}
+		catch (BudgetFileException bfe)
+		{
+			System.err.println("Unable to save budget as template: " + bfe.getMessage());
 			System.exit(1);
 		}
 	}
