@@ -121,7 +121,14 @@ public class BudgetMetaDomParserV1 implements BudgetMetaDomParser {
 	protected BigDecimal parseInitialBalance(Element element)
 	throws BudgetFileException
 	{
-		return new BigDecimal(XmlHelper.readTextNode(element, "initialBalance"));
+		String value = XmlHelper.readTextNode(element, "initialBalance");
+		
+		if (value == "")
+		{
+			value = "0.0";
+		}
+		
+		return new BigDecimal(value);
 	}
 	
 	/**

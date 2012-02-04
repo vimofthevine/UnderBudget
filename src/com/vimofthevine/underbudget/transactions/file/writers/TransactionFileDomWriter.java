@@ -41,7 +41,8 @@ import com.vimofthevine.underbudget.util.task.TaskProgress;
 
 /**
  * Transaction file writer using the DOM XML API
- * @author kyle
+ * 
+ * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class TransactionFileDomWriter implements TransactionFileWriter {
 	

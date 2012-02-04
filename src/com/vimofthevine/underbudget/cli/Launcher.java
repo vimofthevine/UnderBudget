@@ -28,6 +28,7 @@ import com.vimofthevine.underbudget.analysis.BudgetAnalysisException;
 import com.vimofthevine.underbudget.analysis.BudgetAnalyzer;
 import com.vimofthevine.underbudget.budget.file.BudgetFile;
 import com.vimofthevine.underbudget.budget.file.BudgetFileException;
+import com.vimofthevine.underbudget.budget.file.TemplateFile;
 import com.vimofthevine.underbudget.cli.writer.AllocationReportWriter;
 import com.vimofthevine.underbudget.cli.writer.ComparisonReportWriter;
 import com.vimofthevine.underbudget.cli.writer.ProgressWriter;
@@ -200,6 +201,26 @@ public class Launcher {
 				
 				importFilePath = args[++i];
 			}
+			// Create a new budget file
+			else if (arg.equals("-n") || arg.equals("--new"))
+			{
+				if (args.length == (i+1))
+				{
+					printUsageAndExit();
+				}
+				
+				createBudgetFileFromTemplateAndExit(args[++i]);
+			}
+			// Save a budget as the new template
+			else if (arg.equals("-t") || arg.equals("--template"))
+			{
+				if (args.length == (i+1))
+				{
+					printUsageAndExit();
+				}
+				
+				saveBudgetAsTemplateAndExit(args[++i]);
+			}
 		}
 	}
 	
@@ -211,6 +232,69 @@ public class Launcher {
 		UsageWriter usage = new UsageWriter();
 		usage.write(System.err);
 		System.exit(0);
+	}
+	
+	/**
+	 * Creates a new budget file, based on the template file
+	 * specified in the application data directory, or as embedded
+	 * in the jar file if there is none in the data directory
+	 * 
+	 * @param file name of the budget file to be created
+	 */
+	protected void createBudgetFileFromTemplateAndExit(String file)
+	{
+		try
+		{
+			TemplateFile newBudgetFile = new TemplateFile();
+			
+			newBudgetFile.getParserProgress().addTaskProgressListener(
+				new ProgressWriter("Parsing template budget", System.out));
+			newBudgetFile.getWriterProgress().addTaskProgressListener(
+				new ProgressWriter("Saving budget file", System.out));
+			
+			newBudgetFile.parse();
+			System.out.print("                                                   \r");
+			newBudgetFile.write(file);
+			System.out.print("                                                   \r");
+			
+			System.exit(0);
+		}
+		catch (BudgetFileException bfe)
+		{
+			System.err.println("Unable to create budget file: " + bfe.getMessage());
+			System.exit(1);
+		}
+	}
+	
+	/**
+	 * Reads the specified budget file and saves its budget contents
+	 * as the template file
+	 * 
+	 * @param file budget to be used as the new template
+	 */
+	protected void saveBudgetAsTemplateAndExit(String file)
+	{
+		try
+		{
+			BudgetFile baseFile = new BudgetFile(file);
+			baseFile.getParserProgress().addTaskProgressListener(
+				new ProgressWriter("Opening budget file", System.out));
+			baseFile.parse();
+			System.out.print("                                                   \r");
+			
+			TemplateFile templateFile = new TemplateFile();
+			templateFile.getWriterProgress().addTaskProgressListener(
+				new ProgressWriter("Saving as template", System.out));
+			templateFile.write(baseFile.getBudget());
+			System.out.print("                                                   \r");
+			
+			System.exit(0);
+		}
+		catch (BudgetFileException bfe)
+		{
+			System.err.println("Unable to save budget as template: " + bfe.getMessage());
+			System.exit(1);
+		}
 	}
 	
 	public void execute()
