@@ -32,7 +32,8 @@
 	<target name="compile" description="Compile the Java source">
 		<mkdir dir="${build.class.dir}" />
 
-		<javac srcdir="${src.dir}" destdir="${build.class.dir}" debug="${debug}" />
+		<javac srcdir="${src.dir}" destdir="${build.class.dir}"
+			includeantruntime="false" debug="${debug}" />
 
 		<copy todir="${build.class.dir}">
 			<fileset dir="${src.dir}"
@@ -45,7 +46,8 @@
 			description="Compile the Java unit test source">
 		<mkdir dir="${build.test.dir}" />
 
-		<javac srcdir="${test.dir}" destdir="${build.test.dir}">
+		<javac srcdir="${test.dir}" destdir="${build.test.dir}"
+				includeantruntime="true">
 			<classpath>
 				<pathelement location="${build.class.dir}" />
 			</classpath>
