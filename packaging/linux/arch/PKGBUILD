@@ -3,7 +3,7 @@
 
 pkgname=underbudget-git
 fullname=UnderBudget
-pkgver=2.0a
+pkgver=20120205
 pkgrel=1
 pkgdesc="Budget analysis designed to work with GnuCash, Quicken, mint.com, etc."
 arch=('i686' 'x86_64')

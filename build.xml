@@ -12,7 +12,8 @@
 	<property name="src.dir"         value="src" />
 	<property name="test.dir"        value="test" />
 	<property name="data.dir"        value="data" />
-	<property name="bin.dir"         value="scripts" />
+	<property name="linux.dir"       value="packaging/linux" />
+	<property name="win.dir"         value="packaging/win" />
 
 	<!-- Build output directories -->
 	<property name="build.dir"       value="build" />
@@ -131,11 +132,13 @@
 	</target>
 
 	<!-- Create the Windows package -->
-	<target name="pkg-win" depends="cli" description="Create a Windows package" if="unimplemented">
+	<!-- Note that this is untested as I doubt there's much use of the CLI version
+		 on Windows. When the GUI version is released this will be tested/updated -->
+	<target name="pkg-win" depends="cli" description="Create a Windows package">
 		<mkdir dir="${build.dir}/win/underbudget" />
 		<copy todir="${build.dir}/win/underbudget">
 			<fileset dir="${build.jar.dir}" includes="*.jar" />
-			<fileset dir="${bin.dir}" includes="*.bat" />
+			<fileset dir="${win.dir}" includes="*.bat" />
 		</copy>
 		<mkdir dir="${build.dir}/win/underbudget/data" />
 		<copy todir="${build.dir}/win/underbudget/data">
@@ -146,15 +149,15 @@
 	</target>
 
 	<!-- Create the Unix package -->
-	<target name="pkg-unix" depends="cli" description="Create a Unix package" if="unimplemented">
+	<target name="pkg-unix" depends="cli" description="Create a Unix package">
 		<delete file="${build.dir}/underbudget-${version}.tar.gz" failonerror="false" />
 		<tar destfile="${build.dir}/underbudget-${version}.tar.gz" compression="gzip">
 			<tarfileset dir="${build.jar.dir}" prefix="underbudget"
 				includes="*.jar" />
-			<tarfileset dir="${bin.dir}" prefix="underbudget"
-				includes="underbudget.sh" filemode="775" />
+			<tarfileset dir="${linux.dir}" prefix="underbudget"
+				includes="underbudgetcli.sh" filemode="775" />
 			<tarfileset dir="${data.dir}" prefix="underbudget/data"
-				includes="*.properties,*.desktop,*.png" />
+				includes="*.properties" />
 		</tar>
 	</target>
 

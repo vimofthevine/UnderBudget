@@ -21,15 +21,15 @@ CLIBIN = underbudgetcli
 
 install: $(CLIJAR)
 	$(INSTALL) -d -m 755 $(DESKTOPDIR)
-	$(INSTALL) -m 644 data/$(CLIDESKTOPFILE) $(DESKTOPDIR)
+	$(INSTALL) -m 644 packaging/linux/$(CLIDESKTOPFILE) $(DESKTOPDIR)
 	$(INSTALL) -d -m 755 $(ICONDIR)
-	$(INSTALL) -m 644 data/$(ICONFILE) $(ICONDIR)
+	$(INSTALL) -m 644 packaging/icons/$(ICONFILE) $(ICONDIR)
 	$(INSTALL) -d -m 755 $(JARDIR)
 	$(INSTALL) -m 644 build/jar/$(CLIJAR) $(JARDIR)
 	$(INSTALL) -d -m 755 $(APPDATA)
 	$(INSTALL) -m 644 data/$(LOGFILE) $(APPDATA)
 	$(INSTALL) -d -m 755 $(BINDIR)
-	$(INSTALL) -m 755 scripts/$(CLIBIN) $(BINDIR)
+	$(INSTALL) -m 755 packaging/linux/$(CLIBIN) $(BINDIR)
 
 uninstall:
 	rm $(DESKTOPDIR)/$(CLIDESKTOPFILE)
