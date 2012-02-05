@@ -26,8 +26,11 @@ import java.util.logging.Logger;
 import com.vimofthevine.underbudget.budget.Budget;
 import com.vimofthevine.underbudget.estimates.Estimate;
 import com.vimofthevine.underbudget.estimates.IncomeEstimate;
+import com.vimofthevine.underbudget.report.Alert;
 import com.vimofthevine.underbudget.report.BalanceTotal;
 import com.vimofthevine.underbudget.report.WorksheetEntry;
+import com.vimofthevine.underbudget.report.Alert.AlertType;
+import com.vimofthevine.underbudget.util.FormatHelper;
 import com.vimofthevine.underbudget.util.task.TaskProgress;
 
 /**
@@ -59,6 +62,11 @@ public class BalanceCalculator {
 	protected BalanceTotal total;
 	
 	/**
+	 * Alerts generated during analysis
+	 */
+	protected List<Alert> alerts;
+	
+	/**
 	 * Whether all estimates are final
 	 * because the budget occurs in the past
 	 */
@@ -88,6 +96,16 @@ public class BalanceCalculator {
 	}
 	
 	/**
+	 * Returns any alerts generated during analysis
+	 * 
+	 * @return analysis alerts
+	 */
+	public List<Alert> getAlerts()
+	{
+		return alerts;
+	}
+	
+	/**
 	 * Calculates the estimated, actual, and expected totals based on
 	 * each estimate and the transactions that have been matched
 	 * against them
@@ -107,6 +125,7 @@ public class BalanceCalculator {
 		float portion = allocated / (float) rules.size();
 		
 		total = new BalanceTotal();
+		alerts = new ArrayList<Alert>();
 		
 		ArrayList<WorksheetEntry> report = new ArrayList<WorksheetEntry>();
 		
@@ -138,10 +157,33 @@ public class BalanceCalculator {
 				
     				alreadyCounted.add(estimate);
     				report.add(new WorksheetEntry(estimate, total, rationale));
+    				
+    				Date dueDate = estimate.getDueDate();
+    				// If un-paid bill
+    				if (dueDate != null && estimate.getTransactions().size() == 0)
+    				{
+    					Date today = new Date();
+    					if (dueDate.before(today))
+    					{
+    						// Late
+    						alerts.add(new Alert(AlertType.WARNING,
+    							estimate.getName() + " has due date of "
+    							+ FormatHelper.formatDate(dueDate)
+    							+ " but no activity"));
+    					}
+    					else
+    					{
+    						// Upcoming
+    						alerts.add(new Alert(AlertType.INFO,
+    							estimate.getName() + " has upcoming due date of "
+    							+ FormatHelper.formatDate(dueDate)));
+    					}
+    					
+    				}
     			}
     			else
     			{
-    				logger.log(Level.FINE, "Ignoring category estimate, " + estimate.getName());
+    				logger.log(Level.FINER, "Ignoring category estimate, " + estimate.getName());
     			}
 			}
 			else

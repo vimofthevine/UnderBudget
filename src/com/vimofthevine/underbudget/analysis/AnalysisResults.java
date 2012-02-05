@@ -19,6 +19,7 @@ package com.vimofthevine.underbudget.analysis;
 import java.util.List;
 
 import com.vimofthevine.underbudget.budget.Budget;
+import com.vimofthevine.underbudget.report.Alert;
 import com.vimofthevine.underbudget.report.AllocationEntry;
 import com.vimofthevine.underbudget.report.BalanceTotal;
 import com.vimofthevine.underbudget.report.WorksheetEntry;
@@ -34,6 +35,11 @@ public class AnalysisResults {
 	 * Budget that has been analyzed
 	 */
 	public Budget budget;
+	
+	/**
+	 * List of alert entries
+	 */
+	public List<Alert> alerts;
 	
 	/**
 	 * List of sorted estimate rules

@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import com.vimofthevine.underbudget.analysis.AnalysisResults;
 import com.vimofthevine.underbudget.budget.BudgetMeta;
+import com.vimofthevine.underbudget.report.Alert;
 import com.vimofthevine.underbudget.report.BalanceTotal;
 import com.vimofthevine.underbudget.util.FormatHelper;
 
@@ -108,6 +109,16 @@ public class SummaryReportWriter {
 				initial.add(total.getExpectedNetChange())
 			)
 		);
+		
+		if (results.alerts.size() > 0)
+		{
+			stream.println();
+			
+			for (Alert alert : results.alerts)
+			{
+				stream.println(alert.type + ": " + alert.text);
+			}
+		}
 		
 		stream.println("--------------------------------------------------------------------------------");
 		stream.println();

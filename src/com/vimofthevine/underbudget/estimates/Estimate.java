@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.estimates;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
@@ -30,7 +31,7 @@ import com.vimofthevine.underbudget.transactions.Transaction;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class Estimate extends Observable {
+public class Estimate extends Observable implements Cloneable {
 	
 	/**
 	 * Estimate hierarchy structure support
@@ -58,6 +59,20 @@ public class Estimate extends Observable {
 	protected BigDecimal amount = new BigDecimal("0");
 	
 	/**
+	 * Due date for this estimate (must be discrete)
+	 */
+	protected Date dueDate = null;
+	
+	/**
+	 * Indication that this estimate is discrete; that is,
+	 * there should only be a few discrete transactions against
+	 * this estimate, such as a utility bill. Estimates that
+	 * are not discrete are on-going expenses/incomes, such as
+	 * groceries.
+	 */
+	protected boolean isDiscrete = false;
+	
+	/**
 	 * Indication that all transactions against this estimate
 	 * have occurred and that only actual data should be considered
 	 */
@@ -82,6 +97,26 @@ public class Estimate extends Observable {
 		node = new EstimateNode(this);
 		rules = new ArrayList<Rule>();
 		transactions = new ArrayList<Transaction>();
+	}
+	
+	/**
+	 * Creates a shallow-copy clone of this estimate
+	 * 
+	 * @return clone of this estimate
+	 */
+	public Estimate clone()
+	{
+		Estimate clone = new Estimate();
+		
+		clone.name = name;
+		clone.notes = notes;
+		clone.rules = rules;
+		clone.amount = amount;
+		clone.dueDate = dueDate;
+		clone.isDiscrete = isDiscrete;
+		clone.isFinal = isFinal;
+		
+		return clone;
 	}
 	
 	/**
@@ -271,6 +306,73 @@ public class Estimate extends Observable {
 		if ( ! this.amount.equals(amount))
 		{
 			this.amount = amount;
+			setChanged();
+		}
+	}
+	
+	/**
+	 * Returns the due date for this discrete estimate
+	 * 
+	 * @return due date for this discrete estimate
+	 */
+	public Date getDueDate()
+	{
+		return dueDate;
+	}
+	
+	/**
+	 * Sets the due date for this estimate. Specifying a due date
+	 * automatically marks this estimate as discrete.
+	 * 
+	 * @param dueDate due date for this estimate
+	 */
+	public void setDueDate(Date dueDate)
+	{
+		if (this.dueDate == null || ! this.dueDate.equals(dueDate))
+		{
+			this.dueDate = dueDate;
+			
+			if (dueDate != null)
+			{
+				setDiscrete(true);
+			}
+			
+			setChanged();
+		}
+	}
+	
+	/**
+	 * Checks if this estimate has been designated as discrete
+	 * 
+	 * @return true if this estimate has been marked as discrete
+	 */
+	public boolean isDiscrete()
+	{
+		return isDiscrete;
+	}
+	
+	/**
+	 * Designates this estimate as discrete. A discrete
+	 * estimate should only have a few specific transactions
+	 * against it, such as a utility bill. Non-discrete
+	 * estimates are on-going, such as groceries.
+	 * 
+	 * Marking this estimate as non-discrete automatically
+	 * unsets the due date.
+	 * 
+	 * @param discrete whether the estimate is final
+	 */
+	public void setDiscrete(boolean discrete)
+	{
+		if (isDiscrete != discrete)
+		{
+			isDiscrete = discrete;
+			
+			if ( ! isDiscrete)
+			{
+				setDueDate(null);
+			}
+			
 			setChanged();
 		}
 	}

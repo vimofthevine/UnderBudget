@@ -16,6 +16,7 @@
 
 package com.vimofthevine.underbudget.budget.file.parsers.estimate;
 
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +52,31 @@ public class EstimateDomParserV3 extends EstimateDomParserV2 {
 	public EstimateDomParserV3(TaskProgress progress)
 	{
 		super(progress);
+	}
+	
+	@Override
+	protected Estimate readEstimateFromElement(Element element, Estimate parent)
+	throws BudgetFileException
+	{
+		Estimate estimate = super.readEstimateFromElement(element, parent);
+
+		NodeList dueDateList = element.getElementsByTagName("due");
+		if (dueDateList.getLength() > 0)
+		{
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(XmlHelper.readTextNode(element, "due")));
+			estimate.setDueDate(calendar.getTime());
+		}
+		
+		NodeList discreteList = element.getElementsByTagName("discrete");
+		if (discreteList.getLength() > 0)
+			estimate.setDiscrete(true);
+		
+		NodeList finalList = element.getElementsByTagName("final");
+		if (finalList.getLength() > 0)
+			estimate.setFinal(true);
+		
+		return estimate;
 	}
 	
 	@Override

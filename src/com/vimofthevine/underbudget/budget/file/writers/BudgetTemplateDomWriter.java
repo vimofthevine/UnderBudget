@@ -66,14 +66,10 @@ public class BudgetTemplateDomWriter extends BudgetFileDomWriter {
 	@Override
 	protected void populateEstimateMeta(Estimate estimate, Element element)
 	{
-		XmlHelper.createElement(doc, element, "name", estimate.getName());
-		XmlHelper.createElement(doc, element, "notes", estimate.getNotes());
-		
-		if ( ! estimate.isCategory())
-		{
-			XmlHelper.createElement(doc, element, "amount", String.valueOf(estimate.getAmount()));
-			XmlHelper.createElement(doc, element, "final", "false");
-		}
+		Estimate clone = estimate.clone();
+		clone.setFinal(false);
+
+		super.populateEstimateMeta(clone, element);
 	}
 	
 }

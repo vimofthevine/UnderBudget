@@ -95,4 +95,23 @@ public class XmlHelper {
 			String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
 	}
 	
+	/**
+	 * Convenience method for reading a date out of
+	 * a nested DOM element
+	 * 
+	 * @param element parent element for the date
+	 * @return date represented in the given DOM element
+	 */
+	public static Date readDateElement(Element element)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		
+		calendar.set(Calendar.YEAR, Integer.valueOf(readTextNode(element, "year")));
+		calendar.set(Calendar.MONTH, Integer.valueOf(readTextNode(element, "month")));
+		calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(readTextNode(element, "date")));
+		
+		return calendar.getTime();
+	}
+	
 }

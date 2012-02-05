@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.budget.file.writers;
 
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -248,6 +249,18 @@ public class BudgetFileDomWriter implements BudgetFileWriter {
 		{
 			XmlHelper.createElement(doc, element, "amount", String.valueOf(estimate.getAmount()));
 			XmlHelper.createElement(doc, element, "final", String.valueOf(estimate.isFinal()));
+		}
+		
+		if (estimate.isDiscrete())
+		{
+			XmlHelper.createElement(doc, element, "discrete", null);
+		}
+		
+		if (estimate.getDueDate() != null)
+		{
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(estimate.getDueDate());
+			XmlHelper.createElement(doc, element, "due", calendar.get(Calendar.DAY_OF_MONTH));
 		}
 	}
 	

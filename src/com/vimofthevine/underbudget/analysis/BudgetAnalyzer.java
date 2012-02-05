@@ -108,6 +108,7 @@ public class BudgetAnalyzer {
 		BalanceCalculator calculator = new BalanceCalculator(progress, 33);
 		results.worksheet = calculator.calculate(budget, results.rules);
 		results.total = calculator.getTotals();
+		results.alerts = calculator.getAlerts();
 		
 		progress.complete();
 	}
