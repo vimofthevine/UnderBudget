@@ -14,32 +14,37 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
-
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+package com.vimofthevine.underbudget.file.budget;
 
 /**
- * Stub task progress listener for unit testing
+ * Exception thrown when parsing or writing
+ * to a budget file.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
+public class BudgetFileException extends Exception {
 	
 	/**
-	 * The nubmer of progress updates received
+	 * Constructs a new budget file exception with 
+	 * the given message
+	 * 
+	 * @param msg exception detail message
 	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+	public BudgetFileException(String msg)
+	{
+		super(msg);
+	}
 	
+	/**
+	 * Constructs a new budget file exception with 
+	 * the given message and cause
+	 * 
+	 * @param msg   exception detail message
+	 * @param cuase exception cause
+	 */
+	public BudgetFileException(String msg, Throwable cause)
+	{
+		super(msg, cause);
+	}
+
 }

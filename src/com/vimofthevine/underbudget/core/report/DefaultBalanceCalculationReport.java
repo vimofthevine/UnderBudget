@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.report;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import com.vimofthevine.underbudget.core.budget.estimate.DisplayableEstimate;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.report.ExpectedAmountRationale;
 
 /**
- * Stub task progress listener for unit testing
+ * Default balance calculation report
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
+public class DefaultBalanceCalculationReport implements BalanceCalculationReport {
 
 	@Override
-    public void progressUpdate(String name, int value)
+    public void record(DisplayableEstimate estimate, Currency expected,
+            ExpectedAmountRationale rationale)
     {
-		lastValue = value;
-		numberOfUpdates++;
+		// Do nothing
     }
-	
+
 }

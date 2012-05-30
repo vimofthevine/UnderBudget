@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.report;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import com.vimofthevine.underbudget.core.util.SimpleDate;
 
 /**
- * Stub task progress listener for unit testing
+ * A payment alert report records upcoming and
+ * overdue expenses.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
+public interface PaymentAlertReport {
 	
 	/**
-	 * The nubmer of progress updates received
+	 * Records an upcoming expense that is due on the given date.
+	 * 
+	 * @param name name of the expense
+	 * @param date due date of the expense
 	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+	public void recordUpcomingExpense(String name, SimpleDate date);
 	
+	/**
+	 * Records an overdue expense that was due on the given date.
+	 * 
+	 * @param name name of the expense
+	 * @param date due date of the expense
+	 */
+	public void recordOverdueExpense(String name, SimpleDate date);
+
 }

@@ -14,32 +14,15 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
-
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+package com.vimofthevine.underbudget.core.budget.estimate;
 
 /**
- * Stub task progress listener for unit testing
+ * Estimation of funds to be earned or spent
+ * for a particular budget.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+public interface Estimate extends DisplayableEstimate,
+AnalyzableEstimate, MutableEstimate, Iterable<Estimate> {
 	
 }

@@ -14,32 +14,17 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
-
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+package com.vimofthevine.underbudget.core.report;
 
 /**
- * Stub task progress listener for unit testing
+ * Enumeration of rationale for the calculation
+ * of the expected amount of estimates
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
-	
+public enum ExpectedAmountRationale {
+	BUDGET_IS_OVER,
+	NO_MORE_TRANSACTIONS,
+	ACTUAL_EXCEEDS_ESTIMATED,
+	ESTIMATED_EXCEEDS_ACTUAL;
 }

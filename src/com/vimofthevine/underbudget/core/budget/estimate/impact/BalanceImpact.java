@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.budget.estimate.impact;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import com.vimofthevine.underbudget.core.currency.Currency;
 
 /**
- * Stub task progress listener for unit testing
+ * The impact an estimate has on the ending balance
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
+public interface BalanceImpact {
 	
 	/**
-	 * The nubmer of progress updates received
+	 * Applies a given amount to a given total.
+	 * 
+	 * @param amount amount to be applied to the total
+	 * @param total  running total amount
 	 */
-	public int numberOfUpdates = 0;
+	public void apply(Currency amount, Currency total);
 
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
-	
 }

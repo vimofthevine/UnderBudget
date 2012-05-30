@@ -14,32 +14,50 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.budget.estimate.impact;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import org.simpleframework.xml.Text;
+
+import com.vimofthevine.underbudget.core.currency.Currency;
 
 /**
- * Stub task progress listener for unit testing
+ * Makes no impact to balance totals.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
+public class NoImpact implements BalanceImpact {
 
 	/**
-	 * The last value given as a progress update
+	 * Balance impact type
 	 */
-	public int lastValue = 0;
+	@Text(required=false)
+	public static final String TYPE = "none";
 	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
-
 	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+	public void apply(Currency amount, Currency total)
+	{
+		// Do nothing
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return 34;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof NoImpact)
+			return true;
+		else
+			return false;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "No Impact";
+	}
 	
 }

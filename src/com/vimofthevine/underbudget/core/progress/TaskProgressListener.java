@@ -14,32 +14,21 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
-
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+package com.vimofthevine.underbudget.core.progress;
 
 /**
- * Stub task progress listener for unit testing
+ * Interface for task progress listeners
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
+public interface TaskProgressListener {
 	
 	/**
-	 * The nubmer of progress updates received
+	 * Receives and responds to an updated task progress value
+	 * 
+	 * @param name  task name
+	 * @param value updated task progress value
 	 */
-	public int numberOfUpdates = 0;
+	public void progressUpdate(String name, int value);
 
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
-	
 }

@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.file.xml.converter;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import org.simpleframework.xml.convert.Converter;
+import org.simpleframework.xml.stream.InputNode;
+import org.simpleframework.xml.stream.OutputNode;
 
 /**
- * Stub task progress listener for unit testing
+ * Converter to deserialize empty strings as "" instead
+ * of null.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
+public class EmptyStringConverter implements Converter<String> {
 
 	@Override
-    public void progressUpdate(String name, int value)
+    public String read(InputNode node) throws Exception
     {
-		lastValue = value;
-		numberOfUpdates++;
+		if (node.isEmpty())
+			return "";
+		
+		return node.getValue();
     }
-	
+
+	@Override
+    public void write(OutputNode node, String value) throws Exception
+    {
+		node.setValue(value);
+    }
+
 }

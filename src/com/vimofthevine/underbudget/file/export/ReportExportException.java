@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
-
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+package com.vimofthevine.underbudget.file.export;
 
 /**
- * Stub task progress listener for unit testing
+ * Exception thrown when exporting analysis results
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
+public class ReportExportException extends Exception {
 
 	/**
-	 * The last value given as a progress update
+	 * Constructor, specifying the exception text
+	 * 
+	 * @param msg exception detail message
 	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+	public ReportExportException(String msg)
+	{
+		super(msg);
+	}
 	
 }

@@ -14,32 +14,15 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
-
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+package com.vimofthevine.underbudget.core.ledger.transaction;
 
 /**
- * Stub task progress listener for unit testing
+ * An actual financial transfer of funds from a withdrawal
+ * account into a deposit account.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
+public interface Transaction extends DisplayableTransaction,
+AnalyzableTransaction, MutableTransaction, Comparable<Transaction> {
 
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
-	
 }

@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.report;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import com.vimofthevine.underbudget.core.budget.assignment.AssignmentRule;
+import com.vimofthevine.underbudget.core.ledger.transaction.DisplayableTransaction;
 
 /**
- * Stub task progress listener for unit testing
+ * A transaction assignment report records the assignment
+ * rule each transaction was matched against.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
+public interface TransactionAssignmentReport {
 	
 	/**
-	 * The nubmer of progress updates received
+	 * Records the assignment rule to which a transaction
+	 * met the required criteria.
+	 * 
+	 * @param transaction transaction that has been assigned
+	 * @param rule        assignment rule the transaction matched
 	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+	public void recordAssignment(DisplayableTransaction transaction, AssignmentRule rule);
 	
 }

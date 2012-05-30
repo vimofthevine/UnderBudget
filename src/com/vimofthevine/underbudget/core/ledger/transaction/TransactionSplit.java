@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.ledger.transaction;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.ledger.Account;
 
 /**
- * Stub task progress listener for unit testing
+ * Representation of a transaction split
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
+public class TransactionSplit {
 	
 	/**
-	 * The nubmer of progress updates received
+	 * Amount of money transferring into/from this split
 	 */
-	public int numberOfUpdates = 0;
-
-	@Override
-    public void progressUpdate(String name, int value)
-    {
-		lastValue = value;
-		numberOfUpdates++;
-    }
+	public Currency value;
 	
+	/**
+	 * Memo field of this split
+	 */
+	public String memo = "";
+	
+	/**
+	 * Account into/from which money is being transferred
+	 */
+	public Account account;
+
 }

@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.stubs;
+package com.vimofthevine.underbudget.core.budget;
 
-import com.vimofthevine.underbudget.core.progress.TaskProgressListener;
+import org.simpleframework.xml.convert.Converter;
+import org.simpleframework.xml.stream.InputNode;
+import org.simpleframework.xml.stream.OutputNode;
 
 /**
- * Stub task progress listener for unit testing
+ * Converter to remove the budget name from
+ * a template budget when serializing.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StubTaskProgressListener implements TaskProgressListener {
-
-	/**
-	 * The last value given as a progress update
-	 */
-	public int lastValue = 0;
-	
-	/**
-	 * The nubmer of progress updates received
-	 */
-	public int numberOfUpdates = 0;
+public class TemplateNameConverter implements Converter<String> {
 
 	@Override
-    public void progressUpdate(String name, int value)
+    public String read(InputNode arg0) throws Exception
     {
-		lastValue = value;
-		numberOfUpdates++;
+		throw new UnsupportedOperationException("Cannot use template name converter for deserialization");
     }
-	
+
+	@Override
+    public void write(OutputNode arg0, String arg1) throws Exception
+    {
+		arg0.remove();
+    }
+
 }
