@@ -21,7 +21,7 @@ package com.vimofthevine.underbudget;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class Application {
+public abstract class Application {
 
 	/**
 	 * The application title
@@ -51,7 +51,7 @@ public class Application {
 	/**
 	 * The product license
 	 */
-	public static final String LICENSE = "MIT";
+	public static final String LICENSE = "Apache 2.0";
 	
 	/**
 	 * The project homepage
