@@ -30,10 +30,10 @@ public class ApplicationMenu {
 	/**
 	 * Constructs a new application menu.
 	 * 
-	 * @param presentationModel application menu presentation model
-	 * @param menuBar           application menu
+	 * @param model   application menu presentation model
+	 * @param menuBar application menu
 	 */
-	public ApplicationMenu(ApplicationMenuModel presentationModel,
+	public ApplicationMenu(ApplicationMenuModel model,
 		JMenuBar menuBar)
 	{
 		menu = menuBar;
@@ -41,34 +41,37 @@ public class ApplicationMenu {
 		// Create "file" menu
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
-		fileMenu.add(new JMenuItem(presentationModel.getFileNewAction()));
-		fileMenu.add(new JMenuItem(presentationModel.getFileOpenAction()));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.CREATE_SESSION)));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.OPEN_SESSION)));
 		fileMenu.add(new JSeparator());
-		fileMenu.add(new JMenuItem(presentationModel.getFileSaveAction()));
-		fileMenu.add(new JMenuItem(presentationModel.getFileSaveAsAction()));
-		fileMenu.add(new JMenuItem(presentationModel.getFileSaveAsTemplateAction()));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.SAVE_SESSION)));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.SAVE_SESSION_AS)));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.SAVE_SESSION_AS_TEMPLATE)));
 		fileMenu.add(new JSeparator());
-		fileMenu.add(new JMenuItem(presentationModel.getFileExportAction()));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.EXPORT_RESULTS)));
 		fileMenu.add(new JSeparator());
-		fileMenu.add(new JMenuItem(presentationModel.getFileCloseAction()));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.CLOSE_SESSION)));
+		fileMenu.add(new JMenuItem(model.getAction(MenuAction.SHUTDOWN)));
 		
 		// Create "edit" menu
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic(KeyEvent.VK_E);
-		editMenu.add(new JMenuItem(presentationModel.getEditBudgetAction()));
-		editMenu.add(new JMenuItem(presentationModel.getEditEstimatesAction()));
-		editMenu.add(new JMenuItem(presentationModel.getEditAssignmentRulesAction()));
+		editMenu.add(new JMenuItem(model.getAction(MenuAction.BUDGET_DISPLAY)));
+		editMenu.add(new JMenuItem(model.getAction(MenuAction.EDIT_ESTIMATES)));
+		editMenu.add(new JMenuItem(model.getAction(MenuAction.ASSIGNMENT_RULES)));
 		editMenu.add(new JSeparator());
-		editMenu.add(new JMenuItem(presentationModel.getEditPreferencesAction()));
+		editMenu.add(new JMenuItem(model.getAction(MenuAction.PREFERENCES)));
 		
 		// Create "analyze" menu
 		JMenu analyzeMenu = new JMenu("Analyze");
 		analyzeMenu.setMnemonic(KeyEvent.VK_A);
-		analyzeMenu.add(new JMenuItem(presentationModel.getAnalyzeImportAction()));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.IMPORT_TRANSACTIONS)));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.ASSIGN_TRANSACTIONS)));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.CALCULATE_BALANCES)));
 		analyzeMenu.add(new JSeparator());
-		analyzeMenu.add(new JMenuItem(presentationModel.getAnalyzeEstimateProgressAction()));
-		analyzeMenu.add(new JMenuItem(presentationModel.getAnalyzeBalanceImpactAction()));
-		analyzeMenu.add(new JMenuItem(presentationModel.getAnalyzeImportedTransactionsAction()));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.ESTIMATE_PROGRESS)));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.BALANCE_IMPACT)));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.IMPORTED_TRANSACTIONS)));
 		
 		// Create "window" menu
 		JMenu windowMenu = new JMenu("Window");
@@ -77,7 +80,7 @@ public class ApplicationMenu {
 		// Create "help" menu
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
-		helpMenu.add(new JMenuItem(presentationModel.getHelpAboutAction()));
+		helpMenu.add(new JMenuItem(model.getAction(MenuAction.ABOUT)));
 		
 		// Build menu
 		menu.add(fileMenu);

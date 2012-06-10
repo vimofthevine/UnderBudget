@@ -14,39 +14,33 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.gui;
+package com.vimofthevine.underbudget.gui.transaction;
+
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
 
 /**
- * Primary application window.
+ * Presentation model for views that display
+ * a list of transactions.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface ApplicationWindow {
-	
+public interface TransactionListModel {
+
 	/**
-	 * Specifies the title to be displayed on the
-	 * application window chrome.
+	 * Returns the table model representing
+	 * the transaction data.
 	 * 
-	 * @param title application window title
+	 * @return transactions table model
 	 */
-	public void setWindowTitle(final String title);
+	public TableModel getTableModel();
 	
 	/**
-	 * Specifies the size of the application window.
+	 * Returns a listener to respond to the
+	 * selecting of a transaction in the list.
 	 * 
-	 * @param width  application window width
-	 * @param height application window height
+	 * @return transaction selection listener
 	 */
-	public void setWindowSize(final int width, final int height);
-	
-	/**
-	 * Displays the application window.
-	 */
-	public void display();
-	
-	/**
-	 * Closes and disposes of the application window.
-	 */
-	public void dispose();
+	public ListSelectionListener getSelectionListener();
 	
 }

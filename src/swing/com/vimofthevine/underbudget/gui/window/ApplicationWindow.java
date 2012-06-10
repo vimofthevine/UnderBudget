@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.gui;
+package com.vimofthevine.underbudget.gui.window;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -25,13 +25,14 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.gui.ApplicationShutdownEvent;
 
 /**
  * Primary application window.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class DefaultApplicationWindow implements ApplicationWindow {
+public class ApplicationWindow {
 
 	/**
 	 * Application window
@@ -41,21 +42,21 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 	/**
 	 * Constructs a new application window.
 	 * 
-	 * @param presentationModel application window presentation model
-	 * @param frame             application window frame
-	 * @param menu              application menu bar
-	 * @param toolBar           application tool bar
-	 * @param content           application window content
+	 * @param model   application window presentation model
+	 * @param frame   application window frame
+	 * @param menu    application menu bar
+	 * @param toolBar application tool bar
+	 * @param content application window content
 	 */
-	public DefaultApplicationWindow(ApplicationWindowModel presentationModel,
+	public ApplicationWindow(ApplicationWindowModel model,
 		JFrame frame, JMenuBar menu, JToolBar toolBar, Component content)
 	{
 		window = frame;
 		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		window.setLocationByPlatform(true);
 		
-		window.addComponentListener(presentationModel.getComponentListener());
-		window.addWindowListener(presentationModel.getWindowListener());
+		window.addComponentListener(model.getComponentListener());
+		window.addWindowListener(model.getWindowListener());
 		
 		// Use a border layout so toolbar is rendered correctly
 		window.setLayout(new BorderLayout());
@@ -63,36 +64,28 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 		window.add(content, BorderLayout.CENTER);
 		window.setJMenuBar(menu);
 		
+		window.setTitle(model.getTitleModel().getTitle());
+		model.getTitleModel().addWindowTitleListener(
+			new WindowTitleListener() {
+				public void titleChanged(final String title)
+				{
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run()
+						{
+							window.setTitle(title);
+						}
+					});
+				}
+			}
+		);
+		
 		window.pack();
 		// Set initial size
 		window.setSize(
-			presentationModel.getWindowWidth(),
-			presentationModel.getWindowHeight());
+			model.getWindowWidth(),
+			model.getWindowHeight());
 	}
 
-	@Override
-	public final void setWindowTitle(final String title)
-	{
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run()
-			{
-				window.setTitle(title);
-			}
-		});
-	}
-	
-	@Override
-	public final void setWindowSize(final int width, final int height)
-	{
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run()
-			{
-				window.setSize(width, height);
-			}
-		});
-	}
-	
-	@Override
 	public final void display()
 	{
 		SwingUtilities.invokeLater(new Runnable() {
@@ -103,7 +96,6 @@ public class DefaultApplicationWindow implements ApplicationWindow {
 		});
 	}
 	
-	@Override
 	public final void dispose()
 	{
 		SwingUtilities.invokeLater(new Runnable() {

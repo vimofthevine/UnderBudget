@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.gui;
+package com.vimofthevine.underbudget.gui.window;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -24,6 +24,12 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.Application;
+import com.vimofthevine.underbudget.gui.ApplicationShutdownEvent;
+import com.vimofthevine.underbudget.gui.UserPreferences;
+import com.vimofthevine.underbudget.gui.session.SessionActivatedEvent;
+import com.vimofthevine.underbudget.gui.session.SessionStateEvent;
 
 /**
  * Presentation model for the application window.
@@ -53,6 +59,11 @@ public class ApplicationWindowModel {
 	private final UserPreferences preferences;
 	
 	/**
+	 * Window title model
+	 */
+	private final WindowTitleModel titleModel;
+	
+	/**
 	 * Flag to track whether the window's size
 	 * has been initialized yet (to avoid saving
 	 * the uninitialized size)
@@ -70,9 +81,19 @@ public class ApplicationWindowModel {
 	{
 		eventBus = bus;
 		preferences = prefs;
+		
+		titleModel = new WindowTitleModel();
 	}
 	
-	public ComponentListener getComponentListener()
+	/**
+	 * Creates a component listener to record resizes
+	 * to the application window so the window size
+	 * can be re-applied the next time the application
+	 * is executed.
+	 * 
+	 * @return application window resize listener
+	 */
+	ComponentListener getComponentListener()
 	{
 		return new ComponentAdapter()
 		{
@@ -93,7 +114,13 @@ public class ApplicationWindowModel {
 		};
 	}
 	
-	public WindowListener getWindowListener()
+	/**
+	 * Creates a window listener to respond to the
+	 * user event to close the application window.
+	 * 
+	 * @return application window close listener
+	 */
+	WindowListener getWindowListener()
 	{
 		return new WindowAdapter()
 		{
@@ -109,14 +136,83 @@ public class ApplicationWindowModel {
 		};
 	}
 	
-	public int getWindowWidth()
+	/**
+	 * Returns the model for the application window title.
+	 * 
+	 * @return application window title model
+	 */
+	WindowTitleModel getTitleModel()
+	{
+		return titleModel;
+	}
+	
+	/**
+	 * Returns the application window width as recorded
+	 * in the persistent user preferences.
+	 * 
+	 * @return application window width from user preferences
+	 */
+	int getWindowWidth()
 	{
 		return Integer.parseInt(preferences.get(WIDTH_KEY, "700"));
 	}
 	
-	public int getWindowHeight()
+	/**
+	 * Returns the application window height as recorded
+	 * in the persistent user preferences.
+	 * 
+	 * @return application window height from user preferences
+	 */
+	int getWindowHeight()
 	{
 		return Integer.parseInt(preferences.get(HEIGHT_KEY, "650"));
+	}
+	
+	/**
+	 * Updates the window title to display the newly
+	 * activated session name.
+	 * 
+	 * @param event session activated event
+	 */
+	@Subscribe
+	public void sessionActivated(SessionActivatedEvent event)
+	{
+		updateWindowTitle(event.getSession().getName(),
+			event.getSession().isDirty());
+	}
+	
+	/**
+	 * Updates the window title to reflect the
+	 * current state of the active session.
+	 * 
+	 * @param event session state event
+	 */
+	@Subscribe
+	public void sessionUpdated(SessionStateEvent event)
+	{
+		updateWindowTitle(event.getSessionName(),
+			event.isDirty());
+	}
+	
+	/**
+	 * Updates the application window title to reflect
+	 * the currently active session.
+	 * 
+	 * @param sessionName
+	 * @param dirty
+	 */
+	private void updateWindowTitle(String sessionName, boolean dirty)
+	{
+		StringBuilder title = new StringBuilder();
+		title.append(Application.TITLE + " :: ");
+		title.append(sessionName);
+		
+		if (dirty)
+		{
+			title.append("*");
+		}
+		
+		titleModel.setTitle(title.toString());
 	}
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.currency;
+package com.vimofthevine.underbudget.currency;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -153,6 +153,12 @@ public class USDCurrency implements Currency {
 	public boolean isZero()
 	{
 		return Float.compare(amount.floatValue(), 0) == 0;
+	}
+	
+	@Override
+	public int toInt()
+	{
+		return amount.intValue();
 	}
 	
 	@Override

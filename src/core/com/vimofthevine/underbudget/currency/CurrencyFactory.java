@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.currency;
+package com.vimofthevine.underbudget.currency;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

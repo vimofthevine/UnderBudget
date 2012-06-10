@@ -25,25 +25,27 @@ public class ApplicationToolBar {
 	/**
 	 * Constructs a new application tool bar.
 	 * 
-	 * @param presentationModel application menu presentation model.
-	 * @param toolBar           application tool bar
+	 * @param model   application menu presentation model.
+	 * @param toolBar application tool bar
 	 */
-	public ApplicationToolBar(ApplicationMenuModel presentationModel,
+	public ApplicationToolBar(ApplicationMenuModel model,
 		JToolBar toolBar)
 	{
-		toolBar.add(new JButton(presentationModel.getFileNewAction()));
-		toolBar.add(new JButton(presentationModel.getFileOpenAction()));
-		toolBar.add(new JButton(presentationModel.getFileSaveAction()));
+		toolBar.add(new JButton(model.getAction(MenuAction.OPEN_SESSION)));
+		toolBar.add(new JButton(model.getAction(MenuAction.OPEN_SESSION)));
+		toolBar.add(new JButton(model.getAction(MenuAction.SAVE_SESSION)));
 		toolBar.add(new JSeparator());
-		toolBar.add(new JButton(presentationModel.getEditBudgetAction()));
-		toolBar.add(new JButton(presentationModel.getEditEstimatesAction()));
-		toolBar.add(new JButton(presentationModel.getEditAssignmentRulesAction()));
+		toolBar.add(new JButton(model.getAction(MenuAction.BUDGET_DISPLAY)));
+		toolBar.add(new JButton(model.getAction(MenuAction.EDIT_ESTIMATES)));
+		toolBar.add(new JButton(model.getAction(MenuAction.ASSIGNMENT_RULES)));
 		toolBar.add(new JSeparator());
-		toolBar.add(new JButton(presentationModel.getAnalyzeImportAction()));
+		toolBar.add(new JButton(model.getAction(MenuAction.IMPORT_TRANSACTIONS)));
+		toolBar.add(new JButton(model.getAction(MenuAction.ASSIGN_TRANSACTIONS)));
+		toolBar.add(new JButton(model.getAction(MenuAction.CALCULATE_BALANCES)));
 		toolBar.add(new JSeparator());
-		toolBar.add(new JButton(presentationModel.getAnalyzeEstimateProgressAction()));
-		toolBar.add(new JButton(presentationModel.getAnalyzeBalanceImpactAction()));
-		toolBar.add(new JButton(presentationModel.getAnalyzeImportedTransactionsAction()));
+		toolBar.add(new JButton(model.getAction(MenuAction.ESTIMATE_PROGRESS)));
+		toolBar.add(new JButton(model.getAction(MenuAction.BALANCE_IMPACT)));
+		toolBar.add(new JButton(model.getAction(MenuAction.IMPORTED_TRANSACTIONS)));
 	}
 
 }

@@ -36,7 +36,7 @@ public class ContentViewModel {
 	/**
 	 * Known content dialogs
 	 */
-	private final Map<String, ContentDialog> dialogs;
+	private final Map<ContentDisplay, ContentDialog> dialogs;
 	
 	/**
 	 * Constructs a new content view presentation model.
@@ -45,11 +45,11 @@ public class ContentViewModel {
 	 * @param dialogs content display dialogs
 	 */
 	public ContentViewModel(ContentView content,
-		Map<String,ContentDialog> dialogs)
+		Map<ContentDisplay,ContentDialog> dialogs)
 	{
 		this.content = content;
 		this.dialogs = (dialogs == null)
-			? new HashMap<String, ContentDialog>() : dialogs;
+			? new HashMap<ContentDisplay, ContentDialog>() : dialogs;
 	}
 	
 	@Subscribe

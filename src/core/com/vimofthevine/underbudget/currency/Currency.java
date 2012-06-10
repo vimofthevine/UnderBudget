@@ -14,7 +14,7 @@
  * limitations under the License.
  */ 
 
-package com.vimofthevine.underbudget.core.currency;
+package com.vimofthevine.underbudget.currency;
 
 /**
  * Interface for a currency amount representation
@@ -89,6 +89,15 @@ public interface Currency extends Comparable<Currency> {
 	 * @return true if currency value is zero
 	 */
 	public boolean isZero();
+	
+	/**
+	 * Creates an integer representation of the
+	 * currency amount. This value is not suitable
+	 * for any financial calculations.
+	 * 
+	 * @return integer representation of the currency value
+	 */
+	public int toInt();
 	
 	/**
 	 * Creates a formatted representation of
