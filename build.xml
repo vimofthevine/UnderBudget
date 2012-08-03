@@ -50,6 +50,15 @@
 		<delete dir="${build.lib.dir}/jcommander" />
 	</target>
 
+	<!-- Compile the core application source -->
+	<target name="core" description="Compile the core application source">
+		<mkdir dir="${build.class.dir}/core" />
+
+		<javac srcdir="${src.dir}/core" destdir="${build.class.dir}/core"
+				includeantruntime="false" debug="${debug}">
+		</javac>
+	</target>
+
 	<!-- Compile the application source -->
 	<target name="compile" description="Compile the Java source"
 			depends="simple">
@@ -222,6 +231,14 @@
 	<!-- Create all packages -->
 	<target name="all" depends="clean,pkg-unix,pkg-win"
 		description="Create all packages" />
+
+	<!-- Generate Core Javadoc package -->
+	<target name="core-docs" description="Generate Core Javadoc documentation">
+		<javadoc packagenames="com.vimofthevine.underbudget.core.*"
+				sourcepath="${src.dir}/core" destdir="${build.docs.dir}/core">
+			<tag name="todo" scope="all" description="To do:" />
+		</javadoc>
+	</target>
 
 	<!-- Generate Javadoc package -->
 	<target name="docs" description="Generate Javadoc documentation">

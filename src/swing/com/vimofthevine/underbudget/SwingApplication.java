@@ -17,7 +17,7 @@
 package com.vimofthevine.underbudget;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Component;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -29,31 +29,29 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.analysis.Actual;
-import com.vimofthevine.underbudget.analysis.ActualsCache;
-import com.vimofthevine.underbudget.currency.Currency;
-import com.vimofthevine.underbudget.currency.CurrencyFactory;
-import com.vimofthevine.underbudget.estimate.DefaultEstimate;
-import com.vimofthevine.underbudget.estimate.Estimate;
-import com.vimofthevine.underbudget.gui.AboutDialog;
-import com.vimofthevine.underbudget.gui.ApplicationWindow;
-import com.vimofthevine.underbudget.gui.ApplicationWindowModel;
-import com.vimofthevine.underbudget.gui.DefaultApplicationWindow;
-import com.vimofthevine.underbudget.gui.PropertiesFileUserPreferences;
-import com.vimofthevine.underbudget.gui.UserPreferences;
-import com.vimofthevine.underbudget.gui.content.ContentDialog;
-import com.vimofthevine.underbudget.gui.content.ContentDisplay;
-import com.vimofthevine.underbudget.gui.content.ContentView;
-import com.vimofthevine.underbudget.gui.content.ContentViewModel;
-import com.vimofthevine.underbudget.gui.content.DefaultContentView;
-import com.vimofthevine.underbudget.gui.estimate.EstimateProgressTreeTableModel;
-import com.vimofthevine.underbudget.gui.estimate.EstimateProgressView;
-import com.vimofthevine.underbudget.gui.estimate.EstimateProgressViewModel;
-import com.vimofthevine.underbudget.gui.menu.ApplicationMenu;
-import com.vimofthevine.underbudget.gui.menu.ApplicationMenuModel;
-import com.vimofthevine.underbudget.gui.menu.ApplicationToolBar;
-import com.vimofthevine.underbudget.gui.status.StatusBar;
-import com.vimofthevine.underbudget.gui.status.StatusBarModel;
+import com.vimofthevine.underbudget.core.analysis.ActualFigure;
+import com.vimofthevine.underbudget.core.analysis.ActualFigureSource;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.estimate.DefaultEstimate;
+import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.swing.AboutDialog;
+import com.vimofthevine.underbudget.swing.PropertiesFileUserPreferences;
+import com.vimofthevine.underbudget.swing.UserPreferences;
+import com.vimofthevine.underbudget.swing.content.ContentDialog;
+import com.vimofthevine.underbudget.swing.content.ContentDisplay;
+import com.vimofthevine.underbudget.swing.content.ContentView;
+import com.vimofthevine.underbudget.swing.content.ContentViewModel;
+import com.vimofthevine.underbudget.swing.content.DefaultContentView;
+import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
+import com.vimofthevine.underbudget.swing.estimate.EstimateProgressViewFactory;
+import com.vimofthevine.underbudget.swing.menu.ApplicationMenu;
+import com.vimofthevine.underbudget.swing.menu.ApplicationMenuModel;
+import com.vimofthevine.underbudget.swing.menu.ApplicationToolBar;
+import com.vimofthevine.underbudget.swing.status.StatusBar;
+import com.vimofthevine.underbudget.swing.status.StatusBarModel;
+import com.vimofthevine.underbudget.swing.window.ApplicationWindow;
+import com.vimofthevine.underbudget.swing.window.ApplicationWindowModel;
 
 public class SwingApplication {
 	
@@ -89,6 +87,8 @@ public class SwingApplication {
 		UserPreferences preferences = new PropertiesFileUserPreferences("/tmp/underbudget.properties");
 		preferences.read();
 		
+		final CurrencyFactory factory = new CurrencyFactory("USD");
+		
 		JFrame frame = new JFrame();
 		
 		ApplicationMenuModel menuModel = new ApplicationMenuModel(eventBus);
@@ -97,26 +97,25 @@ public class SwingApplication {
 		JToolBar toolBar = new JToolBar(Application.TITLE);
 		new ApplicationToolBar(menuModel, toolBar);
 		
-		EstimateProgressTreeTableModel treeTableModel = new EstimateProgressTreeTableModel(
-			createEstimateTree(), new ActualsCache() {
-				private CurrencyFactory factory = new CurrencyFactory("USD");
-				
-				@Override
-                public Actual getActual(Estimate estimate)
-                {
-					return new Actual() {
-						public Currency getAmount()
-						{
-							return factory.newCurrencyInstance("20.25");
-						}
-					};
-                }
-				
-			});
+		ActualFigureSource actuals = new ActualFigureSource() {
+			@Override
+            public ActualFigure getActualFigure(Estimate estimate)
+            {
+				return new ActualFigure() {
+					public Currency getAmount()
+					{
+						return factory.newCurrencyInstance("20.25");
+					}
+				};
+            }
+		};
 		
-		EstimateProgressViewModel estimateProgressModel = new EstimateProgressViewModel(treeTableModel, null);
-		JPanel estimateProgress = new JPanel();
-		new EstimateProgressView(estimateProgressModel, estimateProgress);
+		Estimate root = createEstimateTree();
+		
+		Component progress = EstimateProgressViewFactory.build(
+			frame, eventBus, factory, root, actuals);
+		Component impact = BalanceImpactViewFactory.build(
+			frame, eventBus, factory, root, actuals);
 		
 		HashMap<ContentDisplay, ContentDialog> dialogs = new HashMap<ContentDisplay, ContentDialog>();
 		dialogs.put(ContentDisplay.ABOUT, new AboutDialog(frame));
@@ -124,8 +123,8 @@ public class SwingApplication {
 		JPanel content = new JPanel();
 		ContentView contentView = new DefaultContentView(content);
 		contentView.addDisplay(new JLabel("Assignment Rules"), ContentDisplay.ASSIGNMENT_RULES);
-		contentView.addDisplay(new JLabel("Balance Impact"), ContentDisplay.BALANCE_IMPACT);
-		contentView.addDisplay(estimateProgress, ContentDisplay.ESTIMATE_PROGRESS);
+		contentView.addDisplay(impact, ContentDisplay.BALANCE_IMPACT);
+		contentView.addDisplay(progress, ContentDisplay.ESTIMATE_PROGRESS);
 		contentView.addDisplay(new JLabel("Imported Transactions"), ContentDisplay.IMPORTED_TRANSACTIONS);
 		ContentViewModel contentModel = new ContentViewModel(contentView, dialogs);
 		
@@ -139,7 +138,7 @@ public class SwingApplication {
 		composite.add(statusBar, BorderLayout.SOUTH);
 		
 		ApplicationWindowModel windowModel = new ApplicationWindowModel(eventBus, preferences);
-		ApplicationWindow window = new DefaultApplicationWindow(windowModel,
+		ApplicationWindow window = new ApplicationWindow(windowModel,
 			frame, menuBar, toolBar, composite);
 		
 		eventBus.register(preferences);
