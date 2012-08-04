@@ -25,8 +25,6 @@ import javax.swing.JSeparator;
 
 public class ApplicationMenu {
 	
-	private final JMenuBar menu;
-
 	/**
 	 * Constructs a new application menu.
 	 * 
@@ -36,7 +34,7 @@ public class ApplicationMenu {
 	public ApplicationMenu(ApplicationMenuModel model,
 		JMenuBar menuBar)
 	{
-		menu = menuBar;
+		JMenuBar menu = menuBar;
 		
 		// Create "file" menu
 		JMenu fileMenu = new JMenu("File");
@@ -69,6 +67,7 @@ public class ApplicationMenu {
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.ASSIGN_TRANSACTIONS)));
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.CALCULATE_BALANCES)));
 		analyzeMenu.add(new JSeparator());
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.ANALYSIS_SUMMARY)));
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.ESTIMATE_PROGRESS)));
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.BALANCE_IMPACT)));
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.IMPORTED_TRANSACTIONS)));
@@ -76,6 +75,7 @@ public class ApplicationMenu {
 		// Create "window" menu
 		JMenu windowMenu = new JMenu("Window");
 		windowMenu.setMnemonic(KeyEvent.VK_W);
+		windowMenu.addMenuListener(new WindowMenuBuilder(model));
 		
 		// Create "help" menu
 		JMenu helpMenu = new JMenu("Help");

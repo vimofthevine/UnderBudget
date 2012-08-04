@@ -25,6 +25,7 @@ import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.currency.CommittableDocument;
+import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 
 /**

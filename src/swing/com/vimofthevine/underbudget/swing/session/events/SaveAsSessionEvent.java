@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.content;
+package com.vimofthevine.underbudget.swing.session.events;
 
-import java.awt.Component;
+/**
+ * 
+ * 
+ * @author Kyle Treubig <kyle@vimofthevine.com>
+ */
+public class SaveAsSessionEvent {
 
-public interface ContentView {
-
-	public void addDisplay(Component display, ContentDisplay name);
-	
-	public void showDisplay(ContentDisplay name);
-	
 }

@@ -14,23 +14,41 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.events;
+
+import com.vimofthevine.underbudget.swing.session.Session;
 
 /**
- * 
+ * Event generated whenever a change occurs to the
+ * list of open sessions.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SessionStateEvent {
-
-	public String getSessionName()
-	{
-		return "";
-	}
+public class SessionListModifiedEvent {
 	
-	public boolean isDirty()
+	/**
+	 * Current open session list
+	 */
+	private final Session[] sessions;
+	
+	/**
+	 * Constructs a new session list modified event.
+	 * 
+	 * @param sessions current open session list
+	 */
+	public SessionListModifiedEvent(Session[] sessions)
 	{
-		return false;
+		this.sessions = sessions;
+	}
+
+	/**
+	 * Returns the current list of open sessions.
+	 * 
+	 * @return current list of open sessions
+	 */
+	public Session[] getSessions()
+	{
+		return sessions;
 	}
 	
 }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing;
 
 /**
- * 
+ * Event generated to display the about
+ * popup dialog.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class UpdateTemplateEvent {
+public class AboutDisplayEvent {
 
 }

@@ -31,7 +31,7 @@ public class ApplicationToolBar {
 	public ApplicationToolBar(ApplicationMenuModel model,
 		JToolBar toolBar)
 	{
-		toolBar.add(new JButton(model.getAction(MenuAction.OPEN_SESSION)));
+		toolBar.add(new JButton(model.getAction(MenuAction.CREATE_SESSION)));
 		toolBar.add(new JButton(model.getAction(MenuAction.OPEN_SESSION)));
 		toolBar.add(new JButton(model.getAction(MenuAction.SAVE_SESSION)));
 		toolBar.add(new JSeparator());

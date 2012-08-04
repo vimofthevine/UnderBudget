@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.events;
+
+import com.vimofthevine.underbudget.swing.session.Session;
 
 /**
  * An event that represents the selection of

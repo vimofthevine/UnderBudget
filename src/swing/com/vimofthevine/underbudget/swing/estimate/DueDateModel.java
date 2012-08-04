@@ -27,6 +27,7 @@ import org.jdesktop.swingx.event.DateSelectionListener;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 
 /**
  * Custom date selection model to display and apply

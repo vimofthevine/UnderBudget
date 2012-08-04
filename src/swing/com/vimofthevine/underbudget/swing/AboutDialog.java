@@ -31,16 +31,17 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.Application;
-import com.vimofthevine.underbudget.swing.content.ContentDialog;
 
 /**
  * Popup dialog to display information about the application.
+ * This is currently implemented as an autonomous dialog.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class AboutDialog implements ActionListener,
-ContentDialog {
+public class AboutDialog implements ActionListener {
 	
 	/**
 	 * About dialog
@@ -57,8 +58,10 @@ ContentDialog {
 	 * 
 	 * @param parent parent window to the popup dialog
 	 */
-	public AboutDialog(Frame parent)
+	public AboutDialog(Frame parent, EventBus bus)
 	{
+		bus.register(this);
+		
 		this.parent = parent;
 		dialog = new JDialog(parent, "About " + Application.TITLE, true);
 		dialog.setLayout(new GridBagLayout());
@@ -122,6 +125,12 @@ ContentDialog {
 		});
 	}
 	
+	@Subscribe
+	public void display(AboutDisplayEvent event)
+	{
+		display();
+	}
+	
 	/**
 	 * Disposes of the about dialog.
 	 */
@@ -135,6 +144,7 @@ ContentDialog {
 		});
 	}
 	
+	@Override
 	public void actionPerformed(ActionEvent event)
 	{
 		if (event.getActionCommand().equals("CLOSE"))

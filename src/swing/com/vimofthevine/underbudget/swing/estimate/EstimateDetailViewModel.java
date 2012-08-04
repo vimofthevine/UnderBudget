@@ -35,6 +35,8 @@ import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.currency.CurrencyFormatterFactory;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputVerifier;
+import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
+import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
 
 /**
  * A presentation model for views that display

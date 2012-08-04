@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.content;
 
 /**
- * Interface for events related to session
- * management (creation, deletion, activation, etc.).
+ * Interface for listeners to receive notice that
+ * the displayed content has changed.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface SessionEvent {
+interface DisplayedContentListener {
+	
+	/**
+	 * Notifies the listener of the content
+	 * to be displayed.
+	 * 
+	 * @param content content to be displayed
+	 */
+	public void display(SessionContent content);
 
 }

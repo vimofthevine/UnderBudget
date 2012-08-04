@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 
 /**
  * Custom toggle button model to display and apply

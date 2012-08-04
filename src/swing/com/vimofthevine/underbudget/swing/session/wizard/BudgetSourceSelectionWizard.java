@@ -14,13 +14,27 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.wizard;
+
+import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.stubs.budget.source.StubBudgetSource;
 
 /**
- * 
+ * Wizard for selecting a budget to be opened.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SaveSessionEvent {
+public class BudgetSourceSelectionWizard {
 
+	/**
+	 * Walks the user through the selection of
+	 * a source for an existing budget to be opened.
+	 * 
+	 * @return selected budget source
+	 */
+	public BudgetSource getSource()
+	{
+		return new StubBudgetSource();
+	}
+	
 }

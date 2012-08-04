@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.estimate;
+package com.vimofthevine.underbudget.swing.estimate.events;
 
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.swing.history.ModificationEvent;
@@ -69,6 +69,12 @@ public class EstimateAddedEvent implements ModificationEvent {
 	public Estimate getChild()
 	{
 		return child;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return child + " added to " + parent;
 	}
 	
 }

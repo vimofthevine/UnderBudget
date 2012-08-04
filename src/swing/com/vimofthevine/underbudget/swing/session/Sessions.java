@@ -16,36 +16,195 @@
 
 package com.vimofthevine.underbudget.swing.session;
 
+import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JOptionPane;
+
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
+import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.CloseSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.CreateSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.OpenSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
+import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
 
 /**
- * 
+ * A <code>Sessions</code> instance is reponsible for creating,
+ * activating, and closing sessions.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class Sessions {
 	
-	public Session getActiveSession()
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(Sessions.class.getName());
+	
+	/**
+	 * Application window
+	 */
+	private final Frame window;
+	
+	/**
+	 * Event bus
+	 */
+	private final EventBus eventBus;
+	
+	/**
+	 * Active session bus bridge
+	 */
+	private final SessionBusBridge busBridge;
+	
+	/**
+	 * Budget source selection wizard
+	 */
+	private final BudgetSourceSelectionWizard wizard;
+	
+	/**
+	 * Open sessions
+	 */
+	private final List<Session> sessions;
+	
+	/**
+	 * Active session
+	 */
+	private Session activeSession;
+	
+	/**
+	 * Constructs a session manager.
+	 * 
+	 * @param window application window
+	 * @param bus    application event bus
+	 */
+	public Sessions(Frame window, EventBus bus)
 	{
-		return null;
+		this.window = window;
+		eventBus = bus;
+		eventBus.register(this);
+		
+		busBridge = new SessionBusBridge(eventBus);
+		
+		wizard = new BudgetSourceSelectionWizard();
+		sessions = new ArrayList<Session>();
+	}
+	
+	/**
+	 * Updates the active session, marking the previous
+	 * active session as inactive and the new session
+	 * as active.
+	 * 
+	 * @param session session to be activated
+	 */
+	private void setActive(Session session)
+	{
+		if (activeSession != null)
+		{
+			activeSession.setActive(false);
+		}
+		
+		activeSession = session;
+		busBridge.setActiveSession(session);
+		
+		if (activeSession != null)
+		{
+			activeSession.setActive(true);
+		}
+		
+		eventBus.post(new SessionActivatedEvent(activeSession));
 	}
 
 	@Subscribe
-	public void sessionOpened(OpenSessionEvent event)
+	public void createSession(CreateSessionEvent event)
 	{
 		
 	}
 	
+	/**
+	 * Launches the budget source selection wizard,
+	 * allowing the user to select a budget to be opened.
+	 * 
+	 * @param event
+	 */
 	@Subscribe
-	public void sessionCreated(CreateSessionEvent event)
+	public void openSession(OpenSessionEvent event)
 	{
+		logger.log(Level.INFO, "Opening new session");
 		
+		BudgetSource source = wizard.getSource();
+		Session newSession = new Session(window, eventBus,
+			source);
+		
+		sessions.add(newSession);
+		setActive(newSession);
+		
+		eventBus.post(new SessionListModifiedEvent(
+			sessions.toArray(new Session[sessions.size()])));
 	}
 	
 	@Subscribe
-	public void sessionActivated(ActivateSessionEvent event)
+	public void activateSession(ActivateSessionEvent event)
 	{
-		
+		setActive(event.getSession());
+	}
+	
+	@Subscribe
+	public void closeSession(CloseSessionEvent event)
+	{
+		if (activeSession != null)
+		{
+			if (activeSession.isDirty())
+			{
+				int result = JOptionPane.showConfirmDialog(window, activeSession.getName() +
+					" has unsaved changes. Do you wish to save these changes?",
+					"Unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION);
+				
+				if (result == JOptionPane.YES_OPTION)
+				{
+					activeSession.post(new SaveSessionEvent());
+				}
+				else if (result == JOptionPane.CANCEL_OPTION)
+				{
+					return;
+				}
+			}
+			
+			sessions.remove(activeSession);
+			
+			setActive((sessions.size() > 0)
+				? sessions.get(0) : null);
+			
+    		eventBus.post(new SessionListModifiedEvent(
+    			sessions.toArray(new Session[sessions.size()])));
+		}
+	}
+	
+	@Subscribe
+	public void shutdown(ApplicationShutdownEvent event)
+	{
+		for (Session session : sessions)
+		{
+			if (session.isDirty())
+			{
+				int result = JOptionPane.showConfirmDialog(window, activeSession.getName() +
+					" has unsaved changes. Do you wish to save these changes?",
+					"Unsaved changes", JOptionPane.YES_NO_OPTION);
+				
+				if (result == JOptionPane.YES_OPTION)
+				{
+					activeSession.post(new SaveSessionEvent());
+				}
+			}
+		}
 	}
 	
 }

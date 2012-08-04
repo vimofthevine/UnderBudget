@@ -14,41 +14,48 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.content;
+package com.vimofthevine.underbudget.swing.session.events;
+
+import com.vimofthevine.underbudget.swing.session.Session;
 
 /**
- * Event generated when the user requests to view
- * a specific application view.
+ * An event that represents the activation
+ * of a session.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class ContentDisplayEvent {
-	
+public class SessionActivatedEvent {
+
 	/**
-	 * Requested view to be displayed
+	 * The session that has been activated
 	 */
-	private final ContentDisplay view;
+	private final Session session;
 	
 	/**
-	 * Constructs a new view display event
-	 * for the given view.
+	 * Constructs a new session activation event.
 	 * 
-	 * @param view requested view
+	 * @param session activated session
 	 */
-	public ContentDisplayEvent(ContentDisplay view)
+	public SessionActivatedEvent(Session session)
 	{
-		this.view = view;
+		this.session = session;
 	}
 	
 	/**
-	 * Returns the view that has been
-	 * requested to be displayed.
+	 * Returns the session that has
+	 * been activated.
 	 * 
-	 * @return requested view to display
+	 * @return activated session
 	 */
-	public ContentDisplay getView()
+	public Session getSession()
 	{
-		return view;
+		return session;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Session " + session + " activated";
 	}
 	
 }

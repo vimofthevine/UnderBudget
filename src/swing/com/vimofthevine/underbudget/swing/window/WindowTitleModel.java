@@ -22,7 +22,7 @@ import java.util.List;
 import com.vimofthevine.underbudget.Application;
 
 /**
- * 
+ * Application window title model.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */

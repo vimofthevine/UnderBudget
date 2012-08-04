@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.content;
+package com.vimofthevine.underbudget.swing.session.events;
 
 /**
- * Content display enumeration.
+ * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public enum ContentDisplay {
-	ABOUT,
-	ANALYSIS_SUMMARY,
-	ASSIGNMENT_RULES,
-	BALANCE_IMPACT,
-	EDIT_BUDGET,
-	ESTIMATE_PROGRESS,
-	IMPORTED_TRANSACTIONS,
-	PREFERENCES,
+public class SessionStateEvent {
+
+	public String getSessionName()
+	{
+		return "";
+	}
+	
+	public boolean isDirty()
+	{
+		return false;
+	}
+	
 }

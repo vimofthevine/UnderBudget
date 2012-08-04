@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.estimate;
+package com.vimofthevine.underbudget.swing.estimate.events;
 
 import javax.swing.tree.TreePath;
 
@@ -74,7 +74,7 @@ public class EstimateSelectedEvent implements SelectionEvent {
 	@Override
 	public String toString()
 	{
-		return estimate.toString() + " " + path.toString();
+		return estimate + " selected at " + path;
 	}
 	
 }

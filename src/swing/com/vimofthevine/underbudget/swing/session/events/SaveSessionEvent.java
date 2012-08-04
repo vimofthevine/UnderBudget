@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.content;
+package com.vimofthevine.underbudget.swing.session.events;
 
 /**
- * A popup dialog that displays application content.
+ * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface ContentDialog {
+public class SaveSessionEvent {
 
-	/**
-	 * Displays the dialog.
-	 */
-	public void display();
-	
-	/**
-	 * Disposes of (hides) the dialog.
-	 */
-	public void dispose();
-	
 }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.events;
 
 /**
- * 
+ * Marker interface for events that pertain
+ * only to the current active session.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class OpenSessionEvent implements SessionEvent {
+public interface SessionEvent {
 
 }

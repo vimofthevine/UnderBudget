@@ -17,8 +17,16 @@
 package com.vimofthevine.underbudget.swing.session;
 
 import java.awt.Component;
+import java.awt.Frame;
+
+import javax.swing.JLabel;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
+import com.vimofthevine.underbudget.stubs.currency.StubCurrency;
+import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
 
 /**
  * 
@@ -26,25 +34,103 @@ import com.google.common.eventbus.EventBus;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class Session {
+	
+	/**
+	 * Global event bus
+	 */
+	private final EventBus globalBus;
 
 	/**
 	 * Session event bus
 	 */
 	private final EventBus eventBus;
 	
+	/**
+	 * Budget source
+	 */
+	private final BudgetSource budgetSource;
+	
+	/**
+	 * Session view component
+	 */
+	private final Component component;
+	
+	/**
+	 * Session active flag
+	 */
+	private boolean active;
+	
+	/**
+	 * Constructs a new session with the given
+	 * budget source.
+	 * 
+	 * @param window application window
+	 * @param bus    global application event bus
+	 * @param source budget source
+	 */
+	public Session(Frame window, EventBus bus, BudgetSource source)
+	{
+		globalBus = bus;
+		eventBus = new EventBus(source.toString());
+		
+		budgetSource = source;
+		
+		component = SessionContentViewFactory.build(
+			window, eventBus, null,
+			source.getBudget(), new StubActualFigures());
+		
+		active = false;
+	}
+	
+	void post(Object event)
+	{
+		eventBus.post(event);
+	}
+	
+	/**
+	 * Returns the name identifying this session.
+	 * 
+	 * @return session name
+	 */
 	public String getName()
 	{
-		return "";
+		return budgetSource.getBudget().getDefinition().getName();
+	}
+	
+	/**
+	 * Sets this session's active flag.
+	 * 
+	 * @param isActive <code>true</code> if this session is
+	 *        active, else <code>false</code>
+	 */
+	void setActive(boolean isActive)
+	{
+		active = isActive;
+	}
+	
+	/**
+	 * Returns whether this session is the active session.
+	 * 
+	 * @return <code>true</code> if active, else <code>false</code>
+	 */
+	public boolean isActive()
+	{
+		return active;
+	}
+	
+	/**
+	 * Returns the view component for this session.
+	 * 
+	 * @return session view component
+	 */
+	public Component getComponent()
+	{
+		return component;
 	}
 	
 	public boolean isDirty()
 	{
-		return false;
-	}
-	
-	public Component getComponent()
-	{
-		return null;
+		return true;
 	}
 	
 }

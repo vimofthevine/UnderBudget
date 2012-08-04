@@ -24,6 +24,7 @@ import javax.swing.text.BadLocationException;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 
 /**

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.events;
 
 /**
- * 
+ * Interface for events related to session
+ * management (creation, deletion, activation, etc.).
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CreateSessionEvent implements SessionEvent {
+public interface GlobalSessionEvent {
 
 }

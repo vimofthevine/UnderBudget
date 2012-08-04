@@ -16,44 +16,50 @@
 
 package com.vimofthevine.underbudget.swing.session;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.swing.session.events.SessionEvent;
+
 /**
- * An event that represents the activation
- * of a session.
+ * Bridge between the global application event bus
+ * and the active session event bus.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SessionActivatedEvent {
+class SessionBusBridge {
+	
+	/**
+	 * The active session
+	 */
+	private Session activeSession;
+	
+	/**
+	 * Constructs a session bus bridge.
+	 * 
+	 * @param bus global event bus
+	 */
+	public SessionBusBridge(EventBus bus)
+	{
+		bus.register(this);
+	}
+	
+	/**
+	 * Sets the active session.
+	 * 
+	 * @param session active session
+	 */
+	void setActiveSession(Session session)
+	{
+		activeSession = session;
+	}
+	
+	@Subscribe
+	public void eventPosted(SessionEvent event)
+	{
+		if (activeSession != null)
+		{
+			activeSession.post(event);
+		}
+	}
 
-	/**
-	 * The session that has been activated
-	 */
-	private final Session session;
-	
-	/**
-	 * Constructs a new session activation event.
-	 * 
-	 * @param session activated session
-	 */
-	public SessionActivatedEvent(Session session)
-	{
-		this.session = session;
-	}
-	
-	/**
-	 * Returns the session that has
-	 * been activated.
-	 * 
-	 * @return activated session
-	 */
-	public Session getSession()
-	{
-		return session;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "Session " + session + " activated";
-	}
-	
 }

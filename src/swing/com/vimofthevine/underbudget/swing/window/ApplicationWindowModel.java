@@ -28,8 +28,8 @@ import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.Application;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.UserPreferences;
-import com.vimofthevine.underbudget.swing.session.SessionActivatedEvent;
-import com.vimofthevine.underbudget.swing.session.SessionStateEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionStateEvent;
 
 /**
  * Presentation model for the application window.
@@ -80,6 +80,8 @@ public class ApplicationWindowModel {
 	public ApplicationWindowModel(EventBus bus, UserPreferences prefs)
 	{
 		eventBus = bus;
+		eventBus.register(this);
+		
 		preferences = prefs;
 		
 		titleModel = new WindowTitleModel();
@@ -177,8 +179,15 @@ public class ApplicationWindowModel {
 	@Subscribe
 	public void sessionActivated(SessionActivatedEvent event)
 	{
-		updateWindowTitle(event.getSession().getName(),
-			event.getSession().isDirty());
+		if (event.getSession() == null)
+		{
+			titleModel.setTitle(Application.TITLE);
+		}
+		else
+		{
+    		updateWindowTitle(event.getSession().getName(),
+    			event.getSession().isDirty());
+		}
 	}
 	
 	/**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.estimate;
+package com.vimofthevine.underbudget.swing.estimate.events;
 
 import java.util.Map;
 
@@ -73,6 +73,12 @@ public class EstimateModifiedEvent implements ModificationEvent {
 	public Map<String, String> getChanges()
 	{
 		return changes;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return estimate + " modified " + changes;
 	}
 	
 }

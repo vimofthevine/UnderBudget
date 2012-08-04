@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session;
+package com.vimofthevine.underbudget.swing.session.events;
 
 /**
  * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SaveAsSessionEvent {
+public class UpdateTemplateEvent {
 
 }
