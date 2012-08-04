@@ -16,8 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import com.vimofthevine.underbudget.core.analysis.ActualFigure;
-import com.vimofthevine.underbudget.core.analysis.ActualFigureSource;
+import com.vimofthevine.underbudget.core.actuals.ActualFigure;
+import com.vimofthevine.underbudget.core.actuals.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
@@ -31,7 +31,7 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 	/**
 	 * Actual values source
 	 */
-	private final ActualFigureSource actuals;
+	private final ActualFigures actuals;
 	
 	/**
 	 * Constructs a new estimate progress
@@ -40,7 +40,7 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 	 * @param root    root estimate
 	 * @param actuals actual figures source
 	 */
-	public BalanceImpactTreeTableModel(Estimate root, ActualFigureSource actuals)
+	public BalanceImpactTreeTableModel(Estimate root, ActualFigures actuals)
 	{
 		super(root);
 		this.actuals = actuals;
@@ -104,16 +104,16 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 		}
 		else if (column == 2)
 		{
-			return actuals.getActualFigure(estimate).getAmount();
+			return actuals.getActual(estimate).getAmount();
 		}
 		else if (column == 3)
 		{
-			ActualFigure actual = actuals.getActualFigure(estimate);
-			return estimate.getImpact(actual).getExpectedAmount();
+			ActualFigure actual = actuals.getActual(estimate);
+			return estimate.getImpact(actual).getExpectedImpact();
 		}
 		else if (column == 4)
 		{
-			ActualFigure actual = actuals.getActualFigure(estimate);
+			ActualFigure actual = actuals.getActual(estimate);
 			return estimate.getImpact(actual).getNotice();
 		}
 		else

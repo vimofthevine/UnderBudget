@@ -22,7 +22,7 @@ import java.awt.Frame;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.analysis.ActualFigureSource;
+import com.vimofthevine.underbudget.core.actuals.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.swing.widgets.ComplexSplitPane;
@@ -53,7 +53,7 @@ public abstract class EstimateProgressViewFactory {
 	 */
 	public static final Component build(Frame window,
 		EventBus bus, CurrencyFactory currency, Estimate root,
-		ActualFigureSource actuals)
+		ActualFigures actuals)
 	{
 		// Create models
 		EstimateProgressTreeTableModel treeTableModel =

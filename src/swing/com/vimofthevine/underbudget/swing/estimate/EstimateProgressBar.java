@@ -20,8 +20,8 @@ import java.awt.Color;
 
 import javax.swing.JProgressBar;
 
-import com.vimofthevine.underbudget.core.analysis.Progress;
 import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
  * A progress bar that depicts an actual as a percentage
@@ -41,7 +41,7 @@ public class EstimateProgressBar {
 	 * 
 	 * @param progress estimate progress
 	 */
-	public EstimateProgressBar(Progress progress)
+	public EstimateProgressBar(EstimateProgress progress)
 	{
 		Currency estimated = progress.getEstimatedAmount();
 		Currency actual = progress.getActualAmount();
@@ -51,7 +51,7 @@ public class EstimateProgressBar {
 		progressBar.setStringPainted(true);
 		progressBar.setString(actual.formatAsString());
 		
-		Color color = progress.isOk() ? Color.green : Color.red;
+		Color color = progress.isHealthy() ? Color.green : Color.red;
 		progressBar.setForeground(color);
 	}
 	

@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.transaction;
 
-import com.vimofthevine.underbudget.core.ledger.transaction.Transaction;
+import com.vimofthevine.underbudget.core.transaction.Transaction;
 import com.vimofthevine.underbudget.swing.history.SelectionEvent;
 
 /**

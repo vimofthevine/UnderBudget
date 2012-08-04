@@ -16,8 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import com.vimofthevine.underbudget.core.analysis.ActualFigure;
-import com.vimofthevine.underbudget.core.analysis.ActualFigureSource;
+import com.vimofthevine.underbudget.core.actuals.ActualFigure;
+import com.vimofthevine.underbudget.core.actuals.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
@@ -31,7 +31,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 	/**
 	 * Actual figures source
 	 */
-	private final ActualFigureSource actuals;
+	private final ActualFigures actuals;
 	
 	/**
 	 * Constructs a new estimate progress
@@ -40,7 +40,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 	 * @param root    root estimate
 	 * @param actuals actual figures source
 	 */
-	public EstimateProgressTreeTableModel(Estimate root, ActualFigureSource actuals)
+	public EstimateProgressTreeTableModel(Estimate root, ActualFigures actuals)
 	{
 		super(root);
 		this.actuals = actuals;
@@ -96,7 +96,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 1)
 		{
-			ActualFigure actual = actuals.getActualFigure(estimate);
+			ActualFigure actual = actuals.getActual(estimate);
 			return new EstimateProgressBar(estimate.getProgress(actual));
 		}
 		else if (column == 2)
@@ -105,7 +105,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 3)
 		{
-			ActualFigure actual = actuals.getActualFigure(estimate);
+			ActualFigure actual = actuals.getActual(estimate);
 			return estimate.getProgress(actual).getNotice();
 		}
 		else

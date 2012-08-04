@@ -16,84 +16,20 @@
 
 package com.vimofthevine.underbudget.core.currency;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Factory class for creating new currency objects.
- * Should multiple currency types be needed, this
- * class can be modified to allow the dynamic
- * specification of the currency class to be used.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CurrencyFactory {
+public interface CurrencyFactory {
 	
-	/**
-	 * Log handle
-	 */
-	private static final Logger logger = Logger.getLogger(CurrencyFactory.class.getName());
-	
-	/**
-	 * Currency class to be created
-	 */
-	private final Class<?> currencyClass;
-	
-	/**
-	 * Constructs a currency factory to create currency
-	 * objects for the given ISO 4217 currency code.
-	 * 
-	 * @param code ISO 4217 currency code
-	 * @see <a href="http://en.wikipedia.org/wiki/ISO_4217">http://en.wikipedia.org/wiki/ISO_4217</a>
-	 */
-	public CurrencyFactory(String code)
-	{
-		try
-		{
-			currencyClass = Class.forName(getClass().getPackage().getName() +
-				"." + code + "Currency");
-		}
-		catch (ClassNotFoundException cnfe)
-		{
-			cnfe.printStackTrace();
-			throw new IllegalArgumentException("Invalid currency type, " + code);
-		}
-	}
-	
-	/**
-	 * Constructs a currency factory to create currency
-	 * objects of the given type
-	 * 
-	 * @param clazz currency class to use when creating
-	 *               new currency objects
-	 */
-    public CurrencyFactory(Class<?> clazz)
-	{
-		if (Currency.class.isAssignableFrom(clazz))
-		{
-			currencyClass = clazz;
-		}
-		else
-			throw new IllegalArgumentException("Invalid currency class");
-	}
-    
     /**
-     * Creates a new currency instance
+     * Creates a new currency instance with
+     * a value of zero.
      * 
      * @return new currency instance
      */
-    public Currency newCurrencyInstance()
-    {
-    	try
-    	{
-    		return (Currency) currencyClass.newInstance();
-    	}
-    	catch (Exception e)
-    	{
-    		logger.log(Level.WARNING, "Error creating currency instance", e);
-    		throw new ClassCastException("Unable to create currency instance");
-    	}
-    }
+    public Currency newCurrencyInstance();
     
 	/**
 	 * Creates a new currency instance with the given initial amount
@@ -101,12 +37,6 @@ public class CurrencyFactory {
 	 * @param amount string representation of the currency amount
 	 * @return new currency instance
 	 */
-	public Currency newCurrencyInstance(String amount)
-	{
-		Currency currency = newCurrencyInstance();
-		currency.parse(amount);
-		
-		return currency;
-	}
+	public Currency newCurrencyInstance(String amount);
 
 }
