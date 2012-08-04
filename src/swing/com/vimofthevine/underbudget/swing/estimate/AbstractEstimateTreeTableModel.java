@@ -67,16 +67,7 @@ abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
 				|| ! (child instanceof Estimate))
 			return -1;
 		else
-		{
-			Estimate estimate = (Estimate) parent;
-			for (int index = 0; index<estimate.getChildCount(); index++)
-			{
-				if (child.equals(estimate.getChildAt(index)))
-					return index;
-			}
-			
-			return -1;
-		}
+			return ((Estimate) parent).indexOf((Estimate) child);
     }
 	
 	@Override
@@ -99,7 +90,7 @@ abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
 	 */
 	public void fireEstimateAdded(TreePath path, Estimate parent, Estimate child)
 	{
-		modelSupport.fireChildAdded(path, getIndexOfChild(parent, child), child);
+		modelSupport.fireChildAdded(path, parent.indexOf(child), child);
 	}
 	
 	/**
