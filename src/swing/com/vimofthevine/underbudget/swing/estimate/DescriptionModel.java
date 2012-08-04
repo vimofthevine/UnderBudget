@@ -23,7 +23,12 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.core.util.SimpleDate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 
@@ -48,7 +53,7 @@ public class DescriptionModel extends SimpleDocument {
 	/**
 	 * Currently represented estimate
 	 */
-	private MutableEstimate estimate;
+	private Estimate estimate;
 	
 	/**
 	 * Constructs a new estimate description document model.
@@ -68,14 +73,14 @@ public class DescriptionModel extends SimpleDocument {
 	 * @param newEstimate estimate represented by
 	 *                     the document
 	 */
-	void setEstimate(MutableEstimate newEstimate)
+	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setText(estimate.getDescription());
+				setText(estimate.getDefinition().getDescription());
 			}
 		});
 	}
@@ -102,21 +107,37 @@ public class DescriptionModel extends SimpleDocument {
 	 */
 	private void update()
 	{
-		// Grab this while on EDT
-		final String description = getText();
-		
-		// Then get off EDT
-		new Thread() {
-			public void run()
-			{
-				if ( ! description.equals(estimate.getDescription()))
-				{
-    				estimate.setDescription(description);
-    				changes.put("description", description);
-    				eventBus.post(new EstimateModifiedEvent(estimate, changes));
-				}
-			}
-		}.start();
+		if ( ! (estimate instanceof MutableEstimate))
+			return;
+		else
+		{
+    		// Grab this while on EDT
+    		final String description = getText();
+    		
+    		// Then get off EDT
+    		new Thread() {
+    			public void run()
+    			{
+    				MutableEstimate mutable = (MutableEstimate) estimate;
+    				final EstimateDefinition old = mutable.getDefinition();
+    				
+    				if ( ! description.equals(old.getDescription()))
+    				{
+    					mutable.setDefinition(new EstimateDefinition() {
+                            public String getName() { return old.getName(); }
+                            public String getDescription() { return description; }
+                            public Currency getAmount() { return old.getAmount(); }
+                            public SimpleDate getDueDate() { return old.getDueDate(); }
+                            public EstimateType getType() { return old.getType(); }
+                            public boolean isComplete() { return old.isComplete(); }
+    					});
+        					
+        				changes.put("description", description);
+        				eventBus.post(new EstimateModifiedEvent(estimate, changes));
+    				}
+    			}
+    		}.start();
+    	}
 	}
 
 }

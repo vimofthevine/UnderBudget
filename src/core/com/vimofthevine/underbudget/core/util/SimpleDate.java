@@ -16,6 +16,8 @@
 
 package com.vimofthevine.underbudget.core.util;
 
+import java.util.Date;
+
 /**
  * Simplified date interface.
  * 
@@ -46,5 +48,12 @@ public interface SimpleDate extends Comparable<SimpleDate> {
 	 * @return date as a string in the format, MM/dd/yy
 	 */
 	public String formatAsString();
+	
+	/**
+	 * Returns the date as a java.util.Date object.
+	 * 
+	 * @return date time
+	 */
+	public Date getTime();
 	
 }

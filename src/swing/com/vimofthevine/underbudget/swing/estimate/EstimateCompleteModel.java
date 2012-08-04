@@ -22,7 +22,12 @@ import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.core.util.SimpleDate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 
 /**
@@ -49,7 +54,7 @@ class EstimateCompleteModel extends ToggleButtonModel {
 	/**
 	 * Currently represented estimate
 	 */
-	private MutableEstimate estimate;
+	private Estimate estimate;
 	
 	/**
 	 * Constructs a new estimate complete toggle
@@ -70,14 +75,14 @@ class EstimateCompleteModel extends ToggleButtonModel {
 	 * @param newEstimate estimate represented by
 	 *                     the document
 	 */
-	void setEstimate(MutableEstimate newEstimate)
+	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setSelected(estimate.isComplete(), false);
+				setSelected(estimate.getDefinition().isComplete(), false);
 			}
 		});
 	}
@@ -90,20 +95,36 @@ class EstimateCompleteModel extends ToggleButtonModel {
 	@Override
 	public void setSelected(final boolean selected)
 	{
-		super.setSelected(selected);
-		
-		// Get off EDT
-		new Thread() {
-			public void run()
-			{
-				if (selected != estimate.isComplete())
-				{
-    				estimate.setComplete(selected);
-    				changes.put("complete", String.valueOf(selected));
-    				eventBus.post(new EstimateModifiedEvent(estimate, changes));
-				}
-			}
-		}.start();
+		if ( ! (estimate instanceof MutableEstimate))
+			return;
+		else
+		{
+    		super.setSelected(selected);
+    		
+    		// Get off EDT
+    		new Thread() {
+    			public void run()
+    			{
+    				MutableEstimate mutable = (MutableEstimate) estimate;
+    				final EstimateDefinition old = mutable.getDefinition();
+    				
+    				if (selected != old.isComplete())
+    				{
+    					mutable.setDefinition(new EstimateDefinition() {
+                            public String getName() { return old.getName(); }
+                            public String getDescription() { return old.getDescription(); }
+                            public Currency getAmount() { return old.getAmount(); }
+                            public SimpleDate getDueDate() { return old.getDueDate(); }
+                            public EstimateType getType() { return old.getType(); }
+                            public boolean isComplete() { return selected; }
+    					});
+        					
+        				changes.put("complete", String.valueOf(selected));
+        				eventBus.post(new EstimateModifiedEvent(estimate, changes));
+    				}
+    			}
+    		}.start();
+		}
 	}
 	
 }

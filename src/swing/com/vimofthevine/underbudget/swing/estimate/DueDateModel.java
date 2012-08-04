@@ -22,11 +22,14 @@ import java.util.HashMap;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.calendar.DefaultDateSelectionModel;
-import org.jdesktop.swingx.event.DateSelectionEvent;
-import org.jdesktop.swingx.event.DateSelectionListener;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.core.util.SimpleDate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 
 /**
@@ -35,8 +38,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class DueDateModel extends DefaultDateSelectionModel
-implements DateSelectionListener {
+class DueDateModel extends DefaultDateSelectionModel {
 
 	/**
 	 * Event bus
@@ -50,7 +52,7 @@ implements DateSelectionListener {
 	
 	/** * Currently represented estimate
 	 */
-	private MutableEstimate estimate;
+	private Estimate estimate;
 	
 	/**
 	 * Constructs a new estimate due date selection model.
@@ -71,42 +73,105 @@ implements DateSelectionListener {
 	 * @param newEstimate estimate represented by
 	 *                    the model
 	 */
-	void setEstimate(MutableEstimate newEstimate)
+	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				clearSelection();
+				clearSelection(false);
 				
-				Date dueDate = estimate.getDueDate();
+				SimpleDate dueDate = estimate.getDefinition().getDueDate();
+				
 				if (dueDate != null)
 				{
-					setSelectionInterval(dueDate, dueDate);
+					Date date = dueDate.getTime();
+					setSelectionInterval(date, date, false);
 				}
 			}
 		});
 	}
-
-	@Override
-	public void valueChanged(DateSelectionEvent arg0)
+	
+	private void clearSelection(boolean post)
 	{
-		// Grab this while on EDT
-		final Date dueDate = getFirstSelectionDate();
-		
-		// Then get off EDT
-		new Thread() {
-			public void run()
-			{
-				if ( ! dueDate.equals(estimate.getDueDate()))
-				{
-    				estimate.setDueDate(dueDate);
-    				changes.put("due-date", dueDate.toString());
-    				eventBus.post(new EstimateModifiedEvent(estimate, changes));
-				}
-			}
-		}.start();
+		super.clearSelection();
+	}
+	
+	private void setSelectionInterval(Date startDate, Date endDate, boolean post)
+	{
+		super.setSelectionInterval(startDate, endDate);
+	}
+	
+	@Override
+	public void clearSelection()
+	{
+		if ( ! (estimate instanceof MutableEstimate))
+			return;
+		else
+		{
+			super.clearSelection();
+			update();
+		}
+	}
+	
+	@Override
+	public void setSelectionInterval(Date startDate, Date endDate)
+	{
+		if ( ! (estimate instanceof MutableEstimate))
+			return;
+		else
+		{
+			super.setSelectionInterval(startDate, endDate);
+			update();
+		}
+	}
+	
+	private void update()
+	{
+		if (estimate instanceof MutableEstimate)
+		{
+    		// Grab this while on EDT
+    		final Date dueDate = getFirstSelectionDate();
+    		
+    		// Then get off EDT
+    		new Thread() {
+    			public void run()
+    			{
+    				MutableEstimate mutable = (MutableEstimate) estimate;
+    				final EstimateDefinition old = mutable.getDefinition();
+    				
+    				if (dueDate == null && old.getDueDate() == null)
+    					return;
+        				
+    				if ((dueDate == null && old.getDueDate() != null)
+    					|| (dueDate != null && old.getDueDate() == null)
+    					|| ! dueDate.equals(old.getDueDate().getTime()))
+    				{
+    					final SimpleDate newDate = (dueDate == null)
+    						? null : new SimpleDate() {
+                                public int compareTo(SimpleDate o) { return 0; }
+                                public boolean before(SimpleDate when) { return false; }
+                                public boolean after(SimpleDate when) { return false; }
+                                public String formatAsString() { return dueDate.toString(); }
+                                public Date getTime() { return dueDate; }
+                            };
+    					
+    					mutable.setDefinition(new EstimateDefinition() {
+                            public String getName() { return old.getName(); }
+                            public String getDescription() { return old.getDescription(); }
+                            public Currency getAmount() { return old.getAmount(); }
+                            public SimpleDate getDueDate() { return newDate; }
+                            public EstimateType getType() { return old.getType(); }
+                            public boolean isComplete() { return old.isComplete(); }
+    					});
+        					
+        				changes.put("due-date", dueDate.toString());
+        				eventBus.post(new EstimateModifiedEvent(estimate, changes));
+    				}
+    			}
+    		}.start();
+		}
 	}
 
 }

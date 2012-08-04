@@ -92,7 +92,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		
 		if (column == 0)
 		{
-			return estimate.getName();
+			return estimate.getDefinition().getName();
 		}
 		else if (column == 1)
 		{
@@ -101,7 +101,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 2)
 		{
-			return estimate.getAmount();
+			return estimate.getDefinition().getAmount();
 		}
 		else if (column == 3)
 		{

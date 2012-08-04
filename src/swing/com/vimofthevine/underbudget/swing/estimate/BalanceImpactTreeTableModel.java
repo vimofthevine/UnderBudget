@@ -96,11 +96,11 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 		
 		if (column == 0)
 		{
-			return estimate.getName();
+			return estimate.getDefinition().getName();
 		}
 		else if (column == 1)
 		{
-			return estimate.getAmount();
+			return estimate.getDefinition().getAmount();
 		}
 		else if (column == 2)
 		{

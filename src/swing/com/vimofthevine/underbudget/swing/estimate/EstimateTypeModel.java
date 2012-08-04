@@ -22,8 +22,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.core.util.SimpleDate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 
 /**
@@ -47,7 +51,7 @@ class EstimateTypeModel extends DefaultComboBoxModel {
 	/**
 	 * Currently represented estimate
 	 */
-	private MutableEstimate estimate;
+	private Estimate estimate;
 
 	/**
 	 * Constructs a new estimate type model.
@@ -68,14 +72,14 @@ class EstimateTypeModel extends DefaultComboBoxModel {
 	 * @param newEstimate estimate represented by
 	 *                     the model
 	 */
-	void setEstimate(MutableEstimate newEstimate)
+	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setSelectedItem(estimate.getType(), false);
+				setSelectedItem(estimate.getDefinition().getType(), false);
 			}
 		});
 	}
@@ -88,24 +92,40 @@ class EstimateTypeModel extends DefaultComboBoxModel {
 	@Override
 	public void setSelectedItem(Object item)
 	{
-		super.setSelectedItem(item);
-		
-		if (item instanceof EstimateType)
+		if ( ! (estimate instanceof MutableEstimate))
+			return;
+		else
 		{
-			final EstimateType type = (EstimateType) item;
-			
-			// Get off EDT
-			new Thread() {
-				public void run()
-				{
-					if ( ! type.equals(estimate.getType()))
-					{
-    					estimate.setType(type);
-    					changes.put("type", type.toString());
-    					eventBus.post(new EstimateModifiedEvent(estimate, changes));
-					}
-				}
-			}.start();
+    		super.setSelectedItem(item);
+    		
+    		if (item instanceof EstimateType)
+    		{
+    			final EstimateType type = (EstimateType) item;
+    			
+    			// Get off EDT
+    			new Thread() {
+    				public void run()
+    				{
+        				MutableEstimate mutable = (MutableEstimate) estimate;
+        				final EstimateDefinition old = mutable.getDefinition();
+        				
+    					if ( ! type.equals(old.getType()))
+    					{
+        					mutable.setDefinition(new EstimateDefinition() {
+                                public String getName() { return old.getName(); }
+                                public String getDescription() { return old.getDescription(); }
+                                public Currency getAmount() { return old.getAmount(); }
+                                public SimpleDate getDueDate() { return old.getDueDate(); }
+                                public EstimateType getType() { return type; }
+                                public boolean isComplete() { return old.isComplete(); }
+        					});
+        					
+        					changes.put("type", type.toString());
+        					eventBus.post(new EstimateModifiedEvent(estimate, changes));
+    					}
+    				}
+    			}.start();
+    		}
 		}
 	}
 

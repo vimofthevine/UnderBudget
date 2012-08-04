@@ -94,7 +94,7 @@ class DeleteAction extends AbstractAction {
 			public void run()
 			{
 				int result = JOptionPane.showConfirmDialog(parent,
-					"Delete " + estimate.getName() + "?",
+					"Delete " + estimate.getDefinition().getName() + "?",
 					"Delete Estimate",
 					JOptionPane.OK_CANCEL_OPTION);
 				
