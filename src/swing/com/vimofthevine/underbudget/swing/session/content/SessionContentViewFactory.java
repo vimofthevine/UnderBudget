@@ -28,6 +28,8 @@ import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.actuals.ActualFigures;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.swing.assignment.AssignmentRulesViewFactory;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
 import com.vimofthevine.underbudget.swing.estimate.EstimateProgressViewFactory;
 import com.vimofthevine.underbudget.swing.status.StatusBar;
@@ -50,20 +52,22 @@ public abstract class SessionContentViewFactory {
 	
 	public static final Component build(Frame window,
 		EventBus bus, CurrencyFactory currency, Budget budget,
-		ActualFigures actuals)
+		ActualFigures actuals, ReverseLookupAssignmentRules rules)
 	{
 		SessionContentViewModel model = new SessionContentViewModel(bus);
 		
 		Component estimateProgress = EstimateProgressViewFactory.build(
-			window, bus, currency, budget.getRootEstimate(), actuals);
+			window, bus, currency, budget.getRootEstimate(), actuals, rules);
 		Component balanceImpact = BalanceImpactViewFactory.build(
-			window, bus, currency, budget.getRootEstimate(), actuals);
+			window, bus, currency, budget.getRootEstimate(), actuals, rules);
+		Component assignmentRules = AssignmentRulesViewFactory.build(
+			window, bus, rules, currency);
 		
 		JPanel content = new JPanel();
 		SessionContentView view = new SessionContentView(content, model);
 		
 		view.add(new JLabel("Analysis Summary"), SessionContent.ANALYSIS_SUMMARY);
-		view.add(new JLabel("Assignment Rules"), SessionContent.ASSIGNMENT_RULES);
+		view.add(assignmentRules, SessionContent.ASSIGNMENT_RULES);
 		view.add(balanceImpact, SessionContent.BALANCE_IMPACT);
 		view.add(estimateProgress, SessionContent.ESTIMATE_PROGRESS);
 		view.add(new JLabel("Imported Transactions"), SessionContent.IMPORTED_TRANSACTIONS);

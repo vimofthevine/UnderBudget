@@ -64,6 +64,7 @@ public class ApplicationMenu {
 		JMenu analyzeMenu = new JMenu("Analyze");
 		analyzeMenu.setMnemonic(KeyEvent.VK_A);
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.IMPORT_TRANSACTIONS)));
+		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.IMPORT_TRANSACTIONS_FROM)));
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.ASSIGN_TRANSACTIONS)));
 		analyzeMenu.add(new JMenuItem(model.getAction(MenuAction.CALCULATE_BALANCES)));
 		analyzeMenu.add(new JSeparator());

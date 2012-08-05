@@ -182,17 +182,20 @@ public class EstimateTreeViewModel {
 	{
 		logger.log(Level.INFO, log + "Estimate selected: " + event);
 		
+		TreePath selectionPath = (event.getTreePath() == null)
+			? getPath(event.getEstimate()) : event.getTreePath();
+		
 		// Don't do anything if already selected (avoid infinite loop)
 		if (currentSelectionPath == null ||
-			! currentSelectionPath.equals(event.getTreePath()))
+			! currentSelectionPath.equals(selectionPath))
 		{
 			logger.log(Level.INFO, log + "Selecting estimate, " + event.getTreePath());
-			currentSelectionPath = event.getTreePath();
+			currentSelectionPath = selectionPath;
 			
 			// Select the new estimate
 			if (selectionModel != null)
 			{
-				final TreePath newSelection = event.getTreePath();
+				final TreePath newSelection = selectionPath;
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run()

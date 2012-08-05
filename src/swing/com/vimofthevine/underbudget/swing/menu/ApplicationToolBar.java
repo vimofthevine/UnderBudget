@@ -16,8 +16,6 @@
 
 package com.vimofthevine.underbudget.swing.menu;
 
-import javax.swing.JButton;
-import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
 public class ApplicationToolBar {
@@ -31,21 +29,22 @@ public class ApplicationToolBar {
 	public ApplicationToolBar(ApplicationMenuModel model,
 		JToolBar toolBar)
 	{
-		toolBar.add(new JButton(model.getAction(MenuAction.CREATE_SESSION)));
-		toolBar.add(new JButton(model.getAction(MenuAction.OPEN_SESSION)));
-		toolBar.add(new JButton(model.getAction(MenuAction.SAVE_SESSION)));
-		toolBar.add(new JSeparator());
-		toolBar.add(new JButton(model.getAction(MenuAction.BUDGET_DISPLAY)));
-		toolBar.add(new JButton(model.getAction(MenuAction.EDIT_ESTIMATES)));
-		toolBar.add(new JButton(model.getAction(MenuAction.ASSIGNMENT_RULES)));
-		toolBar.add(new JSeparator());
-		toolBar.add(new JButton(model.getAction(MenuAction.IMPORT_TRANSACTIONS)));
-		toolBar.add(new JButton(model.getAction(MenuAction.ASSIGN_TRANSACTIONS)));
-		toolBar.add(new JButton(model.getAction(MenuAction.CALCULATE_BALANCES)));
-		toolBar.add(new JSeparator());
-		toolBar.add(new JButton(model.getAction(MenuAction.ESTIMATE_PROGRESS)));
-		toolBar.add(new JButton(model.getAction(MenuAction.BALANCE_IMPACT)));
-		toolBar.add(new JButton(model.getAction(MenuAction.IMPORTED_TRANSACTIONS)));
+		toolBar.add(model.getAction(MenuAction.CREATE_SESSION));
+		toolBar.add(model.getAction(MenuAction.OPEN_SESSION));
+		toolBar.add(model.getAction(MenuAction.SAVE_SESSION));
+		toolBar.addSeparator();
+		toolBar.add(model.getAction(MenuAction.BUDGET_DISPLAY));
+		toolBar.add(model.getAction(MenuAction.EDIT_ESTIMATES));
+		toolBar.add(model.getAction(MenuAction.ASSIGNMENT_RULES));
+		toolBar.addSeparator();
+		toolBar.add(model.getAction(MenuAction.IMPORT_TRANSACTIONS));
+		toolBar.add(model.getAction(MenuAction.ASSIGN_TRANSACTIONS));
+		toolBar.add(model.getAction(MenuAction.CALCULATE_BALANCES));
+		toolBar.addSeparator();
+		toolBar.add(model.getAction(MenuAction.ANALYSIS_SUMMARY));
+		toolBar.add(model.getAction(MenuAction.ESTIMATE_PROGRESS));
+		toolBar.add(model.getAction(MenuAction.BALANCE_IMPACT));
+		toolBar.add(model.getAction(MenuAction.IMPORTED_TRANSACTIONS));
 	}
 
 }

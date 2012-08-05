@@ -23,6 +23,7 @@ import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
 
 /**
@@ -81,8 +82,11 @@ public class Session {
 		state = new SessionState(globalBus, eventBus, budget);
 		new BudgetPersistenceModel(eventBus, budgetSource);
 		
+		ReverseLookupAssignmentRules rules =
+			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
+		
 		component = SessionContentViewFactory.build(
-			window, eventBus, null, budget, new StubActualFigures());
+			window, eventBus, null, budget, new StubActualFigures(), rules);
 		
 		active = false;
 	}

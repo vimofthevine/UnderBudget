@@ -19,12 +19,16 @@ package com.vimofthevine.underbudget.swing.estimate;
 import java.awt.Component;
 import java.awt.Frame;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.actuals.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesView;
+import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesViewModel;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.widgets.ComplexSplitPane;
 
 /**
@@ -49,11 +53,12 @@ public abstract class BalanceImpactViewFactory {
 	 * @param currency currency factory
 	 * @param root     root estimate
 	 * @param actuals  actual figures source
+	 * @param rules    assignment rules list
 	 * @return balance impact view component
 	 */
 	public static final Component build(Frame window,
 		EventBus bus, CurrencyFactory currency, Estimate root,
-		ActualFigures actuals)
+		ActualFigures actuals, ReverseLookupAssignmentRules rules)
 	{
 		// Create models
 		BalanceImpactTreeTableModel treeTableModel =
@@ -62,20 +67,26 @@ public abstract class BalanceImpactViewFactory {
 			new EstimateTreeViewModel(bus, treeTableModel);
 		EstimateDetailViewModel detailModel =
 			new EstimateDetailViewModel(bus, currency, window);
+		EstimateAssignmentRulesViewModel rulesModel =
+			new EstimateAssignmentRulesViewModel(bus, rules);
 		
 		// Create view components
 		JPanel treeComponent = new JPanel();
 		JPanel detailComponent = new JPanel();
+		JPanel rulesComponent = new JPanel();
 		JPanel progressComponent = new JPanel();
 		
 		// Build views
 		new EstimateTreeView(treeComponent, treeModel);
 		new EstimateDetailView(detailComponent, detailModel);
+		new EstimateAssignmentRulesView(rulesComponent, rulesModel);
 		
 		// Put it all together
 		ComplexSplitPane split = new ComplexSplitPane(progressComponent);
 		split.setTopComponent(treeComponent);
 		split.addTab("Estimate", detailComponent);
+		split.addTab("Rules", rulesComponent);
+		split.addTab("Transactions", new JLabel("Assigned transactions"));
 		
 		return progressComponent;
 	}

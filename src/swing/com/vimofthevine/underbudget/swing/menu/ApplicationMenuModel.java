@@ -70,7 +70,7 @@ public class ApplicationMenuModel {
 		
 		for (MenuAction action : MenuAction.values())
 		{
-			actions.put(action, createAction(action));
+			actions.put(action, action.getAction(eventBus));
 		}
 		
 		// Disable actions that are not initially available
@@ -133,28 +133,6 @@ public class ApplicationMenuModel {
 		}
 		
 		return actions;
-	}
-	
-	/**
-	 * Creates an action model to represent
-	 * the given menu action.
-	 * 
-	 * @param action menu action to be modeled
-	 * @return action model for the given menu action
-	 */
-	private Action createAction(final MenuAction action)
-	{
-		return new AbstractAction() {
-			{
-				putValue(NAME, action.getName());
-				putValue(MNEMONIC_KEY, action.getMnemonic());
-			}
-			
-			public void actionPerformed(ActionEvent event)
-			{
-				eventBus.post(action.getEvent());
-			}
-		};
 	}
 	
 	@Subscribe

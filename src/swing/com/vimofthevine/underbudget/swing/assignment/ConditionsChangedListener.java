@@ -16,32 +16,23 @@
 
 package com.vimofthevine.underbudget.swing.assignment;
 
-import javax.swing.TransferHandler;
-import javax.swing.table.TableModel;
+import com.vimofthevine.underbudget.core.assignment.Condition;
 
 /**
- * Presentation model for views that display
- * a reorderable list of assignment rules.
+ * Interface for listeners to be notified when
+ * the rule conditions have been modified by
+ * the user.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface AssignmentRuleListModel {
+interface ConditionsChangedListener {
 	
 	/**
-	 * Returns the table model representing
-	 * the assignment rule data.
+	 * Notifies the listener that the conditions
+	 * have been changed by the user.
 	 * 
-	 * @return assignment rules table model
+	 * @param conditions updated rule conditions
 	 */
-	public TableModel getTableModel();
-	
-	/**
-	 * Returns a transfer handler to execute
-	 * drag-and-drop style reordering of rules
-	 * within the list.
-	 * 
-	 * @return rule reordering transfer handler
-	 */
-	public TransferHandler getTransferHandler();
+	public void conditionsChanged(Condition[] conditions);
 
 }

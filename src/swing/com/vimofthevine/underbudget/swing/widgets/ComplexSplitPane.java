@@ -52,6 +52,8 @@ public class ComplexSplitPane {
 	public ComplexSplitPane(Container container)
 	{
 		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		split.setResizeWeight(1.0);
+		split.setOneTouchExpandable(true);
 		
 		container.setLayout(new BorderLayout());
 		container.add(split, BorderLayout.CENTER);

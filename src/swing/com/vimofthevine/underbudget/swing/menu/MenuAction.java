@@ -16,8 +16,15 @@
 
 package com.vimofthevine.underbudget.swing.menu;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+
+import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.swing.DisplayAboutEvent;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.DisplayPreferencesEvent;
@@ -43,36 +50,68 @@ import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
  */
 enum MenuAction {
 	// Session actions
-	CREATE_SESSION("New", KeyEvent.VK_N, new CreateSessionEvent()),
-	OPEN_SESSION("Open...", KeyEvent.VK_O, new OpenSessionEvent()),
-	SAVE_SESSION("Save", KeyEvent.VK_S, new SaveSessionEvent()),
-	SAVE_SESSION_AS("Save as...", KeyEvent.VK_A, new SaveSessionAsEvent()),
-	SAVE_SESSION_AS_TEMPLATE("Save as template", KeyEvent.VK_T, new UpdateTemplateEvent()),
-	CLOSE_SESSION("Close", KeyEvent.VK_C, new CloseSessionEvent()),
+	CREATE_SESSION("New", "Create a new budget based on the template budget",
+		"new.png", KeyEvent.VK_N, new CreateSessionEvent()),
+	OPEN_SESSION("Open...", "Open an existing budget",
+		"open.png", KeyEvent.VK_O, new OpenSessionEvent()),
+	SAVE_SESSION("Save", "Save changes",
+		"save.png", KeyEvent.VK_S, new SaveSessionEvent()),
+	SAVE_SESSION_AS("Save as...", "Save the current budget to a new location",
+		"save-as.png", KeyEvent.VK_A, new SaveSessionAsEvent()),
+	SAVE_SESSION_AS_TEMPLATE("Save as template", "Update the template budget with the current budget",
+		"template.png", KeyEvent.VK_T, new UpdateTemplateEvent()),
+	CLOSE_SESSION("Close", "Close the current budget",
+		"close.png", KeyEvent.VK_C, new CloseSessionEvent()),
 	// Analysis actions
-	EXPORT_RESULTS("Export...", KeyEvent.VK_E, new ExportResultsEvent()),
-	IMPORT_TRANSACTIONS("Import transactions...", KeyEvent.VK_I, new ImportTransactionsEvent()),
-	IMPORT_TRANSACTIONS_FROM("Import transactions from...", KeyEvent.VK_F, new ImportTransactionsFromEvent()),
-	ASSIGN_TRANSACTIONS("Assign transactions", KeyEvent.VK_A, new AssignTransactionsEvent()),
-	CALCULATE_BALANCES("Calculate balances", KeyEvent.VK_C, new CalculateBalancesEvent()),
+	EXPORT_RESULTS("Export...", "Export analysis results",
+		"export.png", KeyEvent.VK_E, new ExportResultsEvent()),
+	IMPORT_TRANSACTIONS("Import transactions...", "Import transactions from previous source",
+		"import.png", KeyEvent.VK_I, new ImportTransactionsEvent()),
+	IMPORT_TRANSACTIONS_FROM("Import transactions from...", "Import transactions from selected source",
+		"import-from.png", KeyEvent.VK_F, new ImportTransactionsFromEvent()),
+	ASSIGN_TRANSACTIONS("Assign transactions", "Assign imported transactions",
+		"assign.png", KeyEvent.VK_A, new AssignTransactionsEvent()),
+	CALCULATE_BALANCES("Calculate balances", "Calculate ending balances",
+		"calc.png", KeyEvent.VK_C, new CalculateBalancesEvent()),
 	// Display actions
-	BUDGET_DISPLAY("Budget", KeyEvent.VK_B, new SessionContentEvent(SessionContent.BUDGET)),
-	ASSIGNMENT_RULES("Assignment Rules", KeyEvent.VK_R, new SessionContentEvent(SessionContent.ASSIGNMENT_RULES)),
-	EDIT_ESTIMATES("Estimates", KeyEvent.VK_E, new SessionContentEvent(SessionContent.ESTIMATE_PROGRESS)),
-	ESTIMATE_PROGRESS("Estimate progress", KeyEvent.VK_P, new SessionContentEvent(SessionContent.ESTIMATE_PROGRESS)),
-	BALANCE_IMPACT("Balance impact", KeyEvent.VK_B, new SessionContentEvent(SessionContent.BALANCE_IMPACT)),
-	IMPORTED_TRANSACTIONS("Imported transactions", KeyEvent.VK_T, new SessionContentEvent(SessionContent.IMPORTED_TRANSACTIONS)),
-	ANALYSIS_SUMMARY("Analysis summary", KeyEvent.VK_S, new SessionContentEvent(SessionContent.ANALYSIS_SUMMARY)),
-	PREFERENCES("Preferences", KeyEvent.VK_P, new DisplayPreferencesEvent()),
-	ABOUT("About", KeyEvent.VK_A, new DisplayAboutEvent()),
+	BUDGET_DISPLAY("Budget", "Modify budget settings",
+		"budget.png", KeyEvent.VK_B, new SessionContentEvent(SessionContent.BUDGET)),
+	ASSIGNMENT_RULES("Assignment Rules", "Modify assignment rules",
+		"rules.png", KeyEvent.VK_R, new SessionContentEvent(SessionContent.ASSIGNMENT_RULES)),
+	EDIT_ESTIMATES("Estimates", "Modify estimates",
+		"estimates.png", KeyEvent.VK_E, new SessionContentEvent(SessionContent.ESTIMATE_PROGRESS)),
+	ESTIMATE_PROGRESS("Estimate progress", "View estimate progress",
+		"progress.png", KeyEvent.VK_P, new SessionContentEvent(SessionContent.ESTIMATE_PROGRESS)),
+	BALANCE_IMPACT("Balance impact", "View estimate impacts on ending balances",
+		"impact.png", KeyEvent.VK_B, new SessionContentEvent(SessionContent.BALANCE_IMPACT)),
+	IMPORTED_TRANSACTIONS("Imported transactions", "View imported transactions",
+		"transactions.png", KeyEvent.VK_T, new SessionContentEvent(SessionContent.IMPORTED_TRANSACTIONS)),
+	ANALYSIS_SUMMARY("Analysis summary", "View analysis results",
+		"summary.png", KeyEvent.VK_S, new SessionContentEvent(SessionContent.ANALYSIS_SUMMARY)),
+	PREFERENCES("Preferences", "Edit application preferences",
+		"preferences.png", KeyEvent.VK_P, new DisplayPreferencesEvent()),
+	ABOUT("About", "View information about the application",
+		"about.png", KeyEvent.VK_A, new DisplayAboutEvent()),
 	// Application actions
-	NEW_WINDOW("New Window", KeyEvent.VK_W, new OpenNewWindowEvent()),
-	SHUTDOWN("Exit", KeyEvent.VK_X, new ApplicationShutdownEvent());
+	NEW_WINDOW("New Window", "Open a new window",
+		"new-window.png", KeyEvent.VK_W, new OpenNewWindowEvent()),
+	SHUTDOWN("Exit", "Shut down application",
+		"exit.png", KeyEvent.VK_X, new ApplicationShutdownEvent());
 	
 	/**
 	 * Menu action name
 	 */
 	private final String name;
+	
+	/**
+	 * Menu action description
+	 */
+	private final String description;
+	
+	/**
+	 * Menu action icon name
+	 */
+	private final String icon;
 	
 	/**
 	 * Menu action mnemonic
@@ -87,48 +126,60 @@ enum MenuAction {
 	/**
 	 * Constructs a new menu action enumeration.
 	 * 
-	 * @param name     menu action name
-	 * @param mnemonic menu action mnemonic
-	 * @param event    menu action event
+	 * @param name        menu action name
+	 * @param description menu action description
+	 * @param icon        menu action large icon
+	 * @param mnemonic    menu action mnemonic
+	 * @param event       menu action event
 	 */
-	private MenuAction(String name, int mnemonic, Object event)
+	private MenuAction(String name, String description,
+		String icon, int mnemonic, Object event)
 	{
 		this.name = name;
+		this.description = description;
+		this.icon = icon;
 		this.mnemonic = mnemonic;
 		this.event = event;
 	}
 	
 	/**
-	 * Returns the display name for this
-	 * menu action.
+	 * Creates an action model for this menu action.
 	 * 
-	 * @return menu action name
+	 * @param bus event bus to use
 	 */
-	public String getName()
+	public Action getAction(final EventBus bus)
 	{
-		return name;
-	}
-	
-	/**
-	 * Returns the keyboard mnemonic key
-	 * for this menu action.
-	 * 
-	 * @return mnemonic key
-	 */
-	public int getMnemonic()
-	{
-		return mnemonic;
-	}
-	
-	/**
-	 * Returns the event to be posted
-	 * in response to this menu action.
-	 * 
-	 * @return menu action event
-	 */
-	public Object getEvent()
-	{
-		return event;
+		return new AbstractAction() {
+			{
+				putValue(NAME, name);
+				putValue(MNEMONIC_KEY, mnemonic);
+				
+				if ( ! description.equals(""))
+				{
+					putValue(SHORT_DESCRIPTION, description);
+				}
+				
+				if ( ! icon.equals(""))
+				{
+					URL smallUrl = getClass().getResource("icons/small-" + icon);
+					if (smallUrl != null)
+					{
+						putValue(SMALL_ICON, new ImageIcon(smallUrl));
+					}
+					
+					URL largeUrl = getClass().getResource("icons/large-" + icon);
+					if (largeUrl != null)
+					{
+						putValue(LARGE_ICON_KEY, new ImageIcon(largeUrl));
+					}
+				}
+			}
+			
+			public void actionPerformed(ActionEvent actionEvent)
+			{
+				bus.post(event);
+			}
+		};
 	}
 	
 }
