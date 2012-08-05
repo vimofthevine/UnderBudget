@@ -30,6 +30,7 @@ import com.vimofthevine.underbudget.swing.session.Session;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionStateEvent;
 
 /**
  * A presentation model for the application
@@ -157,7 +158,7 @@ public class ApplicationMenuModel {
 	}
 	
 	@Subscribe
-	public void sessionActivated(SessionActivatedEvent event)
+	public void sessionActivated(final SessionActivatedEvent event)
 	{
 		// If an active session exists
 		if (event.getSession() != null)
@@ -166,6 +167,7 @@ public class ApplicationMenuModel {
     		SwingUtilities.invokeLater(new Runnable() {
     			public void run()
     			{
+    				actions.get(MenuAction.SAVE_SESSION).setEnabled(event.getSession().isDirty());
             		actions.get(MenuAction.SAVE_SESSION_AS).setEnabled(true);
             		actions.get(MenuAction.SAVE_SESSION_AS_TEMPLATE).setEnabled(true);
             		actions.get(MenuAction.CLOSE_SESSION).setEnabled(true);
@@ -190,6 +192,7 @@ public class ApplicationMenuModel {
     		SwingUtilities.invokeLater(new Runnable() {
     			public void run()
     			{
+            		actions.get(MenuAction.SAVE_SESSION).setEnabled(false);
             		actions.get(MenuAction.SAVE_SESSION_AS).setEnabled(false);
             		actions.get(MenuAction.SAVE_SESSION_AS_TEMPLATE).setEnabled(false);
             		actions.get(MenuAction.CLOSE_SESSION).setEnabled(false);
@@ -208,6 +211,17 @@ public class ApplicationMenuModel {
     			}
     		});
 		}
+	}
+	
+	@Subscribe
+	public void sessionStateUpdate(final SessionStateEvent event)
+	{
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				actions.get(MenuAction.SAVE_SESSION).setEnabled(event.isDirty());
+			}
+		});
 	}
 	
 	@Subscribe

@@ -126,7 +126,7 @@ public class AboutDialog implements ActionListener {
 	}
 	
 	@Subscribe
-	public void display(AboutDisplayEvent event)
+	public void display(DisplayAboutEvent event)
 	{
 		display();
 	}

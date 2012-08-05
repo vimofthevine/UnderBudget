@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.assignment;
+package com.vimofthevine.underbudget.swing.assignment.events;
 
 import com.vimofthevine.underbudget.core.assignment.AssignmentRule;
 import com.vimofthevine.underbudget.swing.history.ModificationEvent;
 
 /**
- * An event that represents the addition of a new
- * assignment rule into the rule list.
+ * An event that represents the removal of an
+ * assignment rule from the rules list.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class RuleAddedEvent implements ModificationEvent {
+public class RuleRemovedEvent implements ModificationEvent {
 
 	/**
-	 * The assignment rule that has been added.
+	 * The assignment rule that has been removed.
 	 */
 	private final AssignmentRule rule;
 	
 	/**
-	 * The index at which the rule was inserted.
+	 * The index at which the rule was removed.
 	 */
 	private final int index;
 	
 	/**
-	 * Constructs a new assignment rule added event.
+	 * Constructs a new assignment rule removed event.
 	 * 
-	 * @param rule  assignment rule that has been added
-	 * @param index index at which the rule was inserted into the list
+	 * @param rule  assignment rule that has been removed
+	 * @param index index at which the rule was removed from the list
 	 */
-	public RuleAddedEvent(AssignmentRule rule, int index)
+	public RuleRemovedEvent(AssignmentRule rule, int index)
 	{
 		this.rule = rule;
 		this.index = index;
@@ -51,9 +51,9 @@ public class RuleAddedEvent implements ModificationEvent {
 	
 	/**
 	 * Returns the assignment rule that has
-	 * been added.
+	 * been removed.
 	 * 
-	 * @return assignment rule that was added
+	 * @return assignment rule that was removed
 	 */
 	public AssignmentRule getRule()
 	{
@@ -64,7 +64,7 @@ public class RuleAddedEvent implements ModificationEvent {
 	 * Returns the index in the list at which
 	 * the rule was inserted.
 	 * 
-	 * @return rule list index of insertion
+	 * @return rule list index of deletion
 	 */
 	public int getIndex()
 	{

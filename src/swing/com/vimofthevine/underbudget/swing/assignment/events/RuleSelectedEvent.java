@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.assignment;
+package com.vimofthevine.underbudget.swing.assignment.events;
 
 import com.vimofthevine.underbudget.core.assignment.AssignmentRule;
 import com.vimofthevine.underbudget.swing.history.SelectionEvent;
@@ -25,7 +25,7 @@ import com.vimofthevine.underbudget.swing.history.SelectionEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class RuleSelectionEvent implements SelectionEvent {
+public class RuleSelectedEvent implements SelectionEvent {
 
 	/**
 	 * The assignment rule that has been selected
@@ -37,7 +37,7 @@ public class RuleSelectionEvent implements SelectionEvent {
 	 * 
 	 * @param rule assignment rule that has been selected
 	 */
-	public RuleSelectionEvent(AssignmentRule rule)
+	public RuleSelectedEvent(AssignmentRule rule)
 	{
 		this.rule = rule;
 	}

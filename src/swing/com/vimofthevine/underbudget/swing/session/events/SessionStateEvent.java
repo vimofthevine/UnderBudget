@@ -17,20 +17,55 @@
 package com.vimofthevine.underbudget.swing.session.events;
 
 /**
- * 
+ * Event generated to indicate the current
+ * state of the current session.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class SessionStateEvent {
+	
+	/**
+	 * Session name
+	 */
+	private final String name;
+	
+	/**
+	 * Whether the session is dirty
+	 */
+	private final boolean isDirty;
+	
+	/**
+	 * Constructs a new session state event.
+	 * 
+	 * @param name    session name
+	 * @param isDirty whether session has unsaved changes
+	 */
+	public SessionStateEvent(String name, boolean isDirty)
+	{
+		this.name = name;
+		this.isDirty = isDirty;
+	}
 
+	/**
+	 * Returns the session name.
+	 * 
+	 * @return session name
+	 */
 	public String getSessionName()
 	{
-		return "";
+		return name;
 	}
 	
+	/**
+	 * Returns whether the session has
+	 * unsaved changes.
+	 * 
+	 * @return <code>true</code> if the session
+	 *         has unsaved changes, else <code>false</code>
+	 */
 	public boolean isDirty()
 	{
-		return false;
+		return isDirty;
 	}
 	
 }

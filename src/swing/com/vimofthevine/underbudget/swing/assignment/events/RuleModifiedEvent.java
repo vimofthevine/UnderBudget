@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.assignment;
+package com.vimofthevine.underbudget.swing.assignment.events;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ import com.vimofthevine.underbudget.swing.history.ModificationEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class RuleModificationEvent implements ModificationEvent {
+public class RuleModifiedEvent implements ModificationEvent {
 
 	/**
 	 * The assignment rule that has been modified.
@@ -47,7 +47,7 @@ public class RuleModificationEvent implements ModificationEvent {
 	 * @param rule    assignment rule that has been modified
 	 * @param changes list of changes that have been made
 	 */
-	public RuleModificationEvent(AssignmentRule rule,
+	public RuleModifiedEvent(AssignmentRule rule,
 		Map<String, String> changes)
 	{
 		this.rule = rule;

@@ -25,6 +25,7 @@ import javax.swing.UIManager;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.swing.AboutDialog;
 import com.vimofthevine.underbudget.swing.ApplicationContent;
+import com.vimofthevine.underbudget.swing.DeadEventListener;
 import com.vimofthevine.underbudget.swing.PropertiesFileUserPreferences;
 import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.menu.ApplicationMenu;
@@ -55,6 +56,7 @@ public class SwingApplication {
 		
 		new Sessions(frame, eventBus);
 		new AboutDialog(frame, eventBus);
+		new DeadEventListener(frame, eventBus);
 		
 		JPanel content = new JPanel();
 		new ApplicationContent(content, eventBus);

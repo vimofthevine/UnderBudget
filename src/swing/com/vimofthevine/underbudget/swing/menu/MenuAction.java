@@ -18,13 +18,20 @@ package com.vimofthevine.underbudget.swing.menu;
 
 import java.awt.event.KeyEvent;
 
-import com.vimofthevine.underbudget.swing.AboutDisplayEvent;
+import com.vimofthevine.underbudget.swing.DisplayAboutEvent;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
+import com.vimofthevine.underbudget.swing.DisplayPreferencesEvent;
+import com.vimofthevine.underbudget.swing.OpenNewWindowEvent;
+import com.vimofthevine.underbudget.swing.analysis.AssignTransactionsEvent;
+import com.vimofthevine.underbudget.swing.analysis.CalculateBalancesEvent;
+import com.vimofthevine.underbudget.swing.analysis.ImportTransactionsEvent;
+import com.vimofthevine.underbudget.swing.analysis.ImportTransactionsFromEvent;
+import com.vimofthevine.underbudget.swing.export.ExportResultsEvent;
 import com.vimofthevine.underbudget.swing.session.content.SessionContent;
 import com.vimofthevine.underbudget.swing.session.events.CloseSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.CreateSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.OpenSessionEvent;
-import com.vimofthevine.underbudget.swing.session.events.SaveAsSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionContentEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
@@ -39,15 +46,15 @@ enum MenuAction {
 	CREATE_SESSION("New", KeyEvent.VK_N, new CreateSessionEvent()),
 	OPEN_SESSION("Open...", KeyEvent.VK_O, new OpenSessionEvent()),
 	SAVE_SESSION("Save", KeyEvent.VK_S, new SaveSessionEvent()),
-	SAVE_SESSION_AS("Save as...", KeyEvent.VK_A, new SaveAsSessionEvent()),
+	SAVE_SESSION_AS("Save as...", KeyEvent.VK_A, new SaveSessionAsEvent()),
 	SAVE_SESSION_AS_TEMPLATE("Save as template", KeyEvent.VK_T, new UpdateTemplateEvent()),
 	CLOSE_SESSION("Close", KeyEvent.VK_C, new CloseSessionEvent()),
 	// Analysis actions
-	EXPORT_RESULTS("Export...", KeyEvent.VK_E, null),
-	IMPORT_TRANSACTIONS("Import transactions...", KeyEvent.VK_I, null),
-	IMPORT_TRANSACTIONS_FROM("Import transactions from...", KeyEvent.VK_F, null),
-	ASSIGN_TRANSACTIONS("Assign transactions", KeyEvent.VK_A, null),
-	CALCULATE_BALANCES("Calculate balances", KeyEvent.VK_C, null),
+	EXPORT_RESULTS("Export...", KeyEvent.VK_E, new ExportResultsEvent()),
+	IMPORT_TRANSACTIONS("Import transactions...", KeyEvent.VK_I, new ImportTransactionsEvent()),
+	IMPORT_TRANSACTIONS_FROM("Import transactions from...", KeyEvent.VK_F, new ImportTransactionsFromEvent()),
+	ASSIGN_TRANSACTIONS("Assign transactions", KeyEvent.VK_A, new AssignTransactionsEvent()),
+	CALCULATE_BALANCES("Calculate balances", KeyEvent.VK_C, new CalculateBalancesEvent()),
 	// Display actions
 	BUDGET_DISPLAY("Budget", KeyEvent.VK_B, new SessionContentEvent(SessionContent.BUDGET)),
 	ASSIGNMENT_RULES("Assignment Rules", KeyEvent.VK_R, new SessionContentEvent(SessionContent.ASSIGNMENT_RULES)),
@@ -56,10 +63,10 @@ enum MenuAction {
 	BALANCE_IMPACT("Balance impact", KeyEvent.VK_B, new SessionContentEvent(SessionContent.BALANCE_IMPACT)),
 	IMPORTED_TRANSACTIONS("Imported transactions", KeyEvent.VK_T, new SessionContentEvent(SessionContent.IMPORTED_TRANSACTIONS)),
 	ANALYSIS_SUMMARY("Analysis summary", KeyEvent.VK_S, new SessionContentEvent(SessionContent.ANALYSIS_SUMMARY)),
-	PREFERENCES("Preferences", KeyEvent.VK_P, null),
-	ABOUT("About", KeyEvent.VK_A, new AboutDisplayEvent()),
+	PREFERENCES("Preferences", KeyEvent.VK_P, new DisplayPreferencesEvent()),
+	ABOUT("About", KeyEvent.VK_A, new DisplayAboutEvent()),
 	// Application actions
-	NEW_WINDOW("New Window", KeyEvent.VK_W, null),
+	NEW_WINDOW("New Window", KeyEvent.VK_W, new OpenNewWindowEvent()),
 	SHUTDOWN("Exit", KeyEvent.VK_X, new ApplicationShutdownEvent());
 	
 	/**

@@ -19,13 +19,10 @@ package com.vimofthevine.underbudget.swing.session;
 import java.awt.Component;
 import java.awt.Frame;
 
-import javax.swing.JLabel;
-
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
-import com.vimofthevine.underbudget.stubs.currency.StubCurrency;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
 
 /**
@@ -51,6 +48,11 @@ public class Session {
 	private final BudgetSource budgetSource;
 	
 	/**
+	 * Session state
+	 */
+	private final SessionState state;
+	
+	/**
 	 * Session view component
 	 */
 	private final Component component;
@@ -74,10 +76,13 @@ public class Session {
 		eventBus = new EventBus(source.toString());
 		
 		budgetSource = source;
+		Budget budget = budgetSource.getBudget();
+		
+		state = new SessionState(globalBus, eventBus, budget);
+		new BudgetPersistenceModel(eventBus, budgetSource);
 		
 		component = SessionContentViewFactory.build(
-			window, eventBus, null,
-			source.getBudget(), new StubActualFigures());
+			window, eventBus, null, budget, new StubActualFigures());
 		
 		active = false;
 	}
@@ -128,9 +133,15 @@ public class Session {
 		return component;
 	}
 	
+	/**
+	 * Checks if the session has any unsaved modifications.
+	 * 
+	 * @return <code>true</code> if the session is dirty,
+	 *         else <code>false</code>
+	 */
 	public boolean isDirty()
 	{
-		return true;
+		return state.isDirty();
 	}
 	
 }
