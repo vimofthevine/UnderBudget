@@ -19,7 +19,6 @@ package com.vimofthevine.underbudget.swing.estimate;
 import java.awt.Component;
 import java.awt.Frame;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
@@ -29,6 +28,7 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesView;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesViewModel;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
+import com.vimofthevine.underbudget.swing.transaction.AssociatedTransactionsView;
 import com.vimofthevine.underbudget.swing.widgets.ComplexSplitPane;
 
 /**
@@ -69,24 +69,28 @@ public abstract class EstimateProgressViewFactory {
 			new EstimateDetailViewModel(bus, currency, window);
 		EstimateAssignmentRulesViewModel rulesModel =
 			new EstimateAssignmentRulesViewModel(bus, rules);
+		AssignedTransactionsViewModel transactionModel =
+			new AssignedTransactionsViewModel(bus, rules);
 		
 		// Create view components
 		JPanel treeComponent = new JPanel();
 		JPanel detailComponent = new JPanel();
 		JPanel rulesComponent = new JPanel();
+		JPanel transactionComponent = new JPanel();
 		JPanel progressComponent = new JPanel();
 		
 		// Build views
 		new EstimateTreeView(treeComponent, treeModel);
 		new EstimateDetailView(detailComponent, detailModel);
 		new EstimateAssignmentRulesView(rulesComponent, rulesModel);
+		new AssociatedTransactionsView(transactionComponent, transactionModel);
 		
 		// Put it all together
 		ComplexSplitPane split = new ComplexSplitPane(progressComponent);
 		split.setTopComponent(treeComponent);
 		split.addTab("Estimate", detailComponent);
 		split.addTab("Rules", rulesComponent);
-		split.addTab("Transactions", new JLabel("Assigned transactions"));
+		split.addTab("Transactions", transactionComponent);
 		
 		return progressComponent;
 	}

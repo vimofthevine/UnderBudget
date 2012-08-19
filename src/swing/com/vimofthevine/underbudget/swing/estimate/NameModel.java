@@ -80,7 +80,9 @@ class NameModel extends SimpleDocument {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setText(estimate.getDefinition().getName());
+				String text = (estimate == null) ? ""
+					: estimate.getDefinition().getName();
+				setText(text);
 			}
 		});
 	}

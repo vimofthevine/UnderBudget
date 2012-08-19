@@ -74,7 +74,7 @@ class DeleteAction extends AbstractAction {
 	{
 		estimate = newEstimate;
 		
-		if (estimate.isRoot())
+		if (estimate == null || estimate.isRoot())
 		{
 			setEnabled(false);
 		}

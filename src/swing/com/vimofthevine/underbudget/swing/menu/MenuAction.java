@@ -29,10 +29,8 @@ import com.vimofthevine.underbudget.swing.DisplayAboutEvent;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.DisplayPreferencesEvent;
 import com.vimofthevine.underbudget.swing.OpenNewWindowEvent;
-import com.vimofthevine.underbudget.swing.analysis.AssignTransactionsEvent;
 import com.vimofthevine.underbudget.swing.analysis.CalculateBalancesEvent;
-import com.vimofthevine.underbudget.swing.analysis.ImportTransactionsEvent;
-import com.vimofthevine.underbudget.swing.analysis.ImportTransactionsFromEvent;
+import com.vimofthevine.underbudget.swing.assignment.events.AssignTransactionsEvent;
 import com.vimofthevine.underbudget.swing.export.ExportResultsEvent;
 import com.vimofthevine.underbudget.swing.session.content.SessionContent;
 import com.vimofthevine.underbudget.swing.session.events.CloseSessionEvent;
@@ -42,6 +40,8 @@ import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionContentEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
+import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsEvent;
+import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsFromEvent;
 
 /**
  * Enumeration type for menu actions.

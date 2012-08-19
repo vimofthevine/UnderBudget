@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.assignment;
+package com.vimofthevine.underbudget.swing.transaction;
 
 import java.awt.Component;
 import java.awt.Frame;
@@ -24,68 +24,69 @@ import javax.swing.JPanel;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.assignment.AssignmentRules;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.swing.assignment.AssignmentRuleDetailView;
+import com.vimofthevine.underbudget.swing.assignment.AssignmentRuleDetailViewModel;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailView;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailViewModel;
-import com.vimofthevine.underbudget.swing.transaction.AssociatedTransactionsView;
 import com.vimofthevine.underbudget.swing.widgets.ComplexSplitPane;
 
 /**
- * Factory for building the assignment rules view,
+ * Factory for building the imported transactions view,
  * which contains:
  * <ul>
- *   <li>List of assignment rules</li>
- *   <li>Detail form for modifying a selected rule</li>
- *   <li>Detail form for modifying the associated estimate of a selected rule</li>
- *   <li>List of transactions assigned by the selected rule</li>
+ *   <li>List of imported transactions</li>
+ *   <li>Detail view of a selected transaction</li>
+ *   <li>Detail view of the assigning rule of a selected transaction</li>
+ *   <li>Detail view of the associated estimate of a selected transaction</li>
  * </ul>
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public abstract class AssignmentRulesViewFactory {
+public abstract class ImportedTransactionsViewFactory {
 	
 	/**
-	 * Builds an assignment rules view instance.
+	 * Builds an imported transactions view instance.
 	 * 
 	 * @param window   application window
 	 * @param bus      event bus
-	 * @param rules    assignment rules
+	 * @param rules    assignment rule list
 	 * @param currency currency factory
-	 * @return assignment rules view component
+	 * @return imported transactions view component
 	 */
 	public static final Component build(Frame window,
 		EventBus bus, AssignmentRules rules, CurrencyFactory currency)
 	{
 		// Create models
-		AssignmentRuleListViewModel listModel =
-			new AssignmentRuleListViewModel(bus, rules);
-		AssignmentRuleDetailViewModel detailModel =
+		ImportedTransactionListViewModel listModel =
+			new ImportedTransactionListViewModel(bus);
+		ImportedTransactionDetailViewModel detailModel =
+			new ImportedTransactionDetailViewModel(bus);
+		AssignmentRuleDetailViewModel ruleModel =
 			new AssignmentRuleDetailViewModel(bus, window, rules);
 		EstimateDetailViewModel estimateModel =
 			new EstimateDetailViewModel(bus, currency, window);
-		QualifiedTransactionsViewModel transactionModel =
-			new QualifiedTransactionsViewModel(bus);
 		
 		// Create view components
 		JPanel listComponent = new JPanel();
 		JPanel detailComponent = new JPanel();
+		JPanel ruleComponent = new JPanel();
 		JPanel estimateComponent = new JPanel();
-		JPanel transactionComponent = new JPanel();
-		JPanel rulesComponent = new JPanel();
+		JPanel transactionsComponent = new JPanel();
 		
 		// Build views
-		new AssignmentRuleListView(listComponent, listModel);
-		new AssignmentRuleDetailView(detailComponent, detailModel);
+		new ImportedTransactionListView(listComponent, listModel);
+		new ImportedTransactionDetailView(detailComponent, detailModel);
+		new AssignmentRuleDetailView(ruleComponent, ruleModel);
 		new EstimateDetailView(estimateComponent, estimateModel);
-		new AssociatedTransactionsView(transactionComponent, transactionModel);
 		
 		// Put it all together
-		ComplexSplitPane split = new ComplexSplitPane(rulesComponent);
+		ComplexSplitPane split = new ComplexSplitPane(transactionsComponent);
 		split.setTopComponent(listComponent);
-		split.addTab("Rule", detailComponent);
+		split.addTab("Transaction", detailComponent);
+		split.addTab("Rule", ruleComponent);
 		split.addTab("Estimate", estimateComponent);
-		split.addTab("Transactions", transactionComponent);
 		
-		return rulesComponent;
+		return transactionsComponent;
 	}
 
 }

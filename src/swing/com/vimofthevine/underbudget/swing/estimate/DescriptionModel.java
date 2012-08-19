@@ -80,7 +80,9 @@ public class DescriptionModel extends SimpleDocument {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setText(estimate.getDefinition().getDescription());
+				String text = (estimate == null) ? ""
+					: estimate.getDefinition().getDescription();
+				setText(text);
 			}
 		});
 	}

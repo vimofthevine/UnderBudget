@@ -31,7 +31,7 @@ import com.vimofthevine.underbudget.core.assignment.Condition;
 public class AssignmentRulesTableModel extends AbstractTableModel {
 	
 	/**
-	 * Assiginment rules
+	 * Assignment rules
 	 */
 	private final AssignmentRules rules;
 	

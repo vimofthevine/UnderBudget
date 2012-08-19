@@ -20,11 +20,15 @@ import java.awt.Component;
 import java.awt.Frame;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.assignment.DefaultTransactionAssigner;
+import com.vimofthevine.underbudget.core.assignment.TransactionAssigner;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
+import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
+import com.vimofthevine.underbudget.swing.transaction.TransactionImporter;
 
 /**
  * 
@@ -78,12 +82,14 @@ public class Session {
 		
 		budgetSource = source;
 		Budget budget = budgetSource.getBudget();
+		ReverseLookupAssignmentRules rules =
+			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
+		TransactionAssigner assigner = new DefaultTransactionAssigner();
 		
 		state = new SessionState(globalBus, eventBus, budget);
 		new BudgetPersistenceModel(eventBus, budgetSource);
-		
-		ReverseLookupAssignmentRules rules =
-			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
+		new TransactionImporter(eventBus);
+		new OnDemandTransactionAssigner(eventBus, rules, assigner);
 		
 		component = SessionContentViewFactory.build(
 			window, eventBus, null, budget, new StubActualFigures(), rules);

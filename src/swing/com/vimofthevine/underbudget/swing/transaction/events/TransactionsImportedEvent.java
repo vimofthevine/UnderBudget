@@ -14,42 +14,40 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.transaction;
+package com.vimofthevine.underbudget.swing.transaction.events;
 
 import com.vimofthevine.underbudget.core.transaction.Transaction;
-import com.vimofthevine.underbudget.swing.history.SelectionEvent;
 
 /**
- * An event that represents the selection
- * of a transaction.
+ * Event generated when transactions have been imported.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class TransactionSelectionEvent implements SelectionEvent {
+public class TransactionsImportedEvent {
+	
+	/**
+	 * Imported transactions
+	 */
+	private final Transaction[] transactions;
+	
+	/**
+	 * Constructs a new transactions-imported event.
+	 * 
+	 * @param transactions imported transactions
+	 */
+	public TransactionsImportedEvent(Transaction[] transactions)
+	{
+		this.transactions = transactions;
+	}
+	
+	/**
+	 * Get the imported transactions.
+	 * 
+	 * @return imported transactions
+	 */
+	public Transaction[] getTransactions()
+	{
+		return transactions;
+	}
 
-	/**
-	 * The transaction that has been selected
-	 */
-	private final Transaction transaction;
-	
-	/**
-	 * Constructs a new transaction selection event.
-	 * 
-	 * @param transaction transaction that has been selected
-	 */
-	public TransactionSelectionEvent(Transaction transaction)
-	{
-		this.transaction = transaction;
-	}
-	
-	/**
-	 * Returns the transaction that has been selected.
-	 * 
-	 * @return transaction that has been selected
-	 */
-	public Transaction getEstimate()
-	{
-		return transaction;
-	}
-	
 }

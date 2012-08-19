@@ -82,7 +82,8 @@ class DueDateModel extends DefaultDateSelectionModel {
 			{
 				clearSelection(false);
 				
-				SimpleDate dueDate = estimate.getDefinition().getDueDate();
+				SimpleDate dueDate = (estimate == null) ? null
+					: estimate.getDefinition().getDueDate();
 				
 				if (dueDate != null)
 				{

@@ -182,6 +182,19 @@ public class EstimateTreeViewModel {
 	{
 		logger.log(Level.INFO, log + "Estimate selected: " + event);
 		
+		if (event.getEstimate() == null)
+		{
+			currentSelectionPath = null;
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run()
+				{
+					selectionModel.clearSelection();
+				}
+			});
+			
+			return;
+		}
+		
 		TreePath selectionPath = (event.getTreePath() == null)
 			? getPath(event.getEstimate()) : event.getTreePath();
 		

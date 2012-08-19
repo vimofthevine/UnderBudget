@@ -79,7 +79,8 @@ class EstimateTypeModel extends DefaultComboBoxModel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setSelectedItem(estimate.getDefinition().getType(), false);
+				setSelectedItem((estimate == null) ? null
+					: estimate.getDefinition().getType(), false);
 			}
 		});
 	}

@@ -19,30 +19,33 @@ package com.vimofthevine.underbudget.core.assignment;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 
 /**
- * Map of all transactions that have been assigned
- * and their assigning assignment rules.
+ * Default implementation of a transaction assigner.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface TransactionAssignments {
-	
-	/**
-	 * Retrieves the assignment rule that assigned the given transaction.
-	 * 
-	 * @param transaction transaction for which to retrieve the
-	 *        assigning assignment rule
-	 * @return assignment rule that assigned the transaction
-	 */
-	public AssignmentRule getAssigningRule(Transaction transaction);
-	
-	/**
-	 * Retrieves all transactions that have been assigned by
-	 * the given assignment rule.
-	 * 
-	 * @param rule assignment rule for which to retrieve all
-	 *        assigned transactions
-	 * @return transactions that were assigned by the assignment rule
-	 */
-	public Transaction[] getAssignedTransactions(AssignmentRule rule);
-	
+public class DefaultTransactionAssigner implements TransactionAssigner {
+
+	@Override
+    public TransactionAssignments assign(Transaction[] transactions,
+        AssignmentRules rules)
+    {
+		DefaultTransactionAssignments assignments = new DefaultTransactionAssignments();
+		
+		for (Transaction transaction : transactions)
+		{
+			for (int i=0; i<rules.size(); i++)
+			{
+				AssignmentRule rule = rules.getAt(i);
+				
+				if (rule.matches(transaction))
+				{
+					assignments.assign(transaction, rule);
+					break;
+				}
+			}
+		}
+		
+	    return assignments;
+    }
+
 }

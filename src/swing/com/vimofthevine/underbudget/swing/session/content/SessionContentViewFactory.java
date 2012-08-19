@@ -34,6 +34,7 @@ import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
 import com.vimofthevine.underbudget.swing.estimate.EstimateProgressViewFactory;
 import com.vimofthevine.underbudget.swing.status.StatusBar;
 import com.vimofthevine.underbudget.swing.status.StatusBarModel;
+import com.vimofthevine.underbudget.swing.transaction.ImportedTransactionsViewFactory;
 
 /**
  * Factory for building an entire session content view,
@@ -62,6 +63,8 @@ public abstract class SessionContentViewFactory {
 			window, bus, currency, budget.getRootEstimate(), actuals, rules);
 		Component assignmentRules = AssignmentRulesViewFactory.build(
 			window, bus, rules, currency);
+		Component importedTransactions = ImportedTransactionsViewFactory.build(
+			window, bus, rules, currency);
 		
 		JPanel content = new JPanel();
 		SessionContentView view = new SessionContentView(content, model);
@@ -70,7 +73,7 @@ public abstract class SessionContentViewFactory {
 		view.add(assignmentRules, SessionContent.ASSIGNMENT_RULES);
 		view.add(balanceImpact, SessionContent.BALANCE_IMPACT);
 		view.add(estimateProgress, SessionContent.ESTIMATE_PROGRESS);
-		view.add(new JLabel("Imported Transactions"), SessionContent.IMPORTED_TRANSACTIONS);
+		view.add(importedTransactions, SessionContent.IMPORTED_TRANSACTIONS);
 		
 		JPanel statusBar = new JPanel();
 		statusBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 2, 2));

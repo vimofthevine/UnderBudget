@@ -40,6 +40,6 @@ public interface TransactionAssigner {
 	 * @return record of transactions assignments
 	 */
 	public TransactionAssignments assign(Transaction[] transactions,
-		AssignmentRules[] rules);
+		AssignmentRules rules);
 	
 }

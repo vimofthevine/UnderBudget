@@ -78,6 +78,11 @@ implements ListSelectionListener {
 	private final AssignmentRules rules;
 	
 	/**
+	 * Currently selected assignment rule
+	 */
+	private AssignmentRule selectedRule;
+	
+	/**
 	 * Constructs a new assignment rules table view model.
 	 * 
 	 * @param bus   event bus
@@ -138,22 +143,62 @@ implements ListSelectionListener {
     {
 		logger.log(Level.INFO, "Rule selection changed");
 		
-		int index = selectionModel.getLeadSelectionIndex();
-		final AssignmentRule rule = rules.getAt(index);
-		logger.log(Level.INFO, "Selected " + rule + " at index " + index);
-		
-		if (rule != null)
+		if (selectionModel.isSelectionEmpty())
 		{
-			// Get off EDT
-			new Thread() {
-				public void run()
-				{
-					eventBus.post(new RuleSelectedEvent(rule));
-					eventBus.post(new EstimateSelectedEvent(rule.getEstimate(), null));
-				}
-			}.start();
+			
+		}
+		else
+		{
+    		int index = selectionModel.getLeadSelectionIndex();
+    		final AssignmentRule rule = rules.getAt(index);
+    		
+    		if (selectedRule == null ||
+    			! selectedRule.equals(rule))
+    		{
+        		logger.log(Level.INFO, "Selected " + rule + " at index " + index);
+        		
+        		if (rule != null)
+        		{
+        			// Get off EDT
+        			new Thread() {
+        				public void run()
+        				{
+        					eventBus.post(new RuleSelectedEvent(rule));
+        					eventBus.post(new EstimateSelectedEvent(rule.getEstimate(), null));
+        				}
+        			}.start();
+        		}
+    		}
 		}
     }
+	
+	@Subscribe
+	public void ruleSelected(RuleSelectedEvent event)
+	{
+		// Don't do anything if already selected (avoid infinite loop)
+		if (selectedRule == null ||
+			! selectedRule.equals(event.getAssignmentRule()))
+		{
+			selectedRule = event.getAssignmentRule();
+			final int index = (selectedRule == null) ?
+				-1 : rules.indexOf(selectedRule);
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run()
+				{
+					if (index == -1)
+					{
+						logger.log(Level.INFO, "Clearing selection");
+						selectionModel.clearSelection();
+					}
+					else
+					{
+						selectionModel.setSelectionInterval(index, index);
+					}
+				}
+			});
+		}
+	}
 	
 	/**
 	 * Updates the rule table to reflect a change

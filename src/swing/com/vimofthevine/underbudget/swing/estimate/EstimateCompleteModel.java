@@ -82,7 +82,8 @@ class EstimateCompleteModel extends ToggleButtonModel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setSelected(estimate.getDefinition().isComplete(), false);
+				setSelected((estimate == null) ? false
+					: estimate.getDefinition().isComplete(), false);
 			}
 		});
 	}

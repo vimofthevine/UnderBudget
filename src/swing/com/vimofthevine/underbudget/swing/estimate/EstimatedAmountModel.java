@@ -83,8 +83,8 @@ implements CommittableDocument {
 	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
-		final String amount = estimate.getDefinition()
-			.getAmount().formatAsString();
+		final String amount = (estimate == null) ? null
+			: estimate.getDefinition().getAmount().formatAsString();
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()

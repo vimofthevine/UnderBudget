@@ -28,6 +28,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.assignment.AssignmentRule;
 import com.vimofthevine.underbudget.core.assignment.AssignmentRules;
+import com.vimofthevine.underbudget.core.assignment.Condition;
 import com.vimofthevine.underbudget.swing.assignment.events.RuleSelectedEvent;
 
 /**
@@ -191,9 +192,6 @@ public class AssignmentRuleDetailViewModel {
 	{
 		final AssignmentRule rule = event.getAssignmentRule();
 		
-		if (rule == null)
-			return;
-		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
@@ -201,7 +199,15 @@ public class AssignmentRuleDetailViewModel {
 				deleteRuleAction.setRule(rule);
 				cloneRuleAction.setRule(rule);
 				
-				tableModel.setConditions(rule.getDefinition().getConditions());
+				if (rule == null)
+				{
+					tableModel.setConditions(new Condition[0]);
+				}
+				else
+				{
+					tableModel.setConditions(rule.getDefinition().getConditions());
+				}
+				
 				selectionModel.clearSelection();
 			}
 		});
