@@ -84,7 +84,12 @@ public class OnDemandTransactionAssigner {
 		// assigned (avoid infinite loops)
 		if (transactions != null && transactions.length > 0)
 		{
-			assignTransactions(new AssignTransactionsEvent());
+			new Thread() {
+				public void run()
+				{
+					assignTransactions(new AssignTransactionsEvent());
+				}
+			}.start();
 		}
 		// TODO send something out clearing previous assignments
 	}

@@ -22,7 +22,7 @@ import java.awt.Frame;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.actuals.ActualFigures;
+import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesView;

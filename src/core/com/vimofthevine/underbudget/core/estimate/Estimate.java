@@ -18,7 +18,7 @@ package com.vimofthevine.underbudget.core.estimate;
 
 import java.util.Date;
 
-import com.vimofthevine.underbudget.core.actuals.ActualFigure;
+import com.vimofthevine.underbudget.core.assignment.ActualFigure;
 import com.vimofthevine.underbudget.core.currency.Currency;
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.actuals;
+package com.vimofthevine.underbudget.core.assignment;
 
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 

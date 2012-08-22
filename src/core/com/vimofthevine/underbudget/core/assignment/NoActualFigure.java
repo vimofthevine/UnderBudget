@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.actuals;
+package com.vimofthevine.underbudget.core.assignment;
 
 import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
- * Total actual expense or income in contrast
- * to an estimated expense or income total.
+ * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface ActualFigure {
+class NoActualFigure implements ActualFigure {
 	
 	/**
-	 * Returns the sum actual expense or
-	 * income amount.
-	 * 
-	 * @return actual expense or income amount
+	 * Actual figure
 	 */
-	public Currency getAmount();
+	private final Currency actual;
+	
+	NoActualFigure(CurrencyFactory factory)
+	{
+		actual = factory.newCurrencyInstance();
+	}
+
+	@Override
+	public Currency getAmount()
+	{
+		return actual;
+	}
 
 }

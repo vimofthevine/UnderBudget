@@ -16,38 +16,36 @@
 
 package com.vimofthevine.underbudget.swing.analysis;
 
-import javax.swing.text.Document;
+import java.awt.Component;
+
+import javax.swing.JPanel;
+
+import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
- * Presentation model for views that display budget
- * analysis results.
+ * Factory for building the detailed analysis results
+ * view.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface SummaryModel {
+public abstract class AnalysisResultsViewFactory {
 	
 	/**
-	 * Returns a document representing
-	 * the budget's name.
+	 * Builds an analysis results view instance.
 	 * 
-	 * @return budget name document
+	 * @param bus      event bus
+	 * @param currency currency factory
+	 * @return
 	 */
-	public Document getNameDocument();
-
-	/**
-	 * Returns a document representing
-	 * the budget's initial balance.
-	 * 
-	 * @return budget initial balance document
-	 */
-	public Document getInitialBalanceDocument();
-
-	/**
-	 * Returns a document representing
-	 * the budget's period.
-	 * 
-	 * @return budget period document
-	 */
-	public Document getPeriodDocument();
+	public static final Component build(EventBus bus,
+		CurrencyFactory currency)
+	{
+		AnalysisResultsViewModel model =
+			new AnalysisResultsViewModel(bus, currency);
+		JPanel component = new JPanel();
+		new AnalysisResultsView(component, model);
+		return component;
+	}
 
 }

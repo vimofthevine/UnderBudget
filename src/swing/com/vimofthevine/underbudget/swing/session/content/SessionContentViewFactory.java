@@ -21,13 +21,14 @@ import java.awt.Component;
 import java.awt.Frame;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.actuals.ActualFigures;
+import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.swing.analysis.AnalysisResultsViewFactory;
+import com.vimofthevine.underbudget.swing.analysis.AnalysisSummaryViewFactory;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRulesViewFactory;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
@@ -57,6 +58,8 @@ public abstract class SessionContentViewFactory {
 	{
 		SessionContentViewModel model = new SessionContentViewModel(bus);
 		
+		Component analysisSummary = AnalysisSummaryViewFactory.build(bus,
+			currency, budget);
 		Component estimateProgress = EstimateProgressViewFactory.build(
 			window, bus, currency, budget.getRootEstimate(), actuals, rules);
 		Component balanceImpact = BalanceImpactViewFactory.build(
@@ -65,11 +68,13 @@ public abstract class SessionContentViewFactory {
 			window, bus, rules, currency);
 		Component importedTransactions = ImportedTransactionsViewFactory.build(
 			window, bus, rules, currency);
+		Component analysisResults = AnalysisResultsViewFactory.build(
+			bus, currency);
 		
-		JPanel content = new JPanel();
-		SessionContentView view = new SessionContentView(content, model);
+		JPanel swapableContent = new JPanel();
+		SessionContentView view = new SessionContentView(swapableContent, model);
 		
-		view.add(new JLabel("Analysis Summary"), SessionContent.ANALYSIS_SUMMARY);
+		view.add(analysisResults, SessionContent.ANALYSIS_SUMMARY);
 		view.add(assignmentRules, SessionContent.ASSIGNMENT_RULES);
 		view.add(balanceImpact, SessionContent.BALANCE_IMPACT);
 		view.add(estimateProgress, SessionContent.ESTIMATE_PROGRESS);
@@ -80,8 +85,12 @@ public abstract class SessionContentViewFactory {
 		StatusBar status = new StatusBar(statusBar);
 		StatusBarModel statusModel = new StatusBarModel(status);
 		
+		JPanel sessionContent = new JPanel(new BorderLayout());
+		sessionContent.add(swapableContent, BorderLayout.CENTER);
+		sessionContent.add(analysisSummary, BorderLayout.SOUTH);
+		
 		JPanel composite = new JPanel(new BorderLayout());
-		composite.add(content, BorderLayout.CENTER);
+		composite.add(sessionContent, BorderLayout.CENTER);
 		composite.add(statusBar, BorderLayout.SOUTH);
 		
 		return composite;

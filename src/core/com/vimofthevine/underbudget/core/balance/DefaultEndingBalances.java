@@ -16,29 +16,53 @@
 
 package com.vimofthevine.underbudget.core.balance;
 
-import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.estimate.Estimate;
 
 /**
- * A <code>BalanceCalculator</code> iterates over the
- * estimate tree, deriving the estimated, actual, and
- * expected ending balances.
+ * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BalanceCalculator {
-
-	/**
-	 * Performs the calculation of ending balances given
-	 * the estimate tree and actual figures.
-	 * 
-	 * @param initial  initial balance
-	 * @param estimate root of the estimate tree
-	 * @param actuals  actual incomes or expenses
-	 * @return calculated ending balances
-	 */
-	public EndingBalances calculate(Currency initial,
-		Estimate estimate, ActualFigures actuals);
+class DefaultEndingBalances implements EndingBalances {
 	
+	/**
+	 * Estimated ending balance
+	 */
+	DefaultEndingBalance estimated;
+	
+	/**
+	 * Actual ending balance
+	 */
+	DefaultEndingBalance actual;
+	
+	/**
+	 * Expected ending balance
+	 */
+	DefaultEndingBalance expected;
+	
+	DefaultEndingBalances(Currency initial)
+	{
+		estimated = new DefaultEndingBalance(initial);
+		actual = new DefaultEndingBalance(initial);
+		expected = new DefaultEndingBalance(initial);
+	}
+
+	@Override
+	public EndingBalance getEstimatedEndingBalance()
+	{
+		return estimated;
+	}
+
+	@Override
+	public EndingBalance getActualEndingBalance()
+	{
+		return actual;
+	}
+
+	@Override
+	public EndingBalance getExpectedEndingBalance()
+	{
+		return expected;
+	}
+
 }

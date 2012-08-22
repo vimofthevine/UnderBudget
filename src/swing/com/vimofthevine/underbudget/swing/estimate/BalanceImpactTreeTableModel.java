@@ -16,8 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import com.vimofthevine.underbudget.core.actuals.ActualFigure;
-import com.vimofthevine.underbudget.core.actuals.ActualFigures;
+import com.vimofthevine.underbudget.core.assignment.ActualFigure;
+import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 

@@ -22,9 +22,13 @@ import java.awt.Frame;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.assignment.DefaultTransactionAssigner;
 import com.vimofthevine.underbudget.core.assignment.TransactionAssigner;
+import com.vimofthevine.underbudget.core.balance.BalanceCalculator;
+import com.vimofthevine.underbudget.core.balance.DefaultBalanceCalculator;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
+import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
@@ -82,17 +86,20 @@ public class Session {
 		
 		budgetSource = source;
 		Budget budget = budgetSource.getBudget();
+		CurrencyFactory factory = budget.getDefinition().getCurrency();
 		ReverseLookupAssignmentRules rules =
 			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
-		TransactionAssigner assigner = new DefaultTransactionAssigner();
+		TransactionAssigner assigner = new DefaultTransactionAssigner(factory);
+		BalanceCalculator calculator = new DefaultBalanceCalculator();
 		
 		state = new SessionState(globalBus, eventBus, budget);
 		new BudgetPersistenceModel(eventBus, budgetSource);
 		new TransactionImporter(eventBus);
 		new OnDemandTransactionAssigner(eventBus, rules, assigner);
+		new OnDemandBalanceCalculator(eventBus, budget, calculator);
 		
 		component = SessionContentViewFactory.build(
-			window, eventBus, null, budget, new StubActualFigures(), rules);
+			window, eventBus, factory, budget, new StubActualFigures(), rules);
 		
 		active = false;
 	}

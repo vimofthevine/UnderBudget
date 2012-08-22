@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 
 /**
@@ -28,7 +30,13 @@ import com.vimofthevine.underbudget.core.transaction.Transaction;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class DefaultTransactionAssignments implements TransactionAssignments {
+class DefaultTransactionAssignments implements TransactionAssignments,
+ActualFigures {
+	
+	/**
+	 * Currency factory
+	 */
+	private final CurrencyFactory factory;
 	
 	/**
 	 * Map of transaction to assigning rule
@@ -41,12 +49,22 @@ class DefaultTransactionAssignments implements TransactionAssignments {
 	private final Map<AssignmentRule,List<Transaction>> ruleToTransactions;
 	
 	/**
-	 * Constructs a new transaction assignment list.
+	 * Map of estimate to transactions
 	 */
-	DefaultTransactionAssignments()
+	private final Map<Estimate,List<Transaction>> estimateToTransactions;
+	
+	/**
+	 * Constructs a new transaction assignment list.
+	 * 
+	 * @param factory currency factory
+	 */
+	DefaultTransactionAssignments(CurrencyFactory factory)
 	{
+		this.factory = factory;
+		
 		transactionToRule = new HashMap<Transaction,AssignmentRule>();
 		ruleToTransactions = new HashMap<AssignmentRule,List<Transaction>>();
+		estimateToTransactions = new HashMap<Estimate,List<Transaction>>();
 	}
 
 	/**
@@ -64,7 +82,15 @@ class DefaultTransactionAssignments implements TransactionAssignments {
 		{
 			ruleToTransactions.put(rule, new ArrayList<Transaction>());
 		}
+		
+		Estimate estimate = rule.getEstimate();
+		if ( ! estimateToTransactions.containsKey(estimate))
+		{
+			estimateToTransactions.put(estimate, new ArrayList<Transaction>());
+		}
+		
 		ruleToTransactions.get(rule).add(transaction);
+		estimateToTransactions.get(estimate).add(transaction);
 	}
 
 	@Override
@@ -82,5 +108,15 @@ class DefaultTransactionAssignments implements TransactionAssignments {
 		else
 			return null;
 	}
+
+	@Override
+    public ActualFigure getActual(Estimate estimate)
+    {
+		List<Transaction> transactions = estimateToTransactions.get(estimate);
+		if (transactions != null)
+			return new DefaultActualFigure(factory, transactions);
+		else
+			return new NoActualFigure(factory);
+    }
 
 }

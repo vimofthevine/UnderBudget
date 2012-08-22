@@ -16,53 +16,48 @@
 
 package com.vimofthevine.underbudget.core.assignment;
 
+import java.util.List;
+
+import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 
 /**
- * Default implementation of a transaction assigner.
+ * Default implementation of an actual figure
+ * that is the sum value of a set of transactions.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class DefaultTransactionAssigner implements TransactionAssigner {
+class DefaultActualFigure implements ActualFigure {
 	
 	/**
-	 * Currency factory
+	 * Actual figure
 	 */
-	private final CurrencyFactory factory;
-	
-	/**
-	 * Constructs a new transaction assigner.
-	 * 
-	 * @param factory currency factory
-	 */
-	public DefaultTransactionAssigner(CurrencyFactory factory)
-	{
-		this.factory = factory;
-	}
+	private final Currency actual;
 
-	@Override
-    public TransactionAssignments assign(Transaction[] transactions,
-        AssignmentRules rules)
-    {
-		DefaultTransactionAssignments assignments =
-			new DefaultTransactionAssignments(factory);
+	/**
+	 * Constructs a default actual figure, which is
+	 * the sum of the value of the given list of
+	 * transactions.
+	 * 
+	 * @param factory      currency factory
+	 * @param transactions transaction list
+	 */
+	DefaultActualFigure(CurrencyFactory factory,
+		List<Transaction> transactions)
+	{
+		actual = factory.newCurrencyInstance();
 		
 		for (Transaction transaction : transactions)
 		{
-			for (int i=0; i<rules.size(); i++)
-			{
-				AssignmentRule rule = rules.getAt(i);
-				
-				if (rule.matches(transaction))
-				{
-					assignments.assign(transaction, rule);
-					break;
-				}
-			}
+			actual.increaseBy(transaction.getDefinition().getTransferAmount());
 		}
-		
-	    return assignments;
-    }
+	}
 
+	@Override
+    public Currency getAmount()
+    {
+		return actual;
+    }
+	
 }
