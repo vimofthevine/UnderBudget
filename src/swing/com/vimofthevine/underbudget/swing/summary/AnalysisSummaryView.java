@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.analysis;
+package com.vimofthevine.underbudget.swing.summary;
 
 import java.awt.Component;
 import java.awt.Container;

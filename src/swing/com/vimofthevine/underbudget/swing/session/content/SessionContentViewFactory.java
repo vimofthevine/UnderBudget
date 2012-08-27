@@ -27,14 +27,14 @@ import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
-import com.vimofthevine.underbudget.swing.analysis.AnalysisResultsViewFactory;
-import com.vimofthevine.underbudget.swing.analysis.AnalysisSummaryViewFactory;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRulesViewFactory;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
 import com.vimofthevine.underbudget.swing.estimate.EstimateProgressViewFactory;
 import com.vimofthevine.underbudget.swing.status.StatusBar;
 import com.vimofthevine.underbudget.swing.status.StatusBarModel;
+import com.vimofthevine.underbudget.swing.summary.AnalysisResultsViewFactory;
+import com.vimofthevine.underbudget.swing.summary.AnalysisSummaryViewFactory;
 import com.vimofthevine.underbudget.swing.transaction.ImportedTransactionsViewFactory;
 
 /**
@@ -69,7 +69,7 @@ public abstract class SessionContentViewFactory {
 		Component importedTransactions = ImportedTransactionsViewFactory.build(
 			window, bus, rules, currency);
 		Component analysisResults = AnalysisResultsViewFactory.build(
-			bus, currency);
+			bus, currency, budget);
 		
 		JPanel swapableContent = new JPanel();
 		SessionContentView view = new SessionContentView(swapableContent, model);

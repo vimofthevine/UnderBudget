@@ -31,6 +31,7 @@ import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
 import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
+import com.vimofthevine.underbudget.swing.budget.OnDemandEditBudgetDialog;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
 import com.vimofthevine.underbudget.swing.transaction.TransactionImporter;
 
@@ -97,6 +98,7 @@ public class Session {
 		new TransactionImporter(eventBus);
 		new OnDemandTransactionAssigner(eventBus, rules, assigner);
 		new OnDemandBalanceCalculator(eventBus, budget, calculator);
+		new OnDemandEditBudgetDialog(eventBus, window, factory, budget);
 		
 		component = SessionContentViewFactory.build(
 			window, eventBus, factory, budget, new StubActualFigures(), rules);

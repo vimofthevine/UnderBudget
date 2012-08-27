@@ -57,6 +57,7 @@ public interface BudgetDefinition {
 	 * 
 	 * @return currency factory
 	 */
+	@Deprecated
 	public CurrencyFactory getCurrency();
 	
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.analysis;
+package com.vimofthevine.underbudget.swing.summary;
 
 import com.vimofthevine.underbudget.core.balance.EndingBalance;
 import com.vimofthevine.underbudget.core.currency.Currency;

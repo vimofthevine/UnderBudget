@@ -78,6 +78,9 @@ class SessionContentViewModel {
 				contentModel.setContent(event.getContent());
 				break;
 				
+			case BUDGET:
+				break;
+				
 			default:
 				// Do nothing (content is not displayed in this view)
 		}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.analysis;
+package com.vimofthevine.underbudget.swing.summary;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,10 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.balance.EndingBalances;
 import com.vimofthevine.underbudget.core.budget.Budget;
+import com.vimofthevine.underbudget.core.budget.BudgetDefinition;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.swing.analysis.BalancesCalculatedEvent;
+import com.vimofthevine.underbudget.swing.budget.BudgetModifiedEvent;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 
 /**
@@ -91,6 +94,35 @@ class AnalysisSummaryViewModel {
 			factory.newCurrencyInstance().formatAsString());
 	}
 	
+	/**
+	 * Updates the displayed budget parameters when
+	 * the budget has been modified.
+	 * 
+	 * @param event budget modified event
+	 */
+	@Subscribe
+	public void budgetModified(BudgetModifiedEvent event)
+	{
+		BudgetDefinition definition = event.getBudget().getDefinition();
+		
+		final String name = definition.getName();
+		final String initial = definition.getInitialBalance().formatAsString();
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				documents.get(Field.BUDGET_NAME).setText(name);
+				documents.get(Field.INITIAL_BALANCE).setText(initial);
+			}
+		});
+	}
+	
+	/**
+	 * Updates the displayed ending balances when
+	 * the balances have been recalculated.
+	 * 
+	 * @param event balances-calculated event
+	 */
 	@Subscribe
 	public void balancesCalculated(BalancesCalculatedEvent event)
 	{

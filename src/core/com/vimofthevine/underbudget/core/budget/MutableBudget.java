@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.budget;
+package com.vimofthevine.underbudget.core.budget;
 
 /**
- * Presentation model for views that display
- * modifiable details about a budgeting period.
+ * A budget whose definition can be modified.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetingPeriodModel {
+public interface MutableBudget extends Budget {
+	
+	/**
+	 * Updates this budget's definition.
+	 * 
+	 * @param definition new budget definition
+	 */
+	public void setDefinition(BudgetDefinition definition);
 
 }

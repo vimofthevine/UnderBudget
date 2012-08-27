@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.analysis;
+package com.vimofthevine.underbudget.swing.summary;
 
 import java.awt.Component;
 
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
- * Factory for building the detailed analysis results
- * view.
+ * Factory for building the analysis summary bar
+ * displayed on the bottom of the application window.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public abstract class AnalysisResultsViewFactory {
+public abstract class AnalysisSummaryViewFactory {
 	
 	/**
-	 * Builds an analysis results view instance.
+	 * Builds an analysis summary view instance.
 	 * 
 	 * @param bus      event bus
 	 * @param currency currency factory
-	 * @return
+	 * @param budget   budget
+	 * @return analysis summary view component
 	 */
 	public static final Component build(EventBus bus,
-		CurrencyFactory currency)
+		CurrencyFactory currency, Budget budget)
 	{
-		AnalysisResultsViewModel model =
-			new AnalysisResultsViewModel(bus, currency);
-		JPanel component = new JPanel();
-		new AnalysisResultsView(component, model);
-		return component;
+		AnalysisSummaryViewModel summaryModel =
+			new AnalysisSummaryViewModel(bus, budget, currency);
+		JPanel summaryComponent = new JPanel();
+		new AnalysisSummaryView(summaryComponent, summaryModel);
+		return summaryComponent;
 	}
 
 }
