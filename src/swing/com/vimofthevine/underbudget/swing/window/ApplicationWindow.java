@@ -18,7 +18,11 @@ package com.vimofthevine.underbudget.swing.window;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Image;
+import java.net.URL;
+import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JToolBar;
@@ -78,6 +82,27 @@ public class ApplicationWindow {
 				}
 			}
 		);
+		
+		String[] iconNames = new String[] {
+			"icons/icon_16.png",
+			"icons/icon_22.png",
+			"icons/icon_24.png",
+			"icons/icon_32.png",
+			"icons/icon_48.png",
+			"icons/icon_256.png",
+		};
+		ArrayList<Image> icons = new ArrayList<Image>();
+		
+		for (String iconName : iconNames)
+		{
+			URL iconUrl = getClass().getResource(iconName);
+			if (iconUrl != null)
+			{
+				icons.add(new ImageIcon(iconUrl).getImage());
+			}
+		}
+		
+		window.setIconImages(icons);
 		
 		window.pack();
 		// Set initial size

@@ -34,7 +34,8 @@ import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.budget.OnDemandEditBudgetDialog;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
-import com.vimofthevine.underbudget.swing.transaction.TransactionImporter;
+import com.vimofthevine.underbudget.swing.transaction.OnDemandTransactionImporter;
+import com.vimofthevine.underbudget.swing.transaction.wizard.TransactionSourceSelectionWizard;
 
 /**
  * 
@@ -96,7 +97,9 @@ public class Session {
 		
 		state = new SessionState(globalBus, eventBus, budget);
 		new BudgetPersistenceModel(eventBus, budgetSource);
-		new TransactionImporter(eventBus);
+		
+		new TransactionSourceSelectionWizard(eventBus, window, factory);
+		new OnDemandTransactionImporter(eventBus, budget);
 		new OnDemandTransactionAssigner(eventBus, rules, assigner);
 		new OnDemandBalanceCalculator(eventBus, budget, calculator);
 		new OnDemandEditBudgetDialog(eventBus, window, factory, budget);

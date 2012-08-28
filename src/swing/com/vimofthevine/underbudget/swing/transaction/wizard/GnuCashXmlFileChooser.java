@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.budget.period;
+package com.vimofthevine.underbudget.swing.transaction.wizard;
 
-import com.vimofthevine.underbudget.core.date.DateRange;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
- * A <code>BudgetingPeriod</code> represents a range of
- * dates over which incomes and expenses are to be
- * analyzed.
+ * File chooser for selecting GnuCash XML files.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetingPeriod extends DateRange {
+class GnuCashXmlFileChooser extends JFileChooser {
 	
 	/**
-	 * Returns a description of this budgeting period,
-	 * suitable for displaying to users.
-	 * 
-	 * @return description of this budgeting period
+	 * Constructs a new GnuCash XML file chooser.
 	 */
-	public String getDescription();
+	GnuCashXmlFileChooser()
+	{
+		// Add the accept-all file filter
+		setAcceptAllFileFilterUsed(true);
+		
+		// Set up GnuCash XML file filter
+		FileFilter fileFilter = new GnuCashXmlFileFilter();
+		addChoosableFileFilter(fileFilter);
+		setFileFilter(fileFilter);
+	}
 
 }

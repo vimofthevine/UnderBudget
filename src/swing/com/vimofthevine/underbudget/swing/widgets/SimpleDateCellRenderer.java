@@ -21,7 +21,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import com.vimofthevine.underbudget.core.util.SimpleDate;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
  * Table cell renderer for displaying simple dates.

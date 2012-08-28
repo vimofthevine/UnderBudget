@@ -19,8 +19,8 @@ package com.vimofthevine.underbudget.core.budget.period;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.vimofthevine.underbudget.core.util.DateTime;
-import com.vimofthevine.underbudget.core.util.SimpleDate;
+import com.vimofthevine.underbudget.core.date.DateTime;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
  * A budgeting period based on a paydate-to-paydate calendar

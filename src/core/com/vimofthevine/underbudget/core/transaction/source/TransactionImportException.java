@@ -16,26 +16,35 @@
 
 package com.vimofthevine.underbudget.core.transaction.source;
 
-import com.vimofthevine.underbudget.core.date.DateRange;
-import com.vimofthevine.underbudget.core.transaction.Transaction;
-
 /**
- * A <code>TransactionSource</code> abstracts the persistence
- * method and location of imported transactions.
+ * Exception thrown if any error occurs and transactions
+ * could not be imported from the specified transaction source.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface TransactionSource {
+public class TransactionImportException extends Exception {
 	
 	/**
-	 * Returns the transactions with posted dates
-	 * within the given date range.
+	 * Constructs a new transaction import exception with 
+	 * the given message
 	 * 
-	 * @return transactions that occurred within the given
-	 *         date range
-	 * @throws TransactionImportException if an error occurred
+	 * @param msg exception detail message
 	 */
-	public Transaction[] getTransactions(DateRange range)
-	throws TransactionImportException;
+	public TransactionImportException(String msg)
+	{
+		super(msg);
+	}
+	
+	/**
+	 * Constructs a new transaction import exception with 
+	 * the given message and cause
+	 * 
+	 * @param msg   exception detail message
+	 * @param cuase exception cause
+	 */
+	public TransactionImportException(String msg, Throwable cause)
+	{
+		super(msg, cause);
+	}
 
 }

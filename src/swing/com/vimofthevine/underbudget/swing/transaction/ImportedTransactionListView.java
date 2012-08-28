@@ -26,8 +26,8 @@ import javax.swing.JScrollPane;
 import org.jdesktop.swingx.JXTable;
 
 import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.transaction.TransferAccount;
-import com.vimofthevine.underbudget.core.util.SimpleDate;
 import com.vimofthevine.underbudget.swing.widgets.CurrencyCellRenderer;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDateCellRenderer;
 import com.vimofthevine.underbudget.swing.widgets.TransferAccountCellRenderer;

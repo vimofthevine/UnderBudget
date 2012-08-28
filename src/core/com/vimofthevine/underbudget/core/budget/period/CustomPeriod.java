@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.budget.period;
 
-import com.vimofthevine.underbudget.core.util.SimpleDate;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
  * A budgeting period using custom start and end

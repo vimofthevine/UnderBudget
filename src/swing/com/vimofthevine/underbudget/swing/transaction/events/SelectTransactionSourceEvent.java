@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.budget.period;
-
-import com.vimofthevine.underbudget.core.date.DateRange;
+package com.vimofthevine.underbudget.swing.transaction.events;
 
 /**
- * A <code>BudgetingPeriod</code> represents a range of
- * dates over which incomes and expenses are to be
- * analyzed.
+ * Event generated to prompt the user for
+ * the source of transactions to import.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetingPeriod extends DateRange {
-	
-	/**
-	 * Returns a description of this budgeting period,
-	 * suitable for displaying to users.
-	 * 
-	 * @return description of this budgeting period
-	 */
-	public String getDescription();
+public class SelectTransactionSourceEvent {
 
 }

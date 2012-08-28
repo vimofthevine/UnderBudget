@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.util;
+package com.vimofthevine.underbudget.core.date;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

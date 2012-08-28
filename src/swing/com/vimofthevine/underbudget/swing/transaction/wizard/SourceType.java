@@ -14,25 +14,42 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.budget.period;
-
-import com.vimofthevine.underbudget.core.date.DateRange;
+package com.vimofthevine.underbudget.swing.transaction.wizard;
 
 /**
- * A <code>BudgetingPeriod</code> represents a range of
- * dates over which incomes and expenses are to be
- * analyzed.
+ * Enumeration for supported transaction source types.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetingPeriod extends DateRange {
+enum SourceType {
+	GNUCASH_XML("GnuCash XML"),
+	STUB("Stub Source");
 	
 	/**
-	 * Returns a description of this budgeting period,
-	 * suitable for displaying to users.
-	 * 
-	 * @return description of this budgeting period
+	 * Transaction source type name
 	 */
-	public String getDescription();
-
+	private final String name;
+	
+	/**
+	 * Constructs a new transaction source
+	 * type enumeration.
+	 * 
+	 * @param name source name
+	 */
+	private SourceType(String name)
+	{
+		this.name = name;
+	}
+	
+	public String getActionCommand()
+	{
+		return super.toString();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+	
 }

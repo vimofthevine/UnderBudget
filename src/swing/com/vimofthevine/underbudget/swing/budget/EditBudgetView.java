@@ -86,8 +86,8 @@ public abstract class EditBudgetView {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				dialog.setLocationRelativeTo(parent);
 				dialog.pack();
+				dialog.setLocationRelativeTo(parent);
 				dialog.setVisible(true);
 			}
 		});

@@ -23,10 +23,10 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 import com.vimofthevine.underbudget.core.transaction.TransactionDefinition;
 import com.vimofthevine.underbudget.core.transaction.TransferAccount;
-import com.vimofthevine.underbudget.core.util.SimpleDate;
 
 /**
  * A table model for displaying imported transactions.

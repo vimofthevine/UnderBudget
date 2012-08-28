@@ -23,11 +23,11 @@ import javax.swing.SwingUtilities;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
-import com.vimofthevine.underbudget.core.util.SimpleDate;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 

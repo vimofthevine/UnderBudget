@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.budget.period;
-
-import com.vimofthevine.underbudget.core.date.DateRange;
+package com.vimofthevine.underbudget.core.date;
 
 /**
- * A <code>BudgetingPeriod</code> represents a range of
- * dates over which incomes and expenses are to be
- * analyzed.
+ * Interface for a period of time, spanning
+ * over a range of dates.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetingPeriod extends DateRange {
-	
-	/**
-	 * Returns a description of this budgeting period,
-	 * suitable for displaying to users.
-	 * 
-	 * @return description of this budgeting period
-	 */
-	public String getDescription();
+public interface DateRange {
 
+	/**
+	 * Checks if the given date falls within the
+	 * start and end dates of this budgeting period.
+	 * 
+	 * @param date date to be considered
+	 * @return <code>true</code> if the date is within
+	 *         the start and end dates of this budgeting
+	 *         period, else <code>false</code>
+	 */
+	public boolean contains(SimpleDate date);
+	
 }

@@ -17,7 +17,7 @@
 package com.vimofthevine.underbudget.core.transaction;
 
 import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.util.SimpleDate;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
  * Set of attributes defining an individual transaction.
