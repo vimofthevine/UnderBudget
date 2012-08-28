@@ -27,8 +27,7 @@ import com.vimofthevine.underbudget.core.budget.MutableBudget;
 import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
 import com.vimofthevine.underbudget.core.currency.Currency;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
-import com.vimofthevine.underbudget.swing.currency.CommittableDocument;
-import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
+import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 
 /**
  * Custom document model to display and apply
@@ -36,7 +35,7 @@ import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class InitialBalanceModel extends SimpleDocument implements CommittableDocument {
+class InitialBalanceModel extends CurrencyInputModel {
 	
 	/**
 	 * Event bus
@@ -49,58 +48,54 @@ class InitialBalanceModel extends SimpleDocument implements CommittableDocument 
 	private final Budget budget;
 	
 	/**
-	 * Currency factory
-	 */
-	private final CurrencyFactory factory;
-	
-	/**
 	 * Budget change set
 	 */
 	private final HashMap<String, Object> changes;
 	
+	/**
+	 * Constructs a new initial balance document model.
+	 * 
+	 * @param bus     event bus
+	 * @param factory currency factory
+	 * @param budget  budget being modified
+	 */
 	InitialBalanceModel(EventBus bus, CurrencyFactory factory,
 		Budget budget)
 	{
+		super(factory);
+		
 		eventBus = bus;
-		this.factory = factory;
 		this.budget = budget;
 		changes = new HashMap<String, Object>();
 		
-		setText(budget.getDefinition().getInitialBalance().formatAsString());
-	}
-
-	@Override
-	public void commit()
-	{
+		final Currency amount = budget.getDefinition()
+			.getInitialBalance();
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				update();
+				setValue(amount);
 			}
 		});
 	}
-	
+
 	/**
 	 * Updates the initial balance according to
 	 * the current text of the document.
 	 */
-	private void update()
+	@Override
+	public void setNewValue(final Currency newBalance)
 	{
 		if ( ! (budget instanceof MutableBudget))
 			return;
 		else
 		{
-			// Grab this while on EDT
-			final String amount = getText();
-			
-			// Then get off EDT
+			// Get off EDT
 			new Thread() {
 				public void run()
 				{
 					try
 					{
-						final Currency newBalance = factory.newCurrencyInstance(amount);
-						
 						MutableBudget mutable = (MutableBudget) budget;
 						final BudgetDefinition old = mutable.getDefinition();
 						
@@ -110,17 +105,16 @@ class InitialBalanceModel extends SimpleDocument implements CommittableDocument 
                                 public String getName() { return old.getName(); }
                                 public Currency getInitialBalance() { return newBalance; }
                                 public BudgetingPeriod getPeriod() { return old.getPeriod(); }
-								@Override
-                                public CurrencyFactory getCurrency() { return old.getCurrency(); }
 							});
 							
-							changes.put("amount", amount);
+							changes.put("amount", newBalance.formatAsString());
 							eventBus.post(new BudgetModifiedEvent(budget, changes));
 						}
 					}
 					catch (NumberFormatException nfe)
 					{
 						// Do nothing
+						nfe.printStackTrace();
 					}
 				}
 			}.start();

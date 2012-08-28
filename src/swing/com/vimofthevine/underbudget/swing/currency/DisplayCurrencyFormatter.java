@@ -18,7 +18,6 @@ package com.vimofthevine.underbudget.swing.currency;
 
 import java.text.ParseException;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import com.vimofthevine.underbudget.core.currency.Currency;
@@ -45,17 +44,6 @@ class DisplayCurrencyFormatter extends AbstractFormatter {
 	DisplayCurrencyFormatter(CurrencyFactory factory)
 	{
 		this.factory = factory;
-	}
-	
-	@Override
-	public void install(JFormattedTextField field)
-	{
-		super.install(field);
-		
-		if (field.getDocument() instanceof CommittableDocument)
-		{
-			((CommittableDocument) field.getDocument()).commit();
-		}
 	}
 	
 	@Override

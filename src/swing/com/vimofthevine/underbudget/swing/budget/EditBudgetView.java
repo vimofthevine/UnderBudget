@@ -26,10 +26,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.vimofthevine.underbudget.swing.currency.CurrencyField;
 import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
 
 /**
@@ -46,10 +46,8 @@ public abstract class EditBudgetView {
 		JTextField nameField = new JTextField();
 		nameField.setDocument(model.getNameDocument());
 		
-		JFormattedTextField initialField = new JFormattedTextField(
-			model.getInitialBalanceFormatter());
-		initialField.setDocument(model.getInitialBalanceDocument());
-		initialField.setInputVerifier(model.getInitialBalanceInputVerifier());
+		CurrencyField initialField = new CurrencyField(
+			model.getInitialBalanceDocument());
 		
 		JButton closeButton = new JButton(model.getCloseAction());
 		

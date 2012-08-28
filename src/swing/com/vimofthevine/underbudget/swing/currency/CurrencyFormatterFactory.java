@@ -29,7 +29,7 @@ import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CurrencyFormatterFactory extends AbstractFormatterFactory {
+class CurrencyFormatterFactory extends AbstractFormatterFactory {
 	
 	/**
 	 * Formatter used when the field is in focus
@@ -49,7 +49,7 @@ public class CurrencyFormatterFactory extends AbstractFormatterFactory {
 	 * 
 	 * @param factory currency factory
 	 */
-	public CurrencyFormatterFactory(CurrencyFactory factory)
+	CurrencyFormatterFactory(CurrencyFactory factory)
 	{
 		displayingFormatter = new DisplayCurrencyFormatter(factory);
 		editingFormatter = new EditingCurrencyFormatter(factory);

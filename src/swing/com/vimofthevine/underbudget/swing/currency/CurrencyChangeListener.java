@@ -16,17 +16,22 @@
 
 package com.vimofthevine.underbudget.swing.currency;
 
+import com.vimofthevine.underbudget.core.currency.Currency;
+
 /**
- * Interface for document models that support
- * the committing of changes.
+ * Interface for listeners to be notified when the
+ * currency changes in a currency input model.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface CommittableDocument {
+public interface CurrencyChangeListener {
 
 	/**
-	 * Commits changes made to the document.
+	 * Notifies the listeners that the currency value
+	 * has changed.
+	 * 
+	 * @param currency new currency value
 	 */
-	public void commit();
+	public void currencyChanged(Currency currency);
 	
 }

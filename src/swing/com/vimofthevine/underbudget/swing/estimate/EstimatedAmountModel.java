@@ -28,9 +28,8 @@ import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.core.util.SimpleDate;
-import com.vimofthevine.underbudget.swing.currency.CommittableDocument;
+import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
-import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 
 /**
  * Custom document model to display and apply
@@ -38,18 +37,12 @@ import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class EstimatedAmountModel extends SimpleDocument
-implements CommittableDocument {
+class EstimatedAmountModel extends CurrencyInputModel {
 
 	/**
 	 * Event bus
 	 */
 	private final EventBus eventBus;
-	
-	/**
-	 * Currency factory
-	 */
-	private final CurrencyFactory factory;
 	
 	/**
 	 * Estimate field change set
@@ -64,12 +57,14 @@ implements CommittableDocument {
 	/**
 	 * Constructs a new estimate amount document model.
 	 * 
-	 * @param bus event bus
+	 * @param bus     event bus
+	 * @param factory currency factory
 	 */
 	EstimatedAmountModel(EventBus bus, CurrencyFactory factory)
 	{
+		super(factory);
+		
 		eventBus = bus;
-		this.factory = factory;
 		changes = new HashMap<String,String>();
 	}
 	
@@ -83,49 +78,34 @@ implements CommittableDocument {
 	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
-		final String amount = (estimate == null) ? null
-			: estimate.getDefinition().getAmount().formatAsString();
+		final Currency amount = (estimate == null) ? null
+			: estimate.getDefinition().getAmount();
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				setText(amount);
+				setValue(amount);
 			}
 		});
 	}
 	
-	@Override
-	public void commit()
-	{
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run()
-			{
-				update();
-			}
-		});
-	}
-
 	/**
 	 * Updates the estimate's amount according to
 	 * the current text of the document.
 	 */
-	private void update()
+	@Override
+	public void setNewValue(final Currency currency)
 	{
 		if ( ! (estimate instanceof MutableEstimate))
 			return;
 		else
 		{
-    		// Grab this while on EDT
-    		final String amount = getText();
-    		
-    		// Then get off EDT
+    		// Get off EDT
     		new Thread() {
     			public void run()
     			{
     				try
     				{
-    					final Currency currency = factory.newCurrencyInstance(amount);
-    					
         				MutableEstimate mutable = (MutableEstimate) estimate;
         				final EstimateDefinition old = mutable.getDefinition();
     					
@@ -140,7 +120,7 @@ implements CommittableDocument {
                                 public boolean isComplete() { return old.isComplete(); }
         					});
         					
-            				changes.put("amount", amount);
+            				changes.put("amount", currency.formatAsString());
             				eventBus.post(new EstimateModifiedEvent(estimate, changes));
     					}
     				}

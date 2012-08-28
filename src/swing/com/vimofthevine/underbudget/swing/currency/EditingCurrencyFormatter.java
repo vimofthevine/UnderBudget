@@ -37,9 +37,9 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	private final CurrencyFactory factory;
 	
 	/**
-	 * Document model
+	 * Currency field instance
 	 */
-	private CommittableDocument document;
+	private CurrencyField currencyField;
 	
 	/**
 	 * Constructs a new editable currency formatter.
@@ -56,9 +56,9 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	{
 		super.install(field);
 		
-		if (field.getDocument() instanceof CommittableDocument)
+		if (field instanceof CurrencyField)
 		{
-			document = (CommittableDocument) field.getDocument();
+			currencyField = (CurrencyField) field;
 		}
 	}
 	
@@ -67,9 +67,10 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	{
 		super.uninstall();
 		
-		if (document != null)
+		if (currencyField != null)
 		{
-			document.commit();
+			Currency value = (Currency) currencyField.getValue();
+			currencyField.getModel().setNewValue(value);
 		}
 	}
 

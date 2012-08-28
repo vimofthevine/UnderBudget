@@ -30,7 +30,7 @@ import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CurrencyInputVerifier extends InputVerifier {
+class CurrencyInputVerifier extends InputVerifier {
 	
 	/**
 	 * Currency factory
@@ -42,7 +42,7 @@ public class CurrencyInputVerifier extends InputVerifier {
 	 * 
 	 * @param factory currency factory
 	 */
-	public CurrencyInputVerifier(CurrencyFactory factory)
+	CurrencyInputVerifier(CurrencyFactory factory)
 	{
 		this.factory = factory;
 	}

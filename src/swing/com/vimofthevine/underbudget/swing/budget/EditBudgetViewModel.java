@@ -16,22 +16,16 @@
 
 package com.vimofthevine.underbudget.swing.budget;
 
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ComboBoxModel;
-import javax.swing.InputVerifier;
-import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.text.Document;
-import javax.swing.text.LayoutQueue;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
-import com.vimofthevine.underbudget.swing.currency.CurrencyFormatterFactory;
-import com.vimofthevine.underbudget.swing.currency.CurrencyInputVerifier;
+import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 
 /**
  * Presentation model for views that display
@@ -52,16 +46,6 @@ class EditBudgetViewModel {
 	private final InitialBalanceModel initialDocument;
 	
 	/**
-	 * Initial balance currency formatter factory
-	 */
-	private final CurrencyFormatterFactory currencyFormatter;
-	
-	/**
-	 * Initial balance input verifier
-	 */
-	private final InputVerifier amountVerifier;
-	
-	/**
 	 * Close dialog action
 	 */
 	private final Action closeAction;
@@ -78,9 +62,6 @@ class EditBudgetViewModel {
 	{
 		nameDocument = new NameModel(bus, budget);
 		initialDocument = new InitialBalanceModel(bus, factory, budget);
-		
-		currencyFormatter = new CurrencyFormatterFactory(factory);
-		amountVerifier = new CurrencyInputVerifier(factory);
 		
 		closeAction = new AbstractAction() {
 			{
@@ -112,30 +93,9 @@ class EditBudgetViewModel {
 	 * 
 	 * @return budget name document
 	 */
-	Document getInitialBalanceDocument()
+	CurrencyInputModel getInitialBalanceDocument()
 	{
 		return initialDocument;
-	}
-	
-	/**
-	 * Returns a currency input formatter factory.
-	 * 
-	 * @return currency formatter factory
-	 */
-	AbstractFormatterFactory getInitialBalanceFormatter()
-	{
-		return currencyFormatter;
-	}
-
-	/**
-	 * Returns an input verifier for the initial
-	 * balance field.
-	 * 
-	 * @return initial balance input verifier
-	 */
-	InputVerifier getInitialBalanceInputVerifier()
-	{
-		return amountVerifier;
 	}
 	
 	/**

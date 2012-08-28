@@ -24,11 +24,11 @@ import java.awt.Container;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.vimofthevine.underbudget.swing.currency.CurrencyField;
 import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
 
 /**
@@ -54,10 +54,8 @@ public class EstimateDetailView {
 		JTextField description = new JTextField();
 		description.setDocument(model.getDescriptionDocument());
 		
-		JFormattedTextField amount = new JFormattedTextField(
-			model.getCurrencyFormatterFactory());
-		amount.setDocument(model.getAmountDocument());
-		amount.setInputVerifier(model.getAmountInputVerifier());
+		CurrencyField amount = new CurrencyField(
+			model.getAmountModel());
 		
 		JComboBox type = new JComboBox(model.getTypeModel());
 		

@@ -21,9 +21,7 @@ import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.ComboBoxModel;
-import javax.swing.InputVerifier;
 import javax.swing.SwingUtilities;
-import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.text.Document;
 
@@ -33,8 +31,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
-import com.vimofthevine.underbudget.swing.currency.CurrencyFormatterFactory;
-import com.vimofthevine.underbudget.swing.currency.CurrencyInputVerifier;
+import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
 
@@ -65,16 +62,6 @@ public class EstimateDetailViewModel {
 	 * Estimate amount document model
 	 */
 	private final EstimatedAmountModel amountDocument;
-	
-	/**
-	 * Estimate amount currency formatter factory
-	 */
-	private final CurrencyFormatterFactory currencyFormatter;
-	
-	/**
-	 * Estimate amount input verifier
-	 */
-	private final InputVerifier amountVerifier;
 	
 	/**
 	 * Estimate type selection model
@@ -126,9 +113,6 @@ public class EstimateDetailViewModel {
 		dueDateModel = new DueDateModel(bus);
 		completeModel = new EstimateCompleteModel(bus);
 		
-		currencyFormatter = new CurrencyFormatterFactory(factory);
-		amountVerifier = new CurrencyInputVerifier(factory);
-		
 		addChildAction = new AddChildAction(bus);
 		deleteAction = new DeleteAction(bus, parent);
 	}
@@ -159,32 +143,11 @@ public class EstimateDetailViewModel {
 	 * Returns a document representing
 	 * the estimate's user-defined amount.
 	 * 
-	 * @return estimate name document
+	 * @return estimated amount document
 	 */
-	Document getAmountDocument()
+	CurrencyInputModel getAmountModel()
 	{
 		return amountDocument;
-	}
-	
-	/**
-	 * Returns a currency input formatter factory.
-	 * 
-	 * @return currency formatter factory
-	 */
-	AbstractFormatterFactory getCurrencyFormatterFactory()
-	{
-		return currencyFormatter;
-	}
-
-	/**
-	 * Returns an input verifier for the currency
-	 * amount field.
-	 * 
-	 * @return currency input verifier
-	 */
-	InputVerifier getAmountInputVerifier()
-	{
-		return amountVerifier;
 	}
 	
 	/**

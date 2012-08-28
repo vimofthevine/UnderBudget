@@ -28,6 +28,7 @@ import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
+import com.vimofthevine.underbudget.stubs.currency.StubCurrencyFactory;
 import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
@@ -87,7 +88,7 @@ public class Session {
 		
 		budgetSource = source;
 		Budget budget = budgetSource.getBudget();
-		CurrencyFactory factory = budget.getDefinition().getCurrency();
+		CurrencyFactory factory = new StubCurrencyFactory();
 		ReverseLookupAssignmentRules rules =
 			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
 		TransactionAssigner assigner = new DefaultTransactionAssigner(factory);

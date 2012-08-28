@@ -18,7 +18,6 @@ package com.vimofthevine.underbudget.core.budget;
 
 import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
 import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
  * Set of attributes defining a budget.
@@ -49,15 +48,5 @@ public interface BudgetDefinition {
 	 * @return budgeting period
 	 */
 	public BudgetingPeriod getPeriod();
-	
-	/**
-	 * Returns the currency type, via a currency
-	 * factory, to be used for all currency values
-	 * in this budget.
-	 * 
-	 * @return currency factory
-	 */
-	@Deprecated
-	public CurrencyFactory getCurrency();
 	
 }
