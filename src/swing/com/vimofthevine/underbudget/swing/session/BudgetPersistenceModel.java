@@ -16,11 +16,17 @@
 
 package com.vimofthevine.underbudget.swing.session;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
+import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
 
@@ -31,6 +37,11 @@ import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 class BudgetPersistenceModel {
+	
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(BudgetPersistenceModel.class.getName());
 	
 	/**
 	 * Session event bus
@@ -58,22 +69,49 @@ class BudgetPersistenceModel {
 	}
 	
 	@Subscribe
+	public void sourceSelected(BudgetSourceToSaveSelectedEvent event)
+	{
+		logger.log(Level.INFO, "Budget source selected");
+		
+		// Store budget source
+		source = event.getSource();
+		
+		// Perform save if source is valid (avoid infinite loop)
+		if (source != null)
+		{
+			saveSession(new SaveSessionEvent());
+		}
+	}
+	
+	@Subscribe
 	public void saveSession(SaveSessionEvent event)
 	{
-		source.persist();
-		eventBus.post(new SessionSavedEvent());
+		// If source is the template, prompt for save source/location
+		if (source == null || source instanceof TemplateBudgetSource)
+		{
+			logger.log(Level.INFO, "Write-only source, prompting for source location");
+			saveSessionAs(new SaveSessionAsEvent());
+		}
+		else
+		{
+    		source.persist();
+    		eventBus.post(new SessionSavedEvent());
+		}
 	}
 	
 	@Subscribe
 	public void saveSessionAs(SaveSessionAsEvent event)
 	{
-		// TODO
+		eventBus.post(new SelectBudgetSourceToOpenEvent());
 	}
 	
 	@Subscribe
 	public void updateTemplate(UpdateTemplateEvent event)
 	{
-		// TODO
+		logger.log(Level.INFO, "Updating the template");
+		BudgetSource template = new TemplateBudgetSource(
+			source.getBudget());
+		template.persist();
 	}
 
 }

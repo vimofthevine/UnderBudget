@@ -27,12 +27,15 @@ import javax.swing.JOptionPane;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.CloseSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.CreateSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.OpenSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
@@ -94,7 +97,7 @@ public class Sessions {
 		
 		busBridge = new SessionBusBridge(eventBus);
 		
-		wizard = new BudgetSourceSelectionWizard();
+		wizard = new BudgetSourceSelectionWizard(bus, window);
 		sessions = new ArrayList<Session>();
 	}
 	
@@ -126,7 +129,8 @@ public class Sessions {
 	@Subscribe
 	public void createSession(CreateSessionEvent event)
 	{
-		
+		logger.log(Level.INFO, "Creating new session");
+		createSession(new TemplateBudgetSource());
 	}
 	
 	/**
@@ -139,10 +143,21 @@ public class Sessions {
 	public void openSession(OpenSessionEvent event)
 	{
 		logger.log(Level.INFO, "Opening new session");
+		eventBus.post(new SelectBudgetSourceToOpenEvent());
 		
-		BudgetSource source = wizard.getSource();
-		Session newSession = new Session(window, eventBus,
-			source);
+	}
+	
+	@Subscribe
+	public void sourceSelected(BudgetSourceToOpenSelectedEvent event)
+	{
+		logger.log(Level.INFO, "Budget source selected");
+		createSession(event.getSource());
+	}
+	
+	private void createSession(BudgetSource source)
+	{
+		Session newSession = new Session(window,
+			eventBus, source);
 		
 		sessions.add(newSession);
 		setActive(newSession);
