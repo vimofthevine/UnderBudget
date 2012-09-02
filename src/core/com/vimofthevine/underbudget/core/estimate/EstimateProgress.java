@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.estimate;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
  * An <code>EstimateProgress</code> represents the
@@ -32,14 +32,14 @@ public interface EstimateProgress {
 	 * 
 	 * @return estimated amount
 	 */
-	public Currency getEstimatedAmount();
+	public CashCommodity getEstimatedAmount();
 	
 	/**
 	 * Returns the actual amount to-date.
 	 * 
 	 * @return actual amount
 	 */
-	public Currency getActualAmount();
+	public CashCommodity getActualAmount();
 	
 	/**
 	 * Returns any notice that should be

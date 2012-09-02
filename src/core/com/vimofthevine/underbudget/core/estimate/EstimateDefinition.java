@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.estimate;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
@@ -45,7 +45,7 @@ public interface EstimateDefinition {
 	 * 
 	 * @return estimated amount
 	 */
-	public Currency getAmount();
+	public CashCommodity getAmount();
 	
 	/**
 	 * Returns the due-date of the estimate.

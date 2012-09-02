@@ -16,9 +16,11 @@
 
 package com.vimofthevine.underbudget.swing.summary;
 
+import java.util.Currency;
+
 import com.vimofthevine.underbudget.core.balance.EndingBalance;
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.Commodity;
 
 /**
  * An ending balance implementation representing
@@ -31,44 +33,44 @@ class UninitEndingBalance implements EndingBalance {
 	/**
 	 * Uninitialized balance value
 	 */
-	private final Currency value;
+	private final CashCommodity value;
 	
 	/**
 	 * Constructs a new uninitialized ending balance.
 	 * 
-	 * @param factory currency factory
+	 * @param currency currency in use
 	 */
-	UninitEndingBalance(CurrencyFactory factory)
+	UninitEndingBalance(Currency currency)
 	{
-		value = factory.newCurrencyInstance();
+		value = Commodity.zero(currency);
 	}
 
 	@Override
-	public Currency getInitialValue()
-	{
-		return value;
-	}
-
-	@Override
-	public Currency getValue()
+	public CashCommodity getInitialValue()
 	{
 		return value;
 	}
 
 	@Override
-	public Currency getSumIncreases()
+	public CashCommodity getValue()
 	{
 		return value;
 	}
 
 	@Override
-	public Currency getSumDecreases()
+	public CashCommodity getSumIncreases()
 	{
 		return value;
 	}
 
 	@Override
-	public Currency getNetChange()
+	public CashCommodity getSumDecreases()
+	{
+		return value;
+	}
+
+	@Override
+	public CashCommodity getNetChange()
 	{
 		return value;
 	}

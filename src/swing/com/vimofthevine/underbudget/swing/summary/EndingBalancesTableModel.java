@@ -16,13 +16,13 @@
 
 package com.vimofthevine.underbudget.swing.summary;
 
+import java.util.Currency;
+
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import com.vimofthevine.underbudget.core.balance.EndingBalance;
 import com.vimofthevine.underbudget.core.balance.EndingBalances;
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
  * A table model for displaying ending balances and their
@@ -40,15 +40,15 @@ class EndingBalancesTableModel extends AbstractTableModel {
 	/**
 	 * Constructs a new ending balances table model.
 	 * 
-	 * @param factory currency factory
+	 * @param currency currency in use
 	 */
-	EndingBalancesTableModel(CurrencyFactory factory)
+	EndingBalancesTableModel(Currency currency)
 	{
 		balances = new EndingBalance[3];
 		
 		for (int i=0; i<3; i++)
 		{
-			balances[i] = new UninitEndingBalance(factory);
+			balances[i] = new UninitEndingBalance(currency);
 		}
 	}
 	

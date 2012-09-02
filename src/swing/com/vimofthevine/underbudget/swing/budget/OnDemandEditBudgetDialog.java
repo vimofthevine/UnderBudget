@@ -18,13 +18,13 @@ package com.vimofthevine.underbudget.swing.budget;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.Currency;
 
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.Budget;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.swing.budget.period.BudgetingPeriodFormViewFactory;
 import com.vimofthevine.underbudget.swing.session.content.SessionContent;
 import com.vimofthevine.underbudget.swing.session.events.SessionContentEvent;
@@ -49,9 +49,9 @@ public class OnDemandEditBudgetDialog {
 	private final Frame parent;
 	
 	/**
-	 * Currency factory
+	 * Currency
 	 */
-	private final CurrencyFactory currency;
+	private final Currency currency;
 	
 	/**
 	 * The current budget
@@ -59,13 +59,13 @@ public class OnDemandEditBudgetDialog {
 	private final Budget budget;
 	
 	public OnDemandEditBudgetDialog(EventBus bus, Frame window,
-		CurrencyFactory factory, Budget budget)
+		Currency currency, Budget budget)
 	{
 		eventBus = bus;
 		eventBus.register(this);
 		
 		parent = window;
-		currency = factory;
+		this.currency = currency;
 		this.budget = budget;
 	}
 	

@@ -16,6 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.budget;
 
+import java.util.Currency;
 import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
@@ -25,8 +26,7 @@ import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.BudgetDefinition;
 import com.vimofthevine.underbudget.core.budget.MutableBudget;
 import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 
 /**
@@ -55,20 +55,20 @@ class InitialBalanceModel extends CurrencyInputModel {
 	/**
 	 * Constructs a new initial balance document model.
 	 * 
-	 * @param bus     event bus
-	 * @param factory currency factory
-	 * @param budget  budget being modified
+	 * @param bus      event bus
+	 * @param currency currency in use
+	 * @param budget   budget being modified
 	 */
-	InitialBalanceModel(EventBus bus, CurrencyFactory factory,
+	InitialBalanceModel(EventBus bus, Currency currency,
 		Budget budget)
 	{
-		super(factory);
+		super(currency);
 		
 		eventBus = bus;
 		this.budget = budget;
 		changes = new HashMap<String, Object>();
 		
-		final Currency amount = budget.getDefinition()
+		final CashCommodity amount = budget.getDefinition()
 			.getInitialBalance();
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -84,7 +84,7 @@ class InitialBalanceModel extends CurrencyInputModel {
 	 * the current text of the document.
 	 */
 	@Override
-	public void setNewValue(final Currency newBalance)
+	public void setNewValue(final CashCommodity newBalance)
 	{
 		if ( ! (budget instanceof MutableBudget))
 			return;
@@ -103,7 +103,7 @@ class InitialBalanceModel extends CurrencyInputModel {
 						{
 							mutable.setDefinition(new BudgetDefinition() {
                                 public String getName() { return old.getName(); }
-                                public Currency getInitialBalance() { return newBalance; }
+                                public CashCommodity getInitialBalance() { return newBalance; }
                                 public BudgetingPeriod getPeriod() { return old.getPeriod(); }
 							});
 							

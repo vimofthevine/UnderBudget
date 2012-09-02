@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.assignment;
 
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 
 /**
@@ -27,18 +27,18 @@ import com.vimofthevine.underbudget.core.transaction.Transaction;
 public class DefaultTransactionAssigner implements TransactionAssigner {
 	
 	/**
-	 * Currency factory
+	 * Currency calculator instance
 	 */
-	private final CurrencyFactory factory;
+	private final CurrencyCalculator calculator;
 	
 	/**
 	 * Constructs a new transaction assigner.
 	 * 
-	 * @param factory currency factory
+	 * @param calculator currency calculator
 	 */
-	public DefaultTransactionAssigner(CurrencyFactory factory)
+	public DefaultTransactionAssigner(CurrencyCalculator calculator)
 	{
-		this.factory = factory;
+		this.calculator = calculator;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class DefaultTransactionAssigner implements TransactionAssigner {
         AssignmentRules rules)
     {
 		DefaultTransactionAssignments assignments =
-			new DefaultTransactionAssignments(factory);
+			new DefaultTransactionAssignments(calculator);
 		
 		for (Transaction transaction : transactions)
 		{

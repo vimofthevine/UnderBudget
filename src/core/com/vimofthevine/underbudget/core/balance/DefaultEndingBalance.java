@@ -16,87 +16,105 @@
 
 package com.vimofthevine.underbudget.core.balance;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.Commodity;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
+import com.vimofthevine.underbudget.core.currency.Number;
 
 /**
- * 
+ * Default implementation of <code>EndingBalance</code>
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 class DefaultEndingBalance implements EndingBalance {
 	
 	/**
+	 * Currency calculator instance
+	 */
+	private final CurrencyCalculator calculator;
+	
+	/**
 	 * Initial balance
 	 */
-	private final Currency initialValue;
+	private final CashCommodity initialValue;
 	
 	/**
 	 * Ending balance value
 	 */
-	private final Currency endingValue;
+	private CashCommodity endingValue;
 	
 	/**
 	 * Sum of all decreases
 	 */
-	private final Currency decreases;
+	private CashCommodity decreases;
 	
 	/**
 	 * Sum of all increases
 	 */
-	private final Currency increases;
+	private CashCommodity increases;
 	
-	DefaultEndingBalance(Currency initial)
+	/**
+	 * Constructs a new ending balance instance.
+	 * 
+	 * @param initial initial balance
+	 * @param calc    currency calculator
+	 */
+	DefaultEndingBalance(CashCommodity initial, CurrencyCalculator calc)
 	{
-		initialValue = initial.clone();
-		endingValue = initial.clone();
+		calculator = calc;
+		
+		initialValue = initial;
+		endingValue = initial;
 		
 		// Start with 0
-		decreases = initial.clone().decreaseBy(initial);
-		increases = decreases.clone();
+		decreases = Commodity.zero(initial.getCurrency());
+		increases = Commodity.zero(initial.getCurrency());
 	}
 	
-	void apply(Currency change)
+	void apply(CashCommodity change)
 	{
-		if (change.isNegative())
+		Number value = change.getValue();
+		
+		if (value.isNegative())
 		{
-			decreases.increaseBy(change.clone().invert());
+			decreases = calculator.add(decreases, change.negate());
 		}
 		else
 		{
-			increases.increaseBy(change);
+			increases = calculator.add(increases, change);
 		}
 		
-		endingValue.increaseBy(change);
+		endingValue = calculator.add(endingValue, change);
 	}
 
 	@Override
-	public Currency getInitialValue()
+	public CashCommodity getInitialValue()
 	{
 		return initialValue;
 	}
 
 	@Override
-	public Currency getValue()
+	public CashCommodity getValue()
 	{
 		return endingValue;
 	}
 
 	@Override
-	public Currency getSumIncreases()
+	public CashCommodity getSumIncreases()
 	{
 		return increases;
 	}
 
 	@Override
-	public Currency getSumDecreases()
+	public CashCommodity getSumDecreases()
 	{
 		return decreases;
 	}
 
 	@Override
-	public Currency getNetChange()
+	public CashCommodity getNetChange()
 	{
-		return increases.clone().decreaseBy(decreases);
+		return calculator.subtract(increases, decreases);
 	}
 
 }

@@ -17,12 +17,12 @@
 package com.vimofthevine.underbudget.swing.summary;
 
 import java.awt.Component;
+import java.util.Currency;
 
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
  * Factory for building the detailed analysis results
@@ -36,12 +36,12 @@ public abstract class AnalysisResultsViewFactory {
 	 * Builds an analysis results view instance.
 	 * 
 	 * @param bus      event bus
-	 * @param currency currency factory
+	 * @param currency currency being used
 	 * @param budget   budget being analyzed
 	 * @return analysis results view component
 	 */
 	public static final Component build(EventBus bus,
-		CurrencyFactory currency, Budget budget)
+		Currency currency, Budget budget)
 	{
 		AnalysisResultsViewModel model =
 			new AnalysisResultsViewModel(bus, currency, budget);

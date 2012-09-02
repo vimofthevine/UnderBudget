@@ -30,6 +30,7 @@ import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelec
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
+import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileSource;
 
 /**
  * Wizard for selecting a budget to be opened.
@@ -94,9 +95,9 @@ public class BudgetSourceSelectionWizard {
 							new Thread() {
 								public void run()
 								{
-									//BudgetXmlFileSource source =
-										//new BudgetXmlFileSource(file);
-									//fireSelectedEvent(source, event);
+									BudgetXmlFileSource source =
+										new BudgetXmlFileSource(file);
+									fireSelectedEvent(source, event);
 								}
 							}.start();
 						}

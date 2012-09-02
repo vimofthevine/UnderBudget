@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.swing.session;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.Currency;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.assignment.DefaultTransactionAssigner;
@@ -26,9 +27,9 @@ import com.vimofthevine.underbudget.core.balance.BalanceCalculator;
 import com.vimofthevine.underbudget.core.balance.DefaultBalanceCalculator;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
-import com.vimofthevine.underbudget.stubs.actuals.StubActualFigures;
-import com.vimofthevine.underbudget.stubs.currency.StubCurrencyFactory;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
+import com.vimofthevine.underbudget.stubs.FixedCalculator;
 import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
@@ -60,6 +61,11 @@ public class Session {
 	private final BudgetSource budgetSource;
 	
 	/**
+	 * Budget
+	 */
+	private final Budget budget;
+	
+	/**
 	 * Session state
 	 */
 	private final SessionState state;
@@ -84,30 +90,39 @@ public class Session {
 	 */
 	public Session(Frame window, EventBus bus, BudgetSource source)
 	{
-		globalBus = bus;
-		eventBus = new EventBus(source.toString());
-		
-		budgetSource = source;
-		Budget budget = budgetSource.getBudget();
-		CurrencyFactory factory = new StubCurrencyFactory();
-		ReverseLookupAssignmentRules rules =
-			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
-		TransactionAssigner assigner = new DefaultTransactionAssigner(factory);
-		BalanceCalculator calculator = new DefaultBalanceCalculator();
-		
-		state = new SessionState(globalBus, eventBus, budget);
-		new BudgetPersistenceModel(eventBus, budgetSource);
-		
-		new TransactionSourceSelectionWizard(eventBus, window, factory);
-		new OnDemandTransactionImporter(eventBus, budget);
-		new OnDemandTransactionAssigner(eventBus, rules, assigner);
-		new OnDemandBalanceCalculator(eventBus, budget, calculator);
-		new OnDemandEditBudgetDialog(eventBus, window, factory, budget);
-		
-		component = SessionContentViewFactory.build(
-			window, eventBus, factory, budget, new StubActualFigures(), rules);
-		
-		active = false;
+		try
+		{
+    		budgetSource = source;
+    		budget = budgetSource.getBudget();
+    		
+    		globalBus = bus;
+    		eventBus = new EventBus(source.toString());
+    		
+    		Currency currency = Currency.getInstance("USD");
+    		CurrencyCalculator currencyCalculator = new FixedCalculator(currency);
+    		ReverseLookupAssignmentRules rules =
+    			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
+    		TransactionAssigner assigner = new DefaultTransactionAssigner(currencyCalculator);
+    		BalanceCalculator calculator = new DefaultBalanceCalculator();
+    		
+    		state = new SessionState(globalBus, eventBus, budget);
+    		new BudgetPersistenceModel(eventBus, budgetSource);
+    		
+    		new TransactionSourceSelectionWizard(eventBus, window, currency);
+    		new OnDemandTransactionImporter(eventBus, budget);
+    		new OnDemandTransactionAssigner(eventBus, rules, assigner);
+    		new OnDemandBalanceCalculator(eventBus, budget, calculator, currencyCalculator);
+    		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
+    		
+    		component = SessionContentViewFactory.build(
+    			window, eventBus, currency, budget, rules);
+    		
+    		active = false;
+		}
+		catch (BudgetSourceException bse)
+		{
+			throw new IllegalArgumentException("Could not create session", bse);
+		}
 	}
 	
 	void post(Object event)
@@ -122,7 +137,7 @@ public class Session {
 	 */
 	public String getName()
 	{
-		return budgetSource.getBudget().getDefinition().getName();
+		return budget.getDefinition().getName();
 	}
 	
 	/**

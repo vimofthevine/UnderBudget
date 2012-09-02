@@ -16,10 +16,11 @@
 
 package com.vimofthevine.underbudget.core.balance;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 
 /**
- * 
+ * Default <code>EndingBalances</code> implementation.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
@@ -40,13 +41,20 @@ class DefaultEndingBalances implements EndingBalances {
 	 */
 	DefaultEndingBalance expected;
 	
-	DefaultEndingBalances(Currency initial)
+	/**
+	 * Constructs a new ending balances collection.
+	 * 
+	 * @param initial    initial balance
+	 * @param calculator currency calculator
+	 */
+	DefaultEndingBalances(CashCommodity initial,
+		CurrencyCalculator calculator)
 	{
-		estimated = new DefaultEndingBalance(initial);
-		actual = new DefaultEndingBalance(initial);
-		expected = new DefaultEndingBalance(initial);
+		estimated = new DefaultEndingBalance(initial, calculator);
+		actual = new DefaultEndingBalance(initial, calculator);
+		expected = new DefaultEndingBalance(initial, calculator);
 	}
-
+	
 	@Override
 	public EndingBalance getEstimatedEndingBalance()
 	{

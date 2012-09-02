@@ -18,7 +18,7 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
 /**
@@ -31,18 +31,21 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 	/**
 	 * Actual values source
 	 */
-	private final ActualFigures actuals;
+	private ActualFigures actuals;
 	
 	/**
 	 * Constructs a new estimate progress
 	 * tree table model.
 	 * 
-	 * @param root    root estimate
-	 * @param actuals actual figures source
+	 * @param root root estimate
 	 */
-	public BalanceImpactTreeTableModel(Estimate root, ActualFigures actuals)
+	public BalanceImpactTreeTableModel(Estimate root)
 	{
 		super(root);
+	}
+	
+	void setActuals(ActualFigures actuals)
+	{
 		this.actuals = actuals;
 	}
 
@@ -75,11 +78,11 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 		if (column == 0)
 			return String.class;
 		else if (column == 1)
-			return Currency.class;
+			return CashCommodity.class;
 		else if (column == 2)
-			return Currency.class;
+			return CashCommodity.class;
 		else if (column == 3)
-			return Currency.class;
+			return CashCommodity.class;
 		else if (column == 4)
 			return String.class;
 		else
@@ -104,17 +107,30 @@ public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel 
 		}
 		else if (column == 2)
 		{
-			return actuals.getActual(estimate).getAmount();
+			if (actuals != null)
+				return actuals.getActual(estimate).getAmount();
+			else
+				return new UnevaluatedCommodity();
 		}
 		else if (column == 3)
 		{
-			ActualFigure actual = actuals.getActual(estimate);
-			return estimate.getImpact(actual).getExpectedImpact();
+			if (actuals != null)
+			{
+    			ActualFigure actual = actuals.getActual(estimate);
+    			return estimate.getImpact(actual).getExpectedImpact();
+			}
+			else
+				return new UnevaluatedCommodity();
 		}
 		else if (column == 4)
 		{
-			ActualFigure actual = actuals.getActual(estimate);
-			return estimate.getImpact(actual).getNotice();
+			if (actuals != null)
+			{
+    			ActualFigure actual = actuals.getActual(estimate);
+    			return estimate.getImpact(actual).getNotice();
+			}
+			else
+				return "";
 		}
 		else
 			throw new IllegalArgumentException("Only 4 columns are supported");

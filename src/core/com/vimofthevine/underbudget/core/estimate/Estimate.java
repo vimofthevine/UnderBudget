@@ -16,10 +16,7 @@
 
 package com.vimofthevine.underbudget.core.estimate;
 
-import java.util.Date;
-
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
-import com.vimofthevine.underbudget.core.currency.Currency;
 
 /**
  * An <code>Estimate</code> represents a user's expectations
@@ -96,23 +93,4 @@ public interface Estimate {
 	 */
 	public BalanceImpact getImpact(ActualFigure actual);
 	
-	// Deprecated methods
-
-	@Deprecated
-	public String getName();
-	
-	@Deprecated
-	public String getDescription();
-	
-	@Deprecated
-	public Currency getAmount();
-	
-	@Deprecated
-	public Date getDueDate();
-	
-	@Deprecated
-	public EstimateType getType();
-	
-	@Deprecated
-	public boolean isComplete();
 }

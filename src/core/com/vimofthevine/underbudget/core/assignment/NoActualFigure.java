@@ -16,11 +16,11 @@
 
 package com.vimofthevine.underbudget.core.assignment;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
- * 
+ * <code>ActualFigure</code> implementation to
+ * encapsulate a zero commodity value.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
@@ -29,15 +29,20 @@ class NoActualFigure implements ActualFigure {
 	/**
 	 * Actual figure
 	 */
-	private final Currency actual;
+	private final CashCommodity actual;
 	
-	NoActualFigure(CurrencyFactory factory)
+	/**
+	 * Constructs a new zero-amount actual figure.
+	 * 
+	 * @param zero zero commodity value
+	 */
+	NoActualFigure(CashCommodity zero)
 	{
-		actual = factory.newCurrencyInstance();
+		actual = zero;
 	}
 
 	@Override
-	public Currency getAmount()
+	public CashCommodity getAmount()
 	{
 		return actual;
 	}

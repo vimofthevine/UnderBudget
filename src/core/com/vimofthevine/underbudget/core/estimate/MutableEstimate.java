@@ -16,10 +16,6 @@
 
 package com.vimofthevine.underbudget.core.estimate;
 
-import java.util.Date;
-
-import com.vimofthevine.underbudget.core.currency.Currency;
-
 /**
  * An estimate whose definition can be modified.
  * 
@@ -46,23 +42,5 @@ public interface MutableEstimate extends Estimate {
 	 * its parent estimate.
 	 */
 	public void delete();
-	
-	@Deprecated
-	public void setName(String name);
-	
-	@Deprecated
-	public void setDescription(String description);
-	
-	@Deprecated
-	public void setAmount(Currency amount);
-	
-	@Deprecated
-	public void setDueDate(Date dueDate);
-	
-	@Deprecated
-	public void setType(EstimateType type);
-	
-	@Deprecated
-	public void setComplete(boolean complete);
 	
 }

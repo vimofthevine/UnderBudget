@@ -23,7 +23,7 @@ import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.BudgetDefinition;
 import com.vimofthevine.underbudget.core.budget.MutableBudget;
 import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.swing.budget.BudgetModifiedEvent;
 
 /**
@@ -79,7 +79,7 @@ class BudgetPeriodUpdater {
 			{
 				mutable.setDefinition(new BudgetDefinition() {
                     public String getName() { return old.getName(); }
-                    public Currency getInitialBalance() { return old.getInitialBalance(); }
+                    public CashCommodity getInitialBalance() { return old.getInitialBalance(); }
                     public BudgetingPeriod getPeriod() { return newPeriod; }
 				});
 				

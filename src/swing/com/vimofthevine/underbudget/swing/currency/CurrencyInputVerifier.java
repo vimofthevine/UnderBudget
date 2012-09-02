@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.DecimalNumber;
 
 /**
  * Input verifier to verify that a text field contains
@@ -31,21 +31,6 @@ import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 class CurrencyInputVerifier extends InputVerifier {
-	
-	/**
-	 * Currency factory
-	 */
-	private final CurrencyFactory factory;
-	
-	/**
-	 * Constructs a new currency input verifier.
-	 * 
-	 * @param factory currency factory
-	 */
-	CurrencyInputVerifier(CurrencyFactory factory)
-	{
-		this.factory = factory;
-	}
 
 	/**
 	 * Verifies that the input of a text field
@@ -64,7 +49,7 @@ class CurrencyInputVerifier extends InputVerifier {
 			try
 			{
 				String amount = document.getText(0, document.getLength());
-				factory.newCurrencyInstance(amount);
+				new DecimalNumber(amount);
 				return true;
 			}
 			catch (NumberFormatException nfe)

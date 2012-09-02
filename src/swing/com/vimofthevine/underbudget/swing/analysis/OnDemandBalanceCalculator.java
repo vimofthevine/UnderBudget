@@ -22,6 +22,7 @@ import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.balance.BalanceCalculator;
 import com.vimofthevine.underbudget.core.balance.EndingBalances;
 import com.vimofthevine.underbudget.core.budget.Budget;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.swing.assignment.events.AssignTransactionsEvent;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
 
@@ -51,6 +52,11 @@ public class OnDemandBalanceCalculator {
 	private final BalanceCalculator calculator;
 	
 	/**
+	 * Currency calculator
+	 */
+	private final CurrencyCalculator currencyCalculator;
+	
+	/**
 	 * Actual figures
 	 */
 	private ActualFigures actuals;
@@ -58,18 +64,21 @@ public class OnDemandBalanceCalculator {
 	/**
 	 * Constructs a new balance calculator.
 	 * 
-	 * @param bus        event bus
-	 * @param budget     budget
-	 * @param calculator balance calculator
+	 * @param bus          event bus
+	 * @param budget       budget
+	 * @param calculator   balance calculator
+	 * @param currencyCalc currency calculator
 	 */
 	public OnDemandBalanceCalculator(EventBus bus,
-		Budget budget, BalanceCalculator calculator)
+		Budget budget, BalanceCalculator calculator,
+		CurrencyCalculator currencyCalc)
 	{
 		eventBus = bus;
 		eventBus.register(this);
 		
 		this.budget = budget;
 		this.calculator = calculator;
+		currencyCalculator = currencyCalc;
 	}
 	
 	@Subscribe
@@ -114,7 +123,7 @@ public class OnDemandBalanceCalculator {
 		{
 			EndingBalances balances = calculator.calculate(
 				budget.getDefinition().getInitialBalance(),
-				budget.getRootEstimate(), actuals);
+				budget.getRootEstimate(), actuals, currencyCalculator);
 			
 			if (balances != null)
 			{

@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.assignment;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
  * Total actual expense or income in contrast
@@ -32,6 +32,6 @@ public interface ActualFigure {
 	 * 
 	 * @return actual expense or income amount
 	 */
-	public Currency getAmount();
+	public CashCommodity getAmount();
 
 }

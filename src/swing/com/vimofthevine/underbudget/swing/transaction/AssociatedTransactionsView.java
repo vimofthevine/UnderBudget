@@ -23,7 +23,7 @@ import javax.swing.JScrollPane;
 
 import org.jdesktop.swingx.JXTable;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.transaction.TransferAccount;
 import com.vimofthevine.underbudget.swing.widgets.CurrencyCellRenderer;
@@ -49,7 +49,7 @@ public class AssociatedTransactionsView {
 	{
 		JXTable table = new JXTable(model.getTransactionsTableModel());
 		table.setSelectionModel(model.getTransactionSelectionModel());
-		table.setDefaultRenderer(Currency.class, new CurrencyCellRenderer());
+		table.setDefaultRenderer(CashCommodity.class, new CurrencyCellRenderer());
 		table.setDefaultRenderer(SimpleDate.class, new SimpleDateCellRenderer());
 		table.setDefaultRenderer(TransferAccount.class, new TransferAccountCellRenderer());
 		

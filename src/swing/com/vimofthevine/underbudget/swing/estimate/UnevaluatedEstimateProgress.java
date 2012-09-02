@@ -14,35 +14,40 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.widgets;
-
-import java.awt.Component;
-
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+package com.vimofthevine.underbudget.swing.estimate;
 
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
- * Table cell renderer for displaying currency values.
+ * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CurrencyCellRenderer extends DefaultTableCellRenderer {
+public class UnevaluatedEstimateProgress implements EstimateProgress {
 
 	@Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-        boolean isSelected, boolean hasFocus, int row, int column)
-    {
-		super.getTableCellRendererComponent(table,
-			value, isSelected, hasFocus, row, column);
-		
-		if (value instanceof CashCommodity)
-		{
-			setText(((CashCommodity) value).formatAsString());
-		}
-		
-		return this;
-    }
+	public CashCommodity getEstimatedAmount()
+	{
+		return new UnevaluatedCommodity();
+	}
+
+	@Override
+	public CashCommodity getActualAmount()
+	{
+		return new UnevaluatedCommodity();
+	}
+
+	@Override
+	public String getNotice()
+	{
+		return "";
+	}
+
+	@Override
+	public boolean isHealthy()
+	{
+		return true;
+	}
 
 }

@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.swing.budget;
 
 import java.awt.event.ActionEvent;
+import java.util.Currency;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -24,7 +25,6 @@ import javax.swing.text.Document;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 
 /**
@@ -53,15 +53,15 @@ class EditBudgetViewModel {
 	/**
 	 * Constructs a new edit-budget view model.
 	 * 
-	 * @param bus     event bus
-	 * @param factory currency factory
-	 * @param budget  budget
+	 * @param bus      event bus
+	 * @param currency currency in use
+	 * @param budget   budget
 	 */
-	EditBudgetViewModel(EventBus bus, CurrencyFactory factory,
+	EditBudgetViewModel(EventBus bus, Currency currency,
 		Budget budget)
 	{
 		nameDocument = new NameModel(bus, budget);
-		initialDocument = new InitialBalanceModel(bus, factory, budget);
+		initialDocument = new InitialBalanceModel(bus, currency, budget);
 		
 		closeAction = new AbstractAction() {
 			{

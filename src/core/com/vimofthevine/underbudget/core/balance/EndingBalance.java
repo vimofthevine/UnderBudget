@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.balance;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
  * An <code>EndingBalance</code> represents the estimated,
@@ -35,14 +35,14 @@ public interface EndingBalance {
 	 * 
 	 * @return initial balance value
 	 */
-	public Currency getInitialValue();
+	public CashCommodity getInitialValue();
 	
 	/**
 	 * Returns the ending balance value.
 	 * 
 	 * @return ending balance value
 	 */
-	public Currency getValue();
+	public CashCommodity getValue();
 	
 	/**
 	 * Returns the total amount by which the
@@ -51,7 +51,7 @@ public interface EndingBalance {
 	 * 
 	 * @return total amount of increase
 	 */
-	public Currency getSumIncreases();
+	public CashCommodity getSumIncreases();
 	
 	/**
 	 * Returns the total amount by which the
@@ -62,7 +62,7 @@ public interface EndingBalance {
 	 * 
 	 * @return total amount of decrease
 	 */
-	public Currency getSumDecreases();
+	public CashCommodity getSumDecreases();
 	
 	/**
 	 * Returns the total amount by which the
@@ -73,6 +73,6 @@ public interface EndingBalance {
 	 * 
 	 * @return total amount of change
 	 */
-	public Currency getNetChange();
+	public CashCommodity getNetChange();
 
 }

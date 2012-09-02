@@ -16,13 +16,13 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
+import java.util.Currency;
 import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
@@ -57,12 +57,12 @@ class EstimatedAmountModel extends CurrencyInputModel {
 	/**
 	 * Constructs a new estimate amount document model.
 	 * 
-	 * @param bus     event bus
-	 * @param factory currency factory
+	 * @param bus      event bus
+	 * @param currency currency in use
 	 */
-	EstimatedAmountModel(EventBus bus, CurrencyFactory factory)
+	EstimatedAmountModel(EventBus bus, Currency currency)
 	{
-		super(factory);
+		super(currency);
 		
 		eventBus = bus;
 		changes = new HashMap<String,String>();
@@ -78,7 +78,7 @@ class EstimatedAmountModel extends CurrencyInputModel {
 	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
-		final Currency amount = (estimate == null) ? null
+		final CashCommodity amount = (estimate == null) ? null
 			: estimate.getDefinition().getAmount();
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -94,7 +94,7 @@ class EstimatedAmountModel extends CurrencyInputModel {
 	 * the current text of the document.
 	 */
 	@Override
-	public void setNewValue(final Currency currency)
+	public void setNewValue(final CashCommodity currency)
 	{
 		if ( ! (estimate instanceof MutableEstimate))
 			return;
@@ -114,7 +114,7 @@ class EstimatedAmountModel extends CurrencyInputModel {
         					mutable.setDefinition(new EstimateDefinition() {
                                 public String getName() { return old.getName(); }
                                 public String getDescription() { return old.getDescription(); }
-                                public Currency getAmount() { return currency; }
+                                public CashCommodity getAmount() { return currency; }
                                 public SimpleDate getDueDate() { return old.getDueDate(); }
                                 public EstimateType getType() { return old.getType(); }
                                 public boolean isComplete() { return old.isComplete(); }

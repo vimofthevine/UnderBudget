@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.Component;
+import java.util.Currency;
 import java.util.Map;
 
 import javax.swing.Action;
@@ -29,7 +30,6 @@ import org.jdesktop.swingx.calendar.DateSelectionModel;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
@@ -96,11 +96,11 @@ public class EstimateDetailViewModel {
 	/**
 	 * Constructs a new estimate detail view model.
 	 * 
-	 * @param bus     event bus
-	 * @param factory currency factory
+	 * @param bus      event bus
+	 * @param currency currency in use
 	 * @param parent  parent Swing component
 	 */
-	public EstimateDetailViewModel(EventBus bus, CurrencyFactory factory,
+	public EstimateDetailViewModel(EventBus bus, Currency currency,
 		Component parent)
 	{
 		eventBus = bus;
@@ -108,7 +108,7 @@ public class EstimateDetailViewModel {
 		
 		nameDocument = new NameModel(bus);
 		descriptionDocument = new DescriptionModel(bus);
-		amountDocument = new EstimatedAmountModel(bus, factory);
+		amountDocument = new EstimatedAmountModel(bus, currency);
 		typeModel = new EstimateTypeModel(bus);
 		dueDateModel = new DueDateModel(bus);
 		completeModel = new EstimateCompleteModel(bus);

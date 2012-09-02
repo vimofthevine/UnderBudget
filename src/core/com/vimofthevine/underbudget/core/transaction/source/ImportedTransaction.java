@@ -18,7 +18,7 @@ package com.vimofthevine.underbudget.core.transaction.source;
 
 import com.vimofthevine.underbudget.core.assignment.Condition;
 import com.vimofthevine.underbudget.core.assignment.TransactionField;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 import com.vimofthevine.underbudget.core.transaction.TransactionDefinition;
@@ -50,7 +50,7 @@ Comparable<ImportedTransaction> {
 	/**
 	 * Transfer amount
 	 */
-	private final Currency amount;
+	private final CashCommodity amount;
 	
 	/**
 	 * Withdrawal account
@@ -73,7 +73,7 @@ Comparable<ImportedTransaction> {
 	 * @param deposit    deposit account
 	 */
 	ImportedTransaction(SimpleDate date, String payee,
-		String memo, Currency value, TransferAccount withdrawal,
+		String memo, CashCommodity value, TransferAccount withdrawal,
 		TransferAccount deposit)
 	{
 		this.date = date;
@@ -105,7 +105,7 @@ Comparable<ImportedTransaction> {
             public TransferAccount getDepositAccount() { return deposit; }
 
 			@Override
-            public Currency getTransferAmount() { return amount; }
+            public CashCommodity getTransferAmount() { return amount; }
 			
 		};
 	}

@@ -19,13 +19,13 @@ package com.vimofthevine.underbudget.swing.transaction.wizard;
 import java.awt.Frame;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Currency;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.transaction.source.GnuCashXmlFileSource;
 import com.vimofthevine.underbudget.stubs.transaction.source.StubTransactionSource;
 import com.vimofthevine.underbudget.swing.transaction.events.SelectTransactionSourceEvent;
@@ -49,26 +49,19 @@ public class TransactionSourceSelectionWizard {
 	private final Frame window;
 	
 	/**
-	 * Currency factory
-	 */
-	private final CurrencyFactory currency;
-	
-	/**
 	 * Constructs a new transaction source selection wizard.
 	 * 
-	 * @param bus     event bus
-	 * @param parent  application window
-	 * @param factory currency factory instance
+	 * @param bus      event bus
+	 * @param parent   application window
+	 * @param currecny currency in use
 	 */
 	public TransactionSourceSelectionWizard(EventBus bus, Frame parent,
-		CurrencyFactory factory)
+		Currency currency)
 	{
 		eventBus = bus;
 		eventBus.register(this);
 		
 		window = parent;
-		
-		currency = factory;
 	}
 	
 	@Subscribe
@@ -99,7 +92,7 @@ public class TransactionSourceSelectionWizard {
         							try
         							{
             							GnuCashXmlFileSource source =
-            								new GnuCashXmlFileSource(file, currency);
+            								new GnuCashXmlFileSource(file);
             							eventBus.post(new TransactionSourceSelectedEvent(source));
         							}
         							catch (FileNotFoundException fnfe)

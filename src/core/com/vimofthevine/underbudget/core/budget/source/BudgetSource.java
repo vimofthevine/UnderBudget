@@ -31,13 +31,18 @@ public interface BudgetSource {
 	 * source.
 	 * 
 	 * @return <code>Budget</code> defined by the source
+	 * @throws BudgetSourceException if the budget could not
+	 *         be retrieved from this budget source
 	 */
-	public Budget getBudget();
+	public Budget getBudget() throws BudgetSourceException;
 	
 	/**
 	 * Applies any modifications made to the budget,
 	 * making them persistent.
+	 * 
+	 * @throws BudgetSourceException if the budget could not
+	 *         be persisted with this budget source
 	 */
-	public void persist();
+	public void persist() throws BudgetSourceException;
 
 }

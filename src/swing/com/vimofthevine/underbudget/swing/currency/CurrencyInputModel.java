@@ -19,9 +19,9 @@ package com.vimofthevine.underbudget.swing.currency;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Currency;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
  * Model for <code>CurrencyField</code> instances.
@@ -48,17 +48,17 @@ public abstract class CurrencyInputModel {
 	/**
 	 * Currency currency value
 	 */
-	private Currency value;
+	private CashCommodity value;
 	
 	/**
 	 * Constructs a new currency input model.
 	 * 
-	 * @param factory currency factory
+	 * @param currency currency being used
 	 */
-	public CurrencyInputModel(CurrencyFactory factory)
+	public CurrencyInputModel(Currency currency)
 	{
-		formatter = new CurrencyFormatterFactory(factory);
-		verifier = new CurrencyInputVerifier(factory);
+		formatter = new CurrencyFormatterFactory(currency);
+		verifier = new CurrencyInputVerifier();
 		listeners = Collections.synchronizedList(
 			new ArrayList<CurrencyChangeListener>());
 	}
@@ -68,14 +68,14 @@ public abstract class CurrencyInputModel {
 	 * 
 	 * @param newValue new currency value
 	 */
-	abstract public void setNewValue(Currency newValue);
+	abstract public void setNewValue(CashCommodity newValue);
 	
 	/**
 	 * Retrieves the current currency value of this model.
 	 * 
 	 * @return current currency value
 	 */
-	public Currency getValue()
+	public CashCommodity getValue()
 	{
 		return value;
 	}
@@ -85,7 +85,7 @@ public abstract class CurrencyInputModel {
 	 * 
 	 * @param newValue new currency value
 	 */
-	public void setValue(Currency newValue)
+	public void setValue(CashCommodity newValue)
 	{
 		value = newValue;
 		fireCurrencyChange(value);
@@ -116,7 +116,7 @@ public abstract class CurrencyInputModel {
 	 * 
 	 * @param newValue new currency value
 	 */
-	protected synchronized void fireCurrencyChange(Currency newValue)
+	protected synchronized void fireCurrencyChange(CashCommodity newValue)
 	{
 		for (CurrencyChangeListener listener : listeners)
 		{

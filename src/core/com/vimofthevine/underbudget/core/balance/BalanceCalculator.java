@@ -17,7 +17,8 @@
 package com.vimofthevine.underbudget.core.balance;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
 /**
@@ -28,17 +29,19 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public interface BalanceCalculator {
-
+	
 	/**
 	 * Performs the calculation of ending balances given
 	 * the estimate tree and actual figures.
 	 * 
-	 * @param initial  initial balance
-	 * @param estimate root of the estimate tree
-	 * @param actuals  actual incomes or expenses
+	 * @param initial    initial balance
+	 * @param estimate   root of the estimate tree
+	 * @param actuals    actual incomes or expenses
+	 * @param calculator currency calculator instance
 	 * @return calculated ending balances
 	 */
-	public EndingBalances calculate(Currency initial,
-		Estimate estimate, ActualFigures actuals);
+	public EndingBalances calculate(CashCommodity initial,
+		Estimate estimate, ActualFigures actuals,
+		CurrencyCalculator calculator);
 	
 }

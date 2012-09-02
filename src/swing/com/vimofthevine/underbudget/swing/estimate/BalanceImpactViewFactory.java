@@ -18,12 +18,11 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.Currency;
 
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.assignment.ActualFigures;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesView;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesViewModel;
@@ -50,19 +49,18 @@ public abstract class BalanceImpactViewFactory {
 	 * 
 	 * @param window   application window
 	 * @param bus      event bus
-	 * @param currency currency factory
+	 * @param currency currency in use
 	 * @param root     root estimate
-	 * @param actuals  actual figures source
 	 * @param rules    assignment rules list
 	 * @return balance impact view component
 	 */
 	public static final Component build(Frame window,
-		EventBus bus, CurrencyFactory currency, Estimate root,
-		ActualFigures actuals, ReverseLookupAssignmentRules rules)
+		EventBus bus, Currency currency, Estimate root,
+		ReverseLookupAssignmentRules rules)
 	{
 		// Create models
 		BalanceImpactTreeTableModel treeTableModel =
-			new BalanceImpactTreeTableModel(root, actuals);
+			new BalanceImpactTreeTableModel(root);
 		EstimateTreeViewModel treeModel =
 			new EstimateTreeViewModel(bus, treeTableModel);
 		EstimateDetailViewModel detailModel =

@@ -19,14 +19,13 @@ package com.vimofthevine.underbudget.swing.session.content;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.Currency;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.budget.Budget;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRulesViewFactory;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
@@ -53,17 +52,17 @@ import com.vimofthevine.underbudget.swing.transaction.ImportedTransactionsViewFa
 public abstract class SessionContentViewFactory {
 	
 	public static final Component build(Frame window,
-		EventBus bus, CurrencyFactory currency, Budget budget,
-		ActualFigures actuals, ReverseLookupAssignmentRules rules)
+		EventBus bus, Currency currency, Budget budget,
+		ReverseLookupAssignmentRules rules)
 	{
 		SessionContentViewModel model = new SessionContentViewModel(bus);
 		
 		Component analysisSummary = AnalysisSummaryViewFactory.build(bus,
 			currency, budget);
 		Component estimateProgress = EstimateProgressViewFactory.build(
-			window, bus, currency, budget.getRootEstimate(), actuals, rules);
+			window, bus, currency, budget.getRootEstimate(), rules);
 		Component balanceImpact = BalanceImpactViewFactory.build(
-			window, bus, currency, budget.getRootEstimate(), actuals, rules);
+			window, bus, currency, budget.getRootEstimate(), rules);
 		Component assignmentRules = AssignmentRulesViewFactory.build(
 			window, bus, rules, currency);
 		Component importedTransactions = ImportedTransactionsViewFactory.build(

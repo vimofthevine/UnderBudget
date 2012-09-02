@@ -16,6 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.summary;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -29,7 +30,7 @@ import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.balance.EndingBalances;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.BudgetDefinition;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.Commodity;
 import com.vimofthevine.underbudget.swing.analysis.BalancesCalculatedEvent;
 import com.vimofthevine.underbudget.swing.budget.BudgetModifiedEvent;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
@@ -66,12 +67,12 @@ class AnalysisSummaryViewModel {
 	/**
 	 * Constructs a new analysis results view model.
 	 * 
-	 * @param bus     event bus
-	 * @param budget  budget
-	 * @param factory currency factory
+	 * @param bus      event bus
+	 * @param budget   budget
+	 * @param currency currency in use
 	 */
 	public AnalysisSummaryViewModel(EventBus bus, Budget budget,
-		CurrencyFactory factory)
+		Currency currency)
 	{
 		bus.register(this);
 		
@@ -82,16 +83,15 @@ class AnalysisSummaryViewModel {
 			documents.put(field, new SimpleDocument());
 		}
 		
+		String amount = Commodity.zero(currency).formatAsString();
+		
 		documents.get(Field.BUDGET_NAME).setText(
 			budget.getDefinition().getName());
 		documents.get(Field.INITIAL_BALANCE).setText(
 			budget.getDefinition().getInitialBalance().formatAsString());
-		documents.get(Field.ESTIMATED_ENDING_BALANCE).setText(
-			factory.newCurrencyInstance().formatAsString());
-		documents.get(Field.ACTUAL_ENDING_BALANCE).setText(
-			factory.newCurrencyInstance().formatAsString());
-		documents.get(Field.EXPECTED_ENDING_BALANCE).setText(
-			factory.newCurrencyInstance().formatAsString());
+		documents.get(Field.ESTIMATED_ENDING_BALANCE).setText(amount);
+		documents.get(Field.ACTUAL_ENDING_BALANCE).setText(amount);
+		documents.get(Field.EXPECTED_ENDING_BALANCE).setText(amount);
 	}
 	
 	/**

@@ -17,12 +17,13 @@
 package com.vimofthevine.underbudget.swing.currency;
 
 import java.text.ParseException;
+import java.util.Currency;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.Commodity;
 
 /**
  * Currency formatter used when editing a currency amount.
@@ -32,9 +33,9 @@ import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 class EditingCurrencyFormatter extends AbstractFormatter {
 	
 	/**
-	 * Currency factory
+	 * Currency code
 	 */
-	private final CurrencyFactory factory;
+	private final Currency currency;
 	
 	/**
 	 * Currency field instance
@@ -45,10 +46,11 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	 * Constructs a new editable currency formatter.
 	 * 
 	 * @param factory currency factory
+	 * @param currency currency being used
 	 */
-	EditingCurrencyFormatter(CurrencyFactory factory)
+	EditingCurrencyFormatter(Currency currency)
 	{
-		this.factory = factory;
+		this.currency = currency;
 	}
 	
 	@Override
@@ -69,7 +71,7 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 		
 		if (currencyField != null)
 		{
-			Currency value = (Currency) currencyField.getValue();
+			CashCommodity value = (CashCommodity) currencyField.getValue();
 			currencyField.getModel().setNewValue(value);
 		}
 	}
@@ -79,7 +81,7 @@ class EditingCurrencyFormatter extends AbstractFormatter {
     {
 		try
 		{
-			return factory.newCurrencyInstance(text);
+			return Commodity.create(currency, text);
 		}
 		catch (NumberFormatException nfe)
 		{
@@ -90,10 +92,10 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	@Override
     public String valueToString(Object value) throws ParseException
     {
-		if (value instanceof Currency)
+		if (value instanceof CashCommodity)
 		{
-			Currency currency = (Currency) value;
-			return currency.toStr();
+			CashCommodity currency = (CashCommodity) value;
+			return currency.getValue().asString();
 		}
 		else
 			throw new ParseException("Invalid currency object type: " +

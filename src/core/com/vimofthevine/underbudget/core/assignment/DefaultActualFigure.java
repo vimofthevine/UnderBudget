@@ -18,8 +18,8 @@ package com.vimofthevine.underbudget.core.assignment;
 
 import java.util.List;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 
 /**
@@ -33,29 +33,31 @@ class DefaultActualFigure implements ActualFigure {
 	/**
 	 * Actual figure
 	 */
-	private final Currency actual;
+	private final CashCommodity actual;
 
 	/**
 	 * Constructs a default actual figure, which is
 	 * the sum of the value of the given list of
 	 * transactions.
 	 * 
-	 * @param factory      currency factory
+	 * @param calculator   currency calculator
 	 * @param transactions transaction list
 	 */
-	DefaultActualFigure(CurrencyFactory factory,
+	DefaultActualFigure(CurrencyCalculator calculator,
 		List<Transaction> transactions)
 	{
-		actual = factory.newCurrencyInstance();
+		CashCommodity sum = calculator.zero();
 		
 		for (Transaction transaction : transactions)
 		{
-			actual.increaseBy(transaction.getDefinition().getTransferAmount());
+			sum = calculator.add(sum, transaction.getDefinition().getTransferAmount());
 		}
+		
+		actual = sum;
 	}
 
 	@Override
-    public Currency getAmount()
+    public CashCommodity getAmount()
     {
 		return actual;
     }

@@ -17,7 +17,8 @@
 package com.vimofthevine.underbudget.core.balance;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.BalanceImpact;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
@@ -27,12 +28,13 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class DefaultBalanceCalculator implements BalanceCalculator {
-
+	
 	@Override
-	public EndingBalances calculate(Currency initial,
-		Estimate estimate, ActualFigures actuals)
+	public EndingBalances calculate(CashCommodity initial,
+		Estimate estimate, ActualFigures actuals, CurrencyCalculator calculator)
 	{
-		DefaultEndingBalances balances = new DefaultEndingBalances(initial);
+		DefaultEndingBalances balances =
+			new DefaultEndingBalances(initial, calculator);
 		calculate(balances, estimate, actuals);
 		return balances;
 	}

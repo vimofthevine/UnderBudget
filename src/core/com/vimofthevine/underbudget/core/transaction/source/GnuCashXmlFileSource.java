@@ -38,8 +38,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.Commodity;
 import com.vimofthevine.underbudget.core.date.DateRange;
 import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
@@ -72,11 +72,6 @@ implements TransactionSource {
 	private final InputStream stream;
 	
 	/**
-	 * Currency factory
-	 */
-	private final CurrencyFactory currency;
-	
-	/**
 	 * Date range with which to filter imported transactions
 	 */
 	private DateRange dateRange;
@@ -90,6 +85,11 @@ implements TransactionSource {
 	 * Accounts read from the file
 	 */
 	private final HashMap<String,TransferAccount> accounts;
+	
+	/**
+	 * Current currency used in the file
+	 */
+	private String currency;
 	
 	/**
 	 * The current element being parsed
@@ -120,19 +120,16 @@ implements TransactionSource {
 	 * Constructs a new GnuCash XML file model
 	 * for a file with the given filename.
 	 * 
-	 * @param file    GnuCash XML file
-	 * @param factory currency factory instance
+	 * @param file GnuCash XML file
 	 * @throws FileNotFoundException if the given
 	 *         file does not exist
 	 */
-	public GnuCashXmlFileSource(File file, CurrencyFactory factory)
+	public GnuCashXmlFileSource(File file)
 	throws FileNotFoundException
 	{
 		stream = new FileInputStream(file);
 		description = file.getAbsolutePath();
 		logger.log(Level.INFO, "Reading GnuCash XML file, " + file);
-		
-		currency = factory;
 		
 		accounts = new HashMap<String,TransferAccount>();
 		transactions = new ArrayList<ImportedTransaction>();
@@ -143,14 +140,11 @@ implements TransactionSource {
 	 * to read from the given input stream.
 	 * 
 	 * @param inStream input stream to be read
-	 * @param factory  currency factory instance
 	 */
-	public GnuCashXmlFileSource(InputStream inStream,
-		CurrencyFactory factory)
+	public GnuCashXmlFileSource(InputStream inStream)
 	{
 		stream = inStream;
 		description = "input stream";
-		currency = factory;
 		
 		accounts = new HashMap<String,TransferAccount>();
 		transactions = new ArrayList<ImportedTransaction>();
@@ -266,6 +260,11 @@ implements TransactionSource {
 		// Don't do anything if the current element is unknown/undefined
 		if (currentElement == null)
 			return;
+		
+		if (currentElement.equals("cmdty:id"))
+		{
+			currency = new String(ch, start, length);
+		}
 		
 		if (currentElement.startsWith("act"))
 			handleAccountValue(new String(ch, start, length));
@@ -397,8 +396,7 @@ implements TransactionSource {
 			Float wholeValue   = Float.parseFloat(value.substring(0, slashIndex));
 			Float divisor      = Float.parseFloat(value.substring(slashIndex + 1));
 			Float splitValue   = wholeValue / divisor;
-			Currency decimal   = currency.newCurrencyInstance(String.valueOf(splitValue));
-			currentSplit.value = decimal;
+			currentSplit.value = Commodity.create(currency, String.valueOf(splitValue));
 		}
 		// Read the split memo
 		else if (currentElement.equalsIgnoreCase("split:memo"))
@@ -447,8 +445,8 @@ implements TransactionSource {
 			for (TransactionSplitStruct split : splits)
 			{
 				// Check for a negative amount (or the inverse)
-				if ((lookingForMasterWithdrawal && split.value.isNegative())
-					|| ( ! lookingForMasterWithdrawal && ! split.value.isNegative()))
+				if ((lookingForMasterWithdrawal && split.value.getValue().isNegative())
+					|| ( ! lookingForMasterWithdrawal && ! split.value.getValue().isNegative()))
 				{
 					// If the master split has not yet been detected
 					if (masterSplit == null)
@@ -487,7 +485,7 @@ implements TransactionSource {
 	 */
 	protected void convertSplitsToTransactions(TransactionSplitStruct master)
 	{
-		boolean masterIsWithdrawal = master.value.isNegative();
+		boolean masterIsWithdrawal = master.value.getValue().isNegative();
 		TransferAccount masterAccount = master.account;
 		
 		for (TransactionSplitStruct split : splits)
@@ -531,7 +529,7 @@ implements TransactionSource {
 	 * Struct to hold transaction split values.
 	 */
 	private class TransactionSplitStruct {
-		public Currency value;
+		public CashCommodity value;
 		public String memo = "";
 		public TransferAccount account;
 	}

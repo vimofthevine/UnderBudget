@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
 import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
@@ -94,8 +95,15 @@ class BudgetPersistenceModel {
 		}
 		else
 		{
-    		source.persist();
-    		eventBus.post(new SessionSavedEvent());
+			try
+			{
+        		source.persist();
+        		eventBus.post(new SessionSavedEvent());
+			}
+			catch (BudgetSourceException bse)
+			{
+				logger.log(Level.WARNING, "Unable to save budget", bse);
+			}
 		}
 	}
 	
@@ -109,9 +117,17 @@ class BudgetPersistenceModel {
 	public void updateTemplate(UpdateTemplateEvent event)
 	{
 		logger.log(Level.INFO, "Updating the template");
-		BudgetSource template = new TemplateBudgetSource(
-			source.getBudget());
-		template.persist();
+		
+		try
+		{
+    		BudgetSource template = new TemplateBudgetSource(
+    			source.getBudget());
+    		template.persist();
+		}
+		catch (BudgetSourceException bse)
+		{
+			logger.log(Level.WARNING, "Unable to update the template", bse);
+		}
 	}
 
 }

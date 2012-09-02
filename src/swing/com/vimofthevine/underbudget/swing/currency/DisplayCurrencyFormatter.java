@@ -17,11 +17,12 @@
 package com.vimofthevine.underbudget.swing.currency;
 
 import java.text.ParseException;
+import java.util.Currency;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.Commodity;
 
 /**
  * Currency formatter used when displaying a non-editable
@@ -32,24 +33,24 @@ import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 class DisplayCurrencyFormatter extends AbstractFormatter {
 
 	/**
-	 * Currency factory
+	 * Currency
 	 */
-	private final CurrencyFactory factory;
+	private final Currency currency;
 	
 	/**
 	 * Constructs a new non-editable currency formatter.
 	 * 
-	 * @param factory currency factory
+	 * @param currency being used
 	 */
-	DisplayCurrencyFormatter(CurrencyFactory factory)
+	DisplayCurrencyFormatter(Currency currency)
 	{
-		this.factory = factory;
+		this.currency = currency;
 	}
 	
 	@Override
     public Object stringToValue(String text) throws ParseException
     {
-		return factory.newCurrencyInstance(text);
+		return Commodity.create(currency, text);
     }
 
 	@Override
@@ -59,9 +60,9 @@ class DisplayCurrencyFormatter extends AbstractFormatter {
 		{
 			return "";
 		}
-		else if (value instanceof Currency)
+		else if (value instanceof CashCommodity)
 		{
-			Currency currency = (Currency) value;
+			CashCommodity currency = (CashCommodity) value;
 			return currency.formatAsString();
 		}
 		else

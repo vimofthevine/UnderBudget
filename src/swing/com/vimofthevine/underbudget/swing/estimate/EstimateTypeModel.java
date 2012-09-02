@@ -22,7 +22,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
@@ -115,7 +115,7 @@ class EstimateTypeModel extends DefaultComboBoxModel {
         					mutable.setDefinition(new EstimateDefinition() {
                                 public String getName() { return old.getName(); }
                                 public String getDescription() { return old.getDescription(); }
-                                public Currency getAmount() { return old.getAmount(); }
+                                public CashCommodity getAmount() { return old.getAmount(); }
                                 public SimpleDate getDueDate() { return old.getDueDate(); }
                                 public EstimateType getType() { return type; }
                                 public boolean isComplete() { return old.isComplete(); }

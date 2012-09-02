@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.estimate;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
  * A <code>BalanceImpact</code> represents the impact
@@ -32,7 +32,7 @@ public interface BalanceImpact {
 	 * 
 	 * @return estimated balance impact
 	 */
-	public Currency getEstimatedImpact();
+	public CashCommodity getEstimatedImpact();
 	
 	/**
 	 * Returns the impact of the estimate on
@@ -40,7 +40,7 @@ public interface BalanceImpact {
 	 * 
 	 * @return actual balance impact
 	 */
-	public Currency getActualImpact();
+	public CashCommodity getActualImpact();
 	
 	/**
 	 * Returns the impact of the estimate on
@@ -48,7 +48,7 @@ public interface BalanceImpact {
 	 * 
 	 * @return expected balance impact
 	 */
-	public Currency getExpectedImpact();
+	public CashCommodity getExpectedImpact();
 	
 	/**
 	 * Returns any notice that should be

@@ -18,7 +18,7 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
 /**
@@ -31,7 +31,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 	/**
 	 * Actual figures source
 	 */
-	private final ActualFigures actuals;
+	private ActualFigures actuals;
 	
 	/**
 	 * Constructs a new estimate progress
@@ -40,9 +40,13 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 	 * @param root    root estimate
 	 * @param actuals actual figures source
 	 */
-	public EstimateProgressTreeTableModel(Estimate root, ActualFigures actuals)
+	public EstimateProgressTreeTableModel(Estimate root)
 	{
 		super(root);
+	}
+	
+	void setActuals(ActualFigures actuals)
+	{
 		this.actuals = actuals;
 	}
 
@@ -75,7 +79,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		else if (column == 1)
 			return EstimateProgressBar.class;
 		else if (column == 2)
-			return Currency.class;
+			return CashCommodity.class;
 		else if (column == 3)
 			return String.class;
 		else
@@ -96,8 +100,13 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 1)
 		{
-			ActualFigure actual = actuals.getActual(estimate);
-			return new EstimateProgressBar(estimate.getProgress(actual));
+			if (actuals != null)
+			{
+    			ActualFigure actual = actuals.getActual(estimate);
+    			return new EstimateProgressBar(estimate.getProgress(actual));
+			}
+			else
+				return new EstimateProgressBar(new UnevaluatedEstimateProgress());
 		}
 		else if (column == 2)
 		{
@@ -105,8 +114,13 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 3)
 		{
-			ActualFigure actual = actuals.getActual(estimate);
-			return estimate.getProgress(actual).getNotice();
+			if (actuals != null)
+			{
+    			ActualFigure actual = actuals.getActual(estimate);
+    			return estimate.getProgress(actual).getNotice();
+			}
+			else
+				return "";
 		}
 		else
 			throw new IllegalArgumentException("Only 4 columns are supported");

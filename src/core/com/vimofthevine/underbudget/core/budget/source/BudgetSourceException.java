@@ -14,24 +14,38 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.currency;
-
-import com.vimofthevine.underbudget.core.currency.CashCommodity;
+package com.vimofthevine.underbudget.core.budget.source;
 
 /**
- * Interface for listeners to be notified when the
- * currency changes in a currency input model.
+ * Exception thrown if any error occurs and a budget
+ * could not be retrieved from its source or persisted
+ * at the source.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface CurrencyChangeListener {
-
-	/**
-	 * Notifies the listeners that the currency value
-	 * has changed.
-	 * 
-	 * @param currency new currency value
-	 */
-	public void currencyChanged(CashCommodity commodity);
+public class BudgetSourceException extends Exception {
 	
+	/**
+	 * Constructs a new budget source exception with 
+	 * the given message
+	 * 
+	 * @param msg exception detail message
+	 */
+	public BudgetSourceException(String msg)
+	{
+		super(msg);
+	}
+	
+	/**
+	 * Constructs a new budget source exception with 
+	 * the given message and cause
+	 * 
+	 * @param msg   exception detail message
+	 * @param cuase exception cause
+	 */
+	public BudgetSourceException(String msg, Throwable cause)
+	{
+		super(msg, cause);
+	}
+
 }

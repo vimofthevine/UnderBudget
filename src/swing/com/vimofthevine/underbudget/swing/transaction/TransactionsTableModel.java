@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 import com.vimofthevine.underbudget.core.transaction.TransactionDefinition;
@@ -70,7 +70,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 			String.class,
 			TransferAccount.class,
 			TransferAccount.class,
-			Currency.class,
+			CashCommodity.class,
 		};
 	}
 	

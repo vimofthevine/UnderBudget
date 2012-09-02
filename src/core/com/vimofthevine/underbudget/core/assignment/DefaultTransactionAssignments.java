@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 
@@ -34,9 +34,9 @@ class DefaultTransactionAssignments implements TransactionAssignments,
 ActualFigures {
 	
 	/**
-	 * Currency factory
+	 * Currency calculator instance
 	 */
-	private final CurrencyFactory factory;
+	private final CurrencyCalculator calculator;
 	
 	/**
 	 * Map of transaction to assigning rule
@@ -56,11 +56,11 @@ ActualFigures {
 	/**
 	 * Constructs a new transaction assignment list.
 	 * 
-	 * @param factory currency factory
+	 * @param calculator currency calculator
 	 */
-	DefaultTransactionAssignments(CurrencyFactory factory)
+	DefaultTransactionAssignments(CurrencyCalculator calculator)
 	{
-		this.factory = factory;
+		this.calculator = calculator;
 		
 		transactionToRule = new HashMap<Transaction,AssignmentRule>();
 		ruleToTransactions = new HashMap<AssignmentRule,List<Transaction>>();
@@ -114,9 +114,9 @@ ActualFigures {
     {
 		List<Transaction> transactions = estimateToTransactions.get(estimate);
 		if (transactions != null)
-			return new DefaultActualFigure(factory, transactions);
+			return new DefaultActualFigure(calculator, transactions);
 		else
-			return new NoActualFigure(factory);
+			return new NoActualFigure(calculator.zero());
     }
 
 }

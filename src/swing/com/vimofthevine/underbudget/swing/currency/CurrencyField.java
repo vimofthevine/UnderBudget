@@ -18,7 +18,7 @@ package com.vimofthevine.underbudget.swing.currency;
 
 import javax.swing.JFormattedTextField;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
 /**
  * Custom formatted text field for defining
@@ -58,7 +58,7 @@ implements CurrencyChangeListener {
 	}
 
 	@Override
-    public void currencyChanged(Currency currency)
+    public void currencyChanged(CashCommodity currency)
     {
 		setValue(currency);
     }

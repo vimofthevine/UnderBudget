@@ -14,29 +14,39 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.currency;
+package com.vimofthevine.underbudget.core.budget.source;
+
+import com.vimofthevine.underbudget.core.budget.Budget;
 
 /**
- * Factory class for creating new currency objects.
+ * 
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface CurrencyFactory {
+public class TemplateBudgetSource implements BudgetSource {
 	
-    /**
-     * Creates a new currency instance with
-     * a value of zero.
-     * 
-     * @return new currency instance
-     */
-    public Currency newCurrencyInstance();
-    
-	/**
-	 * Creates a new currency instance with the given initial amount
-	 * 
-	 * @param amount string representation of the currency amount
-	 * @return new currency instance
-	 */
-	public Currency newCurrencyInstance(String amount);
+	public TemplateBudgetSource()
+	{
+		
+	}
+	
+	public TemplateBudgetSource(Budget budget)
+	{
+		
+	}
+
+	@Override
+	public Budget getBudget()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void persist()
+	{
+		// TODO Auto-generated method stub
+
+	}
 
 }

@@ -18,12 +18,12 @@ package com.vimofthevine.underbudget.swing.transaction;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.Currency;
 
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.assignment.AssignmentRules;
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRuleDetailView;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRuleDetailViewModel;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailView;
@@ -50,11 +50,11 @@ public abstract class ImportedTransactionsViewFactory {
 	 * @param window   application window
 	 * @param bus      event bus
 	 * @param rules    assignment rule list
-	 * @param currency currency factory
+	 * @param currency currency in use
 	 * @return imported transactions view component
 	 */
 	public static final Component build(Frame window,
-		EventBus bus, AssignmentRules rules, CurrencyFactory currency)
+		EventBus bus, AssignmentRules rules, Currency currency)
 	{
 		// Create models
 		ImportedTransactionListViewModel listModel =

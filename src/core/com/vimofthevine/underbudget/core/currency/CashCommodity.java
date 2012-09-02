@@ -14,39 +14,46 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.budget;
+package com.vimofthevine.underbudget.core.currency;
 
-import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
-import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import java.util.Currency;
 
 /**
- * Set of attributes defining a budget.
+ * Interface for cash commodities.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetDefinition {
+public interface CashCommodity {
 
 	/**
-	 * Returns the name of the budget.
+	 * Returns the currency of this cash commodity.
 	 * 
-	 * @return budget name
+	 * @return cash commodity currency
 	 */
-	public String getName();
+	public Currency getCurrency();
 	
 	/**
-	 * Returns the initial balance to be
-	 * used for ending balance calculations.
+	 * Returns the numerical value
+	 * of this cash commodity.
 	 * 
-	 * @return initial balance
+	 * @return numerical value of this cash commodity
 	 */
-	public CashCommodity getInitialBalance();
+	public Number getValue();
 	
 	/**
-	 * Returns the date period over which
-	 * to analyze.
+	 * Returns an inverse representation of
+	 * this cash commodity.
 	 * 
-	 * @return budgeting period
+	 * @return inverse of this cash commodity
 	 */
-	public BudgetingPeriod getPeriod();
+	public CashCommodity negate();
+	
+	/**
+	 * Creates a formatted representation of
+	 * this cash commodity value.
+	 * 
+	 * @return formatted cash commodity value
+	 */
+	public String formatAsString();
 	
 }

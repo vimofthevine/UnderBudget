@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.core.transaction;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
@@ -68,6 +68,6 @@ public interface TransactionDefinition {
 	 * 
 	 * @return transfer amount
 	 */
-	public Currency getTransferAmount();
+	public CashCommodity getTransferAmount();
 
 }

@@ -16,11 +16,11 @@
 
 package com.vimofthevine.underbudget.swing.currency;
 
+import java.util.Currency;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
-
-import com.vimofthevine.underbudget.core.currency.CurrencyFactory;
 
 /**
  * Formatter factory for creating currency
@@ -47,12 +47,12 @@ class CurrencyFormatterFactory extends AbstractFormatterFactory {
 	 * Constructs a new formatter factory for
 	 * a given currency type.
 	 * 
-	 * @param factory currency factory
+	 * @param currency currency in use
 	 */
-	CurrencyFormatterFactory(CurrencyFactory factory)
+	CurrencyFormatterFactory(Currency currency)
 	{
-		displayingFormatter = new DisplayCurrencyFormatter(factory);
-		editingFormatter = new EditingCurrencyFormatter(factory);
+		displayingFormatter = new DisplayCurrencyFormatter(currency);
+		editingFormatter = new EditingCurrencyFormatter(currency);
 	}
 
 	@Override

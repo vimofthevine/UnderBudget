@@ -17,10 +17,11 @@
 package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 
 import javax.swing.JProgressBar;
 
-import com.vimofthevine.underbudget.core.currency.Currency;
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
@@ -43,11 +44,14 @@ public class EstimateProgressBar {
 	 */
 	public EstimateProgressBar(EstimateProgress progress)
 	{
-		Currency estimated = progress.getEstimatedAmount();
-		Currency actual = progress.getActualAmount();
+		CashCommodity estimated = progress.getEstimatedAmount();
+		CashCommodity actual = progress.getActualAmount();
 		
-		progressBar = new JProgressBar(0, estimated.toInt());
-		progressBar.setValue(actual.toInt());
+		int max = new BigDecimal(estimated.getValue().asString()).intValue();
+		int current = new BigDecimal(actual.getValue().asString()).intValue();
+		
+		progressBar = new JProgressBar(0, max);
+		progressBar.setValue(current);
 		progressBar.setStringPainted(true);
 		progressBar.setString(actual.formatAsString());
 		
