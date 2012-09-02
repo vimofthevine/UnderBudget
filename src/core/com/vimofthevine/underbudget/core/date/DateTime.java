@@ -80,5 +80,11 @@ public class DateTime implements SimpleDate {
 	{
 		return date;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return date.toString();
+	}
 
 }

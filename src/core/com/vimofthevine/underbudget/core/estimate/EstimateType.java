@@ -24,7 +24,8 @@ package com.vimofthevine.underbudget.core.estimate;
 public enum EstimateType {
 	INCOME("Income"),
 	EXPENSE("Expense"),
-	TRANSFER("Transfer");
+	TRANSFER("Transfer"),
+	CATEGORY("Category");
 	
 	private final String name;
 	

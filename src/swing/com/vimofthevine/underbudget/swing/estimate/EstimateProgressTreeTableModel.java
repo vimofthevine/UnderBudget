@@ -17,9 +17,10 @@
 package com.vimofthevine.underbudget.swing.estimate;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
-import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
  * Tree table model for the estimate progress view.
@@ -29,25 +30,23 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
 public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableModel {
 	
 	/**
-	 * Actual figures source
+	 * Currency calculator
 	 */
-	private ActualFigures actuals;
+	private final CurrencyCalculator calculator;
 	
 	/**
 	 * Constructs a new estimate progress
 	 * tree table model.
 	 * 
-	 * @param root    root estimate
-	 * @param actuals actual figures source
+	 * @param root       root estimate
+	 * @param calcualtor currency calculator
 	 */
-	public EstimateProgressTreeTableModel(Estimate root)
+	public EstimateProgressTreeTableModel(Estimate root,
+		CurrencyCalculator calculator)
 	{
 		super(root);
-	}
-	
-	void setActuals(ActualFigures actuals)
-	{
-		this.actuals = actuals;
+		
+		this.calculator = calculator;
 	}
 
 	@Override
@@ -93,6 +92,8 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 			throw new IllegalArgumentException("Only estimates are supported as node objects");
 		
 		Estimate estimate = (Estimate) obj;
+		ActualFigure actual = actuals.getActual(estimate);
+		EstimateProgress progress = estimate.getProgress(actual, calculator);
 		
 		if (column == 0)
 		{
@@ -100,27 +101,15 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 1)
 		{
-			if (actuals != null)
-			{
-    			ActualFigure actual = actuals.getActual(estimate);
-    			return new EstimateProgressBar(estimate.getProgress(actual));
-			}
-			else
-				return new EstimateProgressBar(new UnevaluatedEstimateProgress());
+			return new EstimateProgressBar(progress);
 		}
 		else if (column == 2)
 		{
-			return estimate.getDefinition().getAmount();
+			return progress.getEstimatedAmount();
 		}
 		else if (column == 3)
 		{
-			if (actuals != null)
-			{
-    			ActualFigure actual = actuals.getActual(estimate);
-    			return estimate.getProgress(actual).getNotice();
-			}
-			else
-				return "";
+			return progress.getNotice();
 		}
 		else
 			throw new IllegalArgumentException("Only 4 columns are supported");

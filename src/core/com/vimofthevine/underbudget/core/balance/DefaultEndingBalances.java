@@ -50,9 +50,9 @@ class DefaultEndingBalances implements EndingBalances {
 	DefaultEndingBalances(CashCommodity initial,
 		CurrencyCalculator calculator)
 	{
-		estimated = new DefaultEndingBalance(initial, calculator);
-		actual = new DefaultEndingBalance(initial, calculator);
-		expected = new DefaultEndingBalance(initial, calculator);
+		estimated = new DefaultEndingBalance("estimated", initial, calculator);
+		actual = new DefaultEndingBalance("actual", initial, calculator);
+		expected = new DefaultEndingBalance("expected", initial, calculator);
 	}
 	
 	@Override

@@ -96,7 +96,7 @@ public class BudgetSourceSelectionWizard {
 	
 	void typeSelected(SourceType type, final Object event)
 	{
-		logger.log(Level.INFO, "Type has been selected for " + event);
+		logger.log(Level.INFO, type + " type has been selected for " + event);
 		
 		switch (type)
 		{

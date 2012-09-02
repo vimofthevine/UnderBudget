@@ -20,13 +20,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,14 +63,9 @@ implements TransactionSource {
 	private static final Logger logger = Logger.getLogger(GnuCashXmlFileSource.class.getName());
 	
 	/**
-	 * Description of this GnuCash XML file source
+	 * GnuCash XML file
 	 */
-	private final String description;
-	
-	/**
-	 * Input stream
-	 */
-	private final InputStream stream;
+	private final File file;
 	
 	/**
 	 * Date range with which to filter imported transactions
@@ -127,24 +123,10 @@ implements TransactionSource {
 	public GnuCashXmlFileSource(File file)
 	throws FileNotFoundException
 	{
-		stream = new FileInputStream(file);
-		description = file.getAbsolutePath();
-		logger.log(Level.INFO, "Reading GnuCash XML file, " + file);
+		logger.log(Level.INFO, "Creating GnuCash XML file source, " + file);
+		this.file = file;
 		
-		accounts = new HashMap<String,TransferAccount>();
-		transactions = new ArrayList<ImportedTransaction>();
-	}
-	
-	/**
-	 * Constructs a new GnuCash XML file model
-	 * to read from the given input stream.
-	 * 
-	 * @param inStream input stream to be read
-	 */
-	public GnuCashXmlFileSource(InputStream inStream)
-	{
-		stream = inStream;
-		description = "input stream";
+		currency = Currency.getInstance(Locale.getDefault()).getCurrencyCode();
 		
 		accounts = new HashMap<String,TransferAccount>();
 		transactions = new ArrayList<ImportedTransaction>();
@@ -163,7 +145,7 @@ implements TransactionSource {
 		{
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser parser = factory.newSAXParser();
-			parser.parse(stream, this);
+			parser.parse(new FileInputStream(file), this);
 			
 			Collections.sort(transactions);
 		
@@ -240,7 +222,7 @@ implements TransactionSource {
 		else if (qName.equalsIgnoreCase("gnc:transaction") && currentTransaction != null)
 		{
 			logger.log(Level.FINE, "Finished defining transaction");
-			convertSplitsToTransactions(getMasterSplit(splits));
+			convertSplitsToTransactions(getMasterSplit(splits, currentTransaction));
 			currentTransaction = null;
 			splits = null;
 		}
@@ -263,7 +245,16 @@ implements TransactionSource {
 		
 		if (currentElement.equals("cmdty:id"))
 		{
-			currency = new String(ch, start, length);
+			String newCurrency = new String(ch, start, length);
+			try
+			{
+				Currency.getInstance(newCurrency);
+				currency = newCurrency;
+			}
+			catch (IllegalArgumentException iae)
+			{
+				logger.log(Level.FINEST, "Invalid currency found in file, " + newCurrency);
+			}
 		}
 		
 		if (currentElement.startsWith("act"))
@@ -434,7 +425,8 @@ implements TransactionSource {
 	 * @param splits list of transaction splits
 	 * @return the master transaction split
 	 */
-	protected TransactionSplitStruct getMasterSplit(List<TransactionSplitStruct> splits)
+	protected TransactionSplitStruct getMasterSplit(List<TransactionSplitStruct> splits,
+		TransactionStruct transaction)
 	{
 		TransactionSplitStruct masterSplit = null;
 		boolean lookingForMasterWithdrawal = true;
@@ -466,7 +458,8 @@ implements TransactionSource {
 						else
 						{
 							// Cannot handle multiple deposits and withdrawals in a single transaction
-							logger.log(Level.SEVERE, "Multiple deposits and withdrawals found in a single transaction");
+							logger.log(Level.SEVERE, "Multiple deposits and withdrawals found in a single transaction, ("
+								+ transaction.date + ", " + transaction.payee + ")");
 							return null;
 						}
 					}
@@ -514,7 +507,7 @@ implements TransactionSource {
 	@Override
 	public String toString()
 	{
-		return "GnuCash XML file " + description;
+		return "GnuCash XML file " + file.getAbsolutePath();
 	}
 
 	/**

@@ -16,6 +16,9 @@
 
 package com.vimofthevine.underbudget.core.transaction.source;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.vimofthevine.underbudget.core.assignment.Condition;
 import com.vimofthevine.underbudget.core.assignment.TransactionField;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
@@ -31,6 +34,11 @@ import com.vimofthevine.underbudget.core.transaction.TransferAccount;
  */
 class ImportedTransaction implements Transaction,
 Comparable<ImportedTransaction> {
+	
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(ImportedTransaction.class.getName());
 	
 	/**
 	 * Transaction posted date
@@ -113,6 +121,9 @@ Comparable<ImportedTransaction> {
 	@Override
 	public boolean meets(Condition condition)
 	{
+		logger.log(Level.FINER, "Checking " + this
+			+ " against condition, " + condition);
+		
 		final String field = getField(condition.getField());
 		
 		if ( ! field.equals(""))
@@ -149,5 +160,12 @@ Comparable<ImportedTransaction> {
     {
 		return this.date.compareTo(that.date);
     }
+	
+	@Override
+	public String toString()
+	{
+		return date + ", " + amount + ", " + payee + ", "
+			+ withdrawal + ", " + deposit;
+	}
 
 }

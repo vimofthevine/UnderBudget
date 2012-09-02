@@ -16,6 +16,9 @@
 
 package com.vimofthevine.underbudget.core.budget.period;
 
+import java.util.Calendar;
+
+import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
@@ -35,6 +38,22 @@ public class CustomPeriod implements BudgetingPeriod {
 	 * End date
 	 */
 	private final SimpleDate endDate;
+	
+	/**
+	 * Constructs a period, with the first
+	 * and last days of the current month
+	 * as the start and end dates.
+	 */
+	public CustomPeriod()
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		startDate = new DateTime(calendar.getTime());
+		
+		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		endDate = new DateTime(calendar.getTime());
+	}
 	
 	/**
 	 * Constructs a period with the given start

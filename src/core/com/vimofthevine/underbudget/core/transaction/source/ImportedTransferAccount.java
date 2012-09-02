@@ -62,5 +62,11 @@ class ImportedTransferAccount implements TransferAccount {
 				return name;
 		}
 	}
+	
+	@Override
+	public String toString()
+	{
+		return String.valueOf(parent) + ":" + name;
+	}
 
 }

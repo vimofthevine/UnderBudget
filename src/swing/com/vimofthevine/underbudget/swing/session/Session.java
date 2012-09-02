@@ -117,7 +117,7 @@ public class Session {
     		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
     		
     		component = SessionContentViewFactory.build(
-    			window, eventBus, currency, budget, rules);
+    			window, eventBus, currency, budget, rules, currencyCalculator);
     		
     		active = false;
 		}

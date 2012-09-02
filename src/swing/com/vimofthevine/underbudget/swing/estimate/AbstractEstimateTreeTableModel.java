@@ -20,6 +20,7 @@ import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
+import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 
 /**
@@ -32,6 +33,11 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
 abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
 	
 	/**
+	 * Actual values source
+	 */
+	protected ActualFigures actuals;
+	
+	/**
 	 * Constructs a new estimate tree
 	 * table model.
 	 * 
@@ -40,6 +46,20 @@ abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
 	public AbstractEstimateTreeTableModel(Estimate root)
 	{
 		super(root);
+		
+		actuals = new UnevaluatedActuals(
+			root.getDefinition().getAmount().getCurrency());
+	}
+	
+	/**
+	 * Sets the actual amounts to be used for
+	 * displaying actuals.
+	 * 
+	 * @param actuals actual figures
+	 */
+	void setActuals(ActualFigures actuals)
+	{
+		this.actuals = actuals;
 	}
 
 	@Override

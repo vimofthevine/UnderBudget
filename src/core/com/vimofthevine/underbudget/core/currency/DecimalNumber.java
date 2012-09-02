@@ -102,7 +102,7 @@ public class DecimalNumber implements Number {
 	@Override
 	public boolean isNegative()
 	{
-		return Float.compare(value.floatValue(), 2) < 0;
+		return Float.compare(value.floatValue(), 0) < 0;
 	}
 
 	@Override

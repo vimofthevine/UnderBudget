@@ -35,7 +35,7 @@ public class DefaultBalanceCalculator implements BalanceCalculator {
 	{
 		DefaultEndingBalances balances =
 			new DefaultEndingBalances(initial, calculator);
-		calculate(balances, estimate, actuals);
+		calculate(balances, estimate, actuals, calculator);
 		return balances;
 	}
 	
@@ -45,26 +45,27 @@ public class DefaultBalanceCalculator implements BalanceCalculator {
 	 * leaf estimate to the actual balance, and the
 	 * calculate expected ending balance.
 	 * 
-	 * @param balances ending balances
-	 * @param estimate estimate to be recursively added
-	 * @param actuals  actual figures
+	 * @param balances   ending balances
+	 * @param estimate   estimate to be recursively added
+	 * @param actuals    actual figures
+	 * @param calculator currency calculator
 	 */
 	private void calculate(DefaultEndingBalances balances,
-		Estimate estimate, ActualFigures actuals)
+		Estimate estimate, ActualFigures actuals, CurrencyCalculator calculator)
 	{
 		// Iterate over children (don't count parent estimates)
 		if (estimate.getChildCount() > 0)
 		{
 			for (int i=0; i<estimate.getChildCount(); i++)
 			{
-				calculate(balances, estimate.getChildAt(i), actuals);
+				calculate(balances, estimate.getChildAt(i), actuals, calculator);
 			}
 		}
 		else
 		{
 			// Get impact of the estimate
 			BalanceImpact impact = estimate.getImpact(
-				actuals.getActual(estimate));
+				actuals.getActual(estimate), calculator);
 			
 			// Add to ending balances
 			balances.estimated.apply(impact.getEstimatedImpact());

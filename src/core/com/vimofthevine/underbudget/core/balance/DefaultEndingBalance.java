@@ -16,6 +16,9 @@
 
 package com.vimofthevine.underbudget.core.balance;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.currency.Commodity;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
@@ -27,6 +30,16 @@ import com.vimofthevine.underbudget.core.currency.Number;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 class DefaultEndingBalance implements EndingBalance {
+	
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(DefaultEndingBalance.class.getName());
+	
+	/**
+	 * Name of this ending balance
+	 */
+	private final String name;
 	
 	/**
 	 * Currency calculator instance
@@ -56,11 +69,14 @@ class DefaultEndingBalance implements EndingBalance {
 	/**
 	 * Constructs a new ending balance instance.
 	 * 
+	 * @param name    name of this ending balance
 	 * @param initial initial balance
 	 * @param calc    currency calculator
 	 */
-	DefaultEndingBalance(CashCommodity initial, CurrencyCalculator calc)
+	DefaultEndingBalance(String name, CashCommodity initial,
+		CurrencyCalculator calc)
 	{
+		this.name = name;
 		calculator = calc;
 		
 		initialValue = initial;
@@ -73,6 +89,8 @@ class DefaultEndingBalance implements EndingBalance {
 	
 	void apply(CashCommodity change)
 	{
+		logger.log(Level.INFO, "Applying to " + name + " balance: " + change);
+		
 		Number value = change.getValue();
 		
 		if (value.isNegative())

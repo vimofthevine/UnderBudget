@@ -57,6 +57,12 @@ public abstract class BudgetingPeriodFormViewFactory {
 		new MonthFormView(paydateMonthComponent, paydateMonthModel);
 		forms.addForm(PeriodType.PAYDATE_MONTH, paydateMonthComponent);
 		
+		CustomPeriodFormViewModel customModel =
+			new CustomPeriodFormViewModel(bus, budget);
+		JPanel customComponent = new JPanel();
+		new CustomPeriodFormView(customComponent, customModel);
+		forms.addForm(PeriodType.CUSTOM, customComponent);
+		
 		return periodComponent;
 	}
 	

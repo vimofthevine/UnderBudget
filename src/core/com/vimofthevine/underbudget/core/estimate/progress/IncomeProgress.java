@@ -14,28 +14,50 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.estimate;
+package com.vimofthevine.underbudget.core.estimate.progress;
 
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
- * 
+ * Estimate progress for income estimates.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class UnevaluatedEstimateProgress implements EstimateProgress {
+public class IncomeProgress implements EstimateProgress {
+	
+	/**
+	 * Estimated amount
+	 */
+	private final CashCommodity estimated;
+	
+	/**
+	 * Actual amount
+	 */
+	private final CashCommodity actual;
+	
+	/**
+	 * Constructs a new income estimate progress.
+	 * 
+	 * @param estimated estimated amount
+	 * @param actual    actual amount
+	 */
+	public IncomeProgress(CashCommodity estimated, CashCommodity actual)
+	{
+		this.estimated = estimated;
+		this.actual = actual;
+	}
 
 	@Override
 	public CashCommodity getEstimatedAmount()
 	{
-		return new UnevaluatedCommodity();
+		return estimated;
 	}
 
 	@Override
 	public CashCommodity getActualAmount()
 	{
-		return new UnevaluatedCommodity();
+		return actual;
 	}
 
 	@Override
@@ -47,7 +69,9 @@ public class UnevaluatedEstimateProgress implements EstimateProgress {
 	@Override
 	public boolean isHealthy()
 	{
-		return true;
+		// Healthy if actual >= estimated
+		return actual.getValue()
+			.compareTo(estimated.getValue()) >= 0;
 	}
 
 }

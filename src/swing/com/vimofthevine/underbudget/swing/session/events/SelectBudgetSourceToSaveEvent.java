@@ -23,5 +23,11 @@ package com.vimofthevine.underbudget.swing.session.events;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class SelectBudgetSourceToSaveEvent {
+	
+	@Override
+	public String toString()
+	{
+		return "Select a budget source to save";
+	}
 
 }

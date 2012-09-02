@@ -24,4 +24,10 @@ package com.vimofthevine.underbudget.swing.session.events;
  */
 public class SelectBudgetSourceToOpenEvent {
 
+	@Override
+	public String toString()
+	{
+		return "Select a budget source to open";
+	}
+	
 }

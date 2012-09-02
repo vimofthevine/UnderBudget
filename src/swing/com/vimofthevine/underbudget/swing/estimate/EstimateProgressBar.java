@@ -50,6 +50,12 @@ public class EstimateProgressBar {
 		int max = new BigDecimal(estimated.getValue().asString()).intValue();
 		int current = new BigDecimal(actual.getValue().asString()).intValue();
 		
+		if (max == 0)
+		{
+			// Can't use 0 as a max
+			max++;
+		}
+		
 		progressBar = new JProgressBar(0, max);
 		progressBar.setValue(current);
 		progressBar.setStringPainted(true);

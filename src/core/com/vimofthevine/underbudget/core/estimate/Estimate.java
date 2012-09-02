@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.core.estimate;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
+import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 
 /**
  * An <code>Estimate</code> represents a user's expectations
@@ -79,18 +80,22 @@ public interface Estimate {
 	 * Returns the progress of this estimate as compared
 	 * to the given actual figure.
 	 * 
-	 * @param actual actual figure to be compared against
+	 * @param actual     actual figure to be compared against
+	 * @param calculator currency calculator
 	 * @return progress of this estimate
 	 */
-	public EstimateProgress getProgress(ActualFigure actual);
+	public EstimateProgress getProgress(ActualFigure actual,
+		CurrencyCalculator calculator);
 	
 	/**
 	 * Returns the impact of this estimate to the ending
 	 * balances as determined with the given actual figure.
 	 * 
-	 * @param actual actual figure to be used
+	 * @param actual     actual figure to be used
+	 * @param calculator currency calculator
 	 * @return impact of this estimate to ending balances
 	 */
-	public BalanceImpact getImpact(ActualFigure actual);
+	public BalanceImpact getImpact(ActualFigure actual,
+		CurrencyCalculator calculator);
 	
 }

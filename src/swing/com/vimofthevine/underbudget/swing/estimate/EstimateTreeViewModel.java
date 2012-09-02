@@ -30,7 +30,9 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateAddedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateRemovedEvent;
@@ -330,6 +332,23 @@ public class EstimateTreeViewModel {
 						logger.log(Level.INFO, log + "Updating tree selection to parent of removed estimate");
 						selectionModel.setSelectionPath(parentPath);
 					}
+				}
+			});
+		}
+	}
+	
+	@Subscribe
+	public void transactionsAssigned(TransactionsAssignedEvent event)
+	{
+		// Store transaction assignments if they provide a valid actuals source
+		if (event.getAssignments() instanceof ActualFigures)
+		{
+			final ActualFigures actuals = (ActualFigures) event.getAssignments();
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run()
+				{
+					treeTableModel.setActuals(actuals);
 				}
 			});
 		}
