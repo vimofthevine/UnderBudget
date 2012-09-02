@@ -18,12 +18,15 @@ package com.vimofthevine.underbudget.swing.session.wizard;
 
 import java.awt.Frame;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.stubs.budget.source.StubBudgetSource;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
@@ -40,6 +43,11 @@ import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileSource;
 public class BudgetSourceSelectionWizard {
 	
 	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(BudgetSourceSelectionWizard.class.getName());
+	
+	/**
 	 * Event bus
 	 */
 	private final EventBus eventBus;
@@ -50,60 +58,50 @@ public class BudgetSourceSelectionWizard {
 	private final Frame window;
 	
 	/**
+	 * Current budget
+	 */
+	private final Budget budget;
+	
+	/**
 	 * Constructs a new budget source selection wizard.
 	 * 
 	 * @param bus    event bus
 	 * @param parent application window
+	 * @param budget budget
 	 */
 	public BudgetSourceSelectionWizard(EventBus bus,
-		Frame parent)
+		Frame parent, Budget budget)
 	{
 		eventBus = bus;
 		eventBus.register(this);
 		
 		window = parent;
+		
+		this.budget = budget;
 	}
 	
 	@Subscribe
 	public void selectSourceToOpen(SelectBudgetSourceToOpenEvent event)
 	{
+		logger.log(Level.INFO, "Prompting for source to open");
 		new SourceTypeSelectionDialog(window, this, event);
 	}
 	
 	@Subscribe
 	public void selectSourceToSave(SelectBudgetSourceToSaveEvent event)
 	{
+		logger.log(Level.INFO, "Prompting for source to save");
 		new SourceTypeSelectionDialog(window, this, event);
 	}
 	
 	void typeSelected(SourceType type, final Object event)
 	{
+		logger.log(Level.INFO, "Type has been selected for " + event);
+		
 		switch (type)
 		{
 			case XML:
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run()
-					{
-						BudgetXmlFileChooser chooser = new BudgetXmlFileChooser();
-						int result = chooser.showOpenDialog(window);
-						
-						if (result == JFileChooser.APPROVE_OPTION)
-						{
-							final File file = chooser.getSelectedFile();
-							
-							// Get off EDT
-							new Thread() {
-								public void run()
-								{
-									BudgetXmlFileSource source =
-										new BudgetXmlFileSource(file);
-									fireSelectedEvent(source, event);
-								}
-							}.start();
-						}
-					}
-				});
-				
+				selectGnuCashXmlFile(event);
 				break;
 				
 			case STUB:
@@ -132,6 +130,37 @@ public class BudgetSourceSelectionWizard {
 		{
 			eventBus.post(new BudgetSourceToSaveSelectedEvent(source));
 		}
+	}
+	
+	private void selectGnuCashXmlFile(final Object event)
+	{
+		final boolean open = (event instanceof SelectBudgetSourceToOpenEvent);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				BudgetXmlFileChooser chooser = new BudgetXmlFileChooser();
+				int result = open ? chooser.showOpenDialog(window)
+					: chooser.showSaveDialog(window);
+				
+				if (result == JFileChooser.APPROVE_OPTION)
+				{
+					final File file = chooser.getSelectedFile();
+					
+					// Get off EDT
+					new Thread() {
+						public void run()
+						{
+							BudgetXmlFileSource source = open
+								? new BudgetXmlFileSource(file)
+								: new BudgetXmlFileSource(file, budget);
+							
+							fireSelectedEvent(source, event);
+						}
+					}.start();
+				}
+			}
+		});
 	}
 
 }

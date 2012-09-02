@@ -69,11 +69,6 @@ public class Sessions {
 	private final SessionBusBridge busBridge;
 	
 	/**
-	 * Budget source selection wizard
-	 */
-	private final BudgetSourceSelectionWizard wizard;
-	
-	/**
 	 * Open sessions
 	 */
 	private final List<Session> sessions;
@@ -97,7 +92,7 @@ public class Sessions {
 		
 		busBridge = new SessionBusBridge(eventBus);
 		
-		wizard = new BudgetSourceSelectionWizard(bus, window);
+		new BudgetSourceSelectionWizard(bus, window, null);
 		sessions = new ArrayList<Session>();
 	}
 	

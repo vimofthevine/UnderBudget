@@ -27,7 +27,7 @@ import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
-import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
+import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
 
@@ -98,6 +98,7 @@ class BudgetPersistenceModel {
 			try
 			{
         		source.persist();
+        		logger.log(Level.INFO, "Save successful");
         		eventBus.post(new SessionSavedEvent());
 			}
 			catch (BudgetSourceException bse)
@@ -110,7 +111,8 @@ class BudgetPersistenceModel {
 	@Subscribe
 	public void saveSessionAs(SaveSessionAsEvent event)
 	{
-		eventBus.post(new SelectBudgetSourceToOpenEvent());
+		logger.log(Level.INFO, "Save-as received");
+		eventBus.post(new SelectBudgetSourceToSaveEvent());
 	}
 	
 	@Subscribe
