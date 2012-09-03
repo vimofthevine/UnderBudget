@@ -37,15 +37,34 @@ class ImportedTransferAccount implements TransferAccount {
 	private final TransferAccount parent;
 	
 	/**
+	 * Account type
+	 */
+	private final String type;
+	
+	/**
 	 * Constructs a new imported transfer account.
 	 * 
 	 * @param name   account name
 	 * @param parent account parent
+	 * @param type   account type
 	 */
-	public ImportedTransferAccount(String name, TransferAccount parent)
+	public ImportedTransferAccount(String name,
+		TransferAccount parent, String type)
 	{
 		this.name = name;
 		this.parent = parent;
+		this.type = type.toLowerCase();
+	}
+	
+	/**
+	 * Checks if this account represents an expense account.
+	 * 
+	 * @return <code>true</code> if this account is
+	 *         an expense account
+	 */
+	public boolean isExpenseAccount()
+	{
+		return type.startsWith("exp");
 	}
 
 	@Override

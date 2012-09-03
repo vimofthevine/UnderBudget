@@ -45,7 +45,6 @@ import com.vimofthevine.underbudget.core.date.DateRange;
 import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
-import com.vimofthevine.underbudget.core.transaction.TransferAccount;
 
 /**
  * <code>TransactionSource</code> implementation, importing
@@ -80,7 +79,7 @@ implements TransactionSource {
 	/**
 	 * Accounts read from the file
 	 */
-	private final HashMap<String,TransferAccount> accounts;
+	private final HashMap<String,ImportedTransferAccount> accounts;
 	
 	/**
 	 * Current currency used in the file
@@ -128,7 +127,7 @@ implements TransactionSource {
 		
 		currency = Currency.getInstance(Locale.getDefault()).getCurrencyCode();
 		
-		accounts = new HashMap<String,TransferAccount>();
+		accounts = new HashMap<String,ImportedTransferAccount>();
 		transactions = new ArrayList<ImportedTransaction>();
 	}
 
@@ -215,7 +214,9 @@ implements TransactionSource {
 		if (qName.equalsIgnoreCase("gnc:account") && currentAccount != null)
 		{
 			logger.log(Level.FINE, "Finished defining account");
-			accounts.put(currentAccount.id, new ImportedTransferAccount(currentAccount.name, currentAccount.parent));
+			accounts.put(currentAccount.id,
+				new ImportedTransferAccount(currentAccount.name,
+					currentAccount.parent, currentAccount.type));
 			currentAccount = null;
 		}
 		// Create individual transactions and add to list
@@ -300,7 +301,7 @@ implements TransactionSource {
 			// If not the root account, get the parent account
 			if ( ! currentAccount.type.equalsIgnoreCase("root"))
 			{
-				TransferAccount parent = accounts.get(value);
+				ImportedTransferAccount parent = accounts.get(value);
 				
 				// If parent is unknown, do not add account
 				if (parent == null)
@@ -397,7 +398,7 @@ implements TransactionSource {
 		// Read the split account
 		else if (currentElement.equalsIgnoreCase("split:account"))
 		{
-			TransferAccount account = accounts.get(value);
+			ImportedTransferAccount account = accounts.get(value);
 			
 			// If account is unknown, do not add split
 			if (account == null)
@@ -478,25 +479,34 @@ implements TransactionSource {
 	 */
 	protected void convertSplitsToTransactions(TransactionSplitStruct master)
 	{
+		// The master split is a withdrawal if it has a negative transfer amount
 		boolean masterIsWithdrawal = master.value.getValue().isNegative();
-		TransferAccount masterAccount = master.account;
+		ImportedTransferAccount masterAccount = master.account;
+		boolean isRefund = masterIsWithdrawal && masterAccount.isExpenseAccount();
 		
 		for (TransactionSplitStruct split : splits)
 		{
 			if (split != master)
 			{
-				TransferAccount splitAccount = split.account;
-				TransferAccount withdrawalAccount = masterIsWithdrawal
+				ImportedTransferAccount splitAccount = split.account;
+				
+				// If master is withdrawal but not a refund, use it as the withdrawal account
+				ImportedTransferAccount withdrawalAccount = (masterIsWithdrawal && ! isRefund)
 					? masterAccount : splitAccount;
-				TransferAccount depositAccount = masterIsWithdrawal
+				// Else use it as the deposit account
+				ImportedTransferAccount depositAccount = (masterIsWithdrawal && ! isRefund)
 					? splitAccount : masterAccount;
+				
+				// If transaction is a refund, all transfer amounts are inverted
+				CashCommodity transferAmount = isRefund
+					? split.value.negate() : split.value;
 				
 				// Create new transaction
 				transactions.add(new ImportedTransaction(
 					currentTransaction.date,
 					currentTransaction.payee,
 					split.memo,
-					split.value,
+					transferAmount,
 					withdrawalAccount,
 					depositAccount
 				));
@@ -524,7 +534,7 @@ implements TransactionSource {
 	private class TransactionSplitStruct {
 		public CashCommodity value;
 		public String memo = "";
-		public TransferAccount account;
+		public ImportedTransferAccount account;
 	}
 	
 	/**
@@ -534,7 +544,7 @@ implements TransactionSource {
 		public String id;
 		public String name;
 		public String type;
-		public TransferAccount parent;
+		public ImportedTransferAccount parent;
 	}
 
 }
