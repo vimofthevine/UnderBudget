@@ -5,6 +5,7 @@
 # Build output
 bin/
 build/
+target/
 pkg/
 _site/
 underbudget-*.pkg.tar.xz
