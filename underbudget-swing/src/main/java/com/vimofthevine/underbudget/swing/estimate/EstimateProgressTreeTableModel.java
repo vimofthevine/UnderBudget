@@ -16,6 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
+import javax.swing.JProgressBar;
+
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
@@ -35,6 +37,11 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 	private final CurrencyCalculator calculator;
 	
 	/**
+	 * Progress bar factory
+	 */
+	private final ProgressBarFactory progressBars;
+	
+	/**
 	 * Constructs a new estimate progress
 	 * tree table model.
 	 * 
@@ -47,6 +54,8 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		super(root);
 		
 		this.calculator = calculator;
+		
+		progressBars = new ProgressBarFactory();
 	}
 
 	@Override
@@ -76,7 +85,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		if (column == 0)
 			return String.class;
 		else if (column == 1)
-			return EstimateProgressBar.class;
+			return JProgressBar.class;
 		else if (column == 2)
 			return CashCommodity.class;
 		else if (column == 3)
@@ -101,7 +110,7 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 		}
 		else if (column == 1)
 		{
-			return new EstimateProgressBar(progress);
+			return progressBars.get(progress);
 		}
 		else if (column == 2)
 		{

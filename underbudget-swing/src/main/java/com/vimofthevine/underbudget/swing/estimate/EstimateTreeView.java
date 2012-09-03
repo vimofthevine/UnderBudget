@@ -46,7 +46,7 @@ public class EstimateTreeView implements TableCellRenderer {
 		EstimateTreeViewModel model)
 	{
 		JXTreeTable treeTable = new JXTreeTable(model.getTreeTableModel());
-		treeTable.setDefaultRenderer(EstimateProgressBar.class, this);
+		treeTable.setDefaultRenderer(JProgressBar.class, this);
 		treeTable.expandAll();
 		treeTable.setRowHeight(treeTable.getRowHeight() + 2);
 		
@@ -70,9 +70,9 @@ public class EstimateTreeView implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table,
     	Object value, boolean isSelected, boolean hasFocus, int row, int column)
     {
-    	if (value instanceof EstimateProgressBar)
+    	if (value instanceof JProgressBar)
     	{
-    		JProgressBar progress = ((EstimateProgressBar) value).getProgressBar();
+    		JProgressBar progress = (JProgressBar) value;
     		progress.setBorderPainted(false);
     		progress.setBackground(isSelected ?
     			UIManager.getColor("Table.selectionBackground") :

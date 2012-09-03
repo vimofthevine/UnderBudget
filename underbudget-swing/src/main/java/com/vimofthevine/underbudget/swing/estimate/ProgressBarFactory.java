@@ -25,24 +25,47 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
- * A progress bar that depicts an actual as a percentage
- * of an estimate.
+ * Factory for creating progress bar instances.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class EstimateProgressBar {
+public class ProgressBarFactory {
 	
 	/**
-	 * Progress bar
+	 * Healthy progress bar color
+	 */
+	private final static Color HEALTHY_COLOR =
+		new Color(115, 210, 22);
+	
+	/**
+	 * Unhealthy progress bar color
+	 */
+	private final static Color UNHEALTHY_COLOR =
+		new Color(204, 0, 0);
+	
+	/**
+	 * Progress bar instance
 	 */
 	private final JProgressBar progressBar;
 	
 	/**
-	 * Constructs a new estimate progress bar.
+	 * Constructs a new progress bar factory.
+	 */
+	public ProgressBarFactory()
+	{
+		progressBar = new JProgressBar();
+		progressBar.setMinimum(0);
+		progressBar.setStringPainted(true);
+	}
+	
+	/**
+	 * Returns an instance of a progress bar
+	 * for the given estimate progress.
 	 * 
 	 * @param progress estimate progress
+	 * @return progress bar instance
 	 */
-	public EstimateProgressBar(EstimateProgress progress)
+	public JProgressBar get(EstimateProgress progress)
 	{
 		CashCommodity estimated = progress.getEstimatedAmount();
 		CashCommodity actual = progress.getActualAmount();
@@ -56,23 +79,13 @@ public class EstimateProgressBar {
 			max++;
 		}
 		
-		progressBar = new JProgressBar(0, max);
+		progressBar.setMaximum(max);
 		progressBar.setValue(current);
-		progressBar.setStringPainted(true);
 		progressBar.setString(actual.formatAsString());
+		progressBar.setForeground(progress.isHealthy()
+			? HEALTHY_COLOR : UNHEALTHY_COLOR);
 		
-		Color color = progress.isHealthy() ? Color.green : Color.red;
-		progressBar.setForeground(color);
-	}
-	
-	/**
-	 * Returns the progress bar.
-	 * 
-	 * @return progress bar
-	 */
-	public JProgressBar getProgressBar()
-	{
 		return progressBar;
 	}
-	
+
 }
