@@ -60,6 +60,9 @@ public class SourceTypeSelectionDialog {
 		c.insets = new Insets(5, 5, 5, 5);
 		panel.add(new BoldLabel("Select budget source"), c);
 		
+		final JButton next = new JButton("Next");
+		next.setEnabled(false);
+		
 		c.insets = new Insets(5, 5, 0, 5);
 		final ButtonGroup group = new ButtonGroup();
 		for (SourceType type : SourceType.values())
@@ -68,10 +71,18 @@ public class SourceTypeSelectionDialog {
 			button.setActionCommand(type.getActionCommand());
 			group.add(button);
 			panel.add(button, c);
+			
+			// Enable the next button
+			button.addActionListener(new ActionListener() {
+				@Override
+                public void actionPerformed(ActionEvent arg0)
+                {
+					next.setEnabled(true);
+                }
+			});
 		}
 		
 		JButton cancel = new JButton("Cancel");
-		JButton next = new JButton("Next");
 		
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LAST_LINE_START;
