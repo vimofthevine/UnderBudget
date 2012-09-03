@@ -10,6 +10,7 @@
 
 	<!-- Source directories -->
 	<property name="src.dir"         value="src" />
+	<property name="lib.dir"         value="lib" />
 	<property name="test.dir"        value="test" />
 	<property name="data.dir"        value="data" />
 	<property name="linux.dir"       value="packaging/linux" />
@@ -18,23 +19,72 @@
 	<!-- Build output directories -->
 	<property name="build.dir"       value="build" />
 	<property name="build.class.dir" value="${build.dir}/classes" />
+	<property name="build.lib.dir"   value="${build.dir}/lib" />
 	<property name="build.test.dir"  value="${build.dir}/test" />
 	<property name="build.logs.dir"  value="${build.dir}/logs" />
 	<property name="build.instr.dir" value="${build.dir}/instr" />
 	<property name="build.cov.dir"   value="${build.dir}/coverage" />
 	<property name="build.jar.dir"   value="${build.dir}/jar" />
+	<property name="build.docs.dir"  value="${build.dir}/docs" />
 
 	<!-- Clean up the build directory -->
 	<target name="clean" description="Clean build output">
 		<delete dir="${build.dir}" />
 	</target>
 
+	<!-- Compile the Simple XML Framework library -->
+	<target name="simple" description="Set-up the Simple XML Framework classpath">
+	</target>
+
+	<!-- Compile the JCommander library -->
+	<target name="jcommander" description="Compile the JCommander source">
+		<mkdir dir="${build.lib.dir}/jcommander" />
+
+		<javac srcdir="${lib.dir}/jcommander/src/main/java"
+			destdir="${build.lib.dir}/jcommander"
+			includeantruntime="false" debug="${debug}" />
+
+		<jar destfile="${build.lib.dir}/jcommander.jar"
+			basedir="${build.lib.dir}/jcommander" />
+
+		<delete dir="${build.lib.dir}/jcommander" />
+	</target>
+
+	<!-- Compile the core application source -->
+	<target name="core" description="Compile the core application source">
+		<mkdir dir="${build.class.dir}/core" />
+
+		<javac srcdir="${src.dir}/core" destdir="${build.class.dir}/core"
+				includeantruntime="false" debug="${debug}">
+		</javac>
+	</target>
+
 	<!-- Compile the application source -->
-	<target name="compile" description="Compile the Java source">
+	<target name="compile" description="Compile the Java source"
+			depends="simple">
 		<mkdir dir="${build.class.dir}" />
 
 		<javac srcdir="${src.dir}" destdir="${build.class.dir}"
-			includeantruntime="false" debug="${debug}" />
+				includeantruntime="false" debug="${debug}">
+			<classpath>
+				<fileset dir="lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<include name="com/vimofthevine/underbudget/core/budget/*.java" />
+			<include name="com/vimofthevine/underbudget/core/budget/assignment/**" />
+			<include name="com/vimofthevine/underbudget/core/budget/estimate/**" />
+			<include name="com/vimofthevine/underbudget/core/budget/estimate/behavior/**" />
+			<include name="com/vimofthevine/underbudget/core/budget/estimate/impact/**" />
+			<include name="com/vimofthevine/underbudget/core/budget/period/**" />
+			<include name="com/vimofthevine/underbudget/core/currency/**" />
+			<include name="com/vimofthevine/underbudget/core/ledger/**" />
+			<include name="com/vimofthevine/underbudget/core/progress/**" />
+			<include name="com/vimofthevine/underbudget/core/util/**" />
+			<include name="com/vimofthevine/underbudget/file/filter/**" />
+			<include name="com/vimofthevine/underbudget/file/transaction/**" />
+			<include name="com/vimofthevine/underbudget/file/xml/**" />
+		</javac>
 
 		<copy todir="${build.class.dir}">
 			<fileset dir="${src.dir}"
@@ -51,7 +101,12 @@
 				includeantruntime="true">
 			<classpath>
 				<pathelement location="${build.class.dir}" />
+				<fileset dir="lib">
+					<include name="**/*.jar" />
+				</fileset>
 			</classpath>
+			<include name="com/vimofthevine/underbudget/core/**" />
+			<include name="com/vimofthevine/underbudget/file/**" />
 		</javac>
 
 		<copy todir="${build.test.dir}">
@@ -70,13 +125,18 @@
 				<pathelement location="${build.class.dir}" />
 				<pathelement location="${build.test.dir}" />
 				<pathelement location="${emma.dir}/emma.jar" />
+				<fileset dir="lib">
+					<include name="**/*.jar" />
+				</fileset>
 			</classpath>
 
 			<formatter type="plain" />
 
 			<batchtest todir="${build.logs.dir}">
 				<fileset dir="${test.dir}">
-					<include name="**/*Test.java" />
+					<!--<include name="**/*Test.java" />-->
+					<include name="**/core/**/*Test.java" />
+					<include name="**/underbudget/file/**/*Test.java" />
 				</fileset>
 			</batchtest>
 
@@ -171,5 +231,20 @@
 	<!-- Create all packages -->
 	<target name="all" depends="clean,pkg-unix,pkg-win"
 		description="Create all packages" />
+
+	<!-- Generate Core Javadoc package -->
+	<target name="core-docs" description="Generate Core Javadoc documentation">
+		<javadoc packagenames="com.vimofthevine.underbudget.core.*"
+				sourcepath="${src.dir}/core" destdir="${build.docs.dir}/core">
+			<tag name="todo" scope="all" description="To do:" />
+		</javadoc>
+	</target>
+
+	<!-- Generate Javadoc package -->
+	<target name="docs" description="Generate Javadoc documentation">
+		<javadoc packagenames="com.vimofthevine.underbudget.file.*"
+		         sourcepath="src"
+		         destdir="${build.docs.dir}" />
+	</target>
 
 </project>

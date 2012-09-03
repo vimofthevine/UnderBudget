@@ -1,5 +1,0 @@
-"Date","Description","Original Description","Amount","Transaction Type","Category","Account Name","Labels","Notes"
-"11/05/2010","Direct deposit","AUTO DEPOSIT","650.03","credit","Paycheck","My Bank","",""
-"12/07/2011","Mr. Mechanic","AUTOBODYSHOP","402.44","debit","Auto Repair","My Bank","","Tires"
-"7/28/2010","Vendor","","150.00","debit","Recreation","My Bank","","Entertainment"
-"7/28/2010","Vendor","","14.68","debit","Dining","My Bank","","Food"
