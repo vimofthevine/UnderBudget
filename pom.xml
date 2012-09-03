@@ -15,6 +15,7 @@
     <module>underbudget-swing</module>
     <module>underbudget-xml</module>
     <module>underbudget-stubs</module>
+    <module>underbudget-jar</module>
   </modules>
 
   <properties>
