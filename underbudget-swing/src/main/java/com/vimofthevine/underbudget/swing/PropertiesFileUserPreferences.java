@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.Application;
+import com.vimofthevine.underbudget.ApplicationProperties;
 
 /**
  * User preferences stored in a properties file.
@@ -38,6 +38,11 @@ public class PropertiesFileUserPreferences implements UserPreferences {
 	 * Log handle
 	 */
 	private static final Logger logger = Logger.getLogger(PropertiesFileUserPreferences.class.getName());
+	
+	/**
+	 * Application properties
+	 */
+	private final ApplicationProperties appProps;
 	
 	/**
 	 * User preferences
@@ -53,10 +58,12 @@ public class PropertiesFileUserPreferences implements UserPreferences {
 	 * Constructs a new user preferences
 	 * model for the given properties file.
 	 * 
-	 * @param file location of the properties file
+	 * @param props application properties
+	 * @param file  location of the properties file
 	 */
-	public PropertiesFileUserPreferences(String file)
+	public PropertiesFileUserPreferences(ApplicationProperties props, String file)
 	{
+		appProps = props;
 		properties = new Properties();
 		this.file = new File(file);
 	}
@@ -109,7 +116,7 @@ public class PropertiesFileUserPreferences implements UserPreferences {
 		try
 		{
 			stream = new FileOutputStream(file);
-			properties.store(stream, Application.TITLE + " user preferences");
+			properties.store(stream, appProps.getTitle() + " user preferences");
 		}
 		catch (IOException ioe)
 		{

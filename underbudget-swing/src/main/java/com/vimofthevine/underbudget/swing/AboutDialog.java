@@ -33,7 +33,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.Application;
+import com.vimofthevine.underbudget.ApplicationProperties;
 
 /**
  * Popup dialog to display information about the application.
@@ -56,14 +56,17 @@ public class AboutDialog implements ActionListener {
 	/**
 	 * Constructs a new about dialog.
 	 * 
+	 * @param props  application properties
 	 * @param parent parent window to the popup dialog
+	 * @param bus    application event bus
 	 */
-	public AboutDialog(Frame parent, EventBus bus)
+	public AboutDialog(ApplicationProperties props,
+		Frame parent, EventBus bus)
 	{
 		bus.register(this);
 		
 		this.parent = parent;
-		dialog = new JDialog(parent, "About " + Application.TITLE, true);
+		dialog = new JDialog(parent, "About " + props.getTitle(), true);
 		dialog.setLayout(new GridBagLayout());
 		
 		// Create tabs

@@ -42,9 +42,12 @@ public class SwingApplication {
 	 */
 	public static void main(String[] args)
 	{
+		ApplicationProperties props = new ApplicationProperties();
+		
 		EventBus eventBus = new EventBus("main");
 		String home = System.getProperty("user.home");
-		UserPreferences preferences = new PropertiesFileUserPreferences(home + "/underbudget.properties");
+		UserPreferences preferences = new PropertiesFileUserPreferences(props,
+			home + "/underbudget.properties");
 		preferences.read();
 		
 		JFrame frame = new JFrame();
@@ -52,17 +55,18 @@ public class SwingApplication {
 		ApplicationMenuModel menuModel = new ApplicationMenuModel(eventBus);
 		JMenuBar menuBar = new JMenuBar();
 		new ApplicationMenu(menuModel, menuBar);
-		JToolBar toolBar = new JToolBar(Application.TITLE);
+		JToolBar toolBar = new JToolBar(props.getTitle());
 		new ApplicationToolBar(menuModel, toolBar);
 		
 		new Sessions(frame, eventBus, preferences);
-		new AboutDialog(frame, eventBus);
+		new AboutDialog(props, frame, eventBus);
 		new DeadEventListener(frame, eventBus);
 		
 		JPanel content = new JPanel();
-		new ApplicationContent(content, eventBus);
+		new ApplicationContent(props, content, eventBus);
 		
-		ApplicationWindowModel windowModel = new ApplicationWindowModel(eventBus, preferences);
+		ApplicationWindowModel windowModel =
+			new ApplicationWindowModel(props, eventBus, preferences);
 		ApplicationWindow window = new ApplicationWindow(windowModel,
 			frame, menuBar, toolBar, content);
 		

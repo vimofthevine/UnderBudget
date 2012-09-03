@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.Application;
+import com.vimofthevine.underbudget.ApplicationProperties;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 
 /**
@@ -38,6 +38,11 @@ import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 public class ApplicationContent {
 	
 	/**
+	 * Application properties
+	 */
+	private final ApplicationProperties props;
+	
+	/**
 	 * Application content view
 	 */
 	private final Container view;
@@ -45,10 +50,15 @@ public class ApplicationContent {
 	/**
 	 * Constructs a new application content instance.
 	 * 
+	 * @param props     application properties
 	 * @param container application content container
+	 * @param bus       application event bus
 	 */
-	public ApplicationContent(Container container, EventBus bus)
+	public ApplicationContent(ApplicationProperties props,
+		Container container, EventBus bus)
 	{
+		this.props = props;
+		
 		bus.register(this);
 		
 		view = container;
@@ -69,7 +79,7 @@ public class ApplicationContent {
 		URL url = getClass().getResource("splash.png");
 		return (url != null)
 			? new JLabel(new ImageIcon(url))
-			: new JLabel(Application.TITLE);
+			: new JLabel(props.getTitle());
 	}
 
 	/**

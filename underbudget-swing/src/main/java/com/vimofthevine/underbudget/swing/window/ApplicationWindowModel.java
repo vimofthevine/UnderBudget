@@ -25,7 +25,7 @@ import java.awt.event.WindowListener;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.Application;
+import com.vimofthevine.underbudget.ApplicationProperties;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
@@ -47,6 +47,11 @@ public class ApplicationWindowModel {
 	 * Window width preferences key
 	 */
 	private static final String WIDTH_KEY = "Window.Width";
+	
+	/**
+	 * Application title
+	 */
+	private final String title;
 	
 	/**
 	 * Event bus
@@ -74,17 +79,21 @@ public class ApplicationWindowModel {
 	 * Constructs a new application window
 	 * presentation model
 	 * 
+	 * @param props application properties
 	 * @param bus   event bus
 	 * @param prefs user preferences
 	 */
-	public ApplicationWindowModel(EventBus bus, UserPreferences prefs)
+	public ApplicationWindowModel(ApplicationProperties props,
+		EventBus bus, UserPreferences prefs)
 	{
+		title = props.getTitle() + " " + props.getVersion();
+		
 		eventBus = bus;
 		eventBus.register(this);
 		
 		preferences = prefs;
 		
-		titleModel = new WindowTitleModel();
+		titleModel = new WindowTitleModel(title);
 	}
 	
 	/**
@@ -181,7 +190,7 @@ public class ApplicationWindowModel {
 	{
 		if (event.getSession() == null)
 		{
-			titleModel.setTitle(Application.TITLE);
+			titleModel.setTitle(title);
 		}
 		else
 		{
@@ -213,7 +222,7 @@ public class ApplicationWindowModel {
 	private void updateWindowTitle(String sessionName, boolean dirty)
 	{
 		StringBuilder title = new StringBuilder();
-		title.append(Application.TITLE + " :: ");
+		title.append(this.title + " :: ");
 		title.append(sessionName);
 		
 		if (dirty)

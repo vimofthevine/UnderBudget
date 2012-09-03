@@ -7,7 +7,7 @@
   <version>2.0</version>
   <packaging>pom</packaging>
 
-  <name>underbudget</name>
+  <name>UnderBudget</name>
   <url>http://underbudget.vimofthevine.com</url>
 
   <modules>

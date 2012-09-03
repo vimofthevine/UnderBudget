@@ -19,8 +19,6 @@ package com.vimofthevine.underbudget.swing.window;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vimofthevine.underbudget.Application;
-
 /**
  * Application window title model.
  * 
@@ -38,9 +36,9 @@ class WindowTitleModel {
 	 */
 	private String title;
 	
-	public WindowTitleModel()
+	public WindowTitleModel(String initialTitle)
 	{
-		title = Application.TITLE;
+		title = initialTitle;
 		listeners = new ArrayList<WindowTitleListener>();
 	}
 	
