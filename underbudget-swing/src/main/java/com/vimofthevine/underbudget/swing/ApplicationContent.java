@@ -91,6 +91,7 @@ public class ApplicationContent {
 				view.removeAll();
 				view.add(component, BorderLayout.CENTER);
 				view.validate();
+				view.repaint();
 			}
 		});
 	}
