@@ -23,7 +23,6 @@ import com.vimofthevine.underbudget.core.balance.BalanceCalculator;
 import com.vimofthevine.underbudget.core.balance.EndingBalances;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
-import com.vimofthevine.underbudget.swing.assignment.events.AssignTransactionsEvent;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
 
 /**
@@ -106,29 +105,26 @@ public class OnDemandBalanceCalculator {
 	/**
 	 * Performs a balance calculation, using the already supplied
 	 * actual figures. If no actual figures have been supplied, an
-	 * assign transactions event is posted to initiate an assignment
-	 * of the imported transactions.
+	 * unevaluated actuals source is used, allowing calculation of
+	 * the estimated balance to continue.
 	 * 
 	 * @param event calculate ending balances event
 	 */
 	@Subscribe
 	public void calculateBalances(CalculateBalancesEvent event)
 	{
-		// If no actuals, perform an assignment
-		if (actuals == null)
-		{
-			eventBus.post(new AssignTransactionsEvent());
-		}
-		else
-		{
-			EndingBalances balances = calculator.calculate(
-				budget.getDefinition().getInitialBalance(),
-				budget.getRootEstimate(), actuals, currencyCalculator);
+		// If no actuals, use zeros
+		ActualFigures actualFigures = (actuals == null)
+			? new UnevaluatedActuals(currencyCalculator.zero())
+			: actuals;
 			
-			if (balances != null)
-			{
-				eventBus.post(new BalancesCalculatedEvent(balances));
-			}
+		EndingBalances balances = calculator.calculate(
+			budget.getDefinition().getInitialBalance(),
+			budget.getRootEstimate(), actualFigures, currencyCalculator);
+		
+		if (balances != null)
+		{
+			eventBus.post(new BalancesCalculatedEvent(balances));
 		}
 	}
 
