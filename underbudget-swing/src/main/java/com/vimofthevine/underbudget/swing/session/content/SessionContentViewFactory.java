@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
+import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRulesViewFactory;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
@@ -55,14 +56,15 @@ public abstract class SessionContentViewFactory {
 	public static final Component build(Frame window,
 		EventBus bus, Currency currency, Budget budget,
 		ReverseLookupAssignmentRules rules,
-		CurrencyCalculator calculator)
+		CurrencyCalculator calculator, UserPreferences prefs)
 	{
 		SessionContentViewModel model = new SessionContentViewModel(bus);
 		
 		Component analysisSummary = AnalysisSummaryViewFactory.build(bus,
 			currency, budget);
 		Component estimateProgress = EstimateProgressViewFactory.build(
-			window, bus, currency, budget.getRootEstimate(), rules, calculator);
+			window, bus, currency, budget.getRootEstimate(), rules,
+			calculator, prefs);
 		Component balanceImpact = BalanceImpactViewFactory.build(
 			window, bus, currency, budget.getRootEstimate(), rules, calculator);
 		Component assignmentRules = AssignmentRulesViewFactory.build(

@@ -29,6 +29,7 @@ import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
+import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.CloseSessionEvent;
@@ -59,6 +60,11 @@ public class Sessions {
 	private final Frame window;
 	
 	/**
+	 * User preferences
+	 */
+	private final UserPreferences preferences;
+	
+	/**
 	 * Event bus
 	 */
 	private final EventBus eventBus;
@@ -83,10 +89,13 @@ public class Sessions {
 	 * 
 	 * @param window application window
 	 * @param bus    application event bus
+	 * @param prefs  user preferences
 	 */
-	public Sessions(Frame window, EventBus bus)
+	public Sessions(Frame window, EventBus bus,
+		UserPreferences prefs)
 	{
 		this.window = window;
+		preferences = prefs;
 		eventBus = bus;
 		eventBus.register(this);
 		
@@ -152,7 +161,7 @@ public class Sessions {
 	private void createSession(BudgetSource source)
 	{
 		Session newSession = new Session(window,
-			eventBus, source);
+			eventBus, preferences, source);
 		
 		sessions.add(newSession);
 		setActive(newSession);

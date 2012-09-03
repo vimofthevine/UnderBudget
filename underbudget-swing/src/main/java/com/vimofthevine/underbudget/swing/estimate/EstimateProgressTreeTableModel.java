@@ -23,6 +23,7 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
+import com.vimofthevine.underbudget.swing.UserPreferences;
 
 /**
  * Tree table model for the estimate progress view.
@@ -47,15 +48,16 @@ public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableMod
 	 * 
 	 * @param root       root estimate
 	 * @param calcualtor currency calculator
+	 * @param prefs      user preferences
 	 */
 	public EstimateProgressTreeTableModel(Estimate root,
-		CurrencyCalculator calculator)
+		CurrencyCalculator calculator, UserPreferences prefs)
 	{
 		super(root);
 		
 		this.calculator = calculator;
 		
-		progressBars = new ProgressBarFactory();
+		progressBars = new ProgressBarFactory(prefs);
 	}
 
 	@Override

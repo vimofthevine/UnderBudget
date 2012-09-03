@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesView;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesViewModel;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
@@ -53,16 +54,17 @@ public abstract class EstimateProgressViewFactory {
 	 * @param currency currency factory
 	 * @param root     root estimate
 	 * @param rules    assignment rules list
+	 * @param prefs    user preferences
 	 * @return estimate progress view component
 	 */
 	public static final Component build(Frame window,
 		EventBus bus, Currency currency, Estimate root,
 		ReverseLookupAssignmentRules rules,
-		CurrencyCalculator calculator)
+		CurrencyCalculator calculator, UserPreferences prefs)
 	{
 		// Create models
 		EstimateProgressTreeTableModel treeTableModel =
-			new EstimateProgressTreeTableModel(root, calculator);
+			new EstimateProgressTreeTableModel(root, calculator, prefs);
 		EstimateTreeViewModel treeModel =
 			new EstimateTreeViewModel(bus, treeTableModel);
 		EstimateDetailViewModel detailModel =

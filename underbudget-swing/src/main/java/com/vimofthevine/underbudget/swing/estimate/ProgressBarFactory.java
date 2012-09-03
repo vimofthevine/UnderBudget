@@ -18,27 +18,36 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JProgressBar;
 
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
+import com.vimofthevine.underbudget.swing.UserPreferences;
+import com.vimofthevine.underbudget.swing.preferences.ProgressDisplayPreferences;
 
 /**
  * Factory for creating progress bar instances.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class ProgressBarFactory {
+class ProgressBarFactory {
 	
 	/**
-	 * Healthy progress bar color
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(ProgressBarFactory.class.getName());
+	
+	/**
+	 * Default healthy progress bar color
 	 */
 	private final static Color HEALTHY_COLOR =
 		new Color(115, 210, 22);
 	
 	/**
-	 * Unhealthy progress bar color
+	 * Default unhealthy progress bar color
 	 */
 	private final static Color UNHEALTHY_COLOR =
 		new Color(204, 0, 0);
@@ -49,13 +58,91 @@ public class ProgressBarFactory {
 	private final JProgressBar progressBar;
 	
 	/**
-	 * Constructs a new progress bar factory.
+	 * Whether to use colors
 	 */
-	public ProgressBarFactory()
+	private boolean useColors;
+	
+	/**
+	 * Color to be used for healthy progress
+	 */
+	private Color healthyColor;
+	
+	/**
+	 * Color to be used for unhealthy progress
+	 */
+	private Color unhealthyColor;
+	
+	/**
+	 * Constructs a new progress bar factory.
+	 * 
+	 * @param prefs user preferences
+	 */
+	ProgressBarFactory(UserPreferences prefs)
 	{
 		progressBar = new JProgressBar();
 		progressBar.setMinimum(0);
 		progressBar.setStringPainted(true);
+		
+		getColors(prefs);
+	}
+	
+	/**
+	 * Retrieves the progress bar parameters from
+	 * the user preferences.
+	 * 
+	 * @param prefs user preferences
+	 */
+	private void getColors(UserPreferences prefs)
+	{
+		String useColorsStr = prefs.get(
+			ProgressDisplayPreferences.USE_COLORS, "true");
+		String healthyColorStr = prefs.get(
+			ProgressDisplayPreferences.HEALTHY_BG_KEY, getString(HEALTHY_COLOR));
+		String unhealthyColorStr = prefs.get(
+			ProgressDisplayPreferences.UNHEALTHY_BG_KEY, getString(UNHEALTHY_COLOR));
+		
+		logger.log(Level.INFO, "Use colors for progress? " + useColorsStr);
+		logger.log(Level.INFO, "Healthy progress color: " + healthyColorStr);
+		logger.log(Level.INFO, "Unhealthy progress color: " + unhealthyColorStr);
+		
+		useColors = Boolean.parseBoolean(useColorsStr);
+		healthyColor = getColor(healthyColorStr);
+		unhealthyColor = getColor(unhealthyColorStr);
+		
+		logger.log(Level.INFO, "Use colors for progress? " + useColors);
+	}
+	
+	/**
+	 * Converts a given color into an RGB string.
+	 * 
+	 * @param color color to be represented as an RGB string
+	 * @return RGB string representation of the given color
+	 */
+	private String getString(Color color)
+	{
+		return color.getRed() + ","
+			+ color.getGreen() + ","
+			+ color.getBlue();
+	}
+	
+	/**
+	 * Converts a given RBG string into a color.
+	 * 
+	 * @param rgb RBG string to be converted to a color
+	 * @return color represented by the RBG string
+	 */
+	private Color getColor(String rgb)
+	{
+		String[] comps = rgb.split(",");
+		
+		if (comps.length != 3)
+			throw new IllegalArgumentException("Invalid color string given, " + rgb);
+		
+		int red = Integer.parseInt(comps[0]);
+		int green = Integer.parseInt(comps[1]);
+		int blue = Integer.parseInt(comps[2]);
+		
+		return new Color(red, green, blue);
 	}
 	
 	/**
@@ -82,8 +169,12 @@ public class ProgressBarFactory {
 		progressBar.setMaximum(max);
 		progressBar.setValue(current);
 		progressBar.setString(actual.formatAsString());
-		progressBar.setForeground(progress.isHealthy()
-			? HEALTHY_COLOR : UNHEALTHY_COLOR);
+		
+		if (useColors)
+		{
+    		progressBar.setForeground(progress.isHealthy()
+    			? healthyColor : unhealthyColor);
+		}
 		
 		return progressBar;
 	}

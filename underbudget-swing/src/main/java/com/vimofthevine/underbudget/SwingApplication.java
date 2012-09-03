@@ -43,7 +43,8 @@ public class SwingApplication {
 	public static void main(String[] args)
 	{
 		EventBus eventBus = new EventBus("main");
-		UserPreferences preferences = new PropertiesFileUserPreferences("/tmp/underbudget.properties");
+		String home = System.getProperty("user.home");
+		UserPreferences preferences = new PropertiesFileUserPreferences(home + "/underbudget.properties");
 		preferences.read();
 		
 		JFrame frame = new JFrame();
@@ -54,7 +55,7 @@ public class SwingApplication {
 		JToolBar toolBar = new JToolBar(Application.TITLE);
 		new ApplicationToolBar(menuModel, toolBar);
 		
-		new Sessions(frame, eventBus);
+		new Sessions(frame, eventBus, preferences);
 		new AboutDialog(frame, eventBus);
 		new DeadEventListener(frame, eventBus);
 		

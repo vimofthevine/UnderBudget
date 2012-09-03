@@ -30,6 +30,7 @@ import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.stubs.FixedCalculator;
+import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
@@ -87,9 +88,11 @@ public class Session {
 	 * 
 	 * @param window application window
 	 * @param bus    global application event bus
+	 * @param prefs  user preferences
 	 * @param source budget source
 	 */
-	public Session(Frame window, EventBus bus, BudgetSource source)
+	public Session(Frame window, EventBus bus,
+		UserPreferences prefs, BudgetSource source)
 	{
 		try
 		{
@@ -117,7 +120,8 @@ public class Session {
     		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
     		
     		component = SessionContentViewFactory.build(
-    			window, eventBus, currency, budget, rules, currencyCalculator);
+    			window, eventBus, currency, budget, rules,
+    			currencyCalculator, prefs);
     		
     		active = false;
 		}
