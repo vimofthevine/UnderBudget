@@ -16,6 +16,10 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
@@ -30,7 +34,12 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
+abstract class EstimateTreeTableModel extends AbstractTreeTableModel {
+	
+	/**
+	 * Registered refresh listeners
+	 */
+	private final Collection<RefreshListener> listeners;
 	
 	/**
 	 * Actual values source
@@ -43,12 +52,48 @@ abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
 	 * 
 	 * @param root root estimate
 	 */
-	public AbstractEstimateTreeTableModel(Estimate root)
+	public EstimateTreeTableModel(Estimate root)
 	{
 		super(root);
 		
+		listeners = Collections.synchronizedList(new ArrayList<RefreshListener>());
+		
 		actuals = new UnevaluatedActuals(
 			root.getDefinition().getAmount().getCurrency());
+	}
+	
+	/**
+	 * Registers a listener to be notified to refresh.
+	 * 
+	 * @param listener refresh listener to be registered
+	 */
+	synchronized void addRefreshListener(RefreshListener listener)
+	{
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Unregisters a listener from being notified to refresh.
+	 * 
+	 * @param listener refresh listener to be unregistered.
+	 */
+	synchronized void removeRefreshListener(RefreshListener listener)
+	{
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Notifies all registered listeners that a refresh is required.
+	 */
+	private void fireRefresh()
+	{
+		synchronized(listeners)
+		{
+			for (RefreshListener listener : listeners)
+			{
+				listener.refresh();
+			}
+		}
 	}
 	
 	/**
@@ -60,6 +105,7 @@ abstract class AbstractEstimateTreeTableModel extends AbstractTreeTableModel {
 	void setActuals(ActualFigures actuals)
 	{
 		this.actuals = actuals;
+		fireRefresh();
 	}
 
 	@Override

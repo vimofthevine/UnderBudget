@@ -26,8 +26,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.jdesktop.swingx.treetable.TreeTableModel;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
@@ -65,7 +63,7 @@ public class EstimateTreeViewModel {
 	/**
 	 * Estimate tree table model
 	 */
-	private final AbstractEstimateTreeTableModel treeTableModel;
+	private final EstimateTreeTableModel treeTableModel;
 	
 	/**
 	 * Tree selection model
@@ -83,7 +81,7 @@ public class EstimateTreeViewModel {
 	 * @param bus   event bus
 	 * @param model estimate tree table model
 	 */
-	public EstimateTreeViewModel(EventBus bus, AbstractEstimateTreeTableModel model)
+	public EstimateTreeViewModel(EventBus bus, EstimateTreeTableModel model)
 	{
 		log = model.getClass().getSimpleName() + ": ";
 		
@@ -99,7 +97,7 @@ public class EstimateTreeViewModel {
 	 * 
 	 * @return estimate tree table model
 	 */
-	TreeTableModel getTreeTableModel()
+	EstimateTreeTableModel getTreeTableModel()
 	{
 		return treeTableModel;
 	}

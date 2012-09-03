@@ -45,10 +45,17 @@ public class EstimateTreeView implements TableCellRenderer {
 	public EstimateTreeView(Container container,
 		EstimateTreeViewModel model)
 	{
-		JXTreeTable treeTable = new JXTreeTable(model.getTreeTableModel());
+		final JXTreeTable treeTable = new JXTreeTable(model.getTreeTableModel());
 		treeTable.setDefaultRenderer(JProgressBar.class, this);
 		treeTable.expandAll();
 		treeTable.setRowHeight(treeTable.getRowHeight() + 2);
+		
+		model.getTreeTableModel().addRefreshListener(new RefreshListener() {
+			public void refresh()
+			{
+				treeTable.repaint();
+			}
+		});
 		
 		model.setTreeSelectionModel(treeTable.getTreeSelectionModel());
 		treeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

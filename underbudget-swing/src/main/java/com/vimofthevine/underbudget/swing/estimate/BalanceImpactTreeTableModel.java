@@ -27,7 +27,7 @@ import com.vimofthevine.underbudget.core.estimate.Estimate;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class BalanceImpactTreeTableModel extends AbstractEstimateTreeTableModel {
+public class BalanceImpactTreeTableModel extends EstimateTreeTableModel {
 	
 	/**
 	 * Currency calculator

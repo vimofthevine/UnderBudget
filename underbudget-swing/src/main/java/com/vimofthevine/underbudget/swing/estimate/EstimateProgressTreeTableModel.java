@@ -30,7 +30,7 @@ import com.vimofthevine.underbudget.swing.UserPreferences;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class EstimateProgressTreeTableModel extends AbstractEstimateTreeTableModel {
+public class EstimateProgressTreeTableModel extends EstimateTreeTableModel {
 	
 	/**
 	 * Currency calculator
