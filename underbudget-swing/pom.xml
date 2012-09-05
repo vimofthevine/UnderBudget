@@ -27,6 +27,9 @@
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
+        <excludes>
+          <exclude>**/*.svg</exclude>
+        </excludes>
       </resource>
     </resources>
     <plugins>
