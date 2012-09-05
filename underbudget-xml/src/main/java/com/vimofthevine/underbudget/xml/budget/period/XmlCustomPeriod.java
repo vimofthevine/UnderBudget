@@ -20,6 +20,8 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import com.vimofthevine.underbudget.core.budget.period.CustomPeriod;
+import com.vimofthevine.underbudget.core.budget.period.DefaultCustomPeriod;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.xml.date.XmlDate;
 
@@ -29,7 +31,8 @@ import com.vimofthevine.underbudget.xml.date.XmlDate;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class XmlCustomPeriod implements XmlBudgetingPeriod {
+public class XmlCustomPeriod implements XmlBudgetingPeriod,
+CustomPeriod {
 	
 	/**
 	 * Custom period type definer
@@ -81,9 +84,27 @@ public class XmlCustomPeriod implements XmlBudgetingPeriod {
 		@Element(name="start-date") XmlDate start,
 		@Element(name="end-date") XmlDate end)
 	{
-		original = new CustomPeriod(start, end);
+		original = new DefaultCustomPeriod(start, end);
 		startDate = start;
 		endDate = end;
+	}
+	
+	@Override
+	public SimpleDate getStartDate()
+	{
+		return startDate;
+	}
+	
+	@Override
+	public SimpleDate getEndDate()
+	{
+		return endDate;
+	}
+	
+	@Override
+	public final PeriodType getType()
+	{
+		return PeriodType.CUSTOM;
 	}
 
 	@Override

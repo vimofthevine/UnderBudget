@@ -24,10 +24,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
 
 /**
@@ -54,12 +57,19 @@ class BudgetingPeriodFormView implements ActionListener {
 	private final JComboBox typeSelection;
 	
 	/**
+	 * Budgeting period form view models
+	 */
+	private final Map<PeriodType, BudgetingPeriodFormViewModel> forms;
+	
+	/**
 	 * Constructs a new budgeting period form view instance.
 	 * 
 	 * @param container Swing component for this view
 	 */
 	BudgetingPeriodFormView(Container container)
 	{
+		forms = new HashMap<PeriodType, BudgetingPeriodFormViewModel>();
+		
 		layout = new CardLayout();
 		view = new JPanel();
 		view.setLayout(layout);
@@ -94,10 +104,23 @@ class BudgetingPeriodFormView implements ActionListener {
 	 * 
 	 * @param type      budgeting period type
 	 * @param component form view component
+	 * @param model     form view model
 	 */
-	public void addForm(PeriodType type, Component component)
+	public void addForm(PeriodType type, Component component,
+		BudgetingPeriodFormViewModel model)
 	{
+		forms.put(type, model);
 		view.add(component, type.toString());
+	}
+	
+	/**
+	 * Displays the form for the specified period type.
+	 * 
+	 * @param type period type form to be shown
+	 */
+	public void show(PeriodType type)
+	{
+		typeSelection.setSelectedItem(type);
 	}
 
 	@Override
@@ -105,6 +128,7 @@ class BudgetingPeriodFormView implements ActionListener {
     {
 		PeriodType type = (PeriodType) typeSelection.getSelectedItem();
 		layout.show(view, type.toString());
+		forms.get(type).update();
     }
 
 }

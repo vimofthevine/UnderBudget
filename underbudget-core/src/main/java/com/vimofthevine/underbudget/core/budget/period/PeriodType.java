@@ -16,31 +16,35 @@
 
 package com.vimofthevine.underbudget.core.budget.period;
 
-import com.vimofthevine.underbudget.core.date.DateRange;
-
 /**
- * A <code>BudgetingPeriod</code> represents a range of
- * dates over which incomes and expenses are to be
- * analyzed.
+ * Enumeration of supported budgeting period types.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface BudgetingPeriod extends DateRange {
+public enum PeriodType {
+	LITERAL_MONTH("Literal Month"),
+	LITERAL_YEAR("Literal Year"),
+	PAYDATE_MONTH("Paydate Month"),
+	CUSTOM("Custom");
 	
 	/**
-	 * Returns the type enumeration of this
-	 * budgeting period.
-	 * 
-	 * @return type enumeration
+	 * Period type name
 	 */
-	public PeriodType getType();
+	private final String name;
 	
 	/**
-	 * Returns a description of this budgeting period,
-	 * suitable for displaying to users.
+	 * Constructs a new type enumeration.
 	 * 
-	 * @return description of this budgeting period
+	 * @param name period type name
 	 */
-	public String getDescription();
-
+	private PeriodType(String name)
+	{
+		this.name = name;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

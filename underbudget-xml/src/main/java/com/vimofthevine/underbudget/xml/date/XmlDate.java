@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.simpleframework.xml.Element;
 
+import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
@@ -70,6 +71,31 @@ public class XmlDate implements SimpleDate {
 		day = calendar.get(Calendar.DAY_OF_MONTH);
 		month = calendar.get(Calendar.MONTH);
 		year = calendar.get(Calendar.YEAR);
+	}
+	
+	/**
+	 * Constructs a new XML serializable date
+	 * for the given date, month, and year.
+	 * 
+	 * This constructor is only used when deserializing.
+	 * 
+	 * @param day   day of the month
+	 * @param month month of the year
+	 * @param year  year
+	 */
+	XmlDate(
+		@Element(name="day") int day,
+		@Element(name="month") int month,
+		@Element(name="year") int year)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year, month, day);
+		
+		this.day = day;
+		this.month = month;
+		this.year = year;
+		
+		original = new DateTime(calendar.getTime());
 	}
 
 	@Override

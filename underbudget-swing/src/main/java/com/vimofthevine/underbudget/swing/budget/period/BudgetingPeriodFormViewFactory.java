@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 
 /**
  * Factory for building the budgeting period definition
@@ -49,19 +50,23 @@ public abstract class BudgetingPeriodFormViewFactory {
 			new LiteralMonthFormViewModel(bus, budget);
 		JPanel literalMonthComponent = new JPanel();
 		new MonthFormView(literalMonthComponent, literalMonthModel);
-		forms.addForm(PeriodType.LITERAL_MONTH, literalMonthComponent);
+		forms.addForm(PeriodType.LITERAL_MONTH, literalMonthComponent,
+			literalMonthModel);
 		
 		PaydateMonthFormViewModel paydateMonthModel =
 			new PaydateMonthFormViewModel(bus, budget);
 		JPanel paydateMonthComponent = new JPanel();
 		new MonthFormView(paydateMonthComponent, paydateMonthModel);
-		forms.addForm(PeriodType.PAYDATE_MONTH, paydateMonthComponent);
+		forms.addForm(PeriodType.PAYDATE_MONTH, paydateMonthComponent,
+			paydateMonthModel);
 		
 		CustomPeriodFormViewModel customModel =
 			new CustomPeriodFormViewModel(bus, budget);
 		JPanel customComponent = new JPanel();
 		new CustomPeriodFormView(customComponent, customModel);
-		forms.addForm(PeriodType.CUSTOM, customComponent);
+		forms.addForm(PeriodType.CUSTOM, customComponent, customModel);
+		
+		forms.show(budget.getDefinition().getPeriod().getType());
 		
 		return periodComponent;
 	}

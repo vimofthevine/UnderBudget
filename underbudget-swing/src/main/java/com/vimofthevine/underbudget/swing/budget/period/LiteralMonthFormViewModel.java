@@ -27,6 +27,8 @@ import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.period.LiteralMonthPeriod;
 import com.vimofthevine.underbudget.core.budget.period.Month;
+import com.vimofthevine.underbudget.core.budget.period.MonthlyBudgetingPeriod;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.swing.widgets.ItemSelectionListener;
 import com.vimofthevine.underbudget.swing.widgets.ObservableComboBoxModel;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
@@ -72,7 +74,7 @@ class LiteralMonthFormViewModel implements MonthFormViewModel {
 	/**
 	 * Currently selected month period
 	 */
-	private LiteralMonthPeriod period;
+	private MonthlyBudgetingPeriod period;
 	
 	/**
 	 * Constructs a new literal month form view model.
@@ -84,9 +86,10 @@ class LiteralMonthFormViewModel implements MonthFormViewModel {
 	{
 		updater = new BudgetPeriodUpdater(bus, budget);
 		
-		if (budget.getDefinition().getPeriod() instanceof LiteralMonthPeriod)
+		if (budget.getDefinition().getPeriod()
+			.getType().equals(PeriodType.LITERAL_MONTH))
 		{
-			period = (LiteralMonthPeriod) budget.getDefinition().getPeriod();
+			period = (MonthlyBudgetingPeriod) budget.getDefinition().getPeriod();
 		}
 		else
 		{
@@ -128,7 +131,8 @@ class LiteralMonthFormViewModel implements MonthFormViewModel {
 	/**
 	 * Updates the selected budgeting period definition.
 	 */
-	private void update()
+	@Override
+	public void update()
 	{
 		period = new LiteralMonthPeriod(selectedMonth, selectedYear);
 		summaryModel.setText(period.getDescription());

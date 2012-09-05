@@ -26,7 +26,9 @@ import javax.swing.text.Document;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.period.Month;
+import com.vimofthevine.underbudget.core.budget.period.MonthlyBudgetingPeriod;
 import com.vimofthevine.underbudget.core.budget.period.PaydateMonthPeriod;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.swing.widgets.ItemSelectionListener;
 import com.vimofthevine.underbudget.swing.widgets.ObservableComboBoxModel;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
@@ -72,7 +74,7 @@ class PaydateMonthFormViewModel implements MonthFormViewModel {
 	/**
 	 * Currently selected month period
 	 */
-	private PaydateMonthPeriod period;
+	private MonthlyBudgetingPeriod period;
 	
 	/**
 	 * Constructs a new paydate month form view model.
@@ -84,9 +86,10 @@ class PaydateMonthFormViewModel implements MonthFormViewModel {
 	{
 		updater = new BudgetPeriodUpdater(bus, budget);
 		
-		if (budget.getDefinition().getPeriod() instanceof PaydateMonthPeriod)
+		if (budget.getDefinition().getPeriod().getType()
+			.equals(PeriodType.PAYDATE_MONTH))
 		{
-			period = (PaydateMonthPeriod) budget.getDefinition().getPeriod();
+			period = (MonthlyBudgetingPeriod) budget.getDefinition().getPeriod();
 		}
 		else
 		{
@@ -128,7 +131,8 @@ class PaydateMonthFormViewModel implements MonthFormViewModel {
 	/**
 	 * Updates the selected budgeting period definition.
 	 */
-	private void update()
+	@Override
+	public void update()
 	{
 		period = new PaydateMonthPeriod(selectedMonth, selectedYear);
 		summaryModel.setText(period.getDescription());
