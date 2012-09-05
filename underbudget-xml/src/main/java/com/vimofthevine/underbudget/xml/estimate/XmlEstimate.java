@@ -17,9 +17,12 @@
 package com.vimofthevine.underbudget.xml.estimate;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Version;
 import org.simpleframework.xml.convert.Convert;
 import org.simpleframework.xml.core.Commit;
 
@@ -51,6 +54,18 @@ import com.vimofthevine.underbudget.xml.date.XmlDate;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class XmlEstimate implements MutableEstimate {
+	
+	/**
+	 * Estimate definition version
+	 */
+	@Version(revision=1.1)
+	private double version;
+	
+	/**
+	 * Estimate ID
+	 */
+	@Attribute
+	private long uid;
 	
 	/**
 	 * Estimate name
@@ -103,6 +118,7 @@ public class XmlEstimate implements MutableEstimate {
 	XmlEstimate()
 	{
 		System.out.println("constructing estimate with no parameters");
+		uid = new Random().nextLong();
 		type = EstimateType.CATEGORY; // Default to category
 		children = new ArrayList<XmlEstimate>();
 	}
@@ -117,6 +133,7 @@ public class XmlEstimate implements MutableEstimate {
 	{
 		EstimateDefinition definition = original.getDefinition();
 		
+		uid = original.getId();
 		name = definition.getName();
 		description = definition.getDescription();
 		amount = definition.getAmount();
@@ -135,6 +152,7 @@ public class XmlEstimate implements MutableEstimate {
 	}
 	
 	XmlEstimate(
+		@Attribute(name="uid") long uid,
 		@Element(name="name") String name,
 		@Element(name="description") String description,
 		@Element(name="amount") CashCommodity amount,
@@ -144,6 +162,7 @@ public class XmlEstimate implements MutableEstimate {
 		@ElementList(name="estimates") ArrayList<XmlEstimate> children
 	)
 	{
+		this.uid = uid;
 		this.name = name;
 		this.description = description;
 		this.amount = amount;
@@ -171,6 +190,12 @@ public class XmlEstimate implements MutableEstimate {
 	void remove(XmlEstimate child)
 	{
 		children.remove(child);
+	}
+	
+	@Override
+	public long getId()
+	{
+		return uid;
 	}
 
 	@Override
