@@ -49,9 +49,9 @@ ActualFigures {
 	private final Map<AssignmentRule,List<Transaction>> ruleToTransactions;
 	
 	/**
-	 * Map of estimate to transactions
+	 * Map of estimate IDs to transactions
 	 */
-	private final Map<Estimate,List<Transaction>> estimateToTransactions;
+	private final Map<Long,List<Transaction>> estimateIdToTransactions;
 	
 	/**
 	 * Constructs a new transaction assignment list.
@@ -64,7 +64,7 @@ ActualFigures {
 		
 		transactionToRule = new HashMap<Transaction,AssignmentRule>();
 		ruleToTransactions = new HashMap<AssignmentRule,List<Transaction>>();
-		estimateToTransactions = new HashMap<Estimate,List<Transaction>>();
+		estimateIdToTransactions = new HashMap<Long,List<Transaction>>();
 	}
 
 	/**
@@ -83,14 +83,14 @@ ActualFigures {
 			ruleToTransactions.put(rule, new ArrayList<Transaction>());
 		}
 		
-		Estimate estimate = rule.getEstimate();
-		if ( ! estimateToTransactions.containsKey(estimate))
+		Long id = rule.getEstimate().getId();
+		if ( ! estimateIdToTransactions.containsKey(id))
 		{
-			estimateToTransactions.put(estimate, new ArrayList<Transaction>());
+			estimateIdToTransactions.put(id, new ArrayList<Transaction>());
 		}
 		
 		ruleToTransactions.get(rule).add(transaction);
-		estimateToTransactions.get(estimate).add(transaction);
+		estimateIdToTransactions.get(id).add(transaction);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ ActualFigures {
 	@Override
     public ActualFigure getActual(Estimate estimate)
     {
-		List<Transaction> transactions = estimateToTransactions.get(estimate);
+		List<Transaction> transactions = estimateIdToTransactions.get(estimate.getId());
 		if (transactions != null)
 			return new DefaultActualFigure(calculator, transactions);
 		else

@@ -2,6 +2,7 @@ package com.vimofthevine.underbudget.stubs.estimate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
@@ -17,6 +18,11 @@ import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 public class StubEstimate implements Estimate,
 MutableEstimate {
+	
+	/**
+	 * Estimate ID
+	 */
+	private final long id;
 
 	/**
 	 * Estimate name
@@ -60,7 +66,15 @@ MutableEstimate {
 		complete = false;
 		type = EstimateType.EXPENSE;
 		
+		id = new Random().nextLong();
+		
 		children = new ArrayList<StubEstimate>();
+	}
+	
+	@Override
+	public long getId()
+	{
+		return id;
 	}
 
 	public void add(StubEstimate child)

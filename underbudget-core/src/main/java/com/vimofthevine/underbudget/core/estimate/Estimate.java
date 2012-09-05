@@ -28,6 +28,14 @@ import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 public interface Estimate {
 	
 	/**
+	 * Returns the unique ID of this estimate.
+	 * Unique refers to the uniqueness of the ID
+	 * within a single individual budget. Estimates
+	 * in separate budgets may have the same ID.
+	 */
+	public long getId();
+	
+	/**
 	 * Returns the definition of this estimate.
 	 * 
 	 * @return estimate definition
