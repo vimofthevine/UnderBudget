@@ -24,10 +24,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -42,6 +47,11 @@ import com.vimofthevine.underbudget.ApplicationProperties;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class AboutDialog implements ActionListener {
+	
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(AboutDialog.class.getName());
 	
 	/**
 	 * About dialog
@@ -74,7 +84,7 @@ public class AboutDialog implements ActionListener {
 		tabs.addTab("About", createAboutTab());
 		tabs.addTab("Acknowledgements", createAcknowledgementsTab());
 		tabs.addTab("License", createLicenseTab());
-		tabs.setPreferredSize(new Dimension(350, 200));
+		tabs.setPreferredSize(new Dimension(550, 250));
 		
 		// Create close button
 		JButton close = new JButton("Close");
@@ -101,17 +111,65 @@ public class AboutDialog implements ActionListener {
 	
 	private Component createAboutTab()
 	{
-		return new JPanel();
+		JEditorPane pane = new JEditorPane();
+		pane.setEditable(false);
+		
+		URL about = getClass().getResource("about/about.html");
+		if (about != null)
+		{
+			try
+			{
+				pane.setPage(about);
+			}
+			catch (IOException ioe)
+			{
+				logger.log(Level.WARNING, "Error loading about page", ioe);
+			}
+		}
+		
+		return new JScrollPane(pane);
 	}
 	
 	private Component createAcknowledgementsTab()
 	{
-		return new JPanel();
+		JEditorPane pane = new JEditorPane();
+		pane.setEditable(false);
+		
+		URL about = getClass().getResource("about/acknowledgements.html");
+		if (about != null)
+		{
+			try
+			{
+				pane.setPage(about);
+			}
+			catch (IOException ioe)
+			{
+				logger.log(Level.WARNING, "Error loading about page", ioe);
+			}
+		}
+		
+		return new JScrollPane(pane);
 	}
 	
 	private Component createLicenseTab()
 	{
-		return new JPanel();
+		JEditorPane pane = new JEditorPane();
+		pane.setEditable(false);
+		
+		URL about = getClass().getResource("about/license.html");
+		if (about != null)
+		{
+			try
+			{
+				pane.setPage(about);
+			}
+			catch (IOException ioe)
+			{
+				logger.log(Level.WARNING, "Error loading about page", ioe);
+			}
+		}
+		
+		return new JScrollPane(pane);
 	}
 	
 	/**

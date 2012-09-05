@@ -17,7 +17,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <application.title>${project.parent.name}</application.title>
     <application.version>${project.parent.version}</application.version>
-    <application.codename>ibanez</application.codename>
+    <application.codename>${project.codename}</application.codename>
+    <application.authors>${project.authors}</application.authors>
+    <application.url>${project.parent.url}</application.url>
   </properties>
 
   <build>

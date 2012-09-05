@@ -10,6 +10,23 @@
   <name>UnderBudget</name>
   <url>http://underbudget.vimofthevine.com</url>
 
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>kyle</id>
+      <name>Kyle Treubig</name>
+      <email>kyle@vimofthevine.com</email>
+      <url>http://vimofthevine.com</url>
+    </developer>
+  </developers>
+
   <modules>
     <module>underbudget-core</module>
     <module>underbudget-swing</module>
@@ -20,6 +37,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <codename>ibanez</codename>
+    <project.codename>ibanez</project.codename>
+    <project.authors>Kyle Treubig</project.authors>
   </properties>
 
   <build>
