@@ -82,6 +82,7 @@ class ProgressBarFactory {
 		progressBar = new JProgressBar();
 		progressBar.setMinimum(0);
 		progressBar.setStringPainted(true);
+		progressBar.setUI(new EstimateProgressBarUI());
 		
 		getColors(prefs);
 	}
