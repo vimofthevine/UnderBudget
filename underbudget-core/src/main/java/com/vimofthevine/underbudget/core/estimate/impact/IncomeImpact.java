@@ -37,15 +37,38 @@ public class IncomeImpact implements BalanceImpact {
 	private final CashCommodity actual;
 	
 	/**
+	 * Expected amount
+	 */
+	private final CashCommodity expected;
+	
+	/**
 	 * Constructs a new income balance impact.
 	 * 
 	 * @param estimated estimated amount
 	 * @param actual    actual amount
+	 * @param isFinal   whether the estimate is final
 	 */
-	public IncomeImpact(CashCommodity estimated, CashCommodity actual)
+	public IncomeImpact(CashCommodity estimated, CashCommodity actual,
+		boolean isFinal)
 	{
 		this.estimated = estimated;
 		this.actual = actual;
+		
+		if (isFinal)
+		{
+			expected = this.actual;
+		}
+		else
+		{
+			if (actual.getValue().compareTo(estimated.getValue()) > 0)
+			{
+				expected = this.actual;
+			}
+			else
+			{
+				expected = this.estimated;
+			}
+		}
 	}
 
 	@Override
@@ -63,7 +86,7 @@ public class IncomeImpact implements BalanceImpact {
 	@Override
 	public CashCommodity getExpectedImpact()
 	{
-		return estimated;
+		return expected;
 	}
 
 	@Override

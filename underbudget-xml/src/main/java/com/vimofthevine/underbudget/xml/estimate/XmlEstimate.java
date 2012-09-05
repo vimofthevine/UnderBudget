@@ -282,10 +282,10 @@ public class XmlEstimate implements MutableEstimate {
 		switch (type)
 		{
 			case INCOME:
-				return new IncomeImpact(amount, actual.getAmount());
+				return new IncomeImpact(amount, actual.getAmount(), complete);
 				
 			case EXPENSE:
-				return new ExpenseImpact(amount, actual.getAmount());
+				return new ExpenseImpact(amount, actual.getAmount(), complete);
 				
 			case TRANSFER:
 				return new TransferImpact(amount, actual.getAmount());
