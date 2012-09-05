@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.xml.budget.period;
 
 import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
 import com.vimofthevine.underbudget.core.budget.period.CustomPeriod;
+import com.vimofthevine.underbudget.core.budget.period.DefaultCustomPeriod;
 import com.vimofthevine.underbudget.core.budget.period.LiteralMonthPeriod;
 import com.vimofthevine.underbudget.core.budget.period.PaydateMonthPeriod;
 
@@ -35,7 +36,7 @@ public abstract class XmlBudgetingPeriodFactory {
 		if (original instanceof XmlBudgetingPeriod)
 			return (XmlBudgetingPeriod) original;
 		else if (original instanceof CustomPeriod)
-			return new XmlCustomPeriod((CustomPeriod) original);
+			return new XmlCustomPeriod((DefaultCustomPeriod) original);
 		else if (original instanceof PaydateMonthPeriod)
 			return new XmlPaydateMonthPeriod((PaydateMonthPeriod) original);
 		else if (original instanceof LiteralMonthPeriod)

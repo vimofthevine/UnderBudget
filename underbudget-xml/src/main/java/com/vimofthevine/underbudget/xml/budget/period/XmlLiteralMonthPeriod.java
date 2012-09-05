@@ -21,6 +21,8 @@ import org.simpleframework.xml.Element;
 
 import com.vimofthevine.underbudget.core.budget.period.LiteralMonthPeriod;
 import com.vimofthevine.underbudget.core.budget.period.Month;
+import com.vimofthevine.underbudget.core.budget.period.MonthlyBudgetingPeriod;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
@@ -29,7 +31,8 @@ import com.vimofthevine.underbudget.core.date.SimpleDate;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class XmlLiteralMonthPeriod implements XmlBudgetingPeriod {
+public class XmlLiteralMonthPeriod implements XmlBudgetingPeriod,
+MonthlyBudgetingPeriod {
 	
 	/**
 	 * Custom period type definer
@@ -85,6 +88,24 @@ public class XmlLiteralMonthPeriod implements XmlBudgetingPeriod {
 		original = new LiteralMonthPeriod(Month.valueOf(month), year);
 		this.month = month;
 		this.year = year;
+	}
+	
+	@Override
+	public Month getMonth()
+	{
+		return Month.valueOf(month);
+	}
+	
+	@Override
+	public int getYear()
+	{
+		return year;
+	}
+	
+	@Override
+	public final PeriodType getType()
+	{
+		return PeriodType.LITERAL_MONTH;
 	}
 
 	@Override

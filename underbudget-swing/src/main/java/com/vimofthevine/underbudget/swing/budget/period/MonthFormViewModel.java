@@ -26,7 +26,8 @@ import javax.swing.text.Document;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MonthFormViewModel {
+public interface MonthFormViewModel
+extends BudgetingPeriodFormViewModel {
 	
 	/**
 	 * Returns a document representing the

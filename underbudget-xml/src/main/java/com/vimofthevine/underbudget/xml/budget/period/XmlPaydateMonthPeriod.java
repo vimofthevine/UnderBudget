@@ -20,7 +20,9 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import com.vimofthevine.underbudget.core.budget.period.Month;
+import com.vimofthevine.underbudget.core.budget.period.MonthlyBudgetingPeriod;
 import com.vimofthevine.underbudget.core.budget.period.PaydateMonthPeriod;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
@@ -29,7 +31,8 @@ import com.vimofthevine.underbudget.core.date.SimpleDate;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class XmlPaydateMonthPeriod implements XmlBudgetingPeriod {
+public class XmlPaydateMonthPeriod implements XmlBudgetingPeriod,
+MonthlyBudgetingPeriod {
 	
 	/**
 	 * Custom period type definer
@@ -85,6 +88,24 @@ public class XmlPaydateMonthPeriod implements XmlBudgetingPeriod {
 		original = new PaydateMonthPeriod(Month.valueOf(month), year);
 		this.month = month;
 		this.year = year;
+	}
+	
+	@Override
+	public Month getMonth()
+	{
+		return Month.valueOf(month);
+	}
+	
+	@Override
+	public int getYear()
+	{
+		return year;
+	}
+	
+	@Override
+	public final PeriodType getType()
+	{
+		return PeriodType.PAYDATE_MONTH;
 	}
 
 	@Override

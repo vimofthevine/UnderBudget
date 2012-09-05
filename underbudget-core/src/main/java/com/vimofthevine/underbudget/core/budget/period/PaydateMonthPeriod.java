@@ -30,7 +30,7 @@ import com.vimofthevine.underbudget.core.date.SimpleDate;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class PaydateMonthPeriod implements BudgetingPeriod {
+public class PaydateMonthPeriod implements MonthlyBudgetingPeriod {
 
 	/**
 	 * Month of this period
@@ -65,6 +65,12 @@ public class PaydateMonthPeriod implements BudgetingPeriod {
 	{
 		this.month = month;
 		this.year = year;
+	}
+	
+	@Override
+	public final PeriodType getType()
+	{
+		return PeriodType.PAYDATE_MONTH;
 	}
 	
 	/**

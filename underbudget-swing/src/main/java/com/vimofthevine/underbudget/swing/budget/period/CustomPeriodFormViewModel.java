@@ -27,6 +27,8 @@ import org.jdesktop.swingx.event.DateSelectionListener;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.period.CustomPeriod;
+import com.vimofthevine.underbudget.core.budget.period.DefaultCustomPeriod;
+import com.vimofthevine.underbudget.core.budget.period.PeriodType;
 import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
@@ -37,7 +39,8 @@ import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CustomPeriodFormViewModel {
+public class CustomPeriodFormViewModel
+implements BudgetingPeriodFormViewModel {
 	
 	/**
 	 * Budgeting period updater
@@ -84,13 +87,14 @@ public class CustomPeriodFormViewModel {
 	{
 		updater = new BudgetPeriodUpdater(bus, budget);
 		
-		if (budget.getDefinition().getPeriod() instanceof CustomPeriod)
+		if (budget.getDefinition().getPeriod()
+			.getType().equals(PeriodType.CUSTOM))
 		{
 			period = (CustomPeriod) budget.getDefinition().getPeriod();
 		}
 		else
 		{
-			period = new CustomPeriod();
+			period = new DefaultCustomPeriod();
 		}
 		
 		startDate = period.getStartDate();
@@ -127,9 +131,10 @@ public class CustomPeriodFormViewModel {
 	/**
 	 * Updates the selected budgeting period definition.
 	 */
-	private void update()
+	@Override
+	public void update()
 	{
-		period = new CustomPeriod(startDate, endDate);
+		period = new DefaultCustomPeriod(startDate, endDate);
 		summaryModel.setText(period.getDescription());
 		updater.update(period);
 	}

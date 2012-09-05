@@ -17,34 +17,16 @@
 package com.vimofthevine.underbudget.swing.budget.period;
 
 /**
- * Enumeration of supported budgeting period types.
+ * Interface for budgeting period form view models.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-enum PeriodType {
-	LITERAL_MONTH("Literal Month"),
-	LITERAL_YEAR("Literal Year"),
-	PAYDATE_MONTH("Paydate Month"),
-	CUSTOM("Custom");
-	
+public interface BudgetingPeriodFormViewModel {
+
 	/**
-	 * Period type name
+	 * Updates the budget with the budgeting period
+	 * defined by this form.
 	 */
-	private final String name;
+	public void update();
 	
-	/**
-	 * Constructs a new type enumeration.
-	 * 
-	 * @param name period type name
-	 */
-	private PeriodType(String name)
-	{
-		this.name = name;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
 }

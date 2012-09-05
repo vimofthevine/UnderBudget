@@ -16,119 +16,28 @@
 
 package com.vimofthevine.underbudget.core.budget.period;
 
-import java.util.Calendar;
-
-import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 
 /**
- * A budgeting period using custom start and end
- * dates.
+ * Budgeting period defined by custom
+ * start and end dates.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class CustomPeriod implements BudgetingPeriod {
-	
-	/**
-	 * Start date
-	 */
-	private final SimpleDate startDate;
-	
-	/**
-	 * End date
-	 */
-	private final SimpleDate endDate;
-	
-	/**
-	 * Constructs a period, with the first
-	 * and last days of the current month
-	 * as the start and end dates.
-	 */
-	public CustomPeriod()
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		startDate = new DateTime(calendar.getTime());
-		
-		calendar.add(Calendar.MONTH, 1);
-		calendar.add(Calendar.DAY_OF_MONTH, -1);
-		endDate = new DateTime(calendar.getTime());
-	}
-	
-	/**
-	 * Constructs a period with the given start
-	 * and end dates.
-	 * 
-	 * @param start start date
-	 * @param end   end date
-	 */
-	public CustomPeriod(SimpleDate start, SimpleDate end)
-	{
-		startDate = start;
-		endDate = end;
-	}
-	
+public interface CustomPeriod extends BudgetingPeriod {
+
 	/**
 	 * Returns the start date of this period.
 	 * 
 	 * @return start date
 	 */
-	public SimpleDate getStartDate()
-	{
-		return startDate;
-	}
-	
+	public SimpleDate getStartDate();
+
 	/**
 	 * Returns the end date of this period.
 	 * 
 	 * @return end date
 	 */
-	public SimpleDate getEndDate()
-	{
-		return endDate;
-	}
-
-	@Override
-	public boolean contains(SimpleDate date)
-	{
-		final boolean before = date.before(startDate);
-		final boolean after = date.after(endDate);
-		return ! (before || after);
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return startDate.formatAsString() + " - " +
-			endDate.formatAsString();
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		int result = 73;
-		result = result * 31 + startDate.hashCode();
-		result = result * 31 + endDate.hashCode();
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == this)
-			return true;
-		if ( ! (obj instanceof CustomPeriod))
-			return false;
-		
-		CustomPeriod that = (CustomPeriod) obj;
-		return this.startDate.equals(that.startDate)
-			&& this.endDate.equals(that.endDate);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return startDate + " to " + endDate;
-	}
+	public SimpleDate getEndDate();
 
 }

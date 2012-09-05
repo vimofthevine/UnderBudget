@@ -68,6 +68,12 @@ public class LiteralMonthPeriod implements MonthlyBudgetingPeriod {
 	}
 	
 	@Override
+	public final PeriodType getType()
+	{
+		return PeriodType.LITERAL_MONTH;
+	}
+	
+	@Override
 	public Month getMonth()
 	{
 		return month;
