@@ -27,7 +27,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.ApplicationProperties;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
-import com.vimofthevine.underbudget.swing.UserPreferences;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionStateEvent;
 

@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.budget.source;
-
-import com.vimofthevine.underbudget.core.budget.Budget;
+package com.vimofthevine.underbudget.swing.preferences;
 
 /**
- * 
+ * User preferences implementation used when no
+ * user preferences are available or preferences
+ * cannot be saved/persisted.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class TemplateBudgetSource implements BudgetSource {
-	
-	public TemplateBudgetSource()
+public class NoUserPreferences implements UserPreferences {
+
+	@Override
+	public void read()
 	{
-		
-	}
-	
-	public TemplateBudgetSource(Budget budget)
-	{
-		
+		// Do nothing
 	}
 
 	@Override
-	public Budget getBudget()
+	public void save()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// Do nothing
 	}
 
 	@Override
-	public void persist()
+	public String get(String key, String defaultVal)
 	{
-		// TODO Auto-generated method stub
+		return defaultVal;
+	}
 
+	@Override
+	public void set(String key, String value)
+	{
+		// Do nothing
 	}
 
 }

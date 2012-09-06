@@ -23,7 +23,7 @@ package com.vimofthevine.underbudget.core.budget.period;
  */
 public enum PeriodType {
 	LITERAL_MONTH("Literal Month"),
-	LITERAL_YEAR("Literal Year"),
+	//LITERAL_YEAR("Literal Year"),
 	PAYDATE_MONTH("Paydate Month"),
 	CUSTOM("Custom");
 	

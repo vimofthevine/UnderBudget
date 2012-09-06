@@ -23,7 +23,7 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
-import com.vimofthevine.underbudget.swing.UserPreferences;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 
 /**
  * Tree table model for the estimate progress view.

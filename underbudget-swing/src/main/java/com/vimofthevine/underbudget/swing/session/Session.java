@@ -30,11 +30,11 @@ import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.stubs.FixedCalculator;
-import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.budget.OnDemandEditBudgetDialog;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
 import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
 import com.vimofthevine.underbudget.swing.transaction.OnDemandTransactionImporter;
@@ -110,7 +110,7 @@ public class Session {
     		BalanceCalculator calculator = new DefaultBalanceCalculator();
     		
     		state = new SessionState(globalBus, eventBus, budget);
-    		new BudgetPersistenceModel(eventBus, budgetSource);
+    		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
     		
     		new BudgetSourceSelectionWizard(eventBus, window, budget);
     		new TransactionSourceSelectionWizard(eventBus, window, currency);

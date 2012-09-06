@@ -16,6 +16,8 @@
 
 package com.vimofthevine.underbudget;
 
+import java.io.File;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -26,11 +28,12 @@ import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.swing.AboutDialog;
 import com.vimofthevine.underbudget.swing.ApplicationContent;
 import com.vimofthevine.underbudget.swing.DeadEventListener;
-import com.vimofthevine.underbudget.swing.PropertiesFileUserPreferences;
-import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.menu.ApplicationMenu;
 import com.vimofthevine.underbudget.swing.menu.ApplicationMenuModel;
 import com.vimofthevine.underbudget.swing.menu.ApplicationToolBar;
+import com.vimofthevine.underbudget.swing.preferences.NoUserPreferences;
+import com.vimofthevine.underbudget.swing.preferences.PropertiesFileUserPreferences;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.Sessions;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindow;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindowModel;
@@ -43,12 +46,28 @@ public class SwingApplication {
 	public static void main(String[] args)
 	{
 		ApplicationProperties props = new ApplicationProperties();
+		UserPreferences preferences;
+		
+		// Figure out location of app preferences
+		String home = System.getProperty("user.home");
+		File prefsHome = new File(home + "/.config/underbudget");
+		// If the directory doesn't exist, create it
+		if ( ! prefsHome.exists())
+		{
+			prefsHome.mkdir();
+		}
+		
+		// If prefs home doesn't exist, use no-prefs
+		preferences = ( ! prefsHome.exists())
+			? new NoUserPreferences()
+			: new PropertiesFileUserPreferences(props,
+				prefsHome.getPath() + "/prefs.properties");
+		preferences.read();
+		
+		// Store preferences dir so application can get it
+		preferences.set("HOME", prefsHome.getPath());
 		
 		EventBus eventBus = new EventBus("main");
-		String home = System.getProperty("user.home");
-		UserPreferences preferences = new PropertiesFileUserPreferences(props,
-			home + "/underbudget.properties");
-		preferences.read();
 		
 		JFrame frame = new JFrame();
 		
