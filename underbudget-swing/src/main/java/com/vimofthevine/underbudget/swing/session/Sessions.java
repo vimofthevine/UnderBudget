@@ -154,7 +154,7 @@ public class Sessions {
 	@Subscribe
 	public void sourceSelected(BudgetSourceToOpenSelectedEvent event)
 	{
-		logger.log(Level.INFO, "Budget source selected");
+		logger.log(Level.FINE, "Budget source selected");
 		createSession(event.getSource());
 	}
 	

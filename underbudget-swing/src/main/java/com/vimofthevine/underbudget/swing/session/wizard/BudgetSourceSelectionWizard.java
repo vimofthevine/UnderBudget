@@ -83,20 +83,20 @@ public class BudgetSourceSelectionWizard {
 	@Subscribe
 	public void selectSourceToOpen(SelectBudgetSourceToOpenEvent event)
 	{
-		logger.log(Level.INFO, "Prompting for source to open");
+		logger.log(Level.FINE, "Prompting for source to open");
 		new SourceTypeSelectionDialog(window, this, event);
 	}
 	
 	@Subscribe
 	public void selectSourceToSave(SelectBudgetSourceToSaveEvent event)
 	{
-		logger.log(Level.INFO, "Prompting for source to save");
+		logger.log(Level.FINE, "Prompting for source to save");
 		new SourceTypeSelectionDialog(window, this, event);
 	}
 	
 	void typeSelected(SourceType type, final Object event)
 	{
-		logger.log(Level.INFO, type + " type has been selected for " + event);
+		logger.log(Level.FINER, type + " type has been selected for " + event);
 		
 		switch (type)
 		{

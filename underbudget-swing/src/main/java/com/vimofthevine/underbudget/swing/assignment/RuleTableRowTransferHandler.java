@@ -89,7 +89,7 @@ class AssignmentRuleReorderHandler extends TransferHandler {
 	protected Transferable createTransferable(JComponent c)
 	{
 		int row = selectionModel.getLeadSelectionIndex();
-		logger.log(Level.INFO, "Creating transferable of row " + row);
+		logger.log(Level.FINER, "Creating transferable of row " + row);
 		return new DataHandler(new Integer(row), localObjectFlavor.getMimeType());
 	}
 	

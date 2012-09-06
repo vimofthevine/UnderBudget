@@ -141,7 +141,7 @@ implements ListSelectionListener {
 	@Override
     public void valueChanged(ListSelectionEvent event)
     {
-		logger.log(Level.INFO, "Rule selection changed");
+		logger.log(Level.FINEST, "Rule selection changed");
 		
 		if (selectionModel.isSelectionEmpty())
 		{
@@ -155,7 +155,7 @@ implements ListSelectionListener {
     		if (selectedRule == null ||
     			! selectedRule.equals(rule))
     		{
-        		logger.log(Level.INFO, "Selected " + rule + " at index " + index);
+        		logger.log(Level.FINER, "Selected " + rule + " at index " + index);
         		
         		if (rule != null)
         		{
@@ -188,7 +188,7 @@ implements ListSelectionListener {
 				{
 					if (index == -1)
 					{
-						logger.log(Level.INFO, "Clearing selection");
+						logger.log(Level.FINEST, "Clearing selection");
 						selectionModel.clearSelection();
 					}
 					else

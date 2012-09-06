@@ -126,7 +126,7 @@ class AnalysisSummaryViewModel {
 	@Subscribe
 	public void balancesCalculated(BalancesCalculatedEvent event)
 	{
-		logger.log(Level.INFO, "New ending balances received");
+		logger.log(Level.FINE, "New ending balances received");
 		
 		EndingBalances balances = event.getEndingBalances();
 		final String estimated = balances.getEstimatedEndingBalance()
@@ -136,9 +136,9 @@ class AnalysisSummaryViewModel {
 		final String expected = balances.getExpectedEndingBalance()
 			.getValue().formatAsString();
 		
-		logger.log(Level.INFO, estimated);
-		logger.log(Level.INFO, actual);
-		logger.log(Level.INFO, expected);
+		logger.log(Level.FINER, estimated);
+		logger.log(Level.FINER, actual);
+		logger.log(Level.FINER, expected);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
