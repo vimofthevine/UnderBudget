@@ -102,21 +102,6 @@ public class BudgetXmlFileSource implements BudgetSource {
     {
 		logger.log(Level.FINE, "Saving to " + xmlFile.getAbsolutePath());
 		
-		/*
-		if ( ! xmlFile.exists())
-		{
-			try
-			{
-				xmlFile.createNewFile();
-			}
-			catch (IOException ioe)
-			{
-				throw new BudgetSourceException("Unable to save budget to "
-					+ xmlFile.getAbsolutePath(), ioe);
-			}
-		}
-		*/
-		
 		if (budget == null)
 			throw new BudgetSourceException("No budget to be saved");
 		

@@ -108,9 +108,8 @@ public class XmlAssignmentRule implements MutableAssignmentRule {
 			XmlEstimate child = null;
     		for (Integer index : indices)
     		{
-    			XmlEstimate oldParent = parent;
-    			child = (XmlEstimate) parent.getChildAt(index);
-    			parent = oldParent;
+   				child = (XmlEstimate) parent.getChildAt(index);
+    			parent = child;
     		}
     		
     		if (child != null)
