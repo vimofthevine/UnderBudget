@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing;
+package com.vimofthevine.underbudget.swing.preferences;
 
 /**
  * User preferences chosen by the user and preserved

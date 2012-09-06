@@ -25,10 +25,10 @@ import javax.swing.JPanel;
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
-import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesView;
 import com.vimofthevine.underbudget.swing.assignment.EstimateAssignmentRulesViewModel;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.transaction.AssociatedTransactionsView;
 import com.vimofthevine.underbudget.swing.widgets.ComplexSplitPane;
 

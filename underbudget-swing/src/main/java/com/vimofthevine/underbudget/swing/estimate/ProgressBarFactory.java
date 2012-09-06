@@ -25,8 +25,8 @@ import javax.swing.JProgressBar;
 
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
-import com.vimofthevine.underbudget.swing.UserPreferences;
 import com.vimofthevine.underbudget.swing.preferences.ProgressDisplayPreferences;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 
 /**
  * Factory for creating progress bar instances.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing;
+package com.vimofthevine.underbudget.swing.preferences;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.ApplicationProperties;
+import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 
 /**
  * User preferences stored in a properties file.
