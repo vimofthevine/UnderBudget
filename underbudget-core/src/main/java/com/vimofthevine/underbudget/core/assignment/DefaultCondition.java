@@ -75,7 +75,6 @@ public class DefaultCondition implements Condition {
 	@Override
 	public boolean satisfies(String that)
 	{
-		System.out.println("am i hitting this?");
 		switch (operator)
 		{
 			case BEGINS_WITH:
@@ -91,8 +90,6 @@ public class DefaultCondition implements Condition {
 				return that.contains(value);
 				
 			case ENDS_WITH:
-				System.out.println("Checking if " + that + " begins with "
-					+ value + "? " + that.endsWith(value));
 				return that.endsWith(value);
 				
 			default:
