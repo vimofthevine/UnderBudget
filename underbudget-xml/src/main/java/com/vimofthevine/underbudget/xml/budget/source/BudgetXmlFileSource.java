@@ -100,7 +100,7 @@ public class BudgetXmlFileSource implements BudgetSource {
 	@Override
     public void persist() throws BudgetSourceException
     {
-		logger.log(Level.INFO, "Saving to " + xmlFile.getAbsolutePath());
+		logger.log(Level.FINE, "Saving to " + xmlFile.getAbsolutePath());
 		
 		/*
 		if ( ! xmlFile.exists())
