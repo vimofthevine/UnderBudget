@@ -89,7 +89,7 @@ class DefaultEndingBalance implements EndingBalance {
 	
 	void apply(CashCommodity change)
 	{
-		logger.log(Level.INFO, "Applying to " + name + " balance: " + change);
+		logger.log(Level.FINER, "Applying to " + name + " balance: " + change);
 		
 		Number value = change.getValue();
 		

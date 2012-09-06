@@ -102,15 +102,13 @@ class ProgressBarFactory {
 		String unhealthyColorStr = prefs.get(
 			ProgressDisplayPreferences.UNHEALTHY_BG_KEY, getString(UNHEALTHY_COLOR));
 		
-		logger.log(Level.INFO, "Use colors for progress? " + useColorsStr);
-		logger.log(Level.INFO, "Healthy progress color: " + healthyColorStr);
-		logger.log(Level.INFO, "Unhealthy progress color: " + unhealthyColorStr);
+		logger.log(Level.FINEST, "Use colors for progress? " + useColorsStr);
+		logger.log(Level.FINEST, "Healthy progress color: " + healthyColorStr);
+		logger.log(Level.FINEST, "Unhealthy progress color: " + unhealthyColorStr);
 		
 		useColors = Boolean.parseBoolean(useColorsStr);
 		healthyColor = getColor(healthyColorStr);
 		unhealthyColor = getColor(unhealthyColorStr);
-		
-		logger.log(Level.INFO, "Use colors for progress? " + useColors);
 	}
 	
 	/**

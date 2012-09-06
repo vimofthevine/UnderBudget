@@ -117,7 +117,6 @@ public class XmlEstimate implements MutableEstimate {
 	
 	XmlEstimate()
 	{
-		System.out.println("constructing estimate with no parameters");
 		uid = new Random().nextLong();
 		type = EstimateType.CATEGORY; // Default to category
 		children = new ArrayList<XmlEstimate>();

@@ -150,8 +150,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 			}
 		}
 		
-		System.out.println("No transaction found");
-		
 		return null;
 	}
 

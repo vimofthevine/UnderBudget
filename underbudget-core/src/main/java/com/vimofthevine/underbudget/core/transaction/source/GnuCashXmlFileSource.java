@@ -122,7 +122,7 @@ implements TransactionSource {
 	public GnuCashXmlFileSource(File file)
 	throws FileNotFoundException
 	{
-		logger.log(Level.INFO, "Creating GnuCash XML file source, " + file);
+		logger.log(Level.FINER, "Creating GnuCash XML file source, " + file);
 		this.file = file;
 		
 		currency = Currency.getInstance(Locale.getDefault()).getCurrencyCode();

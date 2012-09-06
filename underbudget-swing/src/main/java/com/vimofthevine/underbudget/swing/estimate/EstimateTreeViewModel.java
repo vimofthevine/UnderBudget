@@ -180,7 +180,7 @@ public class EstimateTreeViewModel {
 	@Subscribe
 	public synchronized void estimateSelected(EstimateSelectedEvent event)
 	{
-		logger.log(Level.INFO, log + "Estimate selected: " + event);
+		logger.log(Level.FINEST, log + "Estimate selected: " + event);
 		
 		if (event.getEstimate() == null)
 		{
@@ -202,7 +202,7 @@ public class EstimateTreeViewModel {
 		if (currentSelectionPath == null ||
 			! currentSelectionPath.equals(selectionPath))
 		{
-			logger.log(Level.INFO, log + "Selecting estimate, " + event.getTreePath());
+			logger.log(Level.FINEST, log + "Selecting estimate, " + event.getTreePath());
 			currentSelectionPath = selectionPath;
 			
 			// Select the new estimate
@@ -213,7 +213,7 @@ public class EstimateTreeViewModel {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run()
 					{
-						logger.log(Level.INFO, log + "Updating tree selection to selected estimate");
+						logger.log(Level.FINEST, log + "Updating tree selection to selected estimate");
 						selectionModel.setSelectionPath(newSelection);
 					}
 				});
@@ -221,7 +221,7 @@ public class EstimateTreeViewModel {
 		}
 		else
 		{
-			logger.log(Level.INFO, log + "Estimate is already selected");
+			logger.log(Level.FINER, log + "Estimate is already selected");
 		}
 	}
 	
@@ -242,7 +242,7 @@ public class EstimateTreeViewModel {
 			public void run()
 			{
 				// Update tree-table
-				logger.log(Level.INFO, log + "Updating tree-table to reflect modified estimate");
+				logger.log(Level.FINE, log + "Updating tree-table to reflect modified estimate");
 				treeTableModel.valueForPathChanged(path, event.getEstimate());
 			}
 		});
@@ -257,7 +257,7 @@ public class EstimateTreeViewModel {
 	@Subscribe
 	public synchronized void estimateAdded(EstimateAddedEvent event)
 	{
-		logger.log(Level.INFO, log + "Estimate added: " + event);
+		logger.log(Level.FINE, log + "Estimate added: " + event);
 		
 		final Estimate parent = event.getParent();
 		final Estimate child = event.getChild();
@@ -268,7 +268,7 @@ public class EstimateTreeViewModel {
 			public void run()
 			{
 				// Redraw the table
-				logger.log(Level.INFO, log + "Updating tree-table model to reflect added estimate");
+				logger.log(Level.FINER, log + "Updating tree-table model to reflect added estimate");
 				treeTableModel.fireEstimateAdded(parentPath, parent, child);
 			}
 		});
@@ -276,14 +276,14 @@ public class EstimateTreeViewModel {
 		// If the estimate was added to the currently selected estimate
 		if (parent.equals(currentSelectionPath.getLastPathComponent()))
 		{
-			logger.log(Level.INFO, log + "New selection path of added estimate: " + childPath);
+			logger.log(Level.FINER, log + "New selection path of added estimate: " + childPath);
 			
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run()
 				{
 					if (selectionModel != null)
 					{
-						logger.log(Level.INFO, log + "Updating tree selection to added estimate");
+						logger.log(Level.FINEST, log + "Updating tree selection to added estimate");
 						selectionModel.setSelectionPath(childPath);
 					}
 				}
@@ -300,7 +300,7 @@ public class EstimateTreeViewModel {
 	@Subscribe
 	public synchronized void estimateRemoved(EstimateRemovedEvent event)
 	{
-		logger.log(Level.INFO, log + "Estimate removed: " + event);
+		logger.log(Level.FINE, log + "Estimate removed: " + event);
 		
 		final Estimate parent = event.getParent();
 		final Estimate child = event.getChild();
@@ -311,7 +311,7 @@ public class EstimateTreeViewModel {
 			public void run()
 			{
 				// Redraw the table
-				logger.log(Level.INFO, log + "Updating tree-table model to reflect removed estimate");
+				logger.log(Level.FINER, log + "Updating tree-table model to reflect removed estimate");
 				treeTableModel.fireEstimateRemoved(parentPath, index, child);
 			}
 		});
@@ -320,14 +320,14 @@ public class EstimateTreeViewModel {
 		if (parent.equals(currentSelectionPath.getParentPath()
 				.getLastPathComponent()))
 		{
-			logger.log(Level.INFO, log + "New selection path of removed estimate's parent: " + parentPath);
+			logger.log(Level.FINER, log + "New selection path of removed estimate's parent: " + parentPath);
 			
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run()
 				{
 					if (selectionModel != null)
 					{
-						logger.log(Level.INFO, log + "Updating tree selection to parent of removed estimate");
+						logger.log(Level.FINEST, log + "Updating tree selection to parent of removed estimate");
 						selectionModel.setSelectionPath(parentPath);
 					}
 				}

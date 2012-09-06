@@ -72,7 +72,7 @@ class BudgetPersistenceModel {
 	@Subscribe
 	public void sourceSelected(BudgetSourceToSaveSelectedEvent event)
 	{
-		logger.log(Level.INFO, "Budget source selected");
+		logger.log(Level.FINE, "Budget source selected");
 		
 		// Store budget source
 		source = event.getSource();
@@ -90,7 +90,7 @@ class BudgetPersistenceModel {
 		// If source is the template, prompt for save source/location
 		if (source == null || source instanceof TemplateBudgetSource)
 		{
-			logger.log(Level.INFO, "Write-only source, prompting for source location");
+			logger.log(Level.FINE, "Write-only source, prompting for source location");
 			saveSessionAs(new SaveSessionAsEvent());
 		}
 		else
@@ -111,14 +111,14 @@ class BudgetPersistenceModel {
 	@Subscribe
 	public void saveSessionAs(SaveSessionAsEvent event)
 	{
-		logger.log(Level.INFO, "Save-as received");
+		logger.log(Level.FINE, "Save-as received");
 		eventBus.post(new SelectBudgetSourceToSaveEvent());
 	}
 	
 	@Subscribe
 	public void updateTemplate(UpdateTemplateEvent event)
 	{
-		logger.log(Level.INFO, "Updating the template");
+		logger.log(Level.FINE, "Updating the template");
 		
 		try
 		{

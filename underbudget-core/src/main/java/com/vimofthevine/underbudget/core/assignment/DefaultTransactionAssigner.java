@@ -58,16 +58,16 @@ public class DefaultTransactionAssigner implements TransactionAssigner {
 		
 		for (Transaction transaction : transactions)
 		{
-			logger.log(Level.INFO, "Assigning transaction, " + transaction);
+			logger.log(Level.FINER, "Assigning transaction, " + transaction);
 			
 			for (int i=0; i<rules.size(); i++)
 			{
 				AssignmentRule rule = rules.getAt(i);
-				logger.log(Level.INFO, "Checking against rule, " + rule);
+				logger.log(Level.FINEST, "Checking against rule, " + rule);
 				
 				if (rule.matches(transaction))
 				{
-					logger.log(Level.INFO, "Rule matched");
+					logger.log(Level.FINER, "Rule matched");
 					assignments.assign(transaction, rule);
 					break;
 				}

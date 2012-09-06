@@ -124,7 +124,7 @@ implements ListSelectionListener {
 	@Subscribe
 	public synchronized void transactionsImported(final TransactionsImportedEvent event)
 	{
-		logger.log(Level.INFO, "Received new imported transactions list");
+		logger.log(Level.FINE, "Received new imported transactions list");
 		
 		transactions = event.getTransactions();
 		
@@ -140,7 +140,7 @@ implements ListSelectionListener {
 	@Subscribe
 	public synchronized void transactionAssigned(final TransactionsAssignedEvent event)
 	{
-		logger.log(Level.INFO, "Received new transaction assignments");
+		logger.log(Level.FINE, "Received new transaction assignments");
 		assignments = event.getAssignments();
 		
 		if (selectedTransaction != null && assignments != null)
@@ -157,7 +157,7 @@ implements ListSelectionListener {
 	@Override
     public synchronized void valueChanged(ListSelectionEvent arg0)
     {
-		logger.log(Level.INFO, "Transaction selection changed");
+		logger.log(Level.FINEST, "Transaction selection changed");
 		
 		if (selectionModel.isSelectionEmpty())
 		{
@@ -181,7 +181,7 @@ implements ListSelectionListener {
 						{
 							AssignmentRule rule = assignments.getAssigningRule(selectedTransaction);
 							
-							logger.log(Level.INFO, "Selecting assigning rule, " + rule);
+							logger.log(Level.FINEST, "Selecting assigning rule, " + rule);
 							eventBus.post(new RuleSelectedEvent(rule));
 							
                 			Estimate estimate = (rule == null) ? null

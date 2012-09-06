@@ -78,7 +78,7 @@ public class OnDemandTransactionImporter {
 	@Subscribe
 	public void sourceSelected(TransactionSourceSelectedEvent event)
 	{
-		logger.log(Level.INFO, "Transaction source selected");
+		logger.log(Level.FINE, "Transaction source selected");
 		
 		// Store transaction source
 		source = event.getSource();
@@ -96,7 +96,7 @@ public class OnDemandTransactionImporter {
 		// If no source defined, prompt for source
 		if (source == null)
 		{
-			logger.log(Level.INFO, "No previous transaction source, prompting for source");
+			logger.log(Level.FINE, "No previous transaction source, prompting for source");
 			importTransactionsFrom(new ImportTransactionsFromEvent());
 		}
 		else
@@ -107,11 +107,11 @@ public class OnDemandTransactionImporter {
 			{
 				logger.log(Level.INFO, "Importing transactions from " + source);
 				Transaction[] transactions = source.getTransactions(period);
-				logger.log(Level.INFO, "Finished importing");
+				logger.log(Level.FINE, "Finished importing");
 				
         		if (transactions != null)
         		{
-					logger.log(Level.INFO, transactions.length + " transactions imported");
+					logger.log(Level.FINE, transactions.length + " transactions imported");
         			eventBus.post(new TransactionsImportedEvent(transactions));
         		}
 			}
