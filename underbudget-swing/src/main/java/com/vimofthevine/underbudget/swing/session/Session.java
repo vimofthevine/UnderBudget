@@ -110,7 +110,7 @@ public class Session {
     		BalanceCalculator calculator = new DefaultBalanceCalculator();
     		
     		state = new SessionState(globalBus, eventBus, budget);
-    		new BudgetPersistenceModel(eventBus, budgetSource);
+    		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
     		
     		new BudgetSourceSelectionWizard(eventBus, window, budget);
     		new TransactionSourceSelectionWizard(eventBus, window, currency);

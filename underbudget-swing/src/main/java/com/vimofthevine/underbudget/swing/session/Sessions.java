@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
-import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
@@ -40,6 +39,7 @@ import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpe
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
+import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
  * A <code>Sessions</code> instance is reponsible for creating,
@@ -134,7 +134,7 @@ public class Sessions {
 	public void createSession(CreateSessionEvent event)
 	{
 		logger.log(Level.INFO, "Creating new session");
-		createSession(new TemplateBudgetSource());
+		createSession(new TemplateBudgetSource(preferences.get("HOME", "/tmp")));
 	}
 	
 	/**

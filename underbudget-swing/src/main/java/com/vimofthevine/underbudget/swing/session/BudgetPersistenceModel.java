@@ -21,15 +21,17 @@ import java.util.logging.Logger;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
-import com.vimofthevine.underbudget.core.budget.source.TemplateBudgetSource;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
+import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
  * A <code>BudgetPersistenceModel</code> is responsible for
@@ -50,6 +52,16 @@ class BudgetPersistenceModel {
 	private final EventBus eventBus;
 	
 	/**
+	 * Budget
+	 */
+	private final Budget budget;
+	
+	/**
+	 * Application preferences
+	 */
+	private final UserPreferences preferences;
+	
+	/**
 	 * Budget source
 	 */
 	private BudgetSource source;
@@ -58,14 +70,19 @@ class BudgetPersistenceModel {
 	 * Constructs a new budget persistence model.
 	 * 
 	 * @param bus    session event bus
+	 * @param budget session budget
 	 * @param source session budget source
+	 * @param prefs  application preferences
 	 */
-	BudgetPersistenceModel(EventBus bus,
-		BudgetSource source)
+	BudgetPersistenceModel(EventBus bus, Budget budget,
+		BudgetSource source, UserPreferences prefs)
 	{
 		eventBus = bus;
 		eventBus.register(this);
 		
+		preferences = prefs;
+		
+		this.budget = budget;
 		this.source = source;
 	}
 	
@@ -123,7 +140,7 @@ class BudgetPersistenceModel {
 		try
 		{
     		BudgetSource template = new TemplateBudgetSource(
-    			source.getBudget());
+    			preferences.get("HOME", "/"), budget);
     		template.persist();
 		}
 		catch (BudgetSourceException bse)
