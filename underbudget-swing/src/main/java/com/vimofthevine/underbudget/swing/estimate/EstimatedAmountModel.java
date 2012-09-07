@@ -85,6 +85,7 @@ class EstimatedAmountModel extends CurrencyInputModel {
 			public void run()
 			{
 				setValue(amount);
+				setEnabled(estimate.getChildCount() == 0);
 			}
 		});
 	}

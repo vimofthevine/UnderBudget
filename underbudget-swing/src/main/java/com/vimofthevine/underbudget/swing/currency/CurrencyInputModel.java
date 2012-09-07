@@ -16,10 +16,14 @@
 
 package com.vimofthevine.underbudget.swing.currency;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Currency;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 
@@ -39,6 +43,11 @@ public abstract class CurrencyInputModel {
 	 * Currency input verifier
 	 */
 	private final CurrencyInputVerifier verifier;
+	
+	/**
+	 * Action model
+	 */
+	private final Action action;
 	
 	/**
 	 * Registered change listeners
@@ -61,6 +70,13 @@ public abstract class CurrencyInputModel {
 		verifier = new CurrencyInputVerifier();
 		listeners = Collections.synchronizedList(
 			new ArrayList<CurrencyChangeListener>());
+		action = new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				// Do nothing
+			}
+		};
 	}
 	
 	/**
@@ -92,6 +108,17 @@ public abstract class CurrencyInputModel {
 	}
 	
 	/**
+	 * Enables or disables the currency input field.
+	 * 
+	 * @param enabled <code>true</code> if the field
+	 *                is enabled
+	 */
+	public void setEnabled(boolean enabled)
+	{
+		action.setEnabled(enabled);
+	}
+	
+	/**
 	 * Returns a formatter factory for currency values.
 	 * 
 	 * @return currency formatter factory
@@ -109,6 +136,16 @@ public abstract class CurrencyInputModel {
 	CurrencyInputVerifier getInputVerifier()
 	{
 		return verifier;
+	}
+	
+	/**
+	 * Returns an action model.
+	 * 
+	 * @return action model
+	 */
+	Action getAction()
+	{
+		return action;
 	}
 	
 	/**
