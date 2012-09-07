@@ -24,12 +24,12 @@ import java.awt.Container;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXDatePicker;
 
 import com.vimofthevine.underbudget.swing.currency.CurrencyField;
 import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
+import com.vimofthevine.underbudget.swing.widgets.TextInputField;
 
 /**
  * View for displaying modifiable details about
@@ -48,11 +48,8 @@ public class EstimateDetailView {
 	public EstimateDetailView(Container container,
 		EstimateDetailViewModel model)
 	{
-		JTextField name = new JTextField();
-		name.setDocument(model.getNameDocument());
-		
-		JTextField description = new JTextField();
-		description.setDocument(model.getDescriptionDocument());
+		TextInputField name = new TextInputField(model.getNameModel());
+		TextInputField description = new TextInputField(model.getDescriptionModel());
 		
 		CurrencyField amount = new CurrencyField(
 			model.getAmountModel());

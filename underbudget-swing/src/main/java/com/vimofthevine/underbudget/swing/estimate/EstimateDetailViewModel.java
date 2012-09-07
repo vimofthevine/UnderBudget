@@ -24,7 +24,6 @@ import javax.swing.Action;
 import javax.swing.ComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.JToggleButton.ToggleButtonModel;
-import javax.swing.text.Document;
 
 import org.jdesktop.swingx.calendar.DateSelectionModel;
 
@@ -34,6 +33,7 @@ import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
+import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
 
 /**
  * A presentation model for views that display
@@ -49,14 +49,14 @@ public class EstimateDetailViewModel {
 	private final EventBus eventBus;
 	
 	/**
-	 * Estimate name document model
+	 * Estimate name input model
 	 */
-	private final NameModel nameDocument;
+	private final NameModel nameModel;
 	
 	/**
-	 * Estimate description document model
+	 * Estimate description input model
 	 */
-	private final DescriptionModel descriptionDocument;
+	private final DescriptionModel descriptionModel;
 	
 	/**
 	 * Estimate amount document model
@@ -106,8 +106,8 @@ public class EstimateDetailViewModel {
 		eventBus = bus;
 		eventBus.register(this);
 		
-		nameDocument = new NameModel(bus);
-		descriptionDocument = new DescriptionModel(bus);
+		nameModel = new NameModel(bus);
+		descriptionModel = new DescriptionModel(bus);
 		amountDocument = new EstimatedAmountModel(bus, currency);
 		typeModel = new EstimateTypeModel(bus);
 		dueDateModel = new DueDateModel(bus);
@@ -118,25 +118,26 @@ public class EstimateDetailViewModel {
 	}
 	
 	/**
-	 * Returns a document representing
-	 * the estimate's user-defined name.
+	 * Returns the text input model
+	 * for the estimate's user-defined
+	 * name.
 	 * 
-	 * @return estimate name document
+	 * @return estimate name input model
 	 */
-	Document getNameDocument()
+	TextInputModel getNameModel()
 	{
-		return nameDocument;
+		return nameModel;
 	}
-
+	
 	/**
-	 * Returns a document representing
-	 * the estimate's user-defined description.
+	 * Returns the text input model for the
+	 * estimate's user-defined description.
 	 * 
-	 * @return estimate name document
+	 * @rturn estimate description input model
 	 */
-	Document getDescriptionDocument()
+	TextInputModel getDescriptionModel()
 	{
-		return descriptionDocument;
+		return descriptionModel;
 	}
 
 	/**
@@ -220,8 +221,8 @@ public class EstimateDetailViewModel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				nameDocument.setEstimate(estimate);
-				descriptionDocument.setEstimate(estimate);
+				nameModel.setEstimate(estimate);
+				descriptionModel.setEstimate(estimate);
 				amountDocument.setEstimate(estimate);
 				typeModel.setEstimate(estimate);
 				dueDateModel.setEstimate(estimate);
@@ -244,11 +245,11 @@ public class EstimateDetailViewModel {
 				{
         			if (changes.containsKey("name"))
         			{
-        				nameDocument.setEstimate(estimate);
+        				nameModel.setEstimate(estimate);
         			}
         			if (changes.containsKey("description"))
         			{
-        				descriptionDocument.setEstimate(estimate);
+        				descriptionModel.setEstimate(estimate);
         			}
         			if (changes.containsKey("amount"))
         			{
