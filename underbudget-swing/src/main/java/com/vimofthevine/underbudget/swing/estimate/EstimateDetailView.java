@@ -29,6 +29,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import com.vimofthevine.underbudget.swing.currency.CurrencyField;
 import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
+import com.vimofthevine.underbudget.swing.widgets.ComboInputField;
 import com.vimofthevine.underbudget.swing.widgets.TextInputField;
 
 /**
@@ -50,11 +51,8 @@ public class EstimateDetailView {
 	{
 		TextInputField name = new TextInputField(model.getNameModel());
 		TextInputField description = new TextInputField(model.getDescriptionModel());
-		
-		CurrencyField amount = new CurrencyField(
-			model.getAmountModel());
-		
-		JComboBox type = new JComboBox(model.getTypeModel());
+		CurrencyField amount = new CurrencyField(model.getAmountModel()); 
+		ComboInputField type = new ComboInputField(model.getTypeModel());
 		
 		JXDatePicker dueDate = new JXDatePicker();
 		dueDate.getMonthView().setSelectionModel(model.getDateModel());

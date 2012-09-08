@@ -18,7 +18,6 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.util.HashMap;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
@@ -29,6 +28,7 @@ import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
+import com.vimofthevine.underbudget.swing.widgets.ComboInputModel;
 
 /**
  * Custom combo box model to display and apply
@@ -36,7 +36,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class EstimateTypeModel extends DefaultComboBoxModel {
+class EstimateTypeModel extends ComboInputModel {
 	
 	/**
 	 * Event bus
@@ -80,18 +80,14 @@ class EstimateTypeModel extends DefaultComboBoxModel {
 			public void run()
 			{
 				setSelectedItem((estimate == null) ? null
-					: estimate.getDefinition().getType(), false);
+					: estimate.getDefinition().getType());
+				setEnabled(estimate.getChildCount() == 0);
 			}
 		});
 	}
 	
-	private void setSelectedItem(Object item, boolean post)
-	{
-		super.setSelectedItem(item);
-	}
-	
 	@Override
-	public void setSelectedItem(Object item)
+	public void itemSelected(Object item)
 	{
 		if ( ! (estimate instanceof MutableEstimate))
 			return;

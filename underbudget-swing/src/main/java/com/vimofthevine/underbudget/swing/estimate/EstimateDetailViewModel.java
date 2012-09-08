@@ -21,7 +21,6 @@ import java.util.Currency;
 import java.util.Map;
 
 import javax.swing.Action;
-import javax.swing.ComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.JToggleButton.ToggleButtonModel;
 
@@ -33,6 +32,7 @@ import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
+import com.vimofthevine.underbudget.swing.widgets.ComboInputModel;
 import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
 
 /**
@@ -152,12 +152,12 @@ public class EstimateDetailViewModel {
 	}
 	
 	/**
-	 * Returns a combo-box model representing
+	 * Returns a combo input model representing
 	 * the type of the estimate.
 	 * 
-	 * @return estimate type combo box model
+	 * @return estimate type combo input model
 	 */
-	ComboBoxModel getTypeModel()
+	ComboInputModel getTypeModel()
 	{
 		return typeModel;
 	}
