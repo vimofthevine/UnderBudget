@@ -21,8 +21,6 @@ import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.swingx.calendar.DefaultDateSelectionModel;
-
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
@@ -31,6 +29,7 @@ import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
+import com.vimofthevine.underbudget.swing.widgets.DateInputModel;
 
 /**
  * Custom date selection model to display and apply
@@ -38,7 +37,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class DueDateModel extends DefaultDateSelectionModel {
+class DueDateModel extends DateInputModel {
 
 	/**
 	 * Event bus
@@ -50,7 +49,8 @@ class DueDateModel extends DefaultDateSelectionModel {
 	 */
 	private final HashMap<String,String> changes;
 	
-	/** * Currently represented estimate
+	/**
+	 * Currently represented estimate
 	 */
 	private Estimate estimate;
 	
@@ -61,9 +61,9 @@ class DueDateModel extends DefaultDateSelectionModel {
 	 */
 	DueDateModel(EventBus bus)
 	{
+		super();
 		eventBus = bus;
 		changes = new HashMap<String,String>();
-		setSelectionMode(SelectionMode.SINGLE_SELECTION);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ class DueDateModel extends DefaultDateSelectionModel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				clearSelection(false);
+				clear();
 				
 				SimpleDate dueDate = (estimate == null) ? null
 					: estimate.getDefinition().getDueDate();
@@ -88,52 +88,21 @@ class DueDateModel extends DefaultDateSelectionModel {
 				if (dueDate != null)
 				{
 					Date date = dueDate.getTime();
-					setSelectionInterval(date, date, false);
+					setDate(date);
 				}
+				
+				setEnabled(estimate.getChildCount() == 0);
 			}
 		});
 	}
 	
-	private void clearSelection(boolean post)
-	{
-		super.clearSelection();
-	}
-	
-	private void setSelectionInterval(Date startDate, Date endDate, boolean post)
-	{
-		super.setSelectionInterval(startDate, endDate);
-	}
-	
 	@Override
-	public void clearSelection()
-	{
-		if ( ! (estimate instanceof MutableEstimate))
-			return;
-		else
-		{
-			super.clearSelection();
-			update();
-		}
-	}
-	
-	@Override
-	public void setSelectionInterval(Date startDate, Date endDate)
-	{
-		if ( ! (estimate instanceof MutableEstimate))
-			return;
-		else
-		{
-			super.setSelectionInterval(startDate, endDate);
-			update();
-		}
-	}
-	
-	private void update()
+	public void dateSelectionChanged()
 	{
 		if (estimate instanceof MutableEstimate)
 		{
     		// Grab this while on EDT
-    		final Date dueDate = getFirstSelectionDate();
+    		final Date dueDate = getDate();
     		
     		// Then get off EDT
     		new Thread() {

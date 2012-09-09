@@ -23,8 +23,6 @@ import java.util.Map;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.swingx.calendar.DateSelectionModel;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
@@ -32,6 +30,7 @@ import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
 import com.vimofthevine.underbudget.swing.widgets.ComboInputModel;
+import com.vimofthevine.underbudget.swing.widgets.DateInputModel;
 import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
 import com.vimofthevine.underbudget.swing.widgets.ToggleInputModel;
 
@@ -163,12 +162,12 @@ public class EstimateDetailViewModel {
 	}
 	
 	/**
-	 * Returns a date selection model representing
+	 * Returns a date input model representing
 	 * the due date of the estimate.
 	 * 
-	 * @return estimate due date selection model
+	 * @return estimate due date input model
 	 */
-	DateSelectionModel getDateModel()
+	DateInputModel getDateModel()
 	{
 		return dueDateModel;
 	}

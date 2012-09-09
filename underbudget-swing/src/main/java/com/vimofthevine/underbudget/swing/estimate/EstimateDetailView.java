@@ -23,12 +23,11 @@ import java.awt.Container;
 
 import javax.swing.JButton;
 
-import org.jdesktop.swingx.JXDatePicker;
-
 import com.vimofthevine.underbudget.swing.currency.CurrencyField;
 import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
 import com.vimofthevine.underbudget.swing.widgets.CheckboxInputField;
 import com.vimofthevine.underbudget.swing.widgets.ComboInputField;
+import com.vimofthevine.underbudget.swing.widgets.DateInputField;
 import com.vimofthevine.underbudget.swing.widgets.TextInputField;
 
 /**
@@ -52,10 +51,8 @@ public class EstimateDetailView {
 		TextInputField description = new TextInputField(model.getDescriptionModel());
 		CurrencyField amount = new CurrencyField(model.getAmountModel()); 
 		ComboInputField type = new ComboInputField(model.getTypeModel());
+		DateInputField dueDate = new DateInputField(model.getDateModel());
 		CheckboxInputField complete = new CheckboxInputField(model.getCompleteModel());
-		
-		JXDatePicker dueDate = new JXDatePicker();
-		dueDate.getMonthView().setSelectionModel(model.getDateModel());
 		
 		JButton addButton = new JButton(model.getAddChildAction());
 		JButton deleteButton = new JButton(model.getDeleteAction());
