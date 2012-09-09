@@ -18,7 +18,6 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.util.HashMap;
 
-import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
@@ -29,6 +28,7 @@ import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
+import com.vimofthevine.underbudget.swing.widgets.ToggleInputModel;
 
 /**
  * Custom toggle button model to display and apply
@@ -39,7 +39,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class EstimateCompleteModel extends ToggleButtonModel {
+class EstimateCompleteModel extends ToggleInputModel {
 
 	/**
 	 * Event bus
@@ -64,6 +64,7 @@ class EstimateCompleteModel extends ToggleButtonModel {
 	 */
 	EstimateCompleteModel(EventBus bus)
 	{
+		super();
 		eventBus = bus;
 		changes = new HashMap<String,String>();
 	}
@@ -83,25 +84,19 @@ class EstimateCompleteModel extends ToggleButtonModel {
 			public void run()
 			{
 				setSelected((estimate == null) ? false
-					: estimate.getDefinition().isComplete(), false);
+					: estimate.getDefinition().isComplete());
+				setEnabled(estimate.getChildCount() == 0);
 			}
 		});
 	}
 	
-	private void setSelected(boolean selected, boolean post)
-	{
-		super.setSelected(selected);
-	}
-	
 	@Override
-	public void setSelected(final boolean selected)
+	public void selectionToggled(final boolean selected)
 	{
 		if ( ! (estimate instanceof MutableEstimate))
 			return;
 		else
 		{
-    		super.setSelected(selected);
-    		
     		// Get off EDT
     		new Thread() {
     			public void run()

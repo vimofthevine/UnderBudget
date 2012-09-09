@@ -22,7 +22,6 @@ import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
-import javax.swing.JToggleButton.ToggleButtonModel;
 
 import org.jdesktop.swingx.calendar.DateSelectionModel;
 
@@ -34,6 +33,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
 import com.vimofthevine.underbudget.swing.widgets.ComboInputModel;
 import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
+import com.vimofthevine.underbudget.swing.widgets.ToggleInputModel;
 
 /**
  * A presentation model for views that display
@@ -174,13 +174,13 @@ public class EstimateDetailViewModel {
 	}
 	
 	/**
-	 * Returns the button model representing
+	 * Returns a toggle input model representing
 	 * the estimate completeness (final) of
 	 * the estimate.
 	 * 
 	 * @return estimate complete model
 	 */
-	ToggleButtonModel getCompleteModel()
+	ToggleInputModel getCompleteModel()
 	{
 		return completeModel;
 	}

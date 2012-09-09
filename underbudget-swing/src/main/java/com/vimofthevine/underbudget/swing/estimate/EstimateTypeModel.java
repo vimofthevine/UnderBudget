@@ -93,8 +93,6 @@ class EstimateTypeModel extends ComboInputModel {
 			return;
 		else
 		{
-    		super.setSelectedItem(item);
-    		
     		if (item instanceof EstimateType)
     		{
     			final EstimateType type = (EstimateType) item;
