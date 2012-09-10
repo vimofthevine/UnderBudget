@@ -24,8 +24,11 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
+import com.vimofthevine.underbudget.core.assignment.AssignmentRule;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
+import com.vimofthevine.underbudget.swing.assignment.events.RuleRemovedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateRemovedEvent;
 
 /**
@@ -46,6 +49,11 @@ class DeleteAction extends AbstractAction {
 	private final Component parent;
 	
 	/**
+	 * Assignment rules
+	 */
+	private final ReverseLookupAssignmentRules rules;
+	
+	/**
 	 * Currently represented estimate
 	 */
 	private MutableEstimate estimate;
@@ -55,11 +63,15 @@ class DeleteAction extends AbstractAction {
 	 * 
 	 * @param bus       event bus
 	 * @param component parent component
+	 * @param rules     reverse lookup assignment rules
 	 */
-	DeleteAction(EventBus bus, Component component)
+	DeleteAction(EventBus bus, Component component,
+		ReverseLookupAssignmentRules rules)
 	{
 		eventBus = bus;
 		parent = component;
+		
+		this.rules = rules;
 		
 		putValue(NAME, "Delete");
 	}
@@ -108,6 +120,15 @@ class DeleteAction extends AbstractAction {
         					int index = parent.indexOf(estimate);
         					estimate.delete();
         					eventBus.post(new EstimateRemovedEvent(parent, index, estimate));
+        					
+        					AssignmentRule[] assocRules = rules.getRules(estimate);
+        					
+        					for (AssignmentRule rule : assocRules)
+        					{
+        						int ruleIndex = rules.indexOf(rule);
+        						rules.remove(rule);
+        						eventBus.post(new RuleRemovedEvent(rule, ruleIndex));
+        					}
 						}
 					}.start();
 				}

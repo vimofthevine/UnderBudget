@@ -23,7 +23,6 @@ import java.util.Currency;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.assignment.AssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailView;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailViewModel;
 import com.vimofthevine.underbudget.swing.transaction.AssociatedTransactionsView;
@@ -53,7 +52,7 @@ public abstract class AssignmentRulesViewFactory {
 	 * @return assignment rules view component
 	 */
 	public static final Component build(Frame window,
-		EventBus bus, AssignmentRules rules, Currency currency)
+		EventBus bus, ReverseLookupAssignmentRules rules, Currency currency)
 	{
 		// Create models
 		AssignmentRuleListViewModel listModel =
@@ -61,7 +60,7 @@ public abstract class AssignmentRulesViewFactory {
 		AssignmentRuleDetailViewModel detailModel =
 			new AssignmentRuleDetailViewModel(bus, window, rules);
 		EstimateDetailViewModel estimateModel =
-			new EstimateDetailViewModel(bus, currency, window);
+			new EstimateDetailViewModel(bus, currency, window, rules);
 		QualifiedTransactionsViewModel transactionModel =
 			new QualifiedTransactionsViewModel(bus);
 		
