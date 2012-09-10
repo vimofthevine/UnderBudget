@@ -16,9 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
@@ -26,9 +25,11 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
+import com.vimofthevine.underbudget.swing.widgets.ToggleInputModel;
 
 /**
  * Custom toggle button model to display and apply
@@ -39,7 +40,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class EstimateCompleteModel extends ToggleButtonModel {
+class EstimateCompleteModel extends ToggleInputModel {
 
 	/**
 	 * Event bus
@@ -49,7 +50,7 @@ class EstimateCompleteModel extends ToggleButtonModel {
 	/**
 	 * Estimate field change set
 	 */
-	private final HashMap<String,String> changes;
+	private Map<EstimateField,Object> changes;
 	
 	/**
 	 * Currently represented estimate
@@ -64,8 +65,8 @@ class EstimateCompleteModel extends ToggleButtonModel {
 	 */
 	EstimateCompleteModel(EventBus bus)
 	{
+		super();
 		eventBus = bus;
-		changes = new HashMap<String,String>();
 	}
 	
 	/**
@@ -83,25 +84,20 @@ class EstimateCompleteModel extends ToggleButtonModel {
 			public void run()
 			{
 				setSelected((estimate == null) ? false
-					: estimate.getDefinition().isComplete(), false);
+					: estimate.getDefinition().isComplete());
+				setEnabled( ! estimate.getDefinition().getType()
+					.equals(EstimateType.CATEGORY));
 			}
 		});
 	}
 	
-	private void setSelected(boolean selected, boolean post)
-	{
-		super.setSelected(selected);
-	}
-	
 	@Override
-	public void setSelected(final boolean selected)
+	public void selectionToggled(final boolean selected)
 	{
 		if ( ! (estimate instanceof MutableEstimate))
 			return;
 		else
 		{
-    		super.setSelected(selected);
-    		
     		// Get off EDT
     		new Thread() {
     			public void run()
@@ -111,7 +107,7 @@ class EstimateCompleteModel extends ToggleButtonModel {
     				
     				if (selected != old.isComplete())
     				{
-    					mutable.setDefinition(new EstimateDefinition() {
+    					changes = mutable.setDefinition(new EstimateDefinition() {
                             public String getName() { return old.getName(); }
                             public String getDescription() { return old.getDescription(); }
                             public CashCommodity getAmount() { return old.getAmount(); }
@@ -120,7 +116,6 @@ class EstimateCompleteModel extends ToggleButtonModel {
                             public boolean isComplete() { return selected; }
     					});
         					
-        				changes.put("complete", String.valueOf(selected));
         				eventBus.post(new EstimateModifiedEvent(estimate, changes));
     				}
     			}

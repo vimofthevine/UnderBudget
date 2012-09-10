@@ -14,36 +14,26 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.estimate;
+package com.vimofthevine.underbudget.swing.widgets;
 
-import java.util.Map;
+import javax.swing.JComboBox;
 
 /**
- * An estimate whose definition can be modified.
+ * Customized combo field using a combo input model.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MutableEstimate extends Estimate {
+public class ComboInputField extends JComboBox {
 	
 	/**
-	 * Updates this estimate's definition.
+	 * Constructs a new combo input field.
 	 * 
-	 * @param definition new estimate definition
-	 * @return set of changed fields
+	 * @param model combo input model
 	 */
-	public Map<EstimateField,Object> setDefinition(EstimateDefinition definition);
-	
-	/**
-	 * Creates a new child estimate to this estimate.
-	 * 
-	 * @return new child estimate
-	 */
-	public Estimate createChild();
-	
-	/**
-	 * Deletes this estimate, removing itself from
-	 * its parent estimate.
-	 */
-	public void delete();
-	
+	public ComboInputField(ComboInputModel model)
+	{
+		super(model.getComboBoxModel());
+		setAction(model.getAction());
+	}
+
 }

@@ -16,6 +16,11 @@
 
 package com.vimofthevine.underbudget.swing.widgets;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
@@ -27,6 +32,74 @@ import javax.swing.text.SimpleAttributeSet;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class SimpleDocument extends PlainDocument {
+	
+	/**
+	 * Registered field change listeners
+	 */
+	private final Collection<InputFieldListener> listeners;
+	
+	/**
+	 * Constructs a new simple document model.
+	 */
+	public SimpleDocument()
+	{
+		super();
+		
+		listeners = Collections.synchronizedList(new ArrayList<InputFieldListener>());
+	}
+	
+	/**
+	 * Registers a listener to be notified when the
+	 * input field is modified by the user.
+	 * 
+	 * @param listener input field listener
+	 */
+	public void addInputFieldListener(InputFieldListener listener)
+	{
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Unregisters a listener from being notified when the
+	 * input field is modified by the user.
+	 * 
+	 * @param listener input field listener
+	 */
+	public void removeInputFieldListener(InputFieldListener listener)
+	{
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Notifies all registered input field listeners
+	 * that the field has been updated.
+	 */
+	private void update()
+	{
+		synchronized (listeners)
+		{
+			for (InputFieldListener listener : listeners)
+			{
+				listener.fieldChanged();
+			}
+		}
+	}
+	
+	@Override
+	public void insertString(int offset, String string,
+		AttributeSet attributes) throws BadLocationException
+	{
+		super.insertString(offset, string, attributes);
+		update();
+	}
+	
+	@Override
+	public void remove(int offset, int length)
+	throws BadLocationException
+	{
+		super.remove(offset, length);
+		update();
+	}
 
 	/**
 	 * Updates the text contained in the document.

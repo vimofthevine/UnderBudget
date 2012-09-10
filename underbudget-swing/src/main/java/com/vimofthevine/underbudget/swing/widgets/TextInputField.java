@@ -14,36 +14,28 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.estimate;
+package com.vimofthevine.underbudget.swing.widgets;
 
-import java.util.Map;
+import javax.swing.JTextField;
 
 /**
- * An estimate whose definition can be modified.
+ * Customized text field using a text input model.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MutableEstimate extends Estimate {
+public class TextInputField extends JTextField {
 	
 	/**
-	 * Updates this estimate's definition.
+	 * Constructs a new text input field.
 	 * 
-	 * @param definition new estimate definition
-	 * @return set of changed fields
+	 * @param model text input model
 	 */
-	public Map<EstimateField,Object> setDefinition(EstimateDefinition definition);
-	
-	/**
-	 * Creates a new child estimate to this estimate.
-	 * 
-	 * @return new child estimate
-	 */
-	public Estimate createChild();
-	
-	/**
-	 * Deletes this estimate, removing itself from
-	 * its parent estimate.
-	 */
-	public void delete();
-	
+	public TextInputField(TextInputModel model)
+	{
+		super();
+		
+		setDocument(model.getDocument());
+		setAction(model.getAction());
+	}
+
 }

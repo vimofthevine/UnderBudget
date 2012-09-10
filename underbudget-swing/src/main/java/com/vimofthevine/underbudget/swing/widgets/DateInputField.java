@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.estimate;
+package com.vimofthevine.underbudget.swing.widgets;
 
-import java.util.Map;
+import org.jdesktop.swingx.JXDatePicker;
 
 /**
- * An estimate whose definition can be modified.
+ * Customized date picker using a date
+ * input model.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MutableEstimate extends Estimate {
+public class DateInputField extends JXDatePicker {
 	
 	/**
-	 * Updates this estimate's definition.
+	 * Constructs a new date input field for
+	 * the given date input model.
 	 * 
-	 * @param definition new estimate definition
-	 * @return set of changed fields
+	 * @param model date input model
 	 */
-	public Map<EstimateField,Object> setDefinition(EstimateDefinition definition);
-	
-	/**
-	 * Creates a new child estimate to this estimate.
-	 * 
-	 * @return new child estimate
-	 */
-	public Estimate createChild();
-	
-	/**
-	 * Deletes this estimate, removing itself from
-	 * its parent estimate.
-	 */
-	public void delete();
-	
+	public DateInputField(DateInputModel model)
+	{
+		super();
+		getMonthView().setSelectionModel(model.getSelectionModel());
+		
+		model.getEnablementModel().addListener(new EnablementListener() {
+			@Override
+            public void enable(boolean enabled)
+            {
+				setEnabled(enabled);
+            }
+		});
+	}
+
 }

@@ -16,29 +16,28 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
-import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
+import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
 
 /**
- * Custom document model to display and apply
+ * Custom input model to display and apply
  * changes to an estimate's name.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class NameModel extends SimpleDocument {
+class NameModel extends TextInputModel {
 	
 	/**
 	 * Event bus
@@ -48,7 +47,7 @@ class NameModel extends SimpleDocument {
 	/**
 	 * Estimate field change set
 	 */
-	private final HashMap<String,String> changes;
+	private Map<EstimateField,Object> changes;
 	
 	/**
 	 * Currently represented estimate
@@ -63,7 +62,6 @@ class NameModel extends SimpleDocument {
 	NameModel(EventBus bus)
 	{
 		eventBus = bus;
-		changes = new HashMap<String,String>();
 	}
 	
 	/**
@@ -86,28 +84,13 @@ class NameModel extends SimpleDocument {
 			}
 		});
 	}
-    
-	@Override
-	public void insertString(int offset, String string,
-		AttributeSet attributes) throws BadLocationException
-	{
-		super.insertString(offset, string, attributes);
-		update();
-	}
-	
-	@Override
-	public void remove(int offset, int length)
-	throws BadLocationException
-	{
-		super.remove(offset, length);
-		update();
-	}
 	
 	/**
 	 * Updates the estimate's name according to
 	 * the current text of the document.
 	 */
-	private void update()
+	@Override
+	public void fieldChanged()
 	{
 		if ( ! (estimate instanceof MutableEstimate))
 			return;
@@ -125,7 +108,7 @@ class NameModel extends SimpleDocument {
     				
     				if ( ! newName.equals(old.getName()))
     				{
-    					mutable.setDefinition(new EstimateDefinition() {
+    					changes = mutable.setDefinition(new EstimateDefinition() {
                             public String getName() { return newName; }
                             public String getDescription() { return old.getDescription(); }
                             public CashCommodity getAmount() { return old.getAmount(); }
@@ -134,7 +117,6 @@ class NameModel extends SimpleDocument {
                             public boolean isComplete() { return old.isComplete(); }
     					});
     					
-        				changes.put("name", newName);
         				eventBus.post(new EstimateModifiedEvent(estimate, changes));
     				}
     			}

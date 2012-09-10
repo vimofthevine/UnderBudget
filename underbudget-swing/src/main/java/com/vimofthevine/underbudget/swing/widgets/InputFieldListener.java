@@ -14,36 +14,21 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.estimate;
-
-import java.util.Map;
+package com.vimofthevine.underbudget.swing.widgets;
 
 /**
- * An estimate whose definition can be modified.
+ * Interface for listeners to be notified when
+ * an input field has been modified, or updated,
+ * by the user.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MutableEstimate extends Estimate {
+public interface InputFieldListener {
 	
 	/**
-	 * Updates this estimate's definition.
-	 * 
-	 * @param definition new estimate definition
-	 * @return set of changed fields
+	 * Notifies the listener that the input field
+	 * has been modified by the user.
 	 */
-	public Map<EstimateField,Object> setDefinition(EstimateDefinition definition);
-	
-	/**
-	 * Creates a new child estimate to this estimate.
-	 * 
-	 * @return new child estimate
-	 */
-	public Estimate createChild();
-	
-	/**
-	 * Deletes this estimate, removing itself from
-	 * its parent estimate.
-	 */
-	public void delete();
-	
+	public void fieldChanged();
+
 }

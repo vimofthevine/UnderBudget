@@ -14,36 +14,22 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.estimate;
-
-import java.util.Map;
+package com.vimofthevine.underbudget.swing.widgets;
 
 /**
- * An estimate whose definition can be modified.
+ * Interface for listeners to be notified of
+ * changes to a toggle selection.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MutableEstimate extends Estimate {
+public interface SelectionToggleListener {
 	
 	/**
-	 * Updates this estimate's definition.
+	 * Notifies the listener of the new toggle selection.
 	 * 
-	 * @param definition new estimate definition
-	 * @return set of changed fields
+	 * @param selected <code>true</code> if selected,
+	 *                 else <code>false</code>
 	 */
-	public Map<EstimateField,Object> setDefinition(EstimateDefinition definition);
-	
-	/**
-	 * Creates a new child estimate to this estimate.
-	 * 
-	 * @return new child estimate
-	 */
-	public Estimate createChild();
-	
-	/**
-	 * Deletes this estimate, removing itself from
-	 * its parent estimate.
-	 */
-	public void delete();
-	
+	public void selectionToggled(boolean selected);
+
 }

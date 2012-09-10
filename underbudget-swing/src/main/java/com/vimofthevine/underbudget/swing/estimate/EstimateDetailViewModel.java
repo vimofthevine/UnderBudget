@@ -18,15 +18,9 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.Component;
 import java.util.Currency;
-import java.util.Map;
 
 import javax.swing.Action;
-import javax.swing.ComboBoxModel;
 import javax.swing.SwingUtilities;
-import javax.swing.JToggleButton.ToggleButtonModel;
-import javax.swing.text.Document;
-
-import org.jdesktop.swingx.calendar.DateSelectionModel;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -34,6 +28,10 @@ import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
+import com.vimofthevine.underbudget.swing.widgets.ComboInputModel;
+import com.vimofthevine.underbudget.swing.widgets.DateInputModel;
+import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
+import com.vimofthevine.underbudget.swing.widgets.ToggleInputModel;
 
 /**
  * A presentation model for views that display
@@ -49,14 +47,14 @@ public class EstimateDetailViewModel {
 	private final EventBus eventBus;
 	
 	/**
-	 * Estimate name document model
+	 * Estimate name input model
 	 */
-	private final NameModel nameDocument;
+	private final NameModel nameModel;
 	
 	/**
-	 * Estimate description document model
+	 * Estimate description input model
 	 */
-	private final DescriptionModel descriptionDocument;
+	private final DescriptionModel descriptionModel;
 	
 	/**
 	 * Estimate amount document model
@@ -106,8 +104,8 @@ public class EstimateDetailViewModel {
 		eventBus = bus;
 		eventBus.register(this);
 		
-		nameDocument = new NameModel(bus);
-		descriptionDocument = new DescriptionModel(bus);
+		nameModel = new NameModel(bus);
+		descriptionModel = new DescriptionModel(bus);
 		amountDocument = new EstimatedAmountModel(bus, currency);
 		typeModel = new EstimateTypeModel(bus);
 		dueDateModel = new DueDateModel(bus);
@@ -118,25 +116,26 @@ public class EstimateDetailViewModel {
 	}
 	
 	/**
-	 * Returns a document representing
-	 * the estimate's user-defined name.
+	 * Returns the text input model
+	 * for the estimate's user-defined
+	 * name.
 	 * 
-	 * @return estimate name document
+	 * @return estimate name input model
 	 */
-	Document getNameDocument()
+	TextInputModel getNameModel()
 	{
-		return nameDocument;
+		return nameModel;
 	}
-
+	
 	/**
-	 * Returns a document representing
-	 * the estimate's user-defined description.
+	 * Returns the text input model for the
+	 * estimate's user-defined description.
 	 * 
-	 * @return estimate name document
+	 * @rturn estimate description input model
 	 */
-	Document getDescriptionDocument()
+	TextInputModel getDescriptionModel()
 	{
-		return descriptionDocument;
+		return descriptionModel;
 	}
 
 	/**
@@ -151,35 +150,35 @@ public class EstimateDetailViewModel {
 	}
 	
 	/**
-	 * Returns a combo-box model representing
+	 * Returns a combo input model representing
 	 * the type of the estimate.
 	 * 
-	 * @return estimate type combo box model
+	 * @return estimate type combo input model
 	 */
-	ComboBoxModel getTypeModel()
+	ComboInputModel getTypeModel()
 	{
 		return typeModel;
 	}
 	
 	/**
-	 * Returns a date selection model representing
+	 * Returns a date input model representing
 	 * the due date of the estimate.
 	 * 
-	 * @return estimate due date selection model
+	 * @return estimate due date input model
 	 */
-	DateSelectionModel getDateModel()
+	DateInputModel getDateModel()
 	{
 		return dueDateModel;
 	}
 	
 	/**
-	 * Returns the button model representing
+	 * Returns a toggle input model representing
 	 * the estimate completeness (final) of
 	 * the estimate.
 	 * 
 	 * @return estimate complete model
 	 */
-	ToggleButtonModel getCompleteModel()
+	ToggleInputModel getCompleteModel()
 	{
 		return completeModel;
 	}
@@ -220,8 +219,8 @@ public class EstimateDetailViewModel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				nameDocument.setEstimate(estimate);
-				descriptionDocument.setEstimate(estimate);
+				nameModel.setEstimate(estimate);
+				descriptionModel.setEstimate(estimate);
 				amountDocument.setEstimate(estimate);
 				typeModel.setEstimate(estimate);
 				dueDateModel.setEstimate(estimate);
@@ -237,35 +236,15 @@ public class EstimateDetailViewModel {
 	{
 		if (event.getEstimate().equals(estimate))
 		{
-			final Map<String,String> changes = event.getChanges();
-			
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run()
 				{
-        			if (changes.containsKey("name"))
-        			{
-        				nameDocument.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("description"))
-        			{
-        				descriptionDocument.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("amount"))
-        			{
-       					amountDocument.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("type"))
-        			{
-        				typeModel.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("due-date"))
-        			{
-        				dueDateModel.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("complete"))
-        			{
-        				completeModel.setEstimate(estimate);
-        			}
+        			nameModel.setEstimate(estimate);
+        			descriptionModel.setEstimate(estimate);
+       				amountDocument.setEstimate(estimate);
+        			typeModel.setEstimate(estimate);
+        			dueDateModel.setEstimate(estimate);
+        			completeModel.setEstimate(estimate);
 				}
 			});
 		}

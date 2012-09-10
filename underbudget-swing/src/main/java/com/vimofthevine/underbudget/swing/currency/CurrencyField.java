@@ -43,6 +43,7 @@ implements CurrencyChangeListener {
 	{
 		super(model.getFormatterFactory());
 		setInputVerifier(model.getInputVerifier());
+		setAction(model.getAction());
 		inputModel = model;
 		inputModel.addChangeListener(this);
 	}
