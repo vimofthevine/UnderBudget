@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -30,6 +31,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateAddedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
@@ -42,7 +44,7 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class EstimateTreeViewModel {
+class EstimateTreeViewModel {
 	
 	/**
 	 * Log handle
@@ -64,6 +66,11 @@ public class EstimateTreeViewModel {
 	 * Estimate tree table model
 	 */
 	private final EstimateTreeTableModel treeTableModel;
+	
+	/**
+	 * Add-child-to-root action
+	 */
+	private final AddChildAction addChildToRootAction;
 	
 	/**
 	 * Tree selection model
@@ -89,6 +96,10 @@ public class EstimateTreeViewModel {
 		eventBus.register(this);
 		
 		treeTableModel = model;
+		
+		addChildToRootAction = new AddChildAction(bus);
+		addChildToRootAction.putValue(Action.NAME, "Create top-level estimate");
+		addChildToRootAction.setEstimate((MutableEstimate) model.getRoot());
 	}
 	
 	/**
@@ -111,6 +122,17 @@ public class EstimateTreeViewModel {
 	void setTreeSelectionModel(TreeSelectionModel model)
 	{
 		selectionModel = model;
+	}
+	
+	/**
+	 * Returns the action model for adding new
+	 * estimates to the root estimate.
+	 * 
+	 * @return add-child-to-root action model
+	 */
+	Action getAddChildToRootAction()
+	{
+		return addChildToRootAction;
 	}
 	
 	/**
@@ -274,7 +296,8 @@ public class EstimateTreeViewModel {
 		});
 		
 		// If the estimate was added to the currently selected estimate
-		if (parent.equals(currentSelectionPath.getLastPathComponent()))
+		if (currentSelectionPath != null
+			&& parent.equals(currentSelectionPath.getLastPathComponent()))
 		{
 			logger.log(Level.FINER, log + "New selection path of added estimate: " + childPath);
 			
