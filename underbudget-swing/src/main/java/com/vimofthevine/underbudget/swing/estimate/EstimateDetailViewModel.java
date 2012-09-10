@@ -18,7 +18,6 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.Component;
 import java.util.Currency;
-import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -237,35 +236,15 @@ public class EstimateDetailViewModel {
 	{
 		if (event.getEstimate().equals(estimate))
 		{
-			final Map<String,String> changes = event.getChanges();
-			
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run()
 				{
-        			if (changes.containsKey("name"))
-        			{
-        				nameModel.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("description"))
-        			{
-        				descriptionModel.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("amount"))
-        			{
-       					amountDocument.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("type"))
-        			{
-        				typeModel.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("due-date"))
-        			{
-        				dueDateModel.setEstimate(estimate);
-        			}
-        			if (changes.containsKey("complete"))
-        			{
-        				completeModel.setEstimate(estimate);
-        			}
+        			nameModel.setEstimate(estimate);
+        			descriptionModel.setEstimate(estimate);
+       				amountDocument.setEstimate(estimate);
+        			typeModel.setEstimate(estimate);
+        			dueDateModel.setEstimate(estimate);
+        			completeModel.setEstimate(estimate);
 				}
 			});
 		}

@@ -1,7 +1,9 @@
 package com.vimofthevine.underbudget.stubs.estimate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
@@ -11,6 +13,7 @@ import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.BalanceImpact;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
@@ -227,7 +230,7 @@ MutableEstimate {
 	}
 
     @Override
-    public void setDefinition(EstimateDefinition definition)
+    public Map<EstimateField,Object> setDefinition(EstimateDefinition definition)
     {
     	name = definition.getName();
     	description = definition.getDescription();
@@ -235,6 +238,16 @@ MutableEstimate {
     	type = definition.getType();
     	dueDate = definition.getDueDate();
     	complete = definition.isComplete();
+    	
+    	HashMap<EstimateField,Object> changes = new HashMap<EstimateField,Object>();
+    	changes.put(EstimateField.NAME, name);
+    	changes.put(EstimateField.DESCRIPTION, description);
+    	changes.put(EstimateField.AMOUNT, amount);
+    	changes.put(EstimateField.TYPE, type);
+    	changes.put(EstimateField.DUE_DATE, dueDate);
+    	changes.put(EstimateField.COMPLETE, complete);
+    	
+    	return changes;
     }
 
     @Override

@@ -16,34 +16,16 @@
 
 package com.vimofthevine.underbudget.core.estimate;
 
-import java.util.Map;
-
 /**
- * An estimate whose definition can be modified.
+ * Enumeration of estimate definition fields.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public interface MutableEstimate extends Estimate {
-	
-	/**
-	 * Updates this estimate's definition.
-	 * 
-	 * @param definition new estimate definition
-	 * @return set of changed fields
-	 */
-	public Map<EstimateField,Object> setDefinition(EstimateDefinition definition);
-	
-	/**
-	 * Creates a new child estimate to this estimate.
-	 * 
-	 * @return new child estimate
-	 */
-	public Estimate createChild();
-	
-	/**
-	 * Deletes this estimate, removing itself from
-	 * its parent estimate.
-	 */
-	public void delete();
-	
+public enum EstimateField {
+	NAME,
+	DESCRIPTION,
+	AMOUNT,
+	TYPE,
+	DUE_DATE,
+	COMPLETE;
 }

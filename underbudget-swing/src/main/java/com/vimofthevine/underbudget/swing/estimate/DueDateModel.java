@@ -17,7 +17,7 @@
 package com.vimofthevine.underbudget.swing.estimate;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -26,6 +26,7 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
@@ -47,7 +48,7 @@ class DueDateModel extends DateInputModel {
 	/**
 	 * Estimate field change set
 	 */
-	private final HashMap<String,String> changes;
+	private Map<EstimateField,Object> changes;
 	
 	/**
 	 * Currently represented estimate
@@ -63,7 +64,6 @@ class DueDateModel extends DateInputModel {
 	{
 		super();
 		eventBus = bus;
-		changes = new HashMap<String,String>();
 	}
 	
 	/**
@@ -91,7 +91,8 @@ class DueDateModel extends DateInputModel {
 					setDate(date);
 				}
 				
-				setEnabled(estimate.getChildCount() == 0);
+				setEnabled( ! estimate.getDefinition().getType()
+					.equals(EstimateType.CATEGORY));
 			}
 		});
 	}
@@ -127,7 +128,7 @@ class DueDateModel extends DateInputModel {
                                 public Date getTime() { return dueDate; }
                             };
     					
-    					mutable.setDefinition(new EstimateDefinition() {
+    					changes = mutable.setDefinition(new EstimateDefinition() {
                             public String getName() { return old.getName(); }
                             public String getDescription() { return old.getDescription(); }
                             public CashCommodity getAmount() { return old.getAmount(); }
@@ -136,7 +137,6 @@ class DueDateModel extends DateInputModel {
                             public boolean isComplete() { return old.isComplete(); }
     					});
         					
-        				changes.put("due-date", dueDate.toString());
         				eventBus.post(new EstimateModifiedEvent(estimate, changes));
     				}
     			}

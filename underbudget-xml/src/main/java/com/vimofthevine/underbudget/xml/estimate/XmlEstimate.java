@@ -17,6 +17,9 @@
 package com.vimofthevine.underbudget.xml.estimate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.simpleframework.xml.Attribute;
@@ -28,11 +31,13 @@ import org.simpleframework.xml.core.Commit;
 
 import com.vimofthevine.underbudget.core.assignment.ActualFigure;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.currency.Commodity;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.BalanceImpact;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
@@ -298,28 +303,134 @@ public class XmlEstimate implements MutableEstimate {
     }
 
 	@Override
-    public void setDefinition(EstimateDefinition definition)
+    public Map<EstimateField,Object> setDefinition(EstimateDefinition definition)
     {
-		name = definition.getName();
-		description = definition.getDescription();
-		amount = definition.getAmount();
-		type = definition.getType();
-		dueDate = (definition.getDueDate() == null) ? null
-			: new XmlDate(definition.getDueDate());
-		complete = definition.isComplete();
+		HashMap<EstimateField,Object> changeset = new HashMap<EstimateField,Object>();
+		
+		// Cannot modify the root
+		if (parent == null)
+		{
+			System.out.println("Cannot modify root (" + name + ")");
+			return changeset;
+		}
+		
+		if ((name == null) ? (definition.getName() != null)
+			: ( ! name.equals(definition.getName())))
+		{
+			name = definition.getName();
+			changeset.put(EstimateField.NAME, name);
+		}
+		
+		if ((description == null) ? (definition.getDescription() != null)
+			: ( ! description.equals(definition.getDescription())))
+		{
+			description = definition.getDescription();
+			changeset.put(EstimateField.DESCRIPTION, description);
+		}
+		
+		if ((type == null) ? (definition.getType() != null)
+			: ( ! type.equals(definition.getType())))
+		{
+			type = definition.getType();
+			changeset.put(EstimateField.TYPE, type);
+		}
+		
+		// Estimates with children must be type category
+		if (getChildCount() > 0 && ! type.equals(EstimateType.CATEGORY))
+		{
+			type = EstimateType.CATEGORY;
+			changeset.put(EstimateField.TYPE, type);
+		}
+		
+		if (type.equals(EstimateType.CATEGORY))
+		{
+			// Category estimates can only have a zero amount
+			CashCommodity zero = Commodity.zero(definition.getAmount().getCurrency());
+			if ( ! amount.equals(zero))
+			{
+				amount = zero;
+				changeset.put(EstimateField.AMOUNT, amount);
+			}
+			
+			// Categories cannot have a due date
+			if (dueDate != null)
+			{
+				dueDate = null;
+        		changeset.put(EstimateField.DUE_DATE, dueDate);
+			}
+			
+			// Categories cannot be complete
+			if (complete)
+			{
+				complete = false;
+    			changeset.put(EstimateField.COMPLETE, complete);
+			}
+		}
+		else
+		{
+    		if ((amount == null) ? (definition.getAmount() != null)
+    			: ( ! amount.equals(definition.getAmount())))
+    		{
+    			amount = definition.getAmount();
+    			changeset.put(EstimateField.AMOUNT, amount);
+    		}
+		
+    		if ((dueDate == null) ? (definition.getDueDate() != null)
+    			: ( ! dueDate.equals(definition.getDueDate())))
+    		{
+        		dueDate = (definition.getDueDate() == null) ? null
+        			: new XmlDate(definition.getDueDate());
+        		changeset.put(EstimateField.DUE_DATE, dueDate);
+    		}
+		
+    		if (complete != definition.isComplete())
+    		{
+    			complete = definition.isComplete();
+    			changeset.put(EstimateField.COMPLETE, complete);
+    		}
+		}
+		
+		// Amount can't be negative
+		if (amount.getValue().isNegative())
+		{
+			amount = amount.negate();
+   			changeset.put(EstimateField.AMOUNT, amount);
+		}
+		
+		return changeset;
     }
 
 	@Override
     public Estimate createChild()
     {
 		EstimateDefinition definition = (children.size() == 0)
-			? getDefinition()
-			: getDefinition();
+			? getDefinition() // Copy of this estimate
+			: new EstimateDefinition() { // New estimate
+				@Override
+                public String getName() { return "New Estimate"; }
+				@Override
+                public String getDescription() { return null; }
+				@Override
+                public CashCommodity getAmount() { return Commodity.zero(amount.getCurrency()); }
+				@Override
+                public SimpleDate getDueDate() { return null; }
+				@Override
+                public EstimateType getType() { return EstimateType.EXPENSE; }
+				@Override
+                public boolean isComplete() { return false; }
+			};
 			
 		XmlEstimate child = new XmlEstimate();
-		child.setDefinition(definition);
+		child.parent = this;
+		
+		Map<EstimateField,Object> map = child.setDefinition(definition);
+		System.out.println(map.toString());
 		
 		add(child);
+		
+		// Apply integrity rules
+		setDefinition(getDefinition());
+		
 		return child;
     }
 

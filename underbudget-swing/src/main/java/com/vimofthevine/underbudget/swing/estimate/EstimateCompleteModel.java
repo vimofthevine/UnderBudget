@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -25,6 +25,7 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
@@ -49,7 +50,7 @@ class EstimateCompleteModel extends ToggleInputModel {
 	/**
 	 * Estimate field change set
 	 */
-	private final HashMap<String,String> changes;
+	private Map<EstimateField,Object> changes;
 	
 	/**
 	 * Currently represented estimate
@@ -66,7 +67,6 @@ class EstimateCompleteModel extends ToggleInputModel {
 	{
 		super();
 		eventBus = bus;
-		changes = new HashMap<String,String>();
 	}
 	
 	/**
@@ -85,7 +85,8 @@ class EstimateCompleteModel extends ToggleInputModel {
 			{
 				setSelected((estimate == null) ? false
 					: estimate.getDefinition().isComplete());
-				setEnabled(estimate.getChildCount() == 0);
+				setEnabled( ! estimate.getDefinition().getType()
+					.equals(EstimateType.CATEGORY));
 			}
 		});
 	}
@@ -106,7 +107,7 @@ class EstimateCompleteModel extends ToggleInputModel {
     				
     				if (selected != old.isComplete())
     				{
-    					mutable.setDefinition(new EstimateDefinition() {
+    					changes = mutable.setDefinition(new EstimateDefinition() {
                             public String getName() { return old.getName(); }
                             public String getDescription() { return old.getDescription(); }
                             public CashCommodity getAmount() { return old.getAmount(); }
@@ -115,7 +116,6 @@ class EstimateCompleteModel extends ToggleInputModel {
                             public boolean isComplete() { return selected; }
     					});
         					
-        				changes.put("complete", String.valueOf(selected));
         				eventBus.post(new EstimateModifiedEvent(estimate, changes));
     				}
     			}

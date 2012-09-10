@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -25,6 +25,7 @@ import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.core.estimate.EstimateType;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
@@ -36,7 +37,7 @@ import com.vimofthevine.underbudget.swing.widgets.TextInputModel;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class DescriptionModel extends TextInputModel {
+class DescriptionModel extends TextInputModel {
 	
 	/**
 	 * Event bus
@@ -46,7 +47,7 @@ public class DescriptionModel extends TextInputModel {
 	/**
 	 * Estimate field change set
 	 */
-	private final HashMap<String,String> changes;
+	private Map<EstimateField,Object> changes;
 	
 	/**
 	 * Currently represented estimate
@@ -61,7 +62,6 @@ public class DescriptionModel extends TextInputModel {
 	DescriptionModel(EventBus bus)
 	{
 		eventBus = bus;
-		changes = new HashMap<String,String>();
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public class DescriptionModel extends TextInputModel {
     				
     				if ( ! description.equals(old.getDescription()))
     				{
-    					mutable.setDefinition(new EstimateDefinition() {
+    					changes = mutable.setDefinition(new EstimateDefinition() {
                             public String getName() { return old.getName(); }
                             public String getDescription() { return description; }
                             public CashCommodity getAmount() { return old.getAmount(); }
@@ -116,8 +116,7 @@ public class DescriptionModel extends TextInputModel {
                             public EstimateType getType() { return old.getType(); }
                             public boolean isComplete() { return old.isComplete(); }
     					});
-        					
-        				changes.put("description", description);
+    					
         				eventBus.post(new EstimateModifiedEvent(estimate, changes));
     				}
     			}

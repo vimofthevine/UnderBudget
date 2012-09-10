@@ -19,6 +19,7 @@ package com.vimofthevine.underbudget.swing.estimate.events;
 import java.util.Map;
 
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.swing.history.ModificationEvent;
 
 /**
@@ -39,7 +40,7 @@ public class EstimateModifiedEvent implements ModificationEvent {
 	 * the index is the field name and the value
 	 * is the old value of the field.
 	 */
-	private final Map<String, String> changes;
+	private final Map<EstimateField, Object> changes;
 	
 	/**
 	 * Constructs a new estimate modification event.
@@ -48,7 +49,7 @@ public class EstimateModifiedEvent implements ModificationEvent {
 	 * @param changes  list of changes that have been made
 	 */
 	public EstimateModifiedEvent(Estimate estimate,
-		Map<String, String> changes)
+		Map<EstimateField, Object> changes)
 	{
 		this.estimate = estimate;
 		this.changes = changes;
@@ -70,7 +71,7 @@ public class EstimateModifiedEvent implements ModificationEvent {
 	 * 
 	 * @return list of changes
 	 */
-	public Map<String, String> getChanges()
+	public Map<EstimateField, Object> getChanges()
 	{
 		return changes;
 	}
