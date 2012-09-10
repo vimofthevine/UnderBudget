@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.core.estimate.progress;
 
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.EstimateProgress;
 
 /**
@@ -37,15 +38,24 @@ public class IncomeProgress implements EstimateProgress {
 	private final CashCommodity actual;
 	
 	/**
+	 * Due date
+	 */
+	private final SimpleDate dueDate;
+	
+	/**
 	 * Constructs a new income estimate progress.
 	 * 
 	 * @param estimated estimated amount
 	 * @param actual    actual amount
+	 * @param due       due date by which all activity
+	 *                  should have occurred
 	 */
-	public IncomeProgress(CashCommodity estimated, CashCommodity actual)
+	public IncomeProgress(CashCommodity estimated, CashCommodity actual,
+		SimpleDate due)
 	{
 		this.estimated = estimated;
 		this.actual = actual;
+		dueDate = due;
 	}
 
 	@Override
@@ -63,7 +73,10 @@ public class IncomeProgress implements EstimateProgress {
 	@Override
 	public String getNotice()
 	{
-		return "";
+		if (actual.getValue().isZero() && dueDate != null)
+			return "Due on " + dueDate.formatAsString();
+		else
+			return "";
 	}
 
 	@Override

@@ -17,7 +17,6 @@
 package com.vimofthevine.underbudget.xml.estimate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -263,13 +262,13 @@ public class XmlEstimate implements MutableEstimate {
 		switch (type)
 		{
 			case INCOME:
-				return new IncomeProgress(amount, actual.getAmount());
+				return new IncomeProgress(amount, actual.getAmount(), dueDate);
 				
 			case EXPENSE:
-				return new ExpenseProgress(amount, actual.getAmount());
+				return new ExpenseProgress(amount, actual.getAmount(), dueDate);
 				
 			case TRANSFER:
-				return new TransferProgress(amount, actual.getAmount());
+				return new TransferProgress(amount, actual.getAmount(), dueDate);
 				
 			case CATEGORY:
 				return new CategoryProgress(calculator.zero(), calculator.zero());

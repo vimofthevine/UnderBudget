@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.currency.CashCommodity;
+import com.vimofthevine.underbudget.core.date.DateTime;
 import com.vimofthevine.underbudget.core.date.SimpleDate;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.estimate.EstimateDefinition;
@@ -120,13 +121,7 @@ class DueDateModel extends DateInputModel {
     					|| ! dueDate.equals(old.getDueDate().getTime()))
     				{
     					final SimpleDate newDate = (dueDate == null)
-    						? null : new SimpleDate() {
-                                public int compareTo(SimpleDate o) { return 0; }
-                                public boolean before(SimpleDate when) { return false; }
-                                public boolean after(SimpleDate when) { return false; }
-                                public String formatAsString() { return dueDate.toString(); }
-                                public Date getTime() { return dueDate; }
-                            };
+    						? null : new DateTime(dueDate);
     					
     					changes = mutable.setDefinition(new EstimateDefinition() {
                             public String getName() { return old.getName(); }
