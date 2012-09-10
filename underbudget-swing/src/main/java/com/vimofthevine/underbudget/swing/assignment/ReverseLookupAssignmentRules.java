@@ -40,7 +40,7 @@ public class ReverseLookupAssignmentRules implements AssignmentRules {
 	/**
 	 * Multi-map of estimates to rules
 	 */
-	private final Multimap<Estimate,AssignmentRule> map;
+	private final Multimap<Long,AssignmentRule> map;
 	
 	/**
 	 * Constructs a reverse-lookup variation of a
@@ -57,7 +57,7 @@ public class ReverseLookupAssignmentRules implements AssignmentRules {
 		for (int i=0; i<original.size(); i++)
 		{
 			AssignmentRule rule = original.getAt(i);
-			map.put(rule.getEstimate(), rule);
+			map.put(rule.getEstimate().getId(), rule);
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class ReverseLookupAssignmentRules implements AssignmentRules {
 	 */
 	public AssignmentRule[] getRules(Estimate estimate)
 	{
-		Collection<AssignmentRule> assocRules = map.get(estimate);
+		Collection<AssignmentRule> assocRules = map.get(estimate.getId());
 		return assocRules.toArray(new AssignmentRule[assocRules.size()]);
 	}
 
@@ -103,21 +103,21 @@ public class ReverseLookupAssignmentRules implements AssignmentRules {
     public void append(AssignmentRule rule)
     {
 		rules.append(rule);
-		map.put(rule.getEstimate(), rule);
+		map.put(rule.getEstimate().getId(), rule);
     }
 
 	@Override
     public void insert(AssignmentRule rule, int index)
     {
 		rules.insert(rule, index);
-		map.put(rule.getEstimate(), rule);
+		map.put(rule.getEstimate().getId(), rule);
     }
 
 	@Override
     public void remove(AssignmentRule rule)
     {
 		rules.remove(rule);
-		map.remove(rule.getEstimate(), rule);
+		map.remove(rule.getEstimate().getId(), rule);
     }
 
 }

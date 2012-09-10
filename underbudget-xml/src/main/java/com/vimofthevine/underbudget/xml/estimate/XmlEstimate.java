@@ -309,7 +309,6 @@ public class XmlEstimate implements MutableEstimate {
 		// Cannot modify the root
 		if (parent == null)
 		{
-			System.out.println("Cannot modify root (" + name + ")");
 			return changeset;
 		}
 		
@@ -420,12 +419,8 @@ public class XmlEstimate implements MutableEstimate {
 			};
 			
 		XmlEstimate child = new XmlEstimate();
-		child.parent = this;
-		
-		Map<EstimateField,Object> map = child.setDefinition(definition);
-		System.out.println(map.toString());
-		
 		add(child);
+		child.setDefinition(definition);
 		
 		// Apply integrity rules
 		setDefinition(getDefinition());
@@ -443,6 +438,7 @@ public class XmlEstimate implements MutableEstimate {
 	public int hashCode()
 	{
 		int result = 2343;
+		result = result * 31 + (int) uid;
 		result = result * 31 + name.hashCode();
 		result = result * 31 + ((description != null)
 			? description.hashCode() : 0);
@@ -465,7 +461,8 @@ public class XmlEstimate implements MutableEstimate {
 			return false;
 		
 		XmlEstimate that = (XmlEstimate) obj;
-		return this.name.equals(that.name)
+		return (this.uid == that.uid)
+			&& this.name.equals(that.name)
 			&& ((this.description == null) ? (that.description == null)
 				: this.description.equals(that.description))
 			&& ((this.amount == null) ? (that.amount == null)

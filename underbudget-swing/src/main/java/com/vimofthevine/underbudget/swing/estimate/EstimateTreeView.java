@@ -19,7 +19,11 @@ package com.vimofthevine.underbudget.swing.estimate;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -68,6 +72,8 @@ public class EstimateTreeView implements TableCellRenderer {
 		
 		container.setLayout(new BorderLayout());
 		container.add(new JScrollPane(treeTable), BorderLayout.CENTER);
+		
+		createPopupMenu(model, treeTable);
 	}
 
 	/**
@@ -88,6 +94,35 @@ public class EstimateTreeView implements TableCellRenderer {
     	}
     	else
     		return null;
+    }
+    
+    private void createPopupMenu(EstimateTreeViewModel model, Component component)
+    {
+    	final JPopupMenu popup = new JPopupMenu();
+    	popup.add(new JMenuItem(model.getAddChildToRootAction()));
+    	
+    	component.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mousePressed(MouseEvent event)
+            {
+				showPopup(event);
+            }
+
+			@Override
+            public void mouseReleased(MouseEvent event)
+            {
+				showPopup(event);
+            }
+    		
+			private void showPopup(MouseEvent event)
+			{
+				if (event.isPopupTrigger())
+				{
+					popup.show(event.getComponent(),
+						event.getX(), event.getY());
+				}
+			}
+    	});
     }
 
 }
