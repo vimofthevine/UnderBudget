@@ -23,9 +23,9 @@ import java.util.Currency;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
-import com.vimofthevine.underbudget.core.assignment.AssignmentRules;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRuleDetailView;
 import com.vimofthevine.underbudget.swing.assignment.AssignmentRuleDetailViewModel;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailView;
 import com.vimofthevine.underbudget.swing.estimate.EstimateDetailViewModel;
 import com.vimofthevine.underbudget.swing.widgets.ComplexSplitPane;
@@ -54,7 +54,7 @@ public abstract class ImportedTransactionsViewFactory {
 	 * @return imported transactions view component
 	 */
 	public static final Component build(Frame window,
-		EventBus bus, AssignmentRules rules, Currency currency)
+		EventBus bus, ReverseLookupAssignmentRules rules, Currency currency)
 	{
 		// Create models
 		ImportedTransactionListViewModel listModel =
@@ -64,7 +64,7 @@ public abstract class ImportedTransactionsViewFactory {
 		AssignmentRuleDetailViewModel ruleModel =
 			new AssignmentRuleDetailViewModel(bus, window, rules);
 		EstimateDetailViewModel estimateModel =
-			new EstimateDetailViewModel(bus, currency, window);
+			new EstimateDetailViewModel(bus, currency, window, rules);
 		
 		// Create view components
 		JPanel listComponent = new JPanel();

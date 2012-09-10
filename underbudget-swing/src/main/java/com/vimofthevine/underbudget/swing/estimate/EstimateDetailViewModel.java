@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.currency.CurrencyInputModel;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
@@ -96,10 +97,11 @@ public class EstimateDetailViewModel {
 	 * 
 	 * @param bus      event bus
 	 * @param currency currency in use
-	 * @param parent  parent Swing component
+	 * @param parent   parent Swing component
+	 * @param rules    reverse lookup assignment rules
 	 */
 	public EstimateDetailViewModel(EventBus bus, Currency currency,
-		Component parent)
+		Component parent, ReverseLookupAssignmentRules rules)
 	{
 		eventBus = bus;
 		eventBus.register(this);
@@ -112,7 +114,7 @@ public class EstimateDetailViewModel {
 		completeModel = new EstimateCompleteModel(bus);
 		
 		addChildAction = new AddChildAction(bus);
-		deleteAction = new DeleteAction(bus, parent);
+		deleteAction = new DeleteAction(bus, parent, rules);
 	}
 	
 	/**

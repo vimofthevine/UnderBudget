@@ -66,7 +66,7 @@ public abstract class BalanceImpactViewFactory {
 		EstimateTreeViewModel treeModel =
 			new EstimateTreeViewModel(bus, treeTableModel);
 		EstimateDetailViewModel detailModel =
-			new EstimateDetailViewModel(bus, currency, window);
+			new EstimateDetailViewModel(bus, currency, window, rules);
 		EstimateAssignmentRulesViewModel rulesModel =
 			new EstimateAssignmentRulesViewModel(bus, rules);
 		AssignedTransactionsViewModel transactionModel =
