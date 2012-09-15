@@ -81,6 +81,8 @@ class DescriptionModel extends TextInputModel {
 				String text = (estimate == null) ? ""
 					: estimate.getDefinition().getDescription();
 				setText(text);
+				
+				setEnabled(estimate != null);
 			}
 		});
 	}

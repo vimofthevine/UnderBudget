@@ -126,7 +126,8 @@ public class EstimateAssignmentRulesViewModel {
 	
 	private void update()
 	{
-		final AssignmentRule[] assocRules = rules.getRules(estimate);
+		final AssignmentRule[] assocRules = (estimate == null)
+			? new AssignmentRule[0] : rules.getRules(estimate);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()

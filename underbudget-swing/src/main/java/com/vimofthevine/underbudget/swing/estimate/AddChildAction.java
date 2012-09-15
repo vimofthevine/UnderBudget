@@ -64,6 +64,7 @@ class AddChildAction extends AbstractAction {
 	void setEstimate(MutableEstimate newEstimate)
 	{
 		estimate = newEstimate;
+		setEnabled(estimate != null);
 	}
 	
 	@Override

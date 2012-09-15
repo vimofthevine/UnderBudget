@@ -81,6 +81,7 @@ class NameModel extends TextInputModel {
 				String text = (estimate == null) ? ""
 					: estimate.getDefinition().getName();
 				setText(text);
+				setEnabled(estimate != null);
 			}
 		});
 	}

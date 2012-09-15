@@ -21,6 +21,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import com.vimofthevine.underbudget.core.assignment.AssignmentRule;
+import com.vimofthevine.underbudget.core.assignment.MutableAssignmentRule;
+
 /**
  * Action to add a new condition to an assignment rule.
  * 
@@ -51,6 +54,17 @@ class AddConditionAction extends AbstractAction {
 		applyChangesAction = apply;
 		
 		putValue(NAME, "Add Condition");
+	}
+	
+	/**
+	 * Updates the current rule to be acted on
+	 * by the action.
+	 * 
+	 * @param newRule rule to be acted on
+	 */
+	void setRule(AssignmentRule rule)
+	{
+		setEnabled(rule instanceof MutableAssignmentRule);
 	}
 
 	@Override

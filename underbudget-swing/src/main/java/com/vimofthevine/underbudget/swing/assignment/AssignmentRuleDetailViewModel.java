@@ -195,6 +195,7 @@ public class AssignmentRuleDetailViewModel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
+				addConditionAction.setRule(rule);
 				applyChangesAction.setRule(rule);
 				deleteRuleAction.setRule(rule);
 				cloneRuleAction.setRule(rule);

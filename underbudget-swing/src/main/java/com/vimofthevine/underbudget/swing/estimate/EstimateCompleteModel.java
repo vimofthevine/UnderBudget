@@ -85,8 +85,9 @@ class EstimateCompleteModel extends ToggleInputModel {
 			{
 				setSelected((estimate == null) ? false
 					: estimate.getDefinition().isComplete());
-				setEnabled( ! estimate.getDefinition().getType()
-					.equals(EstimateType.CATEGORY));
+				setEnabled((estimate == null) ? false
+					: ! estimate.getDefinition().getType()
+						.equals(EstimateType.CATEGORY));
 			}
 		});
 	}
