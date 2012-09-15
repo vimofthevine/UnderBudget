@@ -58,6 +58,8 @@ class ImportedTransferAccount implements TransferAccount {
 	
 	/**
 	 * Checks if this account represents an expense account.
+	 * <p>
+	 * This is specific to GnuCash.
 	 * 
 	 * @return <code>true</code> if this account is
 	 *         an expense account
