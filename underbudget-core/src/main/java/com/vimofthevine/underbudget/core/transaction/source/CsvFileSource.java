@@ -84,6 +84,11 @@ public class CsvFileSource implements TransactionSource {
 	private final DateFormat dateFormat;
 	
 	/**
+	 * Root account
+	 */
+	private final ImportedTransferAccount root;
+	
+	/**
 	 * Constructs a new CSV file model for
 	 * a file with the given name and CSV
 	 * profile.
@@ -107,6 +112,8 @@ public class CsvFileSource implements TransactionSource {
 		currency = profile.getCurrencyCode();
 		dateFormat = new SimpleDateFormat(profile.getDateFormat());
 		transactions = new ArrayList<ImportedTransaction>();
+		
+		root = new ImportedTransferAccount("Root", null, "root");
 	}
 
 	@Override
@@ -172,7 +179,7 @@ public class CsvFileSource implements TransactionSource {
 		ImportedTransferAccount withdrawal = null;
 		ImportedTransferAccount deposit = null;
 		String type = null;
-		ImportedTransferAccount noAccount = new ImportedTransferAccount("", null, "");
+		ImportedTransferAccount noAccount = new ImportedTransferAccount("", root, "");
 		
 		for (int i=0; i<values.length; i++)
 		{
@@ -204,22 +211,22 @@ public class CsvFileSource implements TransactionSource {
 				case WITHDRAWAL:
 					if (type != null && type.equalsIgnoreCase("debit"))
 					{
-						withdrawal = new ImportedTransferAccount(value, null, "");
+						withdrawal = new ImportedTransferAccount(value, root, "");
 					}
 					else
 					{
-						deposit = new ImportedTransferAccount(value, null, "");
+						deposit = new ImportedTransferAccount(value, root, "");
 					}
 					break;
 					
 				case DEPOSIT:
 					if (type != null && type.equalsIgnoreCase("debit"))
 					{
-						deposit = new ImportedTransferAccount(value, null, "");
+						deposit = new ImportedTransferAccount(value, root, "");
 					}
 					else
 					{
-						withdrawal = new ImportedTransferAccount(value, null, "");
+						withdrawal = new ImportedTransferAccount(value, root, "");
 					}
 					break;
 					
