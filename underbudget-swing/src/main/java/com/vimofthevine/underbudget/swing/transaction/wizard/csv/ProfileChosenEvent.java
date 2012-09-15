@@ -14,42 +14,41 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.transaction.wizard;
+package com.vimofthevine.underbudget.swing.transaction.wizard.csv;
+
+import com.vimofthevine.underbudget.core.transaction.source.csv.CsvProfile;
 
 /**
- * Enumeration for supported transaction source types.
+ * Event generated when the user has chosen a
+ * CSV profile to be used.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-enum SourceType {
-	GNUCASH_XML("GnuCash XML"),
-	CSV("CSV");
+class ProfileChosenEvent {
 	
 	/**
-	 * Transaction source type name
+	 * The chosen CSV profile
 	 */
-	private final String name;
+	private final CsvProfile profile;
 	
 	/**
-	 * Constructs a new transaction source
-	 * type enumeration.
+	 * Constructs a new profile-chosen event.
 	 * 
-	 * @param name source name
+	 * @param profile the chosen CSV profile
 	 */
-	private SourceType(String name)
+	ProfileChosenEvent(CsvProfile profile)
 	{
-		this.name = name;
+		this.profile = profile;
 	}
 	
-	public String getActionCommand()
+	/**
+	 * Returns the chosen CSV profile.
+	 * 
+	 * @return the chosen CSV profile
+	 */
+	CsvProfile getProfile()
 	{
-		return super.toString();
+		return profile;
 	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-	
+
 }

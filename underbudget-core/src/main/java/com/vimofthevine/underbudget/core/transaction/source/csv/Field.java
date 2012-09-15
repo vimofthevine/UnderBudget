@@ -14,42 +14,21 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.transaction.wizard;
+package com.vimofthevine.underbudget.core.transaction.source.csv;
 
 /**
- * Enumeration for supported transaction source types.
+ * Enumeration for available transaction fields as
+ * imported from a comma-separated-value source.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-enum SourceType {
-	GNUCASH_XML("GnuCash XML"),
-	CSV("CSV");
-	
-	/**
-	 * Transaction source type name
-	 */
-	private final String name;
-	
-	/**
-	 * Constructs a new transaction source
-	 * type enumeration.
-	 * 
-	 * @param name source name
-	 */
-	private SourceType(String name)
-	{
-		this.name = name;
-	}
-	
-	public String getActionCommand()
-	{
-		return super.toString();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-	
+public enum Field {
+	DATE,
+	PAYEE,
+	MEMO,
+	WITHDRAWAL,
+	DEPOSIT,
+	AMOUNT,
+	TYPE,
+	NONE;
 }

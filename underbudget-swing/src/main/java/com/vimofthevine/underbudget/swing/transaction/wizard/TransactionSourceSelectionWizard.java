@@ -17,19 +17,17 @@
 package com.vimofthevine.underbudget.swing.transaction.wizard;
 
 import java.awt.Frame;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Currency;
-
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.core.transaction.source.GnuCashXmlFileSource;
-import com.vimofthevine.underbudget.stubs.transaction.source.StubTransactionSource;
+import com.vimofthevine.underbudget.core.transaction.source.TransactionSource;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.transaction.events.SelectTransactionSourceEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.TransactionSourceSelectedEvent;
+import com.vimofthevine.underbudget.swing.transaction.wizard.csv.CsvFileWizard;
 
 /**
  * Wizard for selecting a source for importing transactions.
@@ -49,19 +47,36 @@ public class TransactionSourceSelectionWizard {
 	private final Frame window;
 	
 	/**
+	 * Specific source selection wizards
+	 */
+	private final Map<SourceType, SourceWizard> wizards;
+	
+	/**
+	 * User preferences
+	 */
+	private final UserPreferences preferences;
+	
+	/**
 	 * Constructs a new transaction source selection wizard.
 	 * 
 	 * @param bus      event bus
 	 * @param parent   application window
-	 * @param currecny currency in use
+	 * @param currency currency in use
+	 * @param prefs    user preferences
 	 */
 	public TransactionSourceSelectionWizard(EventBus bus, Frame parent,
-		Currency currency)
+		Currency currency, UserPreferences prefs)
 	{
 		eventBus = bus;
 		eventBus.register(this);
 		
 		window = parent;
+		
+		wizards = new HashMap<SourceType, SourceWizard>();
+		wizards.put(SourceType.GNUCASH_XML, new GnuCashXmlFileWizard());
+		wizards.put(SourceType.CSV, new CsvFileWizard());
+		
+		preferences = prefs;
 	}
 	
 	@Subscribe
@@ -70,48 +85,29 @@ public class TransactionSourceSelectionWizard {
 		new SourceTypeSelectionDialog(window, this);
 	}
 	
+	/**
+	 * Posts the selected source to the event bus to notify
+	 * all interested parties of the source selection.
+	 * 
+	 * @param source selected transaction source
+	 */
+	public void sourceSelected(TransactionSource source)
+	{
+		eventBus.post(new TransactionSourceSelectedEvent(source));
+	}
+	
+	/**
+	 * Initiates the proper wizard for the selected
+	 * transaction source type.
+	 * 
+	 * @param type selected source type
+	 */
 	void typeSelected(SourceType type)
 	{
-		switch (type)
+		SourceWizard wizard = wizards.get(type);
+		if (wizard != null)
 		{
-			case GNUCASH_XML:
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run()
-					{
-        				GnuCashXmlFileChooser chooser = new GnuCashXmlFileChooser();
-        				int result = chooser.showOpenDialog(window);
-        				
-        				if (result == JFileChooser.APPROVE_OPTION)
-        				{
-        					final File file = chooser.getSelectedFile();
-        					
-        					// Get off EDT
-        					new Thread() {
-        						public void run()
-        						{
-        							try
-        							{
-            							GnuCashXmlFileSource source =
-            								new GnuCashXmlFileSource(file);
-            							eventBus.post(new TransactionSourceSelectedEvent(source));
-        							}
-        							catch (FileNotFoundException fnfe)
-        							{
-        							}
-        						}
-        					}.start();
-        				}
-					}
-				});
-				
-				break;
-				
-			case STUB:
-				eventBus.post(new TransactionSourceSelectedEvent(new StubTransactionSource()));
-				break;
-				
-			default:
-				// Do nothing
+			wizard.select(window, this, preferences);
 		}
 	}
 	

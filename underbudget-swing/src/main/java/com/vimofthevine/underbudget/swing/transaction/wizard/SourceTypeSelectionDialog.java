@@ -96,6 +96,7 @@ public class SourceTypeSelectionDialog {
 		
 		final JDialog dialog = new JDialog(window, "Select transaction source", true);
 		dialog.getContentPane().add(panel);
+		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		
 		cancel.addActionListener(new ActionListener() {
 			@Override

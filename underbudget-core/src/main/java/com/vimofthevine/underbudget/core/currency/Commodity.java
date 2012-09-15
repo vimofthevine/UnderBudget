@@ -29,6 +29,20 @@ public abstract class Commodity {
 	 * Returns a representation of zero
 	 * for the given currency.
 	 * 
+	 * @param iso4217 ISO4217 currency code
+	 * @return commodity value of zero
+	 */
+	public static final CashCommodity zero(String iso4217)
+	{
+		return new DefaultCashCommodity(
+			Currency.getInstance(iso4217), DecimalNumber.ZERO);
+	}
+	
+	/**
+	 * Returns a representation of zero
+	 * for the given currency.
+	 * 
+	 * @param currency commodity currency
 	 * @return commodity value of zero
 	 */
 	public static final CashCommodity zero(Currency currency)
