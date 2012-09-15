@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.swing;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -25,6 +26,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +37,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -46,7 +50,8 @@ import com.vimofthevine.underbudget.ApplicationProperties;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class AboutDialog implements ActionListener {
+public class AboutDialog implements ActionListener,
+HyperlinkListener {
 	
 	/**
 	 * Log handle
@@ -113,6 +118,7 @@ public class AboutDialog implements ActionListener {
 	{
 		JEditorPane pane = new JEditorPane();
 		pane.setEditable(false);
+		pane.addHyperlinkListener(this);
 		
 		URL about = getClass().getResource("about/about.html");
 		if (about != null)
@@ -134,6 +140,7 @@ public class AboutDialog implements ActionListener {
 	{
 		JEditorPane pane = new JEditorPane();
 		pane.setEditable(false);
+		pane.addHyperlinkListener(this);
 		
 		URL about = getClass().getResource("about/acknowledgements.html");
 		if (about != null)
@@ -155,6 +162,7 @@ public class AboutDialog implements ActionListener {
 	{
 		JEditorPane pane = new JEditorPane();
 		pane.setEditable(false);
+		pane.addHyperlinkListener(this);
 		
 		URL about = getClass().getResource("about/license.html");
 		if (about != null)
@@ -213,5 +221,33 @@ public class AboutDialog implements ActionListener {
 			dispose();
 		}
 	}
+
+	@Override
+    public void hyperlinkUpdate(HyperlinkEvent event)
+    {
+		if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED))
+		{
+    		if (Desktop.isDesktopSupported())
+    		{
+    			Desktop desktop = Desktop.getDesktop();
+    			
+    			if (desktop.isSupported(Desktop.Action.BROWSE))
+    			{
+        			try
+        			{
+        				desktop.browse(event.getURL().toURI());
+        			}
+        			catch (IOException ioe)
+        			{
+        				logger.log(Level.WARNING, "Unable to open link", ioe);
+        			}
+        			catch (URISyntaxException urie)
+                    {
+        				logger.log(Level.WARNING, "Unable to open link", urie);
+                    }
+    			}
+    		}
+		}
+    }
 
 }
