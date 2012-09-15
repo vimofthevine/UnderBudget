@@ -2,9 +2,9 @@
 Type=Application
 Encoding=UTF-8
 Name=UnderBudget
-Comment=Budget analysis with GnuCash
+Comment=Advanced personal budget analysis
 Icon=underbudget
-TryExec=underbudgetcli
-Exec=underbudgetcli %F
-Terminal=true
+TryExec=underbudget
+Exec=underbudget %F
+Terminal=false
 Categories=Office;
