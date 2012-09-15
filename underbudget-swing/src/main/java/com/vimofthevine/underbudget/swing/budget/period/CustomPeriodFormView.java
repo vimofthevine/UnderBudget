@@ -52,27 +52,35 @@ public class CustomPeriodFormView {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 2;
-		c.insets = new Insets(0, 5, 2, 5);
+		c.insets = new Insets(0, 5, 5, 5);
 		container.add(summary, c);
 		
 		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
 		c.gridx = 0;
 		c.gridy = 1;
+		c.insets = new Insets(0, 5, 5, 5);
 		container.add(new BoldLabel("Start:"), c);
 		
 		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_END;
 		c.gridx = 1;
 		c.gridy = 1;
+		c.insets = new Insets(0, 0, 5, 5);
 		container.add(start, c);
 		
 		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
 		c.gridx = 0;
 		c.gridy = 2;
+		c.insets = new Insets(0, 5, 5, 5);
 		container.add(new BoldLabel("End:"), c);
 		
 		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_END;
 		c.gridx = 1;
 		c.gridy = 2;
+		c.insets = new Insets(0, 0, 5, 5);
 		container.add(end, c);
 	}
 

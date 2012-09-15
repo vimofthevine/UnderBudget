@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.swing.estimate;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import java.awt.Container;
 
@@ -68,6 +69,7 @@ public class EstimateDetailView {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = ++row;
+		c.insets = new Insets(5, 5, 0, 0);
 		container.add(new BoldLabel("Name"), c);
 		
 		c = new GridBagConstraints();
@@ -75,6 +77,7 @@ public class EstimateDetailView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 0);
 		c.weightx = 1.0;
 		container.add(name, c);
 		
@@ -82,12 +85,14 @@ public class EstimateDetailView {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 0);
 		container.add(new BoldLabel("Type"), c);
 		
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 5);
 		container.add(type, c);
 		
 		// 2nd row
@@ -97,6 +102,7 @@ public class EstimateDetailView {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = ++row;
+		c.insets = new Insets(5, 5, 0, 0);
 		container.add(new BoldLabel("Description"), c);
 		
 		c = new GridBagConstraints();
@@ -104,6 +110,7 @@ public class EstimateDetailView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 0);
 		c.weightx = 1.0;
 		container.add(description, c);
 		
@@ -111,12 +118,14 @@ public class EstimateDetailView {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 0);
 		container.add(new BoldLabel("Due Date"), c);
 		
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 5);
 		container.add(dueDate, c);
 		
 		// 3rd row
@@ -126,6 +135,7 @@ public class EstimateDetailView {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = ++row;
+		c.insets = new Insets(5, 5, 0, 0);
 		container.add(new BoldLabel("Amount"), c);
 		
 		c = new GridBagConstraints();
@@ -133,6 +143,7 @@ public class EstimateDetailView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 0);
 		c.weightx = 1.0;
 		container.add(amount, c);
 		
@@ -140,27 +151,33 @@ public class EstimateDetailView {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 0);
 		container.add(new BoldLabel("Complete?"), c);
 		
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 0, 5);
 		container.add(complete, c);
 		
 		// 4th row
 		col = -1;
 		
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		c.anchor = GridBagConstraints.LAST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = ++row;
+		c.insets = new Insets(5, 5, 5, 0);
+		c.weighty = 1.0;
 		container.add(addButton, c);
 		
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		c.anchor = GridBagConstraints.LAST_LINE_START;
 		c.gridx = ++col;
 		c.gridy = row;
+		c.insets = new Insets(5, 5, 5, 5);
+		c.weighty = 1.0;
 		container.add(deleteButton, c);
 		
 	}

@@ -19,6 +19,7 @@ package com.vimofthevine.underbudget.swing.assignment;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -76,12 +77,14 @@ public class AssignmentRuleDetailView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 0;
+		c.insets = new Insets(2, 2, 0, 2);
 		container.add(addCondition, c);
 		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 1;
+		c.insets = new Insets(2, 2, 0, 2);
 		container.add(removeCondition, c);
 		
 		c = new GridBagConstraints();
@@ -89,6 +92,7 @@ public class AssignmentRuleDetailView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 2;
+		c.insets = new Insets(2, 2, 0, 2);
 		c.weighty = 1.0;
 		container.add(applyChanges, c);
 		
@@ -96,12 +100,14 @@ public class AssignmentRuleDetailView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 3;
+		c.insets = new Insets(2, 2, 0, 2);
 		container.add(cloneRule, c);
 		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 4;
+		c.insets = new Insets(2, 2, 2, 2);
 		container.add(deleteRule, c);
 	}
 

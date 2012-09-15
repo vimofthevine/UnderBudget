@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JTextField;
 import javax.swing.text.Document;
@@ -50,41 +51,38 @@ public class ImportedTransactionDetailView {
 		Component deposit = createField(model.getDepositDocument());
 		Component amount = createField(model.getAmountDocument());
 		
-		GridBagConstraints firstRowLabels = new GridBagConstraints();
-		firstRowLabels.gridx = GridBagConstraints.RELATIVE;
-		firstRowLabels.gridy = 0;
+		GridBagConstraints labels = new GridBagConstraints();
+		labels.anchor = GridBagConstraints.LINE_START;
+		labels.gridx = 0;
+		labels.gridy = GridBagConstraints.RELATIVE;
+		labels.insets = new Insets(5, 5, 0, 15);
 		
-		GridBagConstraints firstRowFields = new GridBagConstraints();
-		firstRowFields.fill = GridBagConstraints.HORIZONTAL;
-		firstRowFields.gridx = GridBagConstraints.RELATIVE;
-		firstRowFields.gridy = 0;
-		firstRowFields.weightx = 1.0;
-		
-		GridBagConstraints secondRowLabels = new GridBagConstraints();
-		secondRowLabels.gridx = GridBagConstraints.RELATIVE;
-		secondRowLabels.gridy = 1;
-		
-		GridBagConstraints secondRowFields = new GridBagConstraints();
-		secondRowFields.fill = GridBagConstraints.HORIZONTAL;
-		secondRowFields.gridx = GridBagConstraints.RELATIVE;
-		secondRowFields.gridy = 1;
-		secondRowFields.weightx = 1.0;
+		GridBagConstraints fields = new GridBagConstraints();
+		fields.fill = GridBagConstraints.HORIZONTAL;
+		fields.gridx = 1;
+		fields.gridy = GridBagConstraints.RELATIVE;
+		fields.insets = new Insets(5, 0, 0, 5);
+		fields.weightx = 1.0;
 		
 		container.setLayout(new GridBagLayout());
 		
-		container.add(new BoldLabel("Date"), firstRowLabels);
-		container.add(date, firstRowFields);
-		container.add(new BoldLabel("Payee"), firstRowLabels);
-		container.add(payee, firstRowFields);
-		container.add(new BoldLabel("Withdrawal"), firstRowLabels);
-		container.add(withdrawal, firstRowFields);
+		container.add(new BoldLabel("Date"), labels);
+		container.add(new BoldLabel("Payee"), labels);
+		container.add(new BoldLabel("Memo"), labels);
+		container.add(new BoldLabel("Amount"), labels);
+		container.add(new BoldLabel("Withdrawal"), labels);
+		labels.insets = new Insets(5, 5, 5, 15);
+		labels.weighty = 1.0;
+		container.add(new BoldLabel("Deposit"), labels);
 		
-		container.add(new BoldLabel("Amount"), secondRowLabels);
-		container.add(amount, secondRowFields);
-		container.add(new BoldLabel("Memo"), secondRowLabels);
-		container.add(memo, secondRowFields);
-		container.add(new BoldLabel("Deposit"), secondRowLabels);
-		container.add(deposit, secondRowFields);
+		container.add(date, fields);
+		container.add(payee, fields);
+		container.add(memo, fields);
+		container.add(amount, fields);
+		container.add(withdrawal, fields);
+		fields.insets = new Insets(5, 0, 5, 5);
+		fields.weighty = 1.0;
+		container.add(deposit, fields);
 	}
 	
 	/**
