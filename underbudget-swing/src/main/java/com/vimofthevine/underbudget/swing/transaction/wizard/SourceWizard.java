@@ -16,40 +16,24 @@
 
 package com.vimofthevine.underbudget.swing.transaction.wizard;
 
+import java.awt.Frame;
+
 /**
- * Enumeration for supported transaction source types.
+ * Wizard for selecting a specific transaction
+ * source.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-enum SourceType {
-	GNUCASH_XML("GnuCash XML"),
-	CSV("CSV");
+public interface SourceWizard {
 	
 	/**
-	 * Transaction source type name
-	 */
-	private final String name;
-	
-	/**
-	 * Constructs a new transaction source
-	 * type enumeration.
+	 * Launches the wizard for selecting the
+	 * specific transaction source.
 	 * 
-	 * @param name source name
+	 * @param window application main window
+	 * @param wizard transaction source selection wizard
 	 */
-	private SourceType(String name)
-	{
-		this.name = name;
-	}
-	
-	public String getActionCommand()
-	{
-		return super.toString();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-	
+	public void select(final Frame window,
+		final TransactionSourceSelectionWizard wizard);
+
 }

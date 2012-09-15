@@ -16,40 +16,28 @@
 
 package com.vimofthevine.underbudget.swing.transaction.wizard;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
 /**
- * Enumeration for supported transaction source types.
+ * File chooser for selecting CSV files.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-enum SourceType {
-	GNUCASH_XML("GnuCash XML"),
-	CSV("CSV");
-	
+class CsvFileChooser extends JFileChooser {
+
 	/**
-	 * Transaction source type name
+	 * Constructs a new CSV file chooser.
 	 */
-	private final String name;
-	
-	/**
-	 * Constructs a new transaction source
-	 * type enumeration.
-	 * 
-	 * @param name source name
-	 */
-	private SourceType(String name)
+	CsvFileChooser()
 	{
-		this.name = name;
+		// Add the accept-all file filter
+		setAcceptAllFileFilterUsed(true);
+		
+		// Set up CSV file filter
+		FileFilter fileFilter = new CsvFileFilter();
+		addChoosableFileFilter(fileFilter);
+		setFileFilter(fileFilter);
 	}
-	
-	public String getActionCommand()
-	{
-		return super.toString();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-	
+
 }
