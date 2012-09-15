@@ -55,22 +55,24 @@ public class MonthFormView {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 2;
-		c.insets = new Insets(0, 5, 2, 5);
+		c.insets = new Insets(0, 5, 5, 5);
 		container.add(summary, c);
 		
 		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
-		c.insets = new Insets(0, 5, 2, 2);
+		c.insets = new Insets(0, 5, 5, 5);
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		container.add(month, c);
 		
 		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.gridx = 1;
 		c.gridy = 1;
-		c.insets = new Insets(0, 0, 2, 5);
+		c.insets = new Insets(0, 0, 5, 5);
 		container.add(year, c);
 	}
 

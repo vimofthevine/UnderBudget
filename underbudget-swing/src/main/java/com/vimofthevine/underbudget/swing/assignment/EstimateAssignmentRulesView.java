@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.swing.assignment;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import java.awt.Container;
 
@@ -48,6 +49,7 @@ public class EstimateAssignmentRulesView {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.gridx = 0;
 		c.gridy = 0;
+		c.insets = new Insets(5, 5, 5, 5);
 		container.add(addRule, c);
 		
 		c = new GridBagConstraints();
