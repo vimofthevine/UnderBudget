@@ -113,7 +113,7 @@ public class Session {
     		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
     		
     		new BudgetSourceSelectionWizard(eventBus, window, budget);
-    		new TransactionSourceSelectionWizard(eventBus, window, currency);
+    		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
     		new OnDemandTransactionImporter(eventBus, budget);
     		new OnDemandTransactionAssigner(eventBus, rules, assigner);
     		new OnDemandBalanceCalculator(eventBus, budget, calculator, currencyCalculator);

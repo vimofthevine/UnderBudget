@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.transaction.wizard;
+package com.vimofthevine.underbudget.swing.transaction.wizard.csv;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+
 
 /**
  * File chooser for selecting CSV files.

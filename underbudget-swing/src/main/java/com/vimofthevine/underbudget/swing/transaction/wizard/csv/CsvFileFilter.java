@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.transaction.wizard;
+package com.vimofthevine.underbudget.swing.transaction.wizard.csv;
 
 import java.io.BufferedReader;
 import java.io.File;

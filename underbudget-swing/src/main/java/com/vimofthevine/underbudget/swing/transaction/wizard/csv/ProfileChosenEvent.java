@@ -14,25 +14,41 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.core.transaction.source.csv;
+package com.vimofthevine.underbudget.swing.transaction.wizard.csv;
+
+import com.vimofthevine.underbudget.core.transaction.source.csv.CsvProfile;
 
 /**
- * Stock CSV profile list.
+ * Event generated when the user has chosen a
+ * CSV profile to be used.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public abstract class StockProfileList {
-
+class ProfileChosenEvent {
+	
 	/**
-	 * Returns a list of available stock CSV profiles.
-	 * 
-	 * @return stock CSV profiles
+	 * The chosen CSV profile
 	 */
-	public static final StockCsvProfile[] getList()
+	private final CsvProfile profile;
+	
+	/**
+	 * Constructs a new profile-chosen event.
+	 * 
+	 * @param profile the chosen CSV profile
+	 */
+	ProfileChosenEvent(CsvProfile profile)
 	{
-		return new StockCsvProfile[] {
-			new MintProfile(),
-		};
+		this.profile = profile;
 	}
 	
+	/**
+	 * Returns the chosen CSV profile.
+	 * 
+	 * @return the chosen CSV profile
+	 */
+	CsvProfile getProfile()
+	{
+		return profile;
+	}
+
 }

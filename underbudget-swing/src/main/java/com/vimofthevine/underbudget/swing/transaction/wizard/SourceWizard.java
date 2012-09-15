@@ -18,6 +18,8 @@ package com.vimofthevine.underbudget.swing.transaction.wizard;
 
 import java.awt.Frame;
 
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
+
 /**
  * Wizard for selecting a specific transaction
  * source.
@@ -32,8 +34,10 @@ public interface SourceWizard {
 	 * 
 	 * @param window application main window
 	 * @param wizard transaction source selection wizard
+	 * @param prefs  user preferences
 	 */
-	public void select(final Frame window,
-		final TransactionSourceSelectionWizard wizard);
+	public void select(Frame window,
+		TransactionSourceSelectionWizard wizard,
+		UserPreferences prefs);
 
 }

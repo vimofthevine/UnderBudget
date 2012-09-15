@@ -24,6 +24,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
 import com.vimofthevine.underbudget.core.transaction.source.GnuCashXmlFileSource;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 
 /**
  * Selection wizard for selecting a GnuCash
@@ -39,9 +40,12 @@ public class GnuCashXmlFileWizard implements SourceWizard {
 	 * 
 	 * @param window application main window
 	 * @param wizard transaction source selection wizard
+	 * @param prefs  user preferences
 	 */
+	@Override
 	public void select(final Frame window,
-		final TransactionSourceSelectionWizard wizard)
+		final TransactionSourceSelectionWizard wizard,
+		UserPreferences prefs)
 	{
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()

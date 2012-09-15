@@ -24,8 +24,10 @@ import java.util.Map;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.transaction.source.TransactionSource;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.transaction.events.SelectTransactionSourceEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.TransactionSourceSelectedEvent;
+import com.vimofthevine.underbudget.swing.transaction.wizard.csv.CsvFileWizard;
 
 /**
  * Wizard for selecting a source for importing transactions.
@@ -50,14 +52,20 @@ public class TransactionSourceSelectionWizard {
 	private final Map<SourceType, SourceWizard> wizards;
 	
 	/**
+	 * User preferences
+	 */
+	private final UserPreferences preferences;
+	
+	/**
 	 * Constructs a new transaction source selection wizard.
 	 * 
 	 * @param bus      event bus
 	 * @param parent   application window
-	 * @param currecny currency in use
+	 * @param currency currency in use
+	 * @param prefs    user preferences
 	 */
 	public TransactionSourceSelectionWizard(EventBus bus, Frame parent,
-		Currency currency)
+		Currency currency, UserPreferences prefs)
 	{
 		eventBus = bus;
 		eventBus.register(this);
@@ -67,6 +75,8 @@ public class TransactionSourceSelectionWizard {
 		wizards = new HashMap<SourceType, SourceWizard>();
 		wizards.put(SourceType.GNUCASH_XML, new GnuCashXmlFileWizard());
 		wizards.put(SourceType.CSV, new CsvFileWizard());
+		
+		preferences = prefs;
 	}
 	
 	@Subscribe
@@ -81,7 +91,7 @@ public class TransactionSourceSelectionWizard {
 	 * 
 	 * @param source selected transaction source
 	 */
-	void sourceSelected(TransactionSource source)
+	public void sourceSelected(TransactionSource source)
 	{
 		eventBus.post(new TransactionSourceSelectedEvent(source));
 	}
@@ -97,7 +107,7 @@ public class TransactionSourceSelectionWizard {
 		SourceWizard wizard = wizards.get(type);
 		if (wizard != null)
 		{
-			wizard.select(window, this);
+			wizard.select(window, this, preferences);
 		}
 	}
 	

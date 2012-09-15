@@ -19,22 +19,25 @@ package com.vimofthevine.underbudget.core.transaction.source.csv;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * List of user-defined CSV profiles. User-defined
- * CSV profiles are stored in the application settings
- * directory under "csvprofiles".
+ * List of all defined CSV profiles, both stock and user-
+ * defined. User-defined CSV profiles are stored in the
+ * application settings directory under "csvprofiles".
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class UserProfileList {
+public class CsvProfileList {
 	
 	/**
 	 * Log handle
 	 */
-	private static final Logger logger = Logger.getLogger(UserProfileList.class.getName());
+	private static final Logger logger = Logger.getLogger(CsvProfileList.class.getName());
 	
 	/**
 	 * User CSV profiles directory
@@ -42,11 +45,11 @@ public class UserProfileList {
 	private final File dir;
 	
 	/**
-	 * Constructs a user profile list instance.
+	 * Constructs a CSV profile list instance.
 	 * 
 	 * @param settingsDir application settings directory
 	 */
-	public UserProfileList(String settingsDir)
+	public CsvProfileList(String settingsDir)
 	{
 		dir = new File(settingsDir + "/csvprofiles");
 		
@@ -57,12 +60,54 @@ public class UserProfileList {
 	}
 	
 	/**
+	 * Returns a list of all available CSV profiles.
+	 * 
+	 * @return all available CSV profiles
+	 */
+	public final CsvProfile[] getProfileList()
+	{
+		StockCsvProfile[] stockProfiles = getStockProfileList();
+		UserCsvProfile[] userProfiles = getUserProfileList();
+		
+		ArrayList<CsvProfile> allProfiles = new ArrayList<CsvProfile>();
+		for (StockCsvProfile profile : stockProfiles)
+		{
+			allProfiles.add(profile);
+		}
+		for (UserCsvProfile profile : userProfiles)
+		{
+			allProfiles.add(profile);
+		}
+		
+		Collections.sort(allProfiles, new Comparator<CsvProfile>() {
+			@Override
+            public int compare(CsvProfile lhs, CsvProfile rhs)
+            {
+				return lhs.getDescription().compareTo(rhs.getDescription());
+            }
+		});
+		return allProfiles.toArray(new CsvProfile[allProfiles.size()]);
+	}
+
+	/**
+	 * Returns a list of available stock CSV profiles.
+	 * 
+	 * @return stock CSV profiles
+	 */
+	public final StockCsvProfile[] getStockProfileList()
+	{
+		return new StockCsvProfile[] {
+			new MintProfile(),
+		};
+	}
+	
+	/**
 	 * Reads from the application settings directory
 	 * for user CSV profiles.
 	 * 
 	 * @return user CSV profiles
 	 */
-	public UserCsvProfile[] getList()
+	public final UserCsvProfile[] getUserProfileList()
 	{
 		String[] files = dir.list(new FilenameFilter() {
 			@Override
