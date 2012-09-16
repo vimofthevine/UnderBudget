@@ -3,7 +3,7 @@
 
 pkgname=underbudget
 fullname=UnderBudget
-pkgver=2.0
+pkgver=2.0_rc1
 pkgrel=1
 pkgdesc="Personal budget analysis application that integrates with GnuCash, Quicken, etc."
 arch=('any')
@@ -11,8 +11,8 @@ depends=('java-runtime')
 url=('http://underbudget.vimofthevine.com')
 license=('Apache')
 
-source=(${pkgname}-${pkgver}.tar.gz)
-md5sums=(be5dba78a7997c21af344b128db9b5d6)
+source=(https://github.com/downloads/vimofthevine/UnderBudget/${pkgname}-${pkgver}.tar.gz)
+md5sums=(8f6e986b396109ffe38ee30391b0ebe9)
 
 build() {
 	cd ${srcdir}/${pkgname}-${pkgver}
