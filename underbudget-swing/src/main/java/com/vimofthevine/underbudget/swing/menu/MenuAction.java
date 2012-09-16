@@ -43,6 +43,7 @@ import com.vimofthevine.underbudget.swing.session.events.SessionContentEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsFromEvent;
+import com.vimofthevine.underbudget.swing.tutorial.BasicUsageTutorialEvent;
 
 /**
  * Enumeration type for menu actions.
@@ -139,6 +140,10 @@ enum MenuAction {
 		
 	PREFERENCES("Preferences", "Edit application preferences",
 		"preferences.png", KeyEvent.VK_P, new DisplayPreferencesEvent()),
+		
+	// Help actions
+	BASIC_TUTORIAL("Basic Usage Tutorial", "View the basic-usage tutorial",
+		"tutorial.png", KeyEvent.VK_T, new BasicUsageTutorialEvent()),
 		
 	ABOUT("About", "View information about the application",
 		"about.png", KeyEvent.VK_A, new DisplayAboutEvent()),
