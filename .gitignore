@@ -11,3 +11,5 @@ underbudget-*.pkg.tar.xz
 # Personal files
 data/template.xml
 build.properties
+# Source directories
+underbudget-*/
