@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.vimofthevine.underbudget</groupId>
     <artifactId>underbudget</artifactId>
-    <version>2.0</version>
+    <version>2.0-rc1</version>
   </parent>
 
   <artifactId>underbudget-swing</artifactId>
@@ -59,19 +59,19 @@
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-core</artifactId>
-      <version>2.0</version>
+      <version>2.0-rc1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-stubs</artifactId>
-      <version>2.0</version>
+      <version>2.0-rc1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-xml</artifactId>
-      <version>2.0</version>
+      <version>2.0-rc1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
