@@ -81,6 +81,7 @@ public class ApplicationMenu {
 		// Create "help" menu
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
+		helpMenu.add(new JMenuItem(model.getAction(MenuAction.BASIC_TUTORIAL)));
 		helpMenu.add(new JMenuItem(model.getAction(MenuAction.ABOUT)));
 		
 		// Build menu

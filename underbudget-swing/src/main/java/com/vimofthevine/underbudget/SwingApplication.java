@@ -35,6 +35,8 @@ import com.vimofthevine.underbudget.swing.preferences.NoUserPreferences;
 import com.vimofthevine.underbudget.swing.preferences.PropertiesFileUserPreferences;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.Sessions;
+import com.vimofthevine.underbudget.swing.tutorial.BasicUsageTutorialEvent;
+import com.vimofthevine.underbudget.swing.tutorial.TutorialEventListener;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindow;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindowModel;
 
@@ -51,8 +53,12 @@ public class SwingApplication {
 		// Figure out location of app preferences
 		String home = System.getProperty("user.home");
 		File prefsHome = new File(home + "/.config/underbudget");
-		// If the directory doesn't exist, create it
-		if ( ! prefsHome.exists())
+		
+		// If the prefs directories doesn't exist, this is the
+		// first time the application is being executed
+		boolean firstExecution = ! prefsHome.exists();
+		// If first execution, create the prefs directory
+		if (firstExecution)
 		{
 			prefsHome.mkdir();
 		}
@@ -79,6 +85,7 @@ public class SwingApplication {
 		
 		new Sessions(frame, eventBus, preferences);
 		new AboutDialog(props, frame, eventBus);
+		new TutorialEventListener(frame, eventBus);
 		new DeadEventListener(frame, eventBus);
 		
 		JPanel content = new JPanel();
@@ -97,6 +104,11 @@ public class SwingApplication {
 		} catch (Exception e) { }
 		
 		window.display();
+		
+		if (firstExecution)
+		{
+			eventBus.post(new BasicUsageTutorialEvent());
+		}
 	}
 
 }
