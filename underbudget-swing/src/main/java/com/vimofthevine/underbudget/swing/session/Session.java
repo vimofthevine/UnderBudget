@@ -29,7 +29,7 @@ import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
-import com.vimofthevine.underbudget.stubs.FixedCalculator;
+import com.vimofthevine.underbudget.core.currency.FixedCalculator;
 import com.vimofthevine.underbudget.swing.analysis.OnDemandBalanceCalculator;
 import com.vimofthevine.underbudget.swing.assignment.OnDemandTransactionAssigner;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;

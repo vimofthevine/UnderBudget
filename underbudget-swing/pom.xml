@@ -51,12 +51,6 @@
     </dependency>
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
-      <artifactId>underbudget-stubs</artifactId>
-      <version>2.0_rc1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-xml</artifactId>
       <version>2.0_rc1</version>
       <scope>compile</scope>
