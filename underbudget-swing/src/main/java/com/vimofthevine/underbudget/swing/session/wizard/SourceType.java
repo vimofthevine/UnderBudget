@@ -22,8 +22,7 @@ package com.vimofthevine.underbudget.swing.session.wizard;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 enum SourceType {
-	XML("XML file"),
-	STUB("Stub Source");
+	XML("XML file");
 	
 	/**
 	 * Transaction source type name
