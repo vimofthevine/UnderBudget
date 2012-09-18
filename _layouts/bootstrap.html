@@ -15,6 +15,16 @@
 		</style>
 		<link rel="stylesheet" href="http://vimofthevine.com/assets/css/bootstrap-responsive.min.css" type="text/css" />
 
+		<script type="text/javascript">
+		function recordOutboundLink(link, category, action) {
+			try {
+				var myTracker=_gat._getTrackerByName();
+				_gaq.push(['myTracker._trackEvent', category , action ]);
+				setTimeout('document.location = "' + link.href + '"', 100)
+			}catch(err){}
+		}
+		</script>
+
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -31,9 +41,12 @@
 					<a class="brand" href="#">UnderBudget</a>
 					<div class="nav-collapse collapse">
 						<ul class="nav">
-							<li><a href="https://github.com/vimofthevine/UnderBudget/wiki">User Guide</a></li>
-							<li><a href="https://github.com/vimofthevine/UnderBudget/downloads">Downloads</a></li>
-							<li><a href="http://forums.underbudget.vimofthevine.com">Forums</a></li>
+							<li><a href="https://github.com/vimofthevine/UnderBudget/wiki" onClick="recordOutboundLink(this,
+								'Exit', 'https://github.com/vimofthevine/UnderBudget/wiki'); return false;">User Guide</a></li>
+							<li><a href="https://github.com/vimofthevine/UnderBudget/downloads" onClick="recordOutboundLink(this,
+								'Exit', 'https://github.com/vimofthevine/UnderBudget/downloads'); return false;">Downloads</a></li>
+							<li><a href="http://forums.underbudget.vimofthevine.com" onClick="recordOutboundLink(this,
+								'Exit', 'http://forums.underbudget.vimofthevine.com'); return false;">Forums</a></li>
 						</ul>
 					</div>
 				</div>
