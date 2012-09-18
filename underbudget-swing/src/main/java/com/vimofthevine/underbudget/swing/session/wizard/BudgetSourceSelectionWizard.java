@@ -28,7 +28,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
-import com.vimofthevine.underbudget.stubs.budget.source.StubBudgetSource;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
@@ -102,10 +101,6 @@ public class BudgetSourceSelectionWizard {
 		{
 			case XML:
 				selectGnuCashXmlFile(event);
-				break;
-				
-			case STUB:
-				fireSelectedEvent(new StubBudgetSource(), event);
 				break;
 				
 			default:

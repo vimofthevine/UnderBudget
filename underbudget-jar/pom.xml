@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.vimofthevine.underbudget</groupId>
     <artifactId>underbudget</artifactId>
-    <version>2.0_rc1</version>
+    <version>2.0_rc2</version>
   </parent>
 
   <artifactId>underbudget-jar</artifactId>
@@ -29,8 +29,11 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.vimofthevine.underbudget.SwingApplication</mainClass>
+              <mainClass>com.vimofthevine.underbudget.Application</mainClass>
             </manifest>
+            <manifestEntries>
+              <SplashScreen-Image>com/vimofthevine/underbudget/swing/splash.png</SplashScreen-Image>
+            </manifestEntries>
           </archive>
           <finalName>underbudget-${project.parent.version}</finalName>
           <appendAssemblyId>false</appendAssemblyId>
@@ -51,25 +54,25 @@
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-core</artifactId>
-      <version>2.0_rc1</version>
+      <version>2.0_rc2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-stubs</artifactId>
-      <version>2.0_rc1</version>
+      <version>2.0_rc2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-swing</artifactId>
-      <version>2.0_rc1</version>
+      <version>2.0_rc2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vimofthevine.underbudget</groupId>
       <artifactId>underbudget-xml</artifactId>
-      <version>2.0_rc1</version>
+      <version>2.0_rc2</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
