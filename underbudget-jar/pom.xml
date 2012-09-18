@@ -29,8 +29,11 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.vimofthevine.underbudget.SwingApplication</mainClass>
+              <mainClass>com.vimofthevine.underbudget.Application</mainClass>
             </manifest>
+            <manifestEntries>
+              <SplashScreen-Image>com/vimofthevine/underbudget/swing/splash.png</SplashScreen-Image>
+            </manifestEntries>
           </archive>
           <finalName>underbudget-${project.parent.version}</finalName>
           <appendAssemblyId>false</appendAssemblyId>

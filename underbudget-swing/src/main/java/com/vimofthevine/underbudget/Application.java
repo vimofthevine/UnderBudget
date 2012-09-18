@@ -40,7 +40,7 @@ import com.vimofthevine.underbudget.swing.tutorial.TutorialEventListener;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindow;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindowModel;
 
-public class SwingApplication {
+public class Application {
 	
 	/**
 	 * @param args
@@ -100,7 +100,7 @@ public class SwingApplication {
 		eventBus.register(window);
 		
 		try {
-			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) { }
 		
 		window.display();
