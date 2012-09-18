@@ -1,0 +1,5 @@
+#!/bin/sh
+export LOGGING_PROPS=/usr/share/underbudget/logging.properties
+java \
+    -Djava.util.logging.config.file=$LOGGING_PROPS \
+    -jar /usr/share/java/underbudget/underbudget.jar "$@"
