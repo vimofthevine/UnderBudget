@@ -1,6 +1,6 @@
 # UnderBudget
 
-[UnderBudget](http://vimofthevine.com/assets/img/underbudget_screen.png)
+![UnderBudget](http://vimofthevine.com/assets/img/underbudget_screen.png)
 
 UnderBudget is an advanced personal budget analysis tool that
 integrates with GnuCash, Quicken, mint.com, etc.
