@@ -52,26 +52,33 @@ public class Application {
 		
 		// Figure out location of app preferences
 		String home = System.getProperty("user.home");
-		File prefsHome = new File(home + "/.config/underbudget");
+		File prefsDir = new File(home + "/.config/underbudget");
 		
 		// If the prefs directories doesn't exist, this is the
 		// first time the application is being executed
-		boolean firstExecution = ! prefsHome.exists();
+		boolean firstExecution = ! prefsDir.exists();
 		// If first execution, create the prefs directory
 		if (firstExecution)
 		{
-			prefsHome.mkdir();
+    		// If the config directory doesn't exist, try to create it
+			File configDir = new File(home + "/.config");
+    		if ( ! configDir.exists())
+    		{
+    			configDir.mkdir();
+    		}
+		
+			prefsDir.mkdir();
 		}
 		
 		// If prefs home doesn't exist, use no-prefs
-		preferences = ( ! prefsHome.exists())
+		preferences = ( ! prefsDir.exists())
 			? new NoUserPreferences()
 			: new PropertiesFileUserPreferences(props,
-				prefsHome.getPath() + "/prefs.properties");
+				prefsDir.getPath() + "/prefs.properties");
 		preferences.read();
 		
 		// Store preferences dir so application can get it
-		preferences.set("HOME", prefsHome.getPath());
+		preferences.set("HOME", prefsDir.getPath());
 		
 		EventBus eventBus = new EventBus("main");
 		
