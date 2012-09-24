@@ -4,7 +4,7 @@
 
   <groupId>com.vimofthevine.underbudget</groupId>
   <artifactId>underbudget</artifactId>
-  <version>2.0_rc2</version>
+  <version>2.0</version>
   <packaging>pom</packaging>
 
   <name>UnderBudget</name>
