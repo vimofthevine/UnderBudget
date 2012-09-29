@@ -76,7 +76,7 @@ public class BudgetXmlFileFilter extends FileFilter {
 	
 	public String getDescription()
 	{
-		return "Budget XML FIle";
+		return "Budget XML File";
 	}
 	
 }

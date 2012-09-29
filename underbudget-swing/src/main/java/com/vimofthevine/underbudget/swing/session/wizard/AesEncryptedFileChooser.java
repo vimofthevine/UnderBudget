@@ -16,40 +16,28 @@
 
 package com.vimofthevine.underbudget.swing.session.wizard;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
 /**
- * Enumeration for supported budget source types.
+ * File chooser for selecting AES encrypted budget files.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-enum SourceType {
-	XML("XML file"),
-	AES("AES encrypted file");
-	
+class AesEncryptedFileChooser extends JFileChooser {
+
 	/**
-	 * Transaction source type name
+	 * Constructs a new AES encrypted budget file chooser.
 	 */
-	private final String name;
-	
-	/**
-	 * Constructs a new budget source
-	 * type enumeration.
-	 * 
-	 * @param name source name
-	 */
-	private SourceType(String name)
+	AesEncryptedFileChooser()
 	{
-		this.name = name;
+		// Add the accept-all file filter
+		setAcceptAllFileFilterUsed(true);
+		
+		// Set up encrypted file filter
+		FileFilter fileFilter = new AesEncryptedFileFilter();
+		addChoosableFileFilter(fileFilter);
+		setFileFilter(fileFilter);
 	}
-	
-	public String getActionCommand()
-	{
-		return super.toString();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-	
+
 }

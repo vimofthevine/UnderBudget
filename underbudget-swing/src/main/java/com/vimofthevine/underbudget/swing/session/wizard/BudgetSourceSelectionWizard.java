@@ -17,11 +17,19 @@
 package com.vimofthevine.underbudget.swing.session.wizard;
 
 import java.awt.Frame;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
@@ -32,6 +40,7 @@ import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelec
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
+import com.vimofthevine.underbudget.xml.budget.source.AesEncryptedFileSource;
 import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileSource;
 
 /**
@@ -103,6 +112,10 @@ public class BudgetSourceSelectionWizard {
 				selectGnuCashXmlFile(event);
 				break;
 				
+			case AES:
+				selectAesEncryptedFile(event);
+				break;
+				
 			default:
 				// Do nothing
 		}
@@ -156,6 +169,109 @@ public class BudgetSourceSelectionWizard {
 				}
 			}
 		});
+	}
+	
+	private void selectAesEncryptedFile(final Object event)
+	{
+		final boolean open = (event instanceof SelectBudgetSourceToOpenEvent);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				AesEncryptedFileChooser chooser = new AesEncryptedFileChooser();
+				int result = open ? chooser.showOpenDialog(window)
+					: chooser.showSaveDialog(window);
+				
+				if (result == JFileChooser.APPROVE_OPTION)
+				{
+					final File file = chooser.getSelectedFile();
+					
+					// Prompt for password
+					final String key = promptForPassword("Password");
+					
+					if (key == null || key.equals("")) // User hit cancel/empty password
+						return;
+					
+					if ( ! open) // save
+					{
+						// Have user confirm password
+						String confirm = promptForPassword("Confirm password");
+						if ( ! key.equals(confirm))
+						{
+							JOptionPane.showMessageDialog(window,
+								"Passwords do not match", "Incorrect password",
+								JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+					
+					// Get off EDT
+					new Thread() {
+						public void run()
+						{
+    						AesEncryptedFileSource source = open
+    							? new AesEncryptedFileSource(file, key)
+    							: new AesEncryptedFileSource(file, key, budget);
+    							
+   							fireSelectedEvent(source, event);
+						}
+					}.start();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Prompts the user for the encryption passkey.
+	 * 
+	 * @param prompt prompt text
+	 * @return encryption passkey, or false if the user hits "cancel"
+	 */
+	private String promptForPassword(String prompt)
+	{
+		// Already on EDT
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel(prompt);
+		final JPasswordField password = new JPasswordField(10);
+		panel.add(label);
+		panel.add(password);
+		
+		password.addHierarchyListener(new HierarchyListener() {
+			@Override
+            public void hierarchyChanged(final HierarchyEvent event)
+            {
+				final HierarchyListener listener = this;
+				if ((HierarchyEvent.SHOWING_CHANGED & event.getChangeFlags()) != 0
+					&& password.isShowing())
+				{
+					Timer timer = new Timer();
+					timer.schedule(new TimerTask() {
+						public void run()
+						{
+							SwingUtilities.invokeLater(new Runnable() {
+								public void run()
+								{
+                					password.requestFocusInWindow();
+                					password.removeHierarchyListener(listener);
+								}
+							});
+						}
+					}, 100);
+				}
+            }
+		});
+		
+		int result = JOptionPane.showOptionDialog(window, panel, "Encryption Password",
+			JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+			null, null, "");
+		
+		if (result == JOptionPane.OK_OPTION)
+		{
+			char[] passkey = password.getPassword();
+			return new String(passkey);
+		}
+		else
+			return null;
 	}
 
 }
