@@ -206,7 +206,7 @@ public class XmlEstimate implements MutableEstimate {
     {
 		return new EstimateDefinition() {
 			@Override
-            public String getName() { return isRoot() ? "" : name; }
+            public String getName() { return isRoot() ? "Root" : name; }
 
 			@Override
             public String getDescription() { return isRoot() ? "" : description; }
