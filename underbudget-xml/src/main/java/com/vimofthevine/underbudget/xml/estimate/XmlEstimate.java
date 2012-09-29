@@ -206,22 +206,22 @@ public class XmlEstimate implements MutableEstimate {
     {
 		return new EstimateDefinition() {
 			@Override
-            public String getName() { return name; }
+            public String getName() { return isRoot() ? "" : name; }
 
 			@Override
-            public String getDescription() { return description; }
+            public String getDescription() { return isRoot() ? "" : description; }
 
 			@Override
-            public CashCommodity getAmount() { return amount; }
+            public CashCommodity getAmount() { return isRoot() ? Commodity.zero(amount.getCurrency()) : amount; }
 
 			@Override
-            public SimpleDate getDueDate() { return dueDate; }
+            public SimpleDate getDueDate() { return isRoot() ? null : dueDate; }
 
 			@Override
-            public EstimateType getType() { return type; }
+            public EstimateType getType() { return isRoot() ? EstimateType.CATEGORY : type; }
 
 			@Override
-            public boolean isComplete() { return complete; }
+            public boolean isComplete() { return isRoot() ? false : complete; }
 		};
     }
 

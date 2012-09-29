@@ -85,9 +85,12 @@ class EstimatedAmountModel extends CurrencyInputModel {
 			public void run()
 			{
 				setValue(amount);
-				setEnabled((estimate == null) ? false
-					: ! estimate.getDefinition().getType()
-						.equals(EstimateType.CATEGORY));
+				
+				boolean mutable = (estimate instanceof MutableEstimate);
+				boolean category = (estimate == null) ? false
+					: estimate.getDefinition().getType()
+						.equals(EstimateType.CATEGORY);
+				setEnabled(mutable && ! category);
 			}
 		});
 	}

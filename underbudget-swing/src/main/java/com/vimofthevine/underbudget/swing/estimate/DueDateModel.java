@@ -92,9 +92,11 @@ class DueDateModel extends DateInputModel {
 					setDate(date);
 				}
 				
-				setEnabled((estimate == null) ? false
-					: ! estimate.getDefinition().getType()
-						.equals(EstimateType.CATEGORY));
+				boolean mutable = (estimate instanceof MutableEstimate);
+				boolean category = (estimate == null) ? false
+					: estimate.getDefinition().getType()
+						.equals(EstimateType.CATEGORY);
+				setEnabled(mutable && ! category);
 			}
 		});
 	}
