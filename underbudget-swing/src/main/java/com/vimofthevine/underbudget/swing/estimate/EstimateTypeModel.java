@@ -81,8 +81,11 @@ class EstimateTypeModel extends ComboInputModel {
 			{
 				setSelectedItem((estimate == null) ? null
 					: estimate.getDefinition().getType());
-				setEnabled((estimate == null) ? false
-					: estimate.getChildCount() == 0);
+				
+				boolean mutable = (estimate instanceof MutableEstimate);
+				boolean category = (estimate == null) ? false
+					: (estimate.getChildCount() > 0);
+				setEnabled(mutable && ! category);
 			}
 		});
 	}

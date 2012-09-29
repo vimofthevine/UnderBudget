@@ -82,7 +82,8 @@ class DescriptionModel extends TextInputModel {
 					: estimate.getDefinition().getDescription();
 				setText(text);
 				
-				setEnabled(estimate != null);
+				setEnabled((estimate instanceof MutableEstimate)
+					&& ! estimate.isRoot());
 			}
 		});
 	}
