@@ -90,45 +90,41 @@ public class Session {
 	 * @param bus    global application event bus
 	 * @param prefs  user preferences
 	 * @param source budget source
+	 * @throws BudgetSourceException if the budget could not be
+	 *         retrieved from the given budget source
 	 */
 	public Session(Frame window, EventBus bus,
 		UserPreferences prefs, BudgetSource source)
+	throws BudgetSourceException
 	{
-		try
-		{
-    		budgetSource = source;
-    		budget = budgetSource.getBudget();
-    		
-    		globalBus = bus;
-    		eventBus = new EventBus(source.toString());
-    		
-    		Currency currency = Currency.getInstance("USD");
-    		CurrencyCalculator currencyCalculator = new FixedCalculator(currency);
-    		ReverseLookupAssignmentRules rules =
-    			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
-    		TransactionAssigner assigner = new DefaultTransactionAssigner(currencyCalculator);
-    		BalanceCalculator calculator = new DefaultBalanceCalculator();
-    		
-    		state = new SessionState(globalBus, eventBus, budget);
-    		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
-    		
-    		new BudgetSourceSelectionWizard(eventBus, window, budget, prefs);
-    		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
-    		new OnDemandTransactionImporter(eventBus, budget);
-    		new OnDemandTransactionAssigner(eventBus, rules, assigner);
-    		new OnDemandBalanceCalculator(eventBus, budget, calculator, currencyCalculator);
-    		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
-    		
-    		component = SessionContentViewFactory.build(
-    			window, eventBus, currency, budget, rules,
-    			currencyCalculator, prefs);
-    		
-    		active = false;
-		}
-		catch (BudgetSourceException bse)
-		{
-			throw new IllegalArgumentException("Could not create session", bse);
-		}
+		budgetSource = source;
+		budget = budgetSource.getBudget();
+		
+		globalBus = bus;
+		eventBus = new EventBus(source.toString());
+		
+		Currency currency = Currency.getInstance("USD");
+		CurrencyCalculator currencyCalculator = new FixedCalculator(currency);
+		ReverseLookupAssignmentRules rules =
+			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
+		TransactionAssigner assigner = new DefaultTransactionAssigner(currencyCalculator);
+		BalanceCalculator calculator = new DefaultBalanceCalculator();
+		
+		state = new SessionState(globalBus, eventBus, budget);
+		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
+		
+		new BudgetSourceSelectionWizard(eventBus, window, budget, prefs);
+		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
+		new OnDemandTransactionImporter(eventBus, budget);
+		new OnDemandTransactionAssigner(eventBus, rules, assigner);
+		new OnDemandBalanceCalculator(eventBus, budget, calculator, currencyCalculator);
+		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
+		
+		component = SessionContentViewFactory.build(
+			window, eventBus, currency, budget, rules,
+			currencyCalculator, prefs);
+		
+		active = false;
 	}
 	
 	void post(Object event)

@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
@@ -39,6 +40,7 @@ import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpe
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
+import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
@@ -160,14 +162,22 @@ public class Sessions {
 	
 	private void createSession(BudgetSource source)
 	{
-		Session newSession = new Session(window,
-			eventBus, preferences, source);
+		try
+		{
+			Session newSession = new Session(window,
+				eventBus, preferences, source);
 		
-		sessions.add(newSession);
-		setActive(newSession);
-		
-		eventBus.post(new SessionListModifiedEvent(
-			sessions.toArray(new Session[sessions.size()])));
+    		sessions.add(newSession);
+    		setActive(newSession);
+    		
+    		eventBus.post(new SessionListModifiedEvent(
+    			sessions.toArray(new Session[sessions.size()])));
+		}
+		catch (BudgetSourceException bse)
+		{
+			logger.log(Level.WARNING, "Unable to create session", bse);
+			new ErrorPopup(bse, window);
+		}
 	}
 	
 	@Subscribe
