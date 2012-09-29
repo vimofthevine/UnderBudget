@@ -36,6 +36,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
@@ -56,6 +57,11 @@ public class BudgetSourceSelectionWizard {
 	private static final Logger logger = Logger.getLogger(BudgetSourceSelectionWizard.class.getName());
 	
 	/**
+	 * Last-opened directory preferences key
+	 */
+	private static final String LAST_OPENED = "LastOpenedBudgetDir.";
+	
+	/**
 	 * Event bus
 	 */
 	private final EventBus eventBus;
@@ -71,6 +77,11 @@ public class BudgetSourceSelectionWizard {
 	private final Budget budget;
 	
 	/**
+	 * User preferences
+	 */
+	private final UserPreferences preferences;
+	
+	/**
 	 * Constructs a new budget source selection wizard.
 	 * 
 	 * @param bus    event bus
@@ -78,7 +89,7 @@ public class BudgetSourceSelectionWizard {
 	 * @param budget budget
 	 */
 	public BudgetSourceSelectionWizard(EventBus bus,
-		Frame parent, Budget budget)
+		Frame parent, Budget budget, UserPreferences prefs)
 	{
 		eventBus = bus;
 		eventBus.register(this);
@@ -86,6 +97,8 @@ public class BudgetSourceSelectionWizard {
 		window = parent;
 		
 		this.budget = budget;
+		
+		preferences = prefs;
 	}
 	
 	@Subscribe
@@ -143,17 +156,20 @@ public class BudgetSourceSelectionWizard {
 	private void selectGnuCashXmlFile(final Object event)
 	{
 		final boolean open = (event instanceof SelectBudgetSourceToOpenEvent);
+		final String directory = preferences.get(LAST_OPENED + "XML", "");
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				BudgetXmlFileChooser chooser = new BudgetXmlFileChooser();
+				BudgetXmlFileChooser chooser = new BudgetXmlFileChooser(directory);
 				int result = open ? chooser.showOpenDialog(window)
 					: chooser.showSaveDialog(window);
 				
 				if (result == JFileChooser.APPROVE_OPTION)
 				{
 					final File file = chooser.getSelectedFile();
+					preferences.set(LAST_OPENED + "XML",
+						chooser.getCurrentDirectory().getAbsolutePath());
 					
 					// Get off EDT
 					new Thread() {
@@ -174,17 +190,20 @@ public class BudgetSourceSelectionWizard {
 	private void selectAesEncryptedFile(final Object event)
 	{
 		final boolean open = (event instanceof SelectBudgetSourceToOpenEvent);
+		final String directory = preferences.get(LAST_OPENED + "AES", "");
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				AesEncryptedFileChooser chooser = new AesEncryptedFileChooser();
+				AesEncryptedFileChooser chooser = new AesEncryptedFileChooser(directory);
 				int result = open ? chooser.showOpenDialog(window)
 					: chooser.showSaveDialog(window);
 				
 				if (result == JFileChooser.APPROVE_OPTION)
 				{
 					final File file = chooser.getSelectedFile();
+					preferences.set(LAST_OPENED + "AES",
+						chooser.getCurrentDirectory().getAbsolutePath());
 					
 					// Prompt for password
 					final String key = promptForPassword("Password");

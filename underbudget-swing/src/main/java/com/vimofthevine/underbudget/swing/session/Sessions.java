@@ -101,7 +101,7 @@ public class Sessions {
 		
 		busBridge = new SessionBusBridge(eventBus);
 		
-		new BudgetSourceSelectionWizard(bus, window, null);
+		new BudgetSourceSelectionWizard(bus, window, null, prefs);
 		sessions = new ArrayList<Session>();
 	}
 	

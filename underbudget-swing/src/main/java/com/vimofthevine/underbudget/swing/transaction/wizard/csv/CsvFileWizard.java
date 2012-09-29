@@ -43,9 +43,19 @@ import com.vimofthevine.underbudget.swing.transaction.wizard.TransactionSourceSe
 public class CsvFileWizard implements SourceWizard {
 	
 	/**
+	 * Last opened directory preferences key
+	 */
+	private static final String LAST_OPENED = "LastOpenedImportDir.CSV";
+	
+	/**
 	 * Event bus
 	 */
 	private EventBus bus;
+	
+	/**
+	 * User preferences
+	 */
+	private UserPreferences preferences;
 	
 	/**
 	 * CSV profile dialog
@@ -73,6 +83,8 @@ public class CsvFileWizard implements SourceWizard {
 		
 		bus = new EventBus();
 		bus.register(this);
+		
+		preferences = prefs;
 		
 		this.window = window;
 		this.wizard = wizard;
@@ -130,15 +142,24 @@ public class CsvFileWizard implements SourceWizard {
 	void selectFile(final Frame window, final CsvProfile profile,
 		final TransactionSourceSelectionWizard wizard)
 	{
+		final String directory = (preferences == null) ? ""
+			: preferences.get(LAST_OPENED, "");
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				CsvFileChooser chooser = new CsvFileChooser();
+				CsvFileChooser chooser = new CsvFileChooser(directory);
 				int result = chooser.showOpenDialog(window);
 				
 				if (result == JFileChooser.APPROVE_OPTION)
 				{
 					final File file = chooser.getSelectedFile();
+					
+					if (preferences != null)
+					{
+						preferences.set(LAST_OPENED,
+							chooser.getCurrentDirectory().getAbsolutePath());
+					}
 					
 					// Get off EDT
 					new Thread() {
@@ -158,6 +179,7 @@ public class CsvFileWizard implements SourceWizard {
 				}
 				
 				bus = null;
+				preferences = null;
 			}
 		});
 

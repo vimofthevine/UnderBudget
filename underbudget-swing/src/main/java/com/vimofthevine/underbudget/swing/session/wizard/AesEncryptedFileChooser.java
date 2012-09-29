@@ -16,6 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.session.wizard;
 
+import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -28,8 +30,10 @@ class AesEncryptedFileChooser extends JFileChooser {
 
 	/**
 	 * Constructs a new AES encrypted budget file chooser.
+	 * 
+	 * @param directory starting directory
 	 */
-	AesEncryptedFileChooser()
+	AesEncryptedFileChooser(String directory)
 	{
 		// Add the accept-all file filter
 		setAcceptAllFileFilterUsed(true);
@@ -38,6 +42,13 @@ class AesEncryptedFileChooser extends JFileChooser {
 		FileFilter fileFilter = new AesEncryptedFileFilter();
 		addChoosableFileFilter(fileFilter);
 		setFileFilter(fileFilter);
+		
+		// Set directory
+		File dir = new File(directory);
+		if (dir.exists())
+		{
+			setCurrentDirectory(dir);
+		}
 	}
 
 }
