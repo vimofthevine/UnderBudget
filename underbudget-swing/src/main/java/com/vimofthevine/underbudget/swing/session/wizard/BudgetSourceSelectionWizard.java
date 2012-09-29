@@ -156,7 +156,7 @@ public class BudgetSourceSelectionWizard {
 	private void selectGnuCashXmlFile(final Object event)
 	{
 		final boolean open = (event instanceof SelectBudgetSourceToOpenEvent);
-		final String directory = preferences.get(LAST_OPENED + "GnuCash", "");
+		final String directory = preferences.get(LAST_OPENED + "XML", "");
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
@@ -168,7 +168,7 @@ public class BudgetSourceSelectionWizard {
 				if (result == JFileChooser.APPROVE_OPTION)
 				{
 					final File file = chooser.getSelectedFile();
-					preferences.set(LAST_OPENED + "GnuCash",
+					preferences.set(LAST_OPENED + "XML",
 						chooser.getCurrentDirectory().getAbsolutePath());
 					
 					// Get off EDT

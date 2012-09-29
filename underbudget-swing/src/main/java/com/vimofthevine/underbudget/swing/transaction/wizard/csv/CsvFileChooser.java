@@ -16,6 +16,8 @@
 
 package com.vimofthevine.underbudget.swing.transaction.wizard.csv;
 
+import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -29,8 +31,10 @@ class CsvFileChooser extends JFileChooser {
 
 	/**
 	 * Constructs a new CSV file chooser.
+	 * 
+	 * @param directory starting directory
 	 */
-	CsvFileChooser()
+	CsvFileChooser(String directory)
 	{
 		// Add the accept-all file filter
 		setAcceptAllFileFilterUsed(true);
@@ -39,6 +43,13 @@ class CsvFileChooser extends JFileChooser {
 		FileFilter fileFilter = new CsvFileFilter();
 		addChoosableFileFilter(fileFilter);
 		setFileFilter(fileFilter);
+		
+		// Set directory
+		File dir = new File(directory);
+		if (dir.exists())
+		{
+			setCurrentDirectory(dir);
+		}
 	}
 
 }

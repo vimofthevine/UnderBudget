@@ -33,6 +33,11 @@ import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class GnuCashXmlFileWizard implements SourceWizard {
+	
+	/**
+	 * Last opened directory preferences key
+	 */
+	private static final String LAST_OPENED = "LastOpenedImportDir.GnuCash";
 
 	/**
 	 * Prompts the user for the location of
@@ -45,17 +50,21 @@ public class GnuCashXmlFileWizard implements SourceWizard {
 	@Override
 	public void select(final Frame window,
 		final TransactionSourceSelectionWizard wizard,
-		UserPreferences prefs)
+		final UserPreferences prefs)
 	{
+		final String directory = prefs.get(LAST_OPENED, "");
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				GnuCashXmlFileChooser chooser = new GnuCashXmlFileChooser();
+				GnuCashXmlFileChooser chooser = new GnuCashXmlFileChooser(directory);
 				int result = chooser.showOpenDialog(window);
 				
 				if (result == JFileChooser.APPROVE_OPTION)
 				{
 					final File file = chooser.getSelectedFile();
+					prefs.set(LAST_OPENED,
+						chooser.getCurrentDirectory().getAbsolutePath());
 					
 					// Get off EDT
 					new Thread() {
