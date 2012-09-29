@@ -100,6 +100,7 @@ public class OnDemandTransactionImporter {
 		{
 			{
 				setName("Import transactions thread");
+				setDaemon(true);
 			}
 			
 			public void run()

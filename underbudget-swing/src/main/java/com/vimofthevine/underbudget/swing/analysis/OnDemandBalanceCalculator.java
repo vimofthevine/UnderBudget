@@ -120,6 +120,7 @@ public class OnDemandBalanceCalculator {
 		{
 			{
 				setName("Calculate balances thread");
+				setDaemon(true);
 			}
 			
 			public void run()

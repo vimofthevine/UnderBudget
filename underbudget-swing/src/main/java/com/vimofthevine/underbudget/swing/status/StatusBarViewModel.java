@@ -26,6 +26,7 @@ import javax.swing.text.Document;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 
 /**
@@ -119,6 +120,7 @@ class StatusBarViewModel {
 						public void run()
 						{
 							messageModel.setText("");
+							timer = null;
 						}
 					});
 				}
@@ -140,6 +142,16 @@ class StatusBarViewModel {
 				}
 			}
 		});
+	}
+	
+	@Subscribe
+	public void shutdown(ApplicationShutdownEvent event)
+	{
+		if (timer != null)
+		{
+			timer.cancel();
+			timer = null;
+		}
 	}
 	
 }

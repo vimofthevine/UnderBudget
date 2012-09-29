@@ -112,6 +112,7 @@ public class OnDemandTransactionAssigner {
 		{
 			{
 				setName("Assign transactions thread");
+				setDaemon(true);
 			}
 			
 			public void run()
