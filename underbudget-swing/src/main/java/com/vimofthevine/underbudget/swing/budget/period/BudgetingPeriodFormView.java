@@ -62,6 +62,12 @@ class BudgetingPeriodFormView implements ActionListener {
 	private final Map<PeriodType, BudgetingPeriodFormViewModel> forms;
 	
 	/**
+	 * Flag to check whether the period type selection was
+	 * changed programmatically or by the user.
+	 */
+	private boolean changedByApi = false;
+	
+	/**
 	 * Constructs a new budgeting period form view instance.
 	 * 
 	 * @param container Swing component for this view
@@ -106,7 +112,7 @@ class BudgetingPeriodFormView implements ActionListener {
 	 * @param component form view component
 	 * @param model     form view model
 	 */
-	public void addForm(PeriodType type, Component component,
+	void addForm(PeriodType type, Component component,
 		BudgetingPeriodFormViewModel model)
 	{
 		forms.put(type, model);
@@ -118,8 +124,9 @@ class BudgetingPeriodFormView implements ActionListener {
 	 * 
 	 * @param type period type form to be shown
 	 */
-	public void show(PeriodType type)
+	void show(PeriodType type)
 	{
+		changedByApi = true;
 		typeSelection.setSelectedItem(type);
 	}
 
@@ -128,7 +135,14 @@ class BudgetingPeriodFormView implements ActionListener {
     {
 		PeriodType type = (PeriodType) typeSelection.getSelectedItem();
 		layout.show(view, type.toString());
-		forms.get(type).update();
+		
+		if ( ! changedByApi)
+		{
+			forms.get(type).update();
+		}
+		
+		// Reset flag
+		changedByApi = false;
     }
 
 }

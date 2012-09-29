@@ -42,6 +42,11 @@ import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 class PaydateMonthFormViewModel implements MonthFormViewModel {
 	
 	/**
+	 * Budget
+	 */
+	private final Budget budget;
+	
+	/**
 	 * Budgeting period updater
 	 */
 	private final BudgetPeriodUpdater updater;
@@ -84,6 +89,7 @@ class PaydateMonthFormViewModel implements MonthFormViewModel {
 	 */
 	PaydateMonthFormViewModel(EventBus bus, Budget budget)
 	{
+		this.budget = budget;
 		updater = new BudgetPeriodUpdater(bus, budget);
 		
 		if (budget.getDefinition().getPeriod().getType()
@@ -136,7 +142,12 @@ class PaydateMonthFormViewModel implements MonthFormViewModel {
 	{
 		period = new PaydateMonthPeriod(selectedMonth, selectedYear);
 		summaryModel.setText(period.getDescription());
-		updater.update(period);
+		
+		// Avoid unnecessary updating of the budget
+		if ( ! period.equals(budget.getDefinition().getPeriod()))
+		{
+			updater.update(period);
+		}
 	}
 	
 	/**

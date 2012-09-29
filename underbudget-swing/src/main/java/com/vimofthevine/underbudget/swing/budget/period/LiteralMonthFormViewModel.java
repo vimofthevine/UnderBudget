@@ -42,6 +42,11 @@ import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
 class LiteralMonthFormViewModel implements MonthFormViewModel {
 	
 	/**
+	 * Budget
+	 */
+	private final Budget budget;
+	
+	/**
 	 * Budgeting period updater
 	 */
 	private final BudgetPeriodUpdater updater;
@@ -84,6 +89,7 @@ class LiteralMonthFormViewModel implements MonthFormViewModel {
 	 */
 	LiteralMonthFormViewModel(EventBus bus, Budget budget)
 	{
+		this.budget = budget;
 		updater = new BudgetPeriodUpdater(bus, budget);
 		
 		if (budget.getDefinition().getPeriod()
@@ -136,7 +142,12 @@ class LiteralMonthFormViewModel implements MonthFormViewModel {
 	{
 		period = new LiteralMonthPeriod(selectedMonth, selectedYear);
 		summaryModel.setText(period.getDescription());
-		updater.update(period);
+		
+		// Avoid unnecessary updating of the budget
+		if ( ! period.equals(budget.getDefinition().getPeriod()))
+		{
+			updater.update(period);
+		}
 	}
 	
 	/**
