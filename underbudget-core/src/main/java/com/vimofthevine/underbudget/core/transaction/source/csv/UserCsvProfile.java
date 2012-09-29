@@ -236,5 +236,11 @@ public class UserCsvProfile implements CsvProfile {
 		else
 			return Field.NONE;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "User profile, " + description;
+	}
 
 }

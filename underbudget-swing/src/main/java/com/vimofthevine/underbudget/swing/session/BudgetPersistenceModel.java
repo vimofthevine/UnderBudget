@@ -31,6 +31,7 @@ import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
+import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
@@ -117,6 +118,8 @@ class BudgetPersistenceModel {
         		source.persist();
         		logger.log(Level.INFO, "Save successful");
         		eventBus.post(new SessionSavedEvent());
+        		eventBus.post(new StatusMessageEvent("Budget saved to "
+        			+ source.getDescription(), 5000));
 			}
 			catch (BudgetSourceException bse)
 			{
@@ -142,6 +145,7 @@ class BudgetPersistenceModel {
     		BudgetSource template = new TemplateBudgetSource(
     			preferences.get("HOME", "/"), budget);
     		template.persist();
+    		eventBus.post(new StatusMessageEvent("Template has been updated", 5000));
 		}
 		catch (BudgetSourceException bse)
 		{

@@ -264,7 +264,19 @@ enum MenuAction {
 			
 			public void actionPerformed(ActionEvent actionEvent)
 			{
-				bus.post(event);
+				// Get off EDT
+				new Thread()
+				{
+					{
+						setName("Menu action handler thread");
+						setDaemon(true);
+					}
+					
+					public void run()
+					{
+						bus.post(event);
+					}
+				}.start();
 			}
 		};
 	}

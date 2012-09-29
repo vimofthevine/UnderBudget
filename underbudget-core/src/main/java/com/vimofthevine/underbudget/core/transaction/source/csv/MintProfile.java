@@ -85,5 +85,11 @@ public final class MintProfile implements StockCsvProfile {
 		else
 			return fields[column];
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Mint CSV profile";
+	}
 
 }

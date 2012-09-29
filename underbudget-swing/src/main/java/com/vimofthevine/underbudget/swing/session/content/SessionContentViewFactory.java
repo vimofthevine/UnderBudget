@@ -21,7 +21,6 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.util.Currency;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.EventBus;
@@ -32,8 +31,7 @@ import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRule
 import com.vimofthevine.underbudget.swing.estimate.BalanceImpactViewFactory;
 import com.vimofthevine.underbudget.swing.estimate.EstimateProgressViewFactory;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
-import com.vimofthevine.underbudget.swing.status.StatusBar;
-import com.vimofthevine.underbudget.swing.status.StatusBarModel;
+import com.vimofthevine.underbudget.swing.status.StatusBarFactory;
 import com.vimofthevine.underbudget.swing.summary.AnalysisResultsViewFactory;
 import com.vimofthevine.underbudget.swing.summary.AnalysisSummaryViewFactory;
 import com.vimofthevine.underbudget.swing.transaction.ImportedTransactionsViewFactory;
@@ -83,10 +81,7 @@ public abstract class SessionContentViewFactory {
 		view.add(estimateProgress, SessionContent.ESTIMATE_PROGRESS);
 		view.add(importedTransactions, SessionContent.IMPORTED_TRANSACTIONS);
 		
-		JPanel statusBar = new JPanel();
-		statusBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 2, 2));
-		StatusBar status = new StatusBar(statusBar);
-		StatusBarModel statusModel = new StatusBarModel(status);
+		Component statusBar = StatusBarFactory.build(bus);
 		
 		JPanel sessionContent = new JPanel(new BorderLayout());
 		sessionContent.add(swapableContent, BorderLayout.CENTER);

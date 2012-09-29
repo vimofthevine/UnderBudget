@@ -275,5 +275,11 @@ public class CsvFileSource implements TransactionSource {
 		tmp = tmp.replaceFirst("\"$", "");
 		return tmp.replace("\"\"", "\"");
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "CSV file " + file.getAbsolutePath() + " (" + profile + ")";
+	}
 
 }

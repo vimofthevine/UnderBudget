@@ -44,5 +44,13 @@ public interface BudgetSource {
 	 *         be persisted with this budget source
 	 */
 	public void persist() throws BudgetSourceException;
+	
+	/**
+	 * Returns a short description of this budget source,
+	 * suitable for displaying to the user.
+	 * 
+	 * @return source description
+	 */
+	public String getDescription();
 
 }
