@@ -17,7 +17,6 @@
 package com.vimofthevine.underbudget.xml.budget.source;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -114,5 +113,11 @@ public class BudgetXmlFileSource implements BudgetSource {
 			throw new BudgetSourceException("Unable to save budget", e);
 		}
     }
+	
+	@Override
+	public String getDescription()
+	{
+		return (xmlFile == null) ? "New XML file" : xmlFile.getAbsolutePath();
+	}
 
 }

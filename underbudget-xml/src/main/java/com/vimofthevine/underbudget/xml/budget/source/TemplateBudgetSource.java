@@ -180,5 +180,11 @@ public class TemplateBudgetSource implements BudgetSource {
 			logger.log(Level.INFO, "No budget given to replace template");
 		}
 	}
+	
+	@Override
+	public String getDescription()
+	{
+		return "Template";
+	}
 
 }
