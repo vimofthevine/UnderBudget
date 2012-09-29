@@ -43,6 +43,11 @@ public class CustomPeriodFormViewModel
 implements BudgetingPeriodFormViewModel {
 	
 	/**
+	 * Budget
+	 */
+	private final Budget budget;
+	
+	/**
 	 * Budgeting period updater
 	 */
 	private final BudgetPeriodUpdater updater;
@@ -85,6 +90,7 @@ implements BudgetingPeriodFormViewModel {
 	 */
 	CustomPeriodFormViewModel(EventBus bus, Budget budget)
 	{
+		this.budget = budget;
 		updater = new BudgetPeriodUpdater(bus, budget);
 		
 		if (budget.getDefinition().getPeriod()
@@ -136,7 +142,12 @@ implements BudgetingPeriodFormViewModel {
 	{
 		period = new DefaultCustomPeriod(startDate, endDate);
 		summaryModel.setText(period.getDescription());
-		updater.update(period);
+		
+		// Avoid unnecessary updating of the budget
+		if ( ! period.equals(budget.getDefinition().getPeriod()))
+		{
+			updater.update(period);
+		}
 	}
 	
 	/**
