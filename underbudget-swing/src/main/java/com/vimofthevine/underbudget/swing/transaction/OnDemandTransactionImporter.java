@@ -26,6 +26,8 @@ import com.vimofthevine.underbudget.core.budget.period.BudgetingPeriod;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 import com.vimofthevine.underbudget.core.transaction.source.TransactionImportException;
 import com.vimofthevine.underbudget.core.transaction.source.TransactionSource;
+import com.vimofthevine.underbudget.swing.status.ProgressEvent;
+import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsFromEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.SelectTransactionSourceEvent;
@@ -93,33 +95,51 @@ public class OnDemandTransactionImporter {
 	@Subscribe
 	public void importTransactions(ImportTransactionsEvent event)
 	{
-		// If no source defined, prompt for source
-		if (source == null)
+		// Do the import in a separate thread so we don't hold up the event bus
+		new Thread()
 		{
-			logger.log(Level.FINE, "No previous transaction source, prompting for source");
-			importTransactionsFrom(new ImportTransactionsFromEvent());
-		}
-		else
-		{
-			BudgetingPeriod period = budget.getDefinition().getPeriod();
-			
-			try
 			{
-				logger.log(Level.INFO, "Importing transactions from " + source);
-				Transaction[] transactions = source.getTransactions(period);
-				logger.log(Level.FINE, "Finished importing");
-				
-        		if (transactions != null)
+				setName("Import transactions thread");
+			}
+			
+			public void run()
+			{
+        		// If no source defined, prompt for source
+        		if (source == null)
         		{
-					logger.log(Level.FINE, transactions.length + " transactions imported");
-        			eventBus.post(new TransactionsImportedEvent(transactions));
+        			logger.log(Level.FINE, "No previous transaction source, prompting for source");
+        			importTransactionsFrom(new ImportTransactionsFromEvent());
+        		}
+        		else
+        		{
+        			BudgetingPeriod period = budget.getDefinition().getPeriod();
+        			
+        			try
+        			{
+        				logger.log(Level.INFO, "Importing transactions from " + source);
+        				eventBus.post(new StatusMessageEvent("Importing transactions from " + source));
+        				eventBus.post(new ProgressEvent(true));
+        				
+        				Transaction[] transactions = source.getTransactions(period);
+        				
+        				eventBus.post(new ProgressEvent(false));
+        				eventBus.post(new StatusMessageEvent(transactions.length
+        					+ " transactions imported", 5000));
+        				logger.log(Level.FINE, "Finished importing");
+        				
+                		if (transactions != null)
+                		{
+        					logger.log(Level.FINE, transactions.length + " transactions imported");
+                			eventBus.post(new TransactionsImportedEvent(transactions));
+                		}
+        			}
+        			catch (TransactionImportException tie)
+        			{
+        				logger.log(Level.WARNING, "Error importing transactions", tie);
+        			}
         		}
 			}
-			catch (TransactionImportException tie)
-			{
-				logger.log(Level.WARNING, "Error importing transactions", tie);
-			}
-		}
+		}.start();
 	}
 	
 	@Subscribe

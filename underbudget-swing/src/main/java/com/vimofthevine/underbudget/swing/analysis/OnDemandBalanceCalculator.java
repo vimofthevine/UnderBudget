@@ -24,6 +24,8 @@ import com.vimofthevine.underbudget.core.balance.EndingBalances;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
+import com.vimofthevine.underbudget.swing.status.ProgressEvent;
+import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
 
 /**
  * The <code>OnDemandBalanceCalculator</code> performs
@@ -113,19 +115,36 @@ public class OnDemandBalanceCalculator {
 	@Subscribe
 	public void calculateBalances(CalculateBalancesEvent event)
 	{
-		// If no actuals, use zeros
-		ActualFigures actualFigures = (actuals == null)
-			? new UnevaluatedActuals(currencyCalculator.zero())
-			: actuals;
-			
-		EndingBalances balances = calculator.calculate(
-			budget.getDefinition().getInitialBalance(),
-			budget.getRootEstimate(), actualFigures, currencyCalculator);
-		
-		if (balances != null)
+		// Do in a separate thread so we don't hold up the event bus
+		new Thread()
 		{
-			eventBus.post(new BalancesCalculatedEvent(balances));
-		}
+			{
+				setName("Calculate balances thread");
+			}
+			
+			public void run()
+			{
+        		// If no actuals, use zeros
+        		ActualFigures actualFigures = (actuals == null)
+        			? new UnevaluatedActuals(currencyCalculator.zero())
+        			: actuals;
+        			
+        		eventBus.post(new StatusMessageEvent("Calculating ending balances"));
+        		eventBus.post(new ProgressEvent(true));
+        			
+        		EndingBalances balances = calculator.calculate(
+        			budget.getDefinition().getInitialBalance(),
+        			budget.getRootEstimate(), actualFigures, currencyCalculator);
+        		
+        		eventBus.post(new ProgressEvent(false));
+        		eventBus.post(new StatusMessageEvent("Ending balances have been calculated", 5000));
+        		
+        		if (balances != null)
+        		{
+        			eventBus.post(new BalancesCalculatedEvent(balances));
+        		}
+			}
+		}.start();
 	}
 
 }

@@ -24,6 +24,8 @@ import com.vimofthevine.underbudget.core.assignment.TransactionAssignments;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
 import com.vimofthevine.underbudget.swing.assignment.events.AssignTransactionsEvent;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
+import com.vimofthevine.underbudget.swing.status.ProgressEvent;
+import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.ImportTransactionsEvent;
 import com.vimofthevine.underbudget.swing.transaction.events.TransactionsImportedEvent;
 
@@ -105,20 +107,37 @@ public class OnDemandTransactionAssigner {
 	@Subscribe
 	public void assignTransactions(AssignTransactionsEvent event)
 	{
-		// If nothing to assign, perform an import
-		if (transactions == null || transactions.length == 0)
+		// Do in a separate thread so we don't hold up the event bus
+		new Thread()
 		{
-			eventBus.post(new ImportTransactionsEvent());
-		}
-		else
-		{
-			TransactionAssignments assignments = assigner.assign(transactions, rules);
-			
-			if (assignments != null)
 			{
-				eventBus.post(new TransactionsAssignedEvent(assignments));
+				setName("Assign transactions thread");
 			}
-		}
+			
+			public void run()
+			{
+        		// If nothing to assign, perform an import
+        		if (transactions == null || transactions.length == 0)
+        		{
+        			eventBus.post(new ImportTransactionsEvent());
+        		}
+        		else
+        		{
+        			eventBus.post(new StatusMessageEvent("Assigning imported transactions"));
+        			eventBus.post(new ProgressEvent(true));
+        			
+        			TransactionAssignments assignments = assigner.assign(transactions, rules);
+        			
+        			eventBus.post(new ProgressEvent(false));
+        			eventBus.post(new StatusMessageEvent("Transactions have been assigned", 5000));
+        			
+        			if (assignments != null)
+        			{
+        				eventBus.post(new TransactionsAssignedEvent(assignments));
+        			}
+        		}
+			}
+		}.start();
 	}
 
 }

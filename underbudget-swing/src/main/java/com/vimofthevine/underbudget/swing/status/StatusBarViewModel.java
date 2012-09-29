@@ -18,6 +18,8 @@ package com.vimofthevine.underbudget.swing.status;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.text.Document;
@@ -33,6 +35,11 @@ import com.vimofthevine.underbudget.swing.widgets.SimpleDocument;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 class StatusBarViewModel {
+	
+	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(StatusBarViewModel.class.getName());
 	
 	/**
 	 * Status message document model
@@ -86,6 +93,7 @@ class StatusBarViewModel {
 	@Subscribe
 	public void displayMessage(StatusMessageEvent event)
 	{
+		logger.log(Level.FINER, "Received status message event, " + event);
 		final String message = event.getMessage();
 		
 		// Cancel the existing timer (if any)
