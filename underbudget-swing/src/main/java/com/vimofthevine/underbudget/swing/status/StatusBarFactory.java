@@ -16,49 +16,31 @@
 
 package com.vimofthevine.underbudget.swing.status;
 
-import javax.swing.SwingUtilities;
+import java.awt.Component;
 
-import com.google.common.eventbus.Subscribe;
+import javax.swing.JPanel;
+
+import com.google.common.eventbus.EventBus;
 
 /**
- * Status bar presentation model.
+ * Factory for creating status bar view instances.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class StatusBarModel {
+public abstract class StatusBarFactory {
 
 	/**
-	 * Status bar
-	 */
-	private final StatusBar status;
-	
-	/**
-	 * Constructs a new status bar model.
+	 * Constructs a new status bar view instance.
 	 * 
-	 * @param status status bar
+	 * @param bus event bus
+	 * @return status bar view
 	 */
-	public StatusBarModel(StatusBar status)
+	public static Component build(EventBus bus)
 	{
-		this.status = status;
+		StatusBarViewModel model = new StatusBarViewModel(bus);
+		JPanel view = new JPanel();
+		new StatusBarView(view, model);
+		return view;
 	}
-	
-	@Subscribe
-	public void updateStatus(final StatusEvent event)
-	{
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run()
-			{
-				if (event.getMessage() != null)
-				{
-					status.displayMessage(event.getMessage());
-				}
-				
-				if (event.getProgress() != -1)
-				{
-					status.displayProgress(event.getProgress());
-				}
-			}
-		});
-	}
-	
+
 }
