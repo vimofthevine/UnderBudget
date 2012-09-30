@@ -18,34 +18,28 @@ package com.vimofthevine.underbudget.swing.session.source;
 
 import java.awt.Frame;
 
-import com.google.common.eventbus.EventBus;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceFactory;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
-import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
-import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 
 /**
- * 
+ * Event generated to notify the specific budget source
+ * selection wizard to continue prompting the user for
+ * budget source details.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class SelectSourceForAction {
 	
 	/**
-	 * Whether the action is an open or save action
+	 * Original budget source selection request
 	 */
-	private final boolean isOpen;
+	private final SelectSource selectionRequest;
 	
 	/**
 	 * Source type to be selected
 	 */
 	private final SourceType sourceType;
-	
-	/**
-	 * Event bus
-	 */
-	private final EventBus eventBus;
 	
 	/**
 	 * User preferences
@@ -58,18 +52,18 @@ public class SelectSourceForAction {
 	private final Frame window;
 	
 	/**
-	 * @param isOpenAction
-	 * @param type
-	 * @param bus
-	 * @param prefs
-	 * @param parent
+	 * Constructs a new select-source action event.
+	 * 
+	 * @param request original select budget source request
+	 * @param type    type of budget source to be selected
+	 * @param prefs   user preferences
+	 * @param parent  parent window
 	 */
-	public SelectSourceForAction(boolean isOpenAction, SourceType type,
-		EventBus bus, UserPreferences prefs, Frame parent)
+	SelectSourceForAction(SelectSource request, SourceType type,
+		UserPreferences prefs, Frame parent)
 	{
-		isOpen = isOpenAction;
+		selectionRequest = request;
 		sourceType = type;
-		eventBus = bus;
 		preferences = prefs;
 		window = parent;
 	}
@@ -81,7 +75,7 @@ public class SelectSourceForAction {
 	
 	public boolean isOpenEvent()
 	{
-		return isOpen;
+		return selectionRequest.isOpenRequest();
 	}
 	
 	public Frame getParentWindow()
@@ -97,14 +91,7 @@ public class SelectSourceForAction {
 	public void select(BudgetSourceFactory factory,
 		RecentSession session)
 	{
-		if (isOpen)
-		{
-			eventBus.post(new BudgetSourceToOpenSelectedEvent(factory, session));
-		}
-		else
-		{
-			eventBus.post(new BudgetSourceToSaveSelectedEvent(factory, session));
-		}
+		selectionRequest.sourceSelected(factory, session);
 	}
 
 }

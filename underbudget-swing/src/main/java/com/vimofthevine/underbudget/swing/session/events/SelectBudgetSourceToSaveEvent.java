@@ -22,6 +22,7 @@ package com.vimofthevine.underbudget.swing.session.events;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
+@Deprecated
 public class SelectBudgetSourceToSaveEvent {
 	
 	@Override

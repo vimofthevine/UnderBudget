@@ -36,6 +36,7 @@ import com.vimofthevine.underbudget.swing.preferences.PropertiesFileUserPreferen
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.Sessions;
 import com.vimofthevine.underbudget.swing.session.recent.RecentlyOpenedSessions;
+import com.vimofthevine.underbudget.swing.session.source.BudgetSourceSelectionWizard;
 import com.vimofthevine.underbudget.swing.tutorial.BasicUsageTutorialEvent;
 import com.vimofthevine.underbudget.swing.tutorial.TutorialEventListener;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindow;
@@ -90,6 +91,8 @@ public class Application {
 		new ApplicationMenu(menuModel, menuBar);
 		JToolBar toolBar = new JToolBar(props.getTitle());
 		new ApplicationToolBar(menuModel, toolBar);
+		
+		eventBus.register(new BudgetSourceSelectionWizard(frame, preferences));
 		
 		new Sessions(frame, eventBus, preferences);
 		new AboutDialog(props, frame, eventBus);

@@ -38,20 +38,18 @@ import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SourceTypeSelectionDialog {
+class SourceTypeSelectionDialog {
 
 	/**
 	 * Constructs a new source type selection dialog.
 	 * 
-	 * @param window application window
-	 * @param wizard budget source selection wizard
-	 * @param isOpen <code>true</code> if the selected file is to
-	 *               be opened, else <code>false</code> to be saved
-	 * @param event  original select-source event
+	 * @param window  application window
+	 * @param wizard  budget source selection wizard
+	 * @param request source selection request
 	 */
-	public SourceTypeSelectionDialog(final Frame window,
+	SourceTypeSelectionDialog(final Frame window,
 		final BudgetSourceSelectionWizard wizard,
-		final boolean isOpen)
+		final SelectSource request)
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -121,7 +119,7 @@ public class SourceTypeSelectionDialog {
 				new Thread() {
 					public void run()
 					{
-						wizard.typeSelected(type, isOpen);
+						wizard.typeSelected(type, request);
 					}
 				}.start();
 			}

@@ -23,13 +23,22 @@ import java.util.logging.Logger;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
-import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
-import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
 import com.vimofthevine.underbudget.swing.session.source.aes.AesEncryptedFileWizard;
 import com.vimofthevine.underbudget.swing.session.source.xml.BudgetXmlFileWizard;
 
 /**
- * Wizard for selecting a budget to be opened.
+ * Wizard for selecting a budget source (e.g., file)
+ * to be opened or for a source in which an existing
+ * budget will be stored.
+ * <p>
+ * The wizard is created once per application, and
+ * acts as a global service provider. When any part
+ * of the application needs to prompt the user for
+ * a budget source, an event is to be posted to any
+ * event bus for which the wizard has been registered.
+ * The selection request event contains a callback
+ * method for notifying the original requestor of
+ * the selected budget source.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
@@ -41,7 +50,7 @@ public class BudgetSourceSelectionWizard {
 	private static final Logger logger = Logger.getLogger(BudgetSourceSelectionWizard.class.getName());
 	
 	/**
-	 * Event bus
+	 * Internal event bus
 	 */
 	private final EventBus eventBus;
 	
@@ -58,52 +67,40 @@ public class BudgetSourceSelectionWizard {
 	/**
 	 * Constructs a new budget source selection wizard.
 	 * 
-	 * @param bus    event bus
 	 * @param parent application window
 	 * @param prefs  user preferences
 	 */
-	public BudgetSourceSelectionWizard(EventBus bus,
-		Frame parent, UserPreferences prefs)
+	public BudgetSourceSelectionWizard(Frame parent,
+		UserPreferences prefs)
 	{
-		eventBus = bus;
-		eventBus.register(this);
-		
 		window = parent;
-		
 		preferences = prefs;
 		
+		eventBus = new EventBus("Budget source selection wizard event bus");
+		// This is where plugin budget sources would be used
 		eventBus.register(new AesEncryptedFileWizard());
 		eventBus.register(new BudgetXmlFileWizard());
 	}
 	
 	@Subscribe
-	public void selectSourceToOpen(SelectBudgetSourceToOpenEvent event)
+	public void select(SelectSource event)
 	{
-		logger.log(Level.FINE, "Prompting for source to open");
-		new SourceTypeSelectionDialog(window, this, true);
-	}
-	
-	@Subscribe
-	public void selectSourceToSave(SelectBudgetSourceToSaveEvent event)
-	{
-		logger.log(Level.FINE, "Prompting for source to save");
-		new SourceTypeSelectionDialog(window, this, false);
+		logger.log(Level.FINE, "Prompting for type of source to be selected");
+		new SourceTypeSelectionDialog(window, this, event);
 	}
 	
 	/**
-	 * Upon selection of a source type, send an event to trigger
+	 * Upon selection of a source type, sends an event to trigger
 	 * the appropriate wizard to prompt for the source details.
 	 * 
 	 * @param type  source type to be opened/saved
-	 * @param isOpen <code>true</code> if the selected source is to
-	 *               be opened, else <code>false</false> if choosing
-	 *               a source location to save an existing budget
+	 * @param event select budget source request event
 	 */
-	void typeSelected(SourceType type, boolean isOpen)
+	void typeSelected(SourceType type, SelectSource event)
 	{
-		logger.log(Level.FINER, type + " type has been selected (open? " + isOpen);
-		eventBus.post(new SelectSourceForAction( isOpen, type,
-			eventBus, preferences, window));
+		logger.log(Level.FINER, type + " type has been selected");
+		eventBus.post(new SelectSourceForAction(event, type,
+			preferences, window));
 	}
 
 }

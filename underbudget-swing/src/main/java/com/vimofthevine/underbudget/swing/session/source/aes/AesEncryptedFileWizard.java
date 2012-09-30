@@ -17,7 +17,6 @@
 package com.vimofthevine.underbudget.swing.session.source.aes;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -27,7 +26,6 @@ import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.session.recent.RecentAesEncryptedFile;
 import com.vimofthevine.underbudget.swing.session.source.SelectSourceForAction;
 import com.vimofthevine.underbudget.swing.session.source.SourceType;
-import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.swing.widgets.PasswordPrompt;
 import com.vimofthevine.underbudget.xml.budget.source.AesEncryptedFileFactory;
 
@@ -111,19 +109,12 @@ public class AesEncryptedFileWizard {
 		new Thread() {
 			public void run()
 			{
-				try
-				{
-					AesEncryptedFileFactory factory
-						= new AesEncryptedFileFactory(file, key);
-    				RecentAesEncryptedFile session
-    					= new RecentAesEncryptedFile(file);
+				AesEncryptedFileFactory factory
+					= new AesEncryptedFileFactory(file, key);
+   				RecentAesEncryptedFile session
+   					= new RecentAesEncryptedFile(file);
     				
-    				event.select(factory, session);
-				}
-				catch (FileNotFoundException fnfe)
-				{
-					new ErrorPopup(fnfe, event.getParentWindow());
-				}
+   				event.select(factory, session);
 			}
 		}.start();
 	}

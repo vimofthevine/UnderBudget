@@ -25,6 +25,7 @@ import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
+@Deprecated
 public class BudgetSourceToSaveSelectedEvent {
 	
 	/**
