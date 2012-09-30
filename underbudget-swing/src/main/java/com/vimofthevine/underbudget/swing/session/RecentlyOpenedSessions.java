@@ -18,6 +18,8 @@ package com.vimofthevine.underbudget.swing.session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -26,6 +28,8 @@ import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.RecentSessionsChangedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
 import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
+import com.vimofthevine.underbudget.swing.session.source.aes.AesEncryptedFileSummary;
+import com.vimofthevine.underbudget.swing.session.source.xml.BudgetXmlFileSummary;
 
 /**
  * Maintains the list of recently opened sessions, reading
@@ -36,9 +40,19 @@ import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 public class RecentlyOpenedSessions {
 	
 	/**
+	 * Log handle
+	 */
+	private static final Logger logger = Logger.getLogger(RecentlyOpenedSessions.class.getName());
+	
+	/**
 	 * Maximum number of recent sessions to remember
 	 */
 	private static final int MAX = 5;
+	
+	/**
+	 * Preference key prefix
+	 */
+	private static final String KEY = "RecentBudget";
 	
 	/**
 	 * Event bus
@@ -69,6 +83,30 @@ public class RecentlyOpenedSessions {
 		preferences = prefs;
 		
 		sessions = new ArrayList<SourceSummary>();
+		
+		for (int i=0; i<MAX; i++)
+		{
+			String type = preferences.get(KEY + i, "");
+			
+			try
+			{
+    			if (type.equals(AesEncryptedFileSummary.TYPE))
+    			{
+    				sessions.add(new AesEncryptedFileSummary(KEY+i, preferences));
+    			}
+    			else if (type.equals(BudgetXmlFileSummary.TYPE))
+    			{
+    				sessions.add(new BudgetXmlFileSummary(KEY+i, preferences));
+    			}
+			}
+			catch (IllegalArgumentException iae)
+			{
+				logger.log(Level.WARNING, iae.getMessage());
+			}
+		}
+		
+		eventBus.post(new RecentSessionsChangedEvent(
+			sessions.toArray(new SourceSummary[sessions.size()])));
 	}
 	
 	@Subscribe
@@ -95,7 +133,7 @@ public class RecentlyOpenedSessions {
 	{
 		for (int i=0; i<sessions.size(); i++)
 		{
-			sessions.get(i).persist(i, preferences);
+			sessions.get(i).persist(KEY + i, preferences);
 		}
 	}
 

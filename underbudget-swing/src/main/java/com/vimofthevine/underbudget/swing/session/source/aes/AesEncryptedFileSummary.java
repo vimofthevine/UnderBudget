@@ -30,7 +30,17 @@ import com.vimofthevine.underbudget.xml.budget.source.AesEncryptedFileSource;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-class AesEncryptedFileSummary implements SourceSummary {
+public class AesEncryptedFileSummary implements SourceSummary {
+	
+	/**
+	 * AES-encrypted file type
+	 */
+	public static final String TYPE = "AES";
+	
+	/**
+	 * File name preference key
+	 */
+	private static final String FILE = ".File";
 	
 	/**
 	 * Encrypted file
@@ -46,6 +56,24 @@ class AesEncryptedFileSummary implements SourceSummary {
 	public AesEncryptedFileSummary(File budgetFile)
 	{
 		file = budgetFile;
+	}
+	
+	/**
+	 * Constructs a definition of a recently opened
+	 * AES-encrypted budget file from the given preferences.
+	 * 
+	 * @param prefix preference key prefix
+	 * @param prefs  user preferences
+	 * @throws IllegalArgumentException if a required parameter is missing
+	 */
+	public AesEncryptedFileSummary(String prefix, UserPreferences prefs)
+	{
+		String fileName = prefs.get(prefix + FILE, "");
+		
+		if (fileName.equals(""))
+			throw new IllegalArgumentException();
+		
+		file = new File(fileName);
 	}
 	
 	@Override
@@ -70,10 +98,10 @@ class AesEncryptedFileSummary implements SourceSummary {
 	}
 
 	@Override
-	public void persist(int i, UserPreferences preferences)
+	public void persist(String prefix, UserPreferences preferences)
 	{
-		// TODO Auto-generated method stub
-
+		preferences.set(prefix, TYPE);
+		preferences.set(prefix + FILE, file.getAbsolutePath());
 	}
 	
 	@Override

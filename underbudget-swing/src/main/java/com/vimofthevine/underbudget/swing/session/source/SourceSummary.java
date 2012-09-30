@@ -60,10 +60,14 @@ public interface SourceSummary {
 	/**
 	 * Save this source summary in the user
 	 * preferences as the ith session.
+	 * <p>
+	 * It is expected that the preference identified
+	 * by the <code>prefix</code> parameter will be
+	 * populated with the type of source.
 	 * 
-	 * @param i           session index
+	 * @param prefix      preference key prefix
 	 * @param preferences user preferences
 	 */
-	public void persist(int i, UserPreferences preferences);
+	public void persist(String prefix, UserPreferences preferences);
 	
 }

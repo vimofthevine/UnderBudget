@@ -33,6 +33,16 @@ import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileSource;
 public class BudgetXmlFileSummary implements SourceSummary {
 	
 	/**
+	 * AES-encrypted file type
+	 */
+	public static final String TYPE = "XML";
+	
+	/**
+	 * File name preference key
+	 */
+	private static final String FILE = ".File";
+	
+	/**
 	 * Budget XML file
 	 */
 	private final File file;
@@ -46,6 +56,24 @@ public class BudgetXmlFileSummary implements SourceSummary {
 	public BudgetXmlFileSummary(File budgetFile)
 	{
 		file = budgetFile;
+	}
+	
+	/**
+	 * Constructs a definition of a recently opened
+	 * budget XML file from the given preferences.
+	 * 
+	 * @param prefix preference key prefix
+	 * @param prefs  user preferences
+	 * @throws IllegalArgumentException if a required parameter is missing
+	 */
+	public BudgetXmlFileSummary(String prefix, UserPreferences prefs)
+	{
+		String fileName = prefs.get(prefix + FILE, "");
+		
+		if (fileName.equals(""))
+			throw new IllegalArgumentException();
+		
+		file = new File(fileName);
 	}
 
 	@Override
@@ -67,10 +95,10 @@ public class BudgetXmlFileSummary implements SourceSummary {
 	}
 
 	@Override
-	public void persist(int i, UserPreferences preferences)
+	public void persist(String prefix, UserPreferences preferences)
 	{
-		// TODO Auto-generated method stub
-
+		preferences.set(prefix, TYPE);
+		preferences.set(prefix + FILE, file.getAbsolutePath());
 	}
 	
 	@Override
