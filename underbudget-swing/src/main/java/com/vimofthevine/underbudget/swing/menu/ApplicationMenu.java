@@ -36,11 +36,18 @@ public class ApplicationMenu {
 	{
 		JMenuBar menu = menuBar;
 		
+		// Create "open recent" menu
+		JMenu recentMenu = new JMenu("Open recent...");
+		recentMenu.setMnemonic(KeyEvent.VK_R);
+		recentMenu.addMenuListener(new RecentMenuListener(model));
+		
 		// Create "file" menu
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(new JMenuItem(model.getAction(MenuAction.CREATE_SESSION)));
 		fileMenu.add(new JMenuItem(model.getAction(MenuAction.OPEN_SESSION)));
+		fileMenu.add(recentMenu);
+		
 		fileMenu.add(new JSeparator());
 		fileMenu.add(new JMenuItem(model.getAction(MenuAction.SAVE_SESSION)));
 		fileMenu.add(new JMenuItem(model.getAction(MenuAction.SAVE_SESSION_AS)));

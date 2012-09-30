@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard;
+package com.vimofthevine.underbudget.swing.session.source;
 
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -38,18 +38,18 @@ import com.vimofthevine.underbudget.swing.widgets.BoldLabel;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SourceTypeSelectionDialog {
+class SourceTypeSelectionDialog {
 
 	/**
 	 * Constructs a new source type selection dialog.
 	 * 
-	 * @param window application window
-	 * @param wizard budget source selection wizard
-	 * @param event  original select-source event
+	 * @param window  application window
+	 * @param wizard  budget source selection wizard
+	 * @param request source selection request
 	 */
-	public SourceTypeSelectionDialog(final Frame window,
+	SourceTypeSelectionDialog(final Frame window,
 		final BudgetSourceSelectionWizard wizard,
-		final Object selectionEvent)
+		final SelectSource request)
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -119,7 +119,7 @@ public class SourceTypeSelectionDialog {
 				new Thread() {
 					public void run()
 					{
-						wizard.typeSelected(type, selectionEvent);
+						wizard.typeSelected(type, request);
 					}
 				}.start();
 			}

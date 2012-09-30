@@ -36,7 +36,6 @@ import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRule
 import com.vimofthevine.underbudget.swing.budget.OnDemandEditBudgetDialog;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
-import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
 import com.vimofthevine.underbudget.swing.transaction.OnDemandTransactionImporter;
 import com.vimofthevine.underbudget.swing.transaction.wizard.TransactionSourceSelectionWizard;
 
@@ -46,11 +45,6 @@ import com.vimofthevine.underbudget.swing.transaction.wizard.TransactionSourceSe
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class Session {
-	
-	/**
-	 * Global event bus
-	 */
-	private final EventBus globalBus;
 
 	/**
 	 * Session event bus
@@ -86,49 +80,44 @@ public class Session {
 	 * Constructs a new session with the given
 	 * budget source.
 	 * 
-	 * @param window application window
-	 * @param bus    global application event bus
-	 * @param prefs  user preferences
-	 * @param source budget source
+	 * @param window    application window
+	 * @param globalBus global application event bus
+	 * @param prefs     user preferences
+	 * @param source    budget source
+	 * @throws BudgetSourceException if the budget could not be
+	 *         retrieved from the given budget source
 	 */
-	public Session(Frame window, EventBus bus,
+	public Session(Frame window, EventBus globalBus,
 		UserPreferences prefs, BudgetSource source)
+	throws BudgetSourceException
 	{
-		try
-		{
-    		budgetSource = source;
-    		budget = budgetSource.getBudget();
-    		
-    		globalBus = bus;
-    		eventBus = new EventBus(source.toString());
-    		
-    		Currency currency = Currency.getInstance("USD");
-    		CurrencyCalculator currencyCalculator = new FixedCalculator(currency);
-    		ReverseLookupAssignmentRules rules =
-    			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
-    		TransactionAssigner assigner = new DefaultTransactionAssigner(currencyCalculator);
-    		BalanceCalculator calculator = new DefaultBalanceCalculator();
-    		
-    		state = new SessionState(globalBus, eventBus, budget);
-    		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
-    		
-    		new BudgetSourceSelectionWizard(eventBus, window, budget, prefs);
-    		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
-    		new OnDemandTransactionImporter(eventBus, budget);
-    		new OnDemandTransactionAssigner(eventBus, rules, assigner);
-    		new OnDemandBalanceCalculator(eventBus, budget, calculator, currencyCalculator);
-    		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
-    		
-    		component = SessionContentViewFactory.build(
-    			window, eventBus, currency, budget, rules,
-    			currencyCalculator, prefs);
-    		
-    		active = false;
-		}
-		catch (BudgetSourceException bse)
-		{
-			throw new IllegalArgumentException("Could not create session", bse);
-		}
+		budgetSource = source;
+		budget = budgetSource.getBudget();
+		
+		eventBus = new EventBus(source.toString());
+		
+		Currency currency = Currency.getInstance("USD");
+		CurrencyCalculator currencyCalculator = new FixedCalculator(currency);
+		ReverseLookupAssignmentRules rules =
+			new ReverseLookupAssignmentRules(budget.getAssignmentRules());
+		TransactionAssigner assigner = new DefaultTransactionAssigner(currencyCalculator);
+		BalanceCalculator calculator = new DefaultBalanceCalculator();
+		
+		state = new SessionState(globalBus, eventBus, budget);
+		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
+		
+		new BudgetSourceRequestBridge(globalBus, eventBus);
+		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
+		new OnDemandTransactionImporter(eventBus, budget);
+		new OnDemandTransactionAssigner(eventBus, rules, assigner);
+		new OnDemandBalanceCalculator(eventBus, budget, calculator, currencyCalculator);
+		new OnDemandEditBudgetDialog(eventBus, window, currency, budget);
+		
+		component = SessionContentViewFactory.build(
+			window, eventBus, currency, budget, rules,
+			currencyCalculator, prefs);
+		
+		active = false;
 	}
 	
 	void post(Object event)

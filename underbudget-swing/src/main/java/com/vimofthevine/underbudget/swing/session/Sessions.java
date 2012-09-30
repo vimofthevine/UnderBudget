@@ -23,22 +23,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceFactory;
 import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
-import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.CloseSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.CreateSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.OpenSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
-import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
-import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
+import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
+import com.vimofthevine.underbudget.swing.session.source.SelectSource;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
+import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
+import com.vimofthevine.underbudget.swing.widgets.PasswordPrompt;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
@@ -101,7 +106,6 @@ public class Sessions {
 		
 		busBridge = new SessionBusBridge(eventBus);
 		
-		new BudgetSourceSelectionWizard(bus, window, null, prefs);
 		sessions = new ArrayList<Session>();
 	}
 	
@@ -134,7 +138,8 @@ public class Sessions {
 	public void createSession(CreateSessionEvent event)
 	{
 		logger.log(Level.INFO, "Creating new session");
-		createSession(new TemplateBudgetSource(preferences.get("HOME", "/tmp")));
+		createSession(new TemplateBudgetSource(
+			preferences.get("HOME", "/tmp")), null);
 	}
 	
 	/**
@@ -147,27 +152,70 @@ public class Sessions {
 	public void openSession(OpenSessionEvent event)
 	{
 		logger.log(Level.INFO, "Opening new session");
-		eventBus.post(new SelectBudgetSourceToOpenEvent());
-		
+		eventBus.post(new SelectSource() {
+			@Override
+            public boolean isOpenRequest() { return true; }
+
+			@Override
+            public void sourceSelected(BudgetSourceFactory factory,
+                    SourceSummary summary)
+            {
+				createSession(factory.create(), summary);
+            }
+		});
 	}
 	
 	@Subscribe
-	public void sourceSelected(BudgetSourceToOpenSelectedEvent event)
+	public void reopen(final SourceSummary summary)
 	{
-		logger.log(Level.FINE, "Budget source selected");
-		createSession(event.getSource());
+		logger.log(Level.INFO, "Re-opening session, " + summary);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				final String password = summary.requiresPassword()
+					? PasswordPrompt.prompt("Password", window) : null;
+					
+				// Get off EDT
+				new Thread() {
+					public void run()
+					{
+                   		BudgetSource source = summary.reopen(password);
+                   			
+                   		if (source != null)
+                   		{
+                   			createSession(source, summary);
+                   		}
+					}
+				}.start();
+			}
+		});
 	}
 	
-	private void createSession(BudgetSource source)
+	private void createSession(BudgetSource source, SourceSummary summary)
 	{
-		Session newSession = new Session(window,
-			eventBus, preferences, source);
+		try
+		{
+			Session newSession = new Session(window,
+				eventBus, preferences, source);
 		
-		sessions.add(newSession);
-		setActive(newSession);
-		
-		eventBus.post(new SessionListModifiedEvent(
-			sessions.toArray(new Session[sessions.size()])));
+    		sessions.add(newSession);
+    		setActive(newSession);
+    		
+    		eventBus.post(new SessionListModifiedEvent(
+    			sessions.toArray(new Session[sessions.size()])));
+    		
+    		if (summary != null)
+    		{
+    			logger.log(Level.FINEST, "Sending out recent-session info, " + summary);
+    			eventBus.post(new SessionOpenedEvent(summary));
+    		}
+		}
+		catch (BudgetSourceException bse)
+		{
+			logger.log(Level.WARNING, "Unable to create session", bse);
+			new ErrorPopup(bse, window);
+		}
 	}
 	
 	@Subscribe

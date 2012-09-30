@@ -16,18 +16,46 @@
 
 package com.vimofthevine.underbudget.swing.session.events;
 
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
+
 /**
- * Event generated to prompt the user for
- * the source of transactions to import.
+ * Event generated when a session is opened so that it
+ * can be added to the list of recently opened sessions.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SelectBudgetSourceToOpenEvent {
-
+public class SessionOpenedEvent {
+	
+	/**
+	 * Budget source summary
+	 */
+	private final SourceSummary summary;
+	
+	/**
+	 * Constructs a new session-opened event.
+	 * 
+	 * @param summary budget source summary
+	 */
+	public SessionOpenedEvent(SourceSummary summary)
+	{
+		this.summary = summary;
+	}
+	
+	/**
+	 * Returns the recently opened session's
+	 * budget source summary.
+	 * 
+	 * @return budget source summary
+	 */
+	public SourceSummary getSource()
+	{
+		return summary;
+	}
+	
 	@Override
 	public String toString()
 	{
-		return "Select a budget source to open";
+		return "Session opened event (" + summary + ")";
 	}
-	
+
 }

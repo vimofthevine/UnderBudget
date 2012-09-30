@@ -28,9 +28,11 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.session.Session;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
+import com.vimofthevine.underbudget.swing.session.events.RecentSessionsChangedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionStateEvent;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 
 /**
  * A presentation model for the application
@@ -56,6 +58,11 @@ public class ApplicationMenuModel {
 	private Session[] sessions;
 	
 	/**
+	 * List of recent sessions
+	 */
+	private SourceSummary[] recentSessions;
+	
+	/**
 	 * Constructs a new application menu model.
 	 * 
 	 * @param bus   event bus
@@ -67,6 +74,7 @@ public class ApplicationMenuModel {
 		
 		actions = new HashMap<MenuAction,Action>();
 		sessions = new Session[0];
+		recentSessions = new SourceSummary[0];
 		
 		for (MenuAction action : MenuAction.values())
 		{
@@ -128,6 +136,36 @@ public class ApplicationMenuModel {
 				public void actionPerformed(ActionEvent event)
 				{
 					eventBus.post(new ActivateSessionEvent(session));
+				}
+			};
+		}
+		
+		return actions;
+	}
+	
+	/**
+	 * Returns the action models for recently
+	 * opened sessions.
+	 * 
+	 * @return recent session menu actions
+	 */
+	Action[] getRecentSessionAction()
+	{
+		Action[] actions = new Action[recentSessions.length];
+		
+		for (int i=0; i<recentSessions.length; i++)
+		{
+			final int num = i;
+			final SourceSummary session = recentSessions[i];
+			actions[i] = new AbstractAction() {
+				{
+					putValue(NAME, (num+1) + " " + session.getName());
+				}
+				
+				@Override
+				public void actionPerformed(ActionEvent event)
+				{
+					eventBus.post(session);
 				}
 			};
 		}
@@ -206,6 +244,12 @@ public class ApplicationMenuModel {
 	public void sessionListChanged(SessionListModifiedEvent event)
 	{
 		sessions = event.getSessions();
+	}
+	
+	@Subscribe
+	public void sessionOpened(RecentSessionsChangedEvent event)
+	{
+		recentSessions = event.getSessions();
 	}
 	
 }

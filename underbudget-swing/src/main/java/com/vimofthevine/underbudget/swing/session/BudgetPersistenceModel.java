@@ -24,13 +24,15 @@ import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.budget.Budget;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceException;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceFactory;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
-import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
-import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
+import com.vimofthevine.underbudget.swing.session.source.SelectSource;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
@@ -88,21 +90,6 @@ class BudgetPersistenceModel {
 	}
 	
 	@Subscribe
-	public void sourceSelected(BudgetSourceToSaveSelectedEvent event)
-	{
-		logger.log(Level.FINE, "Budget source selected");
-		
-		// Store budget source
-		source = event.getSource();
-		
-		// Perform save if source is valid (avoid infinite loop)
-		if (source != null)
-		{
-			saveSession(new SaveSessionEvent());
-		}
-	}
-	
-	@Subscribe
 	public void saveSession(SaveSessionEvent event)
 	{
 		// If source is the template, prompt for save source/location
@@ -132,7 +119,30 @@ class BudgetPersistenceModel {
 	public void saveSessionAs(SaveSessionAsEvent event)
 	{
 		logger.log(Level.FINE, "Save-as received");
-		eventBus.post(new SelectBudgetSourceToSaveEvent());
+		eventBus.post(new SelectSource() {
+			@Override
+            public boolean isOpenRequest() { return false; }
+
+			@Override
+            public void sourceSelected(BudgetSourceFactory factory,
+            	SourceSummary summary)
+            {
+        		// Store budget source
+        		source = factory.create(budget);
+        		
+        		// Perform save if source is valid (avoid infinite loop)
+        		if (source != null)
+        		{
+        			saveSession(new SaveSessionEvent());
+        			
+        			// Send out session info so this new session can be re-opened
+        			if (summary != null)
+        			{
+        				eventBus.post(new SessionOpenedEvent(summary));
+        			}
+        		}
+            }
+		});
 	}
 	
 	@Subscribe

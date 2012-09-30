@@ -14,42 +14,28 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.events;
+package com.vimofthevine.underbudget.swing.widgets;
 
-import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import java.awt.Font;
+
+import javax.swing.JLabel;
 
 /**
- * Event generated when a budget source has
- * been selected.
+ * A label whose font is plain.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class BudgetSourceToSaveSelectedEvent {
-	
+public class PlainLabel extends JLabel {
+
 	/**
-	 * Selected budget source
-	 */
-	private final BudgetSource source;
-	
-	/**
-	 * Constructs a new budget source
-	 * selected event.
+	 * Constructs a new plain label.
 	 * 
-	 * @param source selected budget source
+	 * @param text label text
 	 */
-	public BudgetSourceToSaveSelectedEvent(BudgetSource source)
+	public PlainLabel(String text)
 	{
-		this.source = source;
-	}
-	
-	/**
-	 * Returns the selected budget source.
-	 * 
-	 * @return selected budget source
-	 */
-	public BudgetSource getSource()
-	{
-		return source;
+		super(text);
+		setFont(getFont().deriveFont(Font.PLAIN));
 	}
 
 }

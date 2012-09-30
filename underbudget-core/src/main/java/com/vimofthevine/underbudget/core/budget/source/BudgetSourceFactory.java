@@ -14,42 +14,32 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.events;
+package com.vimofthevine.underbudget.core.budget.source;
 
-import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.Budget;
 
 /**
- * Event generated when a budget source has
- * been selected.
+ * A <code>BudgetSourceFactory</code> produces
+ * instances of a <code>BudgetSource</code>.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class BudgetSourceToOpenSelectedEvent {
+public interface BudgetSourceFactory {
 	
 	/**
-	 * Selected budget source
-	 */
-	private final BudgetSource source;
-	
-	/**
-	 * Constructs a new budget source
-	 * selected event.
+	 * Creates a new budget source instance.
 	 * 
-	 * @param source selected budget source
+	 * @return budget source
 	 */
-	public BudgetSourceToOpenSelectedEvent(BudgetSource source)
-	{
-		this.source = source;
-	}
+	public BudgetSource create();
 	
 	/**
-	 * Returns the selected budget source.
+	 * Creates a new budget source instance to
+	 * hold the given budget.
 	 * 
-	 * @return selected budget source
+	 * @param budget budget to be saved to the source
+	 * @return budget source
 	 */
-	public BudgetSource getSource()
-	{
-		return source;
-	}
+	public BudgetSource create(Budget budget);
 
 }

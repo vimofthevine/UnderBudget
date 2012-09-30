@@ -14,20 +14,42 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.events;
+package com.vimofthevine.underbudget.swing.session.source;
 
 /**
- * Event generated to prompt the user for
- * the source of transactions to import.
+ * Enumeration for supported budget source types.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class SelectBudgetSourceToSaveEvent {
+public enum SourceType {
+	XML("XML file"),
+	AES("AES encrypted file");
+	
+	/**
+	 * Transaction source type name
+	 */
+	private final String name;
+	
+	/**
+	 * Constructs a new budget source
+	 * type enumeration.
+	 * 
+	 * @param name source name
+	 */
+	private SourceType(String name)
+	{
+		this.name = name;
+	}
+	
+	public String getActionCommand()
+	{
+		return super.toString();
+	}
 	
 	@Override
 	public String toString()
 	{
-		return "Select a budget source to save";
+		return name;
 	}
-
+	
 }
