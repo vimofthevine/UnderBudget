@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard.aes;
+package com.vimofthevine.underbudget.swing.session.source.aes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,8 +25,8 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.session.recent.RecentAesEncryptedFile;
-import com.vimofthevine.underbudget.swing.session.wizard.SelectSourceForAction;
-import com.vimofthevine.underbudget.swing.session.wizard.SourceType;
+import com.vimofthevine.underbudget.swing.session.source.SelectSourceForAction;
+import com.vimofthevine.underbudget.swing.session.source.SourceType;
 import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.swing.widgets.PasswordPrompt;
 import com.vimofthevine.underbudget.xml.budget.source.AesEncryptedFileFactory;

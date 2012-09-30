@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard;
+package com.vimofthevine.underbudget.swing.session.source;
 
 import java.awt.Frame;
 import java.util.logging.Level;
@@ -25,8 +25,8 @@ import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
-import com.vimofthevine.underbudget.swing.session.wizard.aes.AesEncryptedFileWizard;
-import com.vimofthevine.underbudget.swing.session.wizard.xml.BudgetXmlFileWizard;
+import com.vimofthevine.underbudget.swing.session.source.aes.AesEncryptedFileWizard;
+import com.vimofthevine.underbudget.swing.session.source.xml.BudgetXmlFileWizard;
 
 /**
  * Wizard for selecting a budget to be opened.

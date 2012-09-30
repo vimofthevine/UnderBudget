@@ -41,7 +41,7 @@ import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
 import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
-import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
+import com.vimofthevine.underbudget.swing.session.source.BudgetSourceSelectionWizard;
 import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 

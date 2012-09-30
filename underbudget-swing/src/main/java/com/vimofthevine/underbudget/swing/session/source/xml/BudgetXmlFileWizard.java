@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard.xml;
+package com.vimofthevine.underbudget.swing.session.source.xml;
 
 import java.io.File;
 
@@ -23,8 +23,8 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.session.recent.RecentBudgetXmlFile;
-import com.vimofthevine.underbudget.swing.session.wizard.SelectSourceForAction;
-import com.vimofthevine.underbudget.swing.session.wizard.SourceType;
+import com.vimofthevine.underbudget.swing.session.source.SelectSourceForAction;
+import com.vimofthevine.underbudget.swing.session.source.SourceType;
 import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileFactory;
 
 /**

@@ -36,7 +36,7 @@ import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRule
 import com.vimofthevine.underbudget.swing.budget.OnDemandEditBudgetDialog;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.content.SessionContentViewFactory;
-import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
+import com.vimofthevine.underbudget.swing.session.source.BudgetSourceSelectionWizard;
 import com.vimofthevine.underbudget.swing.transaction.OnDemandTransactionImporter;
 import com.vimofthevine.underbudget.swing.transaction.wizard.TransactionSourceSelectionWizard;
 

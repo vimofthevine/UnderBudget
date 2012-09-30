@@ -1,4 +1,4 @@
-package com.vimofthevine.underbudget.swing.session.wizard.xml;
+package com.vimofthevine.underbudget.swing.session.source.xml;
 
 import java.io.BufferedReader;
 import java.io.File;

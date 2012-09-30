@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard;
+package com.vimofthevine.underbudget.swing.session.source;
 
 import java.awt.Frame;
 import java.awt.GridBagConstraints;

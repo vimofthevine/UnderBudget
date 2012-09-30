@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard.xml;
+package com.vimofthevine.underbudget.swing.session.source.xml;
 
 import java.io.File;
 

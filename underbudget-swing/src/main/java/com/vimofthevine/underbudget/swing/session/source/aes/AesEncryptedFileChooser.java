@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard.aes;
+package com.vimofthevine.underbudget.swing.session.source.aes;
 
 import java.io.File;
 
