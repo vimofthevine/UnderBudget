@@ -31,7 +31,6 @@
     <module>underbudget-core</module>
     <module>underbudget-swing</module>
     <module>underbudget-xml</module>
-    <module>underbudget-stubs</module>
     <module>underbudget-jar</module>
     <module>underbudget-dist</module>
   </modules>
