@@ -22,7 +22,6 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.swing.session.recent.RecentBudgetXmlFile;
 import com.vimofthevine.underbudget.swing.session.source.SelectSourceForAction;
 import com.vimofthevine.underbudget.swing.session.source.SourceType;
 import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileFactory;
@@ -86,10 +85,10 @@ public class BudgetXmlFileWizard {
 			{
 				BudgetXmlFileFactory factory
 					= new BudgetXmlFileFactory(file);
-   				RecentBudgetXmlFile session
-   					= new RecentBudgetXmlFile(file);
+   				BudgetXmlFileSummary summary
+   					= new BudgetXmlFileSummary(file);
    				
-  				event.select(factory, session);
+  				event.select(factory, summary);
 			}
 		}.start();
 	}

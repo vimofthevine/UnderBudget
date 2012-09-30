@@ -17,7 +17,6 @@
 package com.vimofthevine.underbudget.swing.session.source;
 
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceFactory;
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 
 /**
  * Interface for events to be posted to the event
@@ -42,9 +41,9 @@ public interface SelectSource {
 	 * Notifies the requestor of the selected budget source.
 	 * 
 	 * @param factory budget source factory instance
-	 * @param session source information for re-opening
+	 * @param summary source information for re-opening
 	 */
 	public void sourceSelected(BudgetSourceFactory factory,
-		RecentSession session);
+		SourceSummary summary);
 
 }

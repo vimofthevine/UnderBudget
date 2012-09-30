@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.swing.session;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
 import com.vimofthevine.underbudget.swing.session.source.SelectSource;
 
 /**
@@ -51,6 +52,12 @@ class BudgetSourceRequestBridge {
 	public void selectSource(SelectSource request)
 	{
 		globalBus.post(request);
+	}
+	
+	@Subscribe
+	public void sessionOpened(SessionOpenedEvent event)
+	{
+		globalBus.post(event);
 	}
 
 }

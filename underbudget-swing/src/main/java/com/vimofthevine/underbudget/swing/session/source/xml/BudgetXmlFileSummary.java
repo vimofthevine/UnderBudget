@@ -14,33 +14,36 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.recent;
+package com.vimofthevine.underbudget.swing.session.source.xml;
 
 import java.io.File;
 
+import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
+import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileSource;
 
 /**
  * Minimum amount of information needed to be able to
- * re-open an AES-encrypted budget file. The user will
- * need to provide the encryption passkey.
+ * re-open a budget XML file. No other information is
+ * needed from the user.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class RecentAesEncryptedFile implements RecentSession {
+public class BudgetXmlFileSummary implements SourceSummary {
 	
 	/**
-	 * Encrypted file
+	 * Budget XML file
 	 */
 	private final File file;
 	
 	/**
 	 * Constructs a definition of a recently opened
-	 * AES-encrypted budget file.
+	 * budget XML file.
 	 * 
-	 * @param file AES-encrypted budget file
+	 * @param file budget XML file
 	 */
-	public RecentAesEncryptedFile(File budgetFile)
+	public BudgetXmlFileSummary(File budgetFile)
 	{
 		file = budgetFile;
 	}
@@ -49,6 +52,18 @@ public class RecentAesEncryptedFile implements RecentSession {
 	public String getName()
 	{
 		return file.getName();
+	}
+	
+	@Override
+	public boolean requiresPassword()
+	{
+		return false;
+	}
+	
+	@Override
+	public BudgetSource reopen(String passkey)
+	{
+		return new BudgetXmlFileSource(file);
 	}
 
 	@Override
@@ -61,7 +76,7 @@ public class RecentAesEncryptedFile implements RecentSession {
 	@Override
 	public int hashCode()
 	{
-		return 932 * 31 + file.hashCode();
+		return 782 * 31 + file.hashCode();
 	}
 	
 	@Override
@@ -69,17 +84,17 @@ public class RecentAesEncryptedFile implements RecentSession {
 	{
 		if (this == obj)
 			return true;
-		if ( ! (obj instanceof RecentAesEncryptedFile))
+		if ( ! (obj instanceof BudgetXmlFileSummary))
 			return false;
 		
-		RecentAesEncryptedFile that = (RecentAesEncryptedFile) obj;
+		BudgetXmlFileSummary that = (BudgetXmlFileSummary) obj;
 		return this.file.equals(that.file);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Recent encrypted file (" + file.getAbsolutePath() + ")";
+		return "Recent budget XML (" + file.getAbsolutePath() + ")";
 	}
 
 }

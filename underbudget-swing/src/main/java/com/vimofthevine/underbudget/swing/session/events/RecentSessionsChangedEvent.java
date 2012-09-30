@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.session.events;
 
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 
 /**
  * Event generated when the list of recently opened sessions
@@ -29,14 +29,14 @@ public class RecentSessionsChangedEvent {
 	/**
 	 * List of recently opened sessions
 	 */
-	private final RecentSession[] sessions;
+	private final SourceSummary[] sessions;
 
 	/**
 	 * Constructs a new recent sessions changed event.
 	 * 
 	 * @param sessions new list of recently opened sessions
 	 */
-	public RecentSessionsChangedEvent(RecentSession[] sessions)
+	public RecentSessionsChangedEvent(SourceSummary[] sessions)
 	{
 		this.sessions = sessions;
 	}
@@ -46,7 +46,7 @@ public class RecentSessionsChangedEvent {
 	 * 
 	 * @return recently opened sessions
 	 */
-	public RecentSession[] getSessions()
+	public SourceSummary[] getSessions()
 	{
 		return sessions;
 	}

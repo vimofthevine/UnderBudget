@@ -20,7 +20,6 @@ import java.awt.Frame;
 
 import com.vimofthevine.underbudget.core.budget.source.BudgetSourceFactory;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 
 /**
  * Event generated to notify the specific budget source
@@ -89,9 +88,9 @@ public class SelectSourceForAction {
 	}
 	
 	public void select(BudgetSourceFactory factory,
-		RecentSession session)
+		SourceSummary summary)
 	{
-		selectionRequest.sourceSelected(factory, session);
+		selectionRequest.sourceSelected(factory, summary);
 	}
 
 }

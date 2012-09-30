@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.session.events;
 
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 
 /**
  * Event generated when a session is opened so that it
@@ -27,34 +27,35 @@ import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 public class SessionOpenedEvent {
 	
 	/**
-	 * Recently opened session
+	 * Budget source summary
 	 */
-	private final RecentSession session;
+	private final SourceSummary summary;
 	
 	/**
 	 * Constructs a new session-opened event.
 	 * 
-	 * @param session recently opened session definition
+	 * @param summary budget source summary
 	 */
-	public SessionOpenedEvent(RecentSession session)
+	public SessionOpenedEvent(SourceSummary summary)
 	{
-		this.session = session;
+		this.summary = summary;
 	}
 	
 	/**
-	 * Returns the recently opened session.
+	 * Returns the recently opened session's
+	 * budget source summary.
 	 * 
-	 * @return recently opened session
+	 * @return budget source summary
 	 */
-	public RecentSession getSession()
+	public SourceSummary getSource()
 	{
-		return session;
+		return summary;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Session opened event (" + session + ")";
+		return "Session opened event (" + summary + ")";
 	}
 
 }

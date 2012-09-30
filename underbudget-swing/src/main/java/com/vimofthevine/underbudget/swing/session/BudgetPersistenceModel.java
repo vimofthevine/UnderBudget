@@ -31,8 +31,8 @@ import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 import com.vimofthevine.underbudget.swing.session.source.SelectSource;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
@@ -125,7 +125,7 @@ class BudgetPersistenceModel {
 
 			@Override
             public void sourceSelected(BudgetSourceFactory factory,
-                    RecentSession session)
+            	SourceSummary summary)
             {
         		// Store budget source
         		source = factory.create(budget);
@@ -136,9 +136,9 @@ class BudgetPersistenceModel {
         			saveSession(new SaveSessionEvent());
         			
         			// Send out session info so this new session can be re-opened
-        			if (session != null)
+        			if (summary != null)
         			{
-        				eventBus.post(new SessionOpenedEvent(session));
+        				eventBus.post(new SessionOpenedEvent(summary));
         			}
         		}
             }

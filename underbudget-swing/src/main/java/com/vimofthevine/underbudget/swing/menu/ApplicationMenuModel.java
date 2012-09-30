@@ -28,12 +28,11 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.swing.session.Session;
 import com.vimofthevine.underbudget.swing.session.events.ActivateSessionEvent;
-import com.vimofthevine.underbudget.swing.session.events.OpenRecentSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.RecentSessionsChangedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionStateEvent;
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 
 /**
  * A presentation model for the application
@@ -61,7 +60,7 @@ public class ApplicationMenuModel {
 	/**
 	 * List of recent sessions
 	 */
-	private RecentSession[] recentSessions;
+	private SourceSummary[] recentSessions;
 	
 	/**
 	 * Constructs a new application menu model.
@@ -75,7 +74,7 @@ public class ApplicationMenuModel {
 		
 		actions = new HashMap<MenuAction,Action>();
 		sessions = new Session[0];
-		recentSessions = new RecentSession[0];
+		recentSessions = new SourceSummary[0];
 		
 		for (MenuAction action : MenuAction.values())
 		{
@@ -157,7 +156,7 @@ public class ApplicationMenuModel {
 		for (int i=0; i<recentSessions.length; i++)
 		{
 			final int num = i;
-			final RecentSession session = recentSessions[i];
+			final SourceSummary session = recentSessions[i];
 			actions[i] = new AbstractAction() {
 				{
 					putValue(NAME, (num+1) + " " + session.getName());
@@ -166,7 +165,7 @@ public class ApplicationMenuModel {
 				@Override
 				public void actionPerformed(ActionEvent event)
 				{
-					eventBus.post(new OpenRecentSessionEvent(session));
+					eventBus.post(session);
 				}
 			};
 		}

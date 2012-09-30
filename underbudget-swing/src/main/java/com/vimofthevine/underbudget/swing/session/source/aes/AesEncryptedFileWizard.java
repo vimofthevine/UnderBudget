@@ -23,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
-import com.vimofthevine.underbudget.swing.session.recent.RecentAesEncryptedFile;
 import com.vimofthevine.underbudget.swing.session.source.SelectSourceForAction;
 import com.vimofthevine.underbudget.swing.session.source.SourceType;
 import com.vimofthevine.underbudget.swing.widgets.PasswordPrompt;
@@ -111,10 +110,10 @@ public class AesEncryptedFileWizard {
 			{
 				AesEncryptedFileFactory factory
 					= new AesEncryptedFileFactory(file, key);
-   				RecentAesEncryptedFile session
-   					= new RecentAesEncryptedFile(file);
+   				AesEncryptedFileSummary summary
+   					= new AesEncryptedFileSummary(file);
     				
-   				event.select(factory, session);
+   				event.select(factory, summary);
 			}
 		}.start();
 	}

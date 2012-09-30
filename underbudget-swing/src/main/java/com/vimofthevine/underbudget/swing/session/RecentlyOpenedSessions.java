@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.recent;
+package com.vimofthevine.underbudget.swing.session;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.vimofthevine.underbudget.swing.ApplicationShutdownEvent;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.events.RecentSessionsChangedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 
 /**
  * Maintains the list of recently opened sessions, reading
@@ -51,7 +53,7 @@ public class RecentlyOpenedSessions {
 	/**
 	 * Recently opened sessions
 	 */
-	private final List<RecentSession> sessions;
+	private final List<SourceSummary> sessions;
 
 	/**
 	 * Constructs a new list of recently opened sessions.
@@ -66,13 +68,13 @@ public class RecentlyOpenedSessions {
 		
 		preferences = prefs;
 		
-		sessions = new ArrayList<RecentSession>();
+		sessions = new ArrayList<SourceSummary>();
 	}
 	
 	@Subscribe
 	public void sessionOpened(SessionOpenedEvent event)
 	{
-		RecentSession session = event.getSession();
+		SourceSummary session = event.getSource();
 		
 		if ( ! sessions.contains(session))
 		{
@@ -84,7 +86,16 @@ public class RecentlyOpenedSessions {
 			}
 			
 			eventBus.post(new RecentSessionsChangedEvent(
-				sessions.toArray(new RecentSession[sessions.size()])));
+				sessions.toArray(new SourceSummary[sessions.size()])));
+		}
+	}
+	
+	@Subscribe
+	public void storeInPrefs(ApplicationShutdownEvent event)
+	{
+		for (int i=0; i<sessions.size(); i++)
+		{
+			sessions.get(i).persist(i, preferences);
 		}
 	}
 

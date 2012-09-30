@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -39,9 +40,10 @@ import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
-import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 import com.vimofthevine.underbudget.swing.session.source.SelectSource;
+import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
+import com.vimofthevine.underbudget.swing.widgets.PasswordPrompt;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
@@ -156,14 +158,41 @@ public class Sessions {
 
 			@Override
             public void sourceSelected(BudgetSourceFactory factory,
-                    RecentSession session)
+                    SourceSummary summary)
             {
-				createSession(factory.create(), session);
+				createSession(factory.create(), summary);
             }
 		});
 	}
 	
-	private void createSession(BudgetSource source, RecentSession recent)
+	@Subscribe
+	public void reopen(final SourceSummary summary)
+	{
+		logger.log(Level.INFO, "Re-opening session, " + summary);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				final String password = summary.requiresPassword()
+					? PasswordPrompt.prompt("Password", window) : null;
+					
+				// Get off EDT
+				new Thread() {
+					public void run()
+					{
+                   		BudgetSource source = summary.reopen(password);
+                   			
+                   		if (source != null)
+                   		{
+                   			createSession(source, summary);
+                   		}
+					}
+				}.start();
+			}
+		});
+	}
+	
+	private void createSession(BudgetSource source, SourceSummary summary)
 	{
 		try
 		{
@@ -176,10 +205,10 @@ public class Sessions {
     		eventBus.post(new SessionListModifiedEvent(
     			sessions.toArray(new Session[sessions.size()])));
     		
-    		if (recent != null)
+    		if (summary != null)
     		{
-    			logger.log(Level.INFO, "Sending out recent-session info, " + recent);
-    			eventBus.post(new SessionOpenedEvent(recent));
+    			logger.log(Level.FINEST, "Sending out recent-session info, " + summary);
+    			eventBus.post(new SessionOpenedEvent(summary));
     		}
 		}
 		catch (BudgetSourceException bse)
