@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard;
+package com.vimofthevine.underbudget.swing.session.wizard.xml;
 
 import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+
 
 /**
  * File chooser for selecting GnuCash XML files.

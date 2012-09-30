@@ -45,11 +45,13 @@ public class SourceTypeSelectionDialog {
 	 * 
 	 * @param window application window
 	 * @param wizard budget source selection wizard
+	 * @param isOpen <code>true</code> if the selected file is to
+	 *               be opened, else <code>false</code> to be saved
 	 * @param event  original select-source event
 	 */
 	public SourceTypeSelectionDialog(final Frame window,
 		final BudgetSourceSelectionWizard wizard,
-		final Object selectionEvent)
+		final boolean isOpen)
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -119,7 +121,7 @@ public class SourceTypeSelectionDialog {
 				new Thread() {
 					public void run()
 					{
-						wizard.typeSelected(type, selectionEvent);
+						wizard.typeSelected(type, isOpen);
 					}
 				}.start();
 			}

@@ -61,7 +61,7 @@ public class BudgetXmlFileSource implements BudgetSource {
 	 * 
 	 * @param file budget XML file
 	 */
-	public BudgetXmlFileSource(File file)
+	BudgetXmlFileSource(File file)
 	{
 		xmlFile = file;
 		serializer = BudgetSerializerFactory.createSerializer();
@@ -74,7 +74,7 @@ public class BudgetXmlFileSource implements BudgetSource {
 	 * @param file         budget XML file
 	 * @param budgetToCopy budget to be saved
 	 */
-	public BudgetXmlFileSource(File file, Budget budgetToCopy)
+	BudgetXmlFileSource(File file, Budget budgetToCopy)
 	{
 		xmlFile = file;
 		budget = (budgetToCopy instanceof XmlBudget)

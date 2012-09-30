@@ -113,7 +113,7 @@ public class Session {
 		state = new SessionState(globalBus, eventBus, budget);
 		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
 		
-		new BudgetSourceSelectionWizard(eventBus, window, budget, prefs);
+		new BudgetSourceSelectionWizard(eventBus, window, prefs);
 		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
 		new OnDemandTransactionImporter(eventBus, budget);
 		new OnDemandTransactionAssigner(eventBus, rules, assigner);

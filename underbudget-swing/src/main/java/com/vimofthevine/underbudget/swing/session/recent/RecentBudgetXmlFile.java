@@ -17,7 +17,6 @@
 package com.vimofthevine.underbudget.swing.session.recent;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 
@@ -40,14 +39,10 @@ public class RecentBudgetXmlFile implements RecentSession {
 	 * budget XML file.
 	 * 
 	 * @param file budget XML file
-	 * @throws FileNotFoundException if the file no longer exists
 	 */
 	public RecentBudgetXmlFile(File budgetFile)
-	throws FileNotFoundException
 	{
 		file = budgetFile;
-		if ( ! file.exists())
-			throw new FileNotFoundException();
 	}
 
 	@Override

@@ -88,7 +88,7 @@ public class AesEncryptedFileSource implements BudgetSource {
 	 * @param file     encrypted budget file
 	 * @param password encryption passkey
 	 */
-	public AesEncryptedFileSource(File file, String password)
+	AesEncryptedFileSource(File file, String password)
 	{
 		encFile = file;
 		passkey = password;
@@ -103,7 +103,7 @@ public class AesEncryptedFileSource implements BudgetSource {
 	 * @param password     encryption passkey
 	 * @param budgetToCopy budget to be saved
 	 */
-	public AesEncryptedFileSource(File file, String password, Budget budgetToCopy)
+	AesEncryptedFileSource(File file, String password, Budget budgetToCopy)
 	{
 		encFile = file;
 		passkey = password;

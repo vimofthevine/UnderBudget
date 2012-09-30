@@ -105,7 +105,7 @@ public class Sessions {
 		
 		busBridge = new SessionBusBridge(eventBus);
 		
-		new BudgetSourceSelectionWizard(bus, window, null, prefs);
+		new BudgetSourceSelectionWizard(bus, window, prefs);
 		sessions = new ArrayList<Session>();
 	}
 	
@@ -160,7 +160,7 @@ public class Sessions {
 	public void sourceSelected(BudgetSourceToOpenSelectedEvent event)
 	{
 		logger.log(Level.FINE, "Budget source selected");
-		createSession(event.getSource(), event.getSession());
+		createSession(event.getSourceFactory().create(), event.getSession());
 	}
 	
 	private void createSession(BudgetSource source, RecentSession recent)

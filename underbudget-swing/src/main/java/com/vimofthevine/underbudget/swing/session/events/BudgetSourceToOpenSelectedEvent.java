@@ -16,7 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.session.events;
 
-import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.core.budget.source.BudgetSourceFactory;
 import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 
 /**
@@ -30,7 +30,7 @@ public class BudgetSourceToOpenSelectedEvent {
 	/**
 	 * Selected budget source
 	 */
-	private final BudgetSource source;
+	private final BudgetSourceFactory factory;
 	
 	/**
 	 * Definition for the session source
@@ -41,24 +41,24 @@ public class BudgetSourceToOpenSelectedEvent {
 	 * Constructs a new budget source
 	 * selected event.
 	 * 
-	 * @param source  selected budget source
+	 * @param factory selected budget source factory
 	 * @param session recent session definition
 	 */
-	public BudgetSourceToOpenSelectedEvent(BudgetSource source,
+	public BudgetSourceToOpenSelectedEvent(BudgetSourceFactory factory,
 		RecentSession session)
 	{
-		this.source = source;
+		this.factory = factory;
 		this.session = session;
 	}
 	
 	/**
-	 * Returns the selected budget source.
+	 * Returns the selected budget source factory.
 	 * 
-	 * @return selected budget source
+	 * @return selected budget source factory
 	 */
-	public BudgetSource getSource()
+	public BudgetSourceFactory getSourceFactory()
 	{
-		return source;
+		return factory;
 	}
 	
 	/**

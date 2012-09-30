@@ -14,42 +14,32 @@
  * limitations under the License.
  */
 
-package com.vimofthevine.underbudget.swing.session.wizard;
+package com.vimofthevine.underbudget.core.budget.source;
+
+import com.vimofthevine.underbudget.core.budget.Budget;
 
 /**
- * Enumeration for supported budget source types.
+ * A <code>BudgetSourceFactory</code> produces
+ * instances of a <code>BudgetSource</code>.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public enum SourceType {
-	XML("XML file"),
-	AES("AES encrypted file");
+public interface BudgetSourceFactory {
 	
 	/**
-	 * Transaction source type name
-	 */
-	private final String name;
-	
-	/**
-	 * Constructs a new budget source
-	 * type enumeration.
+	 * Creates a new budget source instance.
 	 * 
-	 * @param name source name
+	 * @return budget source
 	 */
-	private SourceType(String name)
-	{
-		this.name = name;
-	}
+	public BudgetSource create();
 	
-	public String getActionCommand()
-	{
-		return super.toString();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-	
+	/**
+	 * Creates a new budget source instance to
+	 * hold the given budget.
+	 * 
+	 * @param budget budget to be saved to the source
+	 * @return budget source
+	 */
+	public BudgetSource create(Budget budget);
+
 }

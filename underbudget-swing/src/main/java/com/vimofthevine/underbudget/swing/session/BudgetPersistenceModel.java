@@ -29,6 +29,7 @@ import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelec
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionAsEvent;
 import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionSavedEvent;
 import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
 import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
@@ -93,12 +94,19 @@ class BudgetPersistenceModel {
 		logger.log(Level.FINE, "Budget source selected");
 		
 		// Store budget source
-		source = event.getSource();
+		source = event.getSourceFactory().create(budget);
 		
 		// Perform save if source is valid (avoid infinite loop)
 		if (source != null)
 		{
 			saveSession(new SaveSessionEvent());
+			
+			// Send out session info so this new session can be re-opened
+			if (event.getSession() != null)
+			{
+				System.out.println("Sending out session-opened");
+				eventBus.post(new SessionOpenedEvent(event.getSession()));
+			}
 		}
 	}
 	
