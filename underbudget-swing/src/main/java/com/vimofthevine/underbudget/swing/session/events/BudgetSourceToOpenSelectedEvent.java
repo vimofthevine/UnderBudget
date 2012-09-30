@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.swing.session.events;
 
 import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
+import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 
 /**
  * Event generated when a budget source has
@@ -32,14 +33,22 @@ public class BudgetSourceToOpenSelectedEvent {
 	private final BudgetSource source;
 	
 	/**
+	 * Definition for the session source
+	 */
+	private final RecentSession session;
+	
+	/**
 	 * Constructs a new budget source
 	 * selected event.
 	 * 
-	 * @param source selected budget source
+	 * @param source  selected budget source
+	 * @param session recent session definition
 	 */
-	public BudgetSourceToOpenSelectedEvent(BudgetSource source)
+	public BudgetSourceToOpenSelectedEvent(BudgetSource source,
+		RecentSession session)
 	{
 		this.source = source;
+		this.session = session;
 	}
 	
 	/**
@@ -50,6 +59,17 @@ public class BudgetSourceToOpenSelectedEvent {
 	public BudgetSource getSource()
 	{
 		return source;
+	}
+	
+	/**
+	 * Returns the definition of for this session
+	 * so it can be re-opened.
+	 * 
+	 * @return recent session definition
+	 */
+	public RecentSession getSession()
+	{
+		return session;
 	}
 
 }

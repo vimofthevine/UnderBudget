@@ -39,6 +39,8 @@ import com.vimofthevine.underbudget.swing.session.events.SaveSessionEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionActivatedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SessionListModifiedEvent;
+import com.vimofthevine.underbudget.swing.session.events.SessionOpenedEvent;
+import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 import com.vimofthevine.underbudget.swing.session.wizard.BudgetSourceSelectionWizard;
 import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
@@ -136,7 +138,8 @@ public class Sessions {
 	public void createSession(CreateSessionEvent event)
 	{
 		logger.log(Level.INFO, "Creating new session");
-		createSession(new TemplateBudgetSource(preferences.get("HOME", "/tmp")));
+		createSession(new TemplateBudgetSource(
+			preferences.get("HOME", "/tmp")), null);
 	}
 	
 	/**
@@ -157,10 +160,10 @@ public class Sessions {
 	public void sourceSelected(BudgetSourceToOpenSelectedEvent event)
 	{
 		logger.log(Level.FINE, "Budget source selected");
-		createSession(event.getSource());
+		createSession(event.getSource(), event.getSession());
 	}
 	
-	private void createSession(BudgetSource source)
+	private void createSession(BudgetSource source, RecentSession recent)
 	{
 		try
 		{
@@ -172,6 +175,12 @@ public class Sessions {
     		
     		eventBus.post(new SessionListModifiedEvent(
     			sessions.toArray(new Session[sessions.size()])));
+    		
+    		if (recent != null)
+    		{
+    			logger.log(Level.INFO, "Sending out recent-session info, " + recent);
+    			eventBus.post(new SessionOpenedEvent(recent));
+    		}
 		}
 		catch (BudgetSourceException bse)
 		{

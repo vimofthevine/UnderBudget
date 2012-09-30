@@ -16,60 +16,45 @@
 
 package com.vimofthevine.underbudget.swing.session.events;
 
-import com.vimofthevine.underbudget.core.budget.source.BudgetSource;
 import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
 
 /**
- * Event generated when a budget source has
- * been selected.
+ * Event generated when a session is opened so that it
+ * can be added to the list of recently opened sessions.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class BudgetSourceToSaveSelectedEvent {
+public class SessionOpenedEvent {
 	
 	/**
-	 * Selected budget source
-	 */
-	private final BudgetSource source;
-	
-	/**
-	 * Definition for the session source
+	 * Recently opened session
 	 */
 	private final RecentSession session;
 	
 	/**
-	 * Constructs a new budget source
-	 * selected event.
+	 * Constructs a new session-opened event.
 	 * 
-	 * @param source  selected budget source
-	 * @param session recent session definition
+	 * @param session recently opened session definition
 	 */
-	public BudgetSourceToSaveSelectedEvent(BudgetSource source,
-		RecentSession session)
+	public SessionOpenedEvent(RecentSession session)
 	{
-		this.source = source;
 		this.session = session;
 	}
 	
 	/**
-	 * Returns the selected budget source.
+	 * Returns the recently opened session.
 	 * 
-	 * @return selected budget source
-	 */
-	public BudgetSource getSource()
-	{
-		return source;
-	}
-	
-	/**
-	 * Returns the definition of for this session
-	 * so it can be re-opened.
-	 * 
-	 * @return recent session definition
+	 * @return recently opened session
 	 */
 	public RecentSession getSession()
 	{
 		return session;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Session opened event (" + session + ")";
 	}
 
 }

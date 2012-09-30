@@ -20,6 +20,7 @@ import java.awt.Frame;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -41,6 +42,10 @@ import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToOpenSelec
 import com.vimofthevine.underbudget.swing.session.events.BudgetSourceToSaveSelectedEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToOpenEvent;
 import com.vimofthevine.underbudget.swing.session.events.SelectBudgetSourceToSaveEvent;
+import com.vimofthevine.underbudget.swing.session.recent.RecentAesEncryptedFile;
+import com.vimofthevine.underbudget.swing.session.recent.RecentBudgetXmlFile;
+import com.vimofthevine.underbudget.swing.session.recent.RecentSession;
+import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.xml.budget.source.AesEncryptedFileSource;
 import com.vimofthevine.underbudget.xml.budget.source.BudgetXmlFileSource;
 
@@ -138,18 +143,20 @@ public class BudgetSourceSelectionWizard {
 	 * Fires a source-selected event, according to the
 	 * type of the original select-source event.
 	 * 
-	 * @param source budget source selected
-	 * @param event  original select-source event
+	 * @param source  budget source selected
+	 * @param session recent session definition
+	 * @param event   original select-source event
 	 */
-	private void fireSelectedEvent(BudgetSource source, Object event)
+	private void fireSelectedEvent(BudgetSource source, RecentSession session,
+		Object event)
 	{
 		if (event instanceof SelectBudgetSourceToOpenEvent)
 		{
-			eventBus.post(new BudgetSourceToOpenSelectedEvent(source));
+			eventBus.post(new BudgetSourceToOpenSelectedEvent(source, session));
 		}
 		else
 		{
-			eventBus.post(new BudgetSourceToSaveSelectedEvent(source));
+			eventBus.post(new BudgetSourceToSaveSelectedEvent(source, session));
 		}
 	}
 	
@@ -175,11 +182,19 @@ public class BudgetSourceSelectionWizard {
 					new Thread() {
 						public void run()
 						{
-							BudgetXmlFileSource source = open
-								? new BudgetXmlFileSource(file)
-								: new BudgetXmlFileSource(file, budget);
-							
-							fireSelectedEvent(source, event);
+							try
+							{
+    							BudgetXmlFileSource source = open
+    								? new BudgetXmlFileSource(file)
+    								: new BudgetXmlFileSource(file, budget);
+    							RecentBudgetXmlFile session = new RecentBudgetXmlFile(file);
+    							
+    							fireSelectedEvent(source, session, event);
+							}
+							catch (FileNotFoundException fnfe)
+							{
+								new ErrorPopup(fnfe, window);
+							}
 						}
 					}.start();
 				}
@@ -228,11 +243,19 @@ public class BudgetSourceSelectionWizard {
 					new Thread() {
 						public void run()
 						{
-    						AesEncryptedFileSource source = open
-    							? new AesEncryptedFileSource(file, key)
-    							: new AesEncryptedFileSource(file, key, budget);
-    							
-   							fireSelectedEvent(source, event);
+							try
+							{
+        						AesEncryptedFileSource source = open
+        							? new AesEncryptedFileSource(file, key)
+        							: new AesEncryptedFileSource(file, key, budget);
+        						RecentAesEncryptedFile session = new RecentAesEncryptedFile(file);
+        							
+       							fireSelectedEvent(source, session, event);
+							}
+							catch (FileNotFoundException fnfe)
+							{
+								new ErrorPopup(fnfe, window);
+							}
 						}
 					}.start();
 				}

@@ -35,6 +35,7 @@ import com.vimofthevine.underbudget.swing.preferences.NoUserPreferences;
 import com.vimofthevine.underbudget.swing.preferences.PropertiesFileUserPreferences;
 import com.vimofthevine.underbudget.swing.preferences.UserPreferences;
 import com.vimofthevine.underbudget.swing.session.Sessions;
+import com.vimofthevine.underbudget.swing.session.recent.RecentlyOpenedSessions;
 import com.vimofthevine.underbudget.swing.tutorial.BasicUsageTutorialEvent;
 import com.vimofthevine.underbudget.swing.tutorial.TutorialEventListener;
 import com.vimofthevine.underbudget.swing.window.ApplicationWindow;
@@ -102,6 +103,9 @@ public class Application {
 			new ApplicationWindowModel(props, eventBus, preferences);
 		ApplicationWindow window = new ApplicationWindow(windowModel,
 			frame, menuBar, toolBar, content);
+		
+		// Created after menu so menu can get initial list
+		new RecentlyOpenedSessions(eventBus, preferences);
 		
 		eventBus.register(preferences);
 		eventBus.register(window);
