@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.xml.budget.source;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,15 +94,15 @@ public class TemplateBudgetSource implements BudgetSource {
 		serializer = BudgetSerializerFactory.createSerializer();
 		newBudget = new XmlTemplateBudget(budgetToCopy);
 	}
-
+	
 	@Override
-	public Budget getBudget() throws BudgetSourceException
+	public Budget retrieve() throws BudgetSourceException
 	{
 		MutableBudget template;
 		
 		try
 		{
-			if (templateFile.exists())
+			if (templateFile.exists() && templateFile.canRead())
 			{
 				logger.log(Level.INFO, "Reading template from " + templateFile.getAbsolutePath());
 				template = serializer.read(XmlBudget.class, templateFile);
@@ -166,9 +167,20 @@ public class TemplateBudgetSource implements BudgetSource {
 		{
 			logger.log(Level.INFO, "Updating template at " + templateFile.getAbsolutePath());
 			
+			if (templateFile.exists() && ! templateFile.canWrite())
+			{
+				throw new BudgetSourceException("Cannot write to template, "
+					+ templateFile.getAbsolutePath());
+			}
+			
 			try
 			{
 				serializer.write(newBudget, templateFile);
+			}
+			catch (FileNotFoundException fnfe)
+			{
+				throw new BudgetSourceException("Could not create template file, "
+					+ templateFile.getAbsolutePath());
 			}
 			catch (Exception e)
 			{

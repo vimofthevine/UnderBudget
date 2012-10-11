@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -28,6 +29,7 @@ import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -111,14 +113,23 @@ public class AesEncryptedFileSource implements BudgetSource {
 			? (XmlBudget) budgetToCopy : new XmlBudget(budgetToCopy);
 		serializer = BudgetSerializerFactory.createSerializer();
 	}
-
+	
 	@Override
-    public Budget getBudget() throws BudgetSourceException
+    public Budget retrieve() throws BudgetSourceException
     {
 		logger.log(Level.FINE, "Reading " + encFile.getAbsolutePath());
 		
-		if (encFile == null || ! encFile.exists())
-			throw new BudgetSourceException("File does not exist");
+		if ( ! encFile.exists())
+		{
+			throw new BudgetSourceException("File, " + encFile.getAbsolutePath()
+				+ " does not exist");
+    	}
+		
+		if ( ! encFile.canRead())
+		{
+			throw new BudgetSourceException("Cannot read file, "
+				+ encFile.getAbsolutePath());
+		}
 		
 		FileInputStream fileInStream = null;
 		
@@ -159,6 +170,12 @@ public class AesEncryptedFileSource implements BudgetSource {
 			budget = serializer.read(XmlBudget.class, byteStream);
 			return budget;
 		}
+		catch (BadPaddingException bpe)
+		{
+			logger.log(Level.WARNING, "Unable to decrypt", bpe);
+			throw new BudgetSourceException("Incorrect password, unable to decrypt "
+				+ encFile.getAbsolutePath());
+		}
 		catch (Exception e)
 		{
 			throw new BudgetSourceException("Unable to open encrypted budget file", e);
@@ -186,6 +203,12 @@ public class AesEncryptedFileSource implements BudgetSource {
 		
 		if (budget == null)
 			throw new BudgetSourceException("No budget to be saved");
+		
+		if (encFile.exists() && ! encFile.canWrite())
+		{
+			throw new BudgetSourceException("Cannot write to file, "
+				+ encFile.getAbsolutePath());
+		}
 		
 		FileOutputStream fileOutStream = null;
 		
@@ -225,6 +248,11 @@ public class AesEncryptedFileSource implements BudgetSource {
 			// Write to file
 			fileOutStream = new FileOutputStream(encFile);
 			fileOutStream.write(encrypted);
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			throw new BudgetSourceException("Could not create file, "
+				+ encFile.getAbsolutePath());
 		}
 		catch (Exception e)
 		{
