@@ -17,6 +17,7 @@
 package com.vimofthevine.underbudget.xml.budget.source;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,10 +82,22 @@ public class BudgetXmlFileSource implements BudgetSource {
 			? (XmlBudget) budgetToCopy : new XmlBudget(budgetToCopy);
 		serializer = BudgetSerializerFactory.createSerializer();
 	}
-
+		
 	@Override
-    public Budget getBudget() throws BudgetSourceException
+    public Budget retrieve() throws BudgetSourceException
     {
+		if ( ! xmlFile.exists())
+		{
+			throw new BudgetSourceException("File, " + xmlFile.getAbsolutePath()
+				+ " does not exist");
+		}
+		
+		if ( ! xmlFile.canRead())
+		{
+			throw new BudgetSourceException("Cannot read file, "
+				+ xmlFile.getAbsolutePath());
+		}
+		
 		try
 		{
 			budget = serializer.read(XmlBudget.class, xmlFile);
@@ -104,9 +117,20 @@ public class BudgetXmlFileSource implements BudgetSource {
 		if (budget == null)
 			throw new BudgetSourceException("No budget to be saved");
 		
+		if (xmlFile.exists() && ! xmlFile.canWrite())
+		{
+			throw new BudgetSourceException("Cannot write to file, "
+				+ xmlFile.getAbsolutePath());
+		}
+		
 		try
 		{
 			serializer.write(budget, xmlFile);
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			throw new BudgetSourceException("Could not create file, "
+				+ xmlFile.getAbsolutePath());
 		}
 		catch (Exception e)
 		{

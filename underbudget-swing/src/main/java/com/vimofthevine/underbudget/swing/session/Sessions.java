@@ -214,7 +214,7 @@ public class Sessions {
 		catch (BudgetSourceException bse)
 		{
 			logger.log(Level.WARNING, "Unable to create session", bse);
-			new ErrorPopup(bse, window);
+			ErrorPopup.show(bse, window);
 		}
 	}
 	

@@ -39,48 +39,88 @@ import javax.swing.SwingUtilities;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class ErrorPopup {
+public abstract class ErrorPopup {
 	
 	/**
-	 * Constructs a new error popup for the
-	 * given exception.
+	 * Displays an error popup for the given
+	 * exception.
 	 * 
-	 * @param exception caught exception to be
-	 *                  shown to the user
+	 * @param exception caught exception to be shown
 	 * @param window    application window
 	 */
-	public ErrorPopup(Exception exception, final Frame window)
+	public static void show(Exception exception, Frame window)
 	{
-		final String message = exception.getMessage();
+		String message = exception.getMessage();
+		String stackTrace = null;
 		
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		PrintWriter writer = new PrintWriter(stream);
-		exception.printStackTrace(writer);
-		writer.flush();
-		final String stackTrace = stream.toString();
+		if (exception.getCause() != null)
+		{
+    		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    		PrintWriter writer = new PrintWriter(stream);
+    		exception.printStackTrace(writer);
+    		writer.flush();
+    		stackTrace = stream.toString();
+		}
 		
+		show(message, stackTrace, window);
+	}
+	
+	/**
+	 * Displays an error popup with the given summary and
+	 * detailed message.
+	 * 
+	 * @param message         summary error message
+	 * @param detailedMessage detailed error message
+	 * @param window          application window
+	 */
+	public static void show(final String message,
+		final String detailedMessage, final Frame window)
+	{
 		final JDialog dialog = new JDialog(window, "Error", true);
 		dialog.setMinimumSize(new Dimension(500, 10));
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
-		final JTextArea details = new JTextArea(stackTrace);
-		details.setEditable(false);
-		final JScrollPane scroll = new JScrollPane(details);
-		scroll.setVisible(false);
-		scroll.setPreferredSize(new Dimension(480, 250));
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		
-		final String expandText = "Details >>>";
-		final String hideText = "<<< Hide";
-		final JButton moreButton = new JButton(expandText);
-		moreButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event)
-			{
-				scroll.setVisible( ! scroll.isVisible());
-				moreButton.setText(scroll.isVisible() ? hideText : expandText);
-				dialog.pack();
-			}
-		});
+		if (detailedMessage != null)
+		{
+       		final JTextArea details = new JTextArea(detailedMessage);
+       		details.setEditable(false);
+       		final JScrollPane scroll = new JScrollPane(details);
+       		scroll.setVisible(false);
+       		scroll.setPreferredSize(new Dimension(480, 250));
+    		
+    		final String expandText = "Details >>>";
+    		final String hideText = "<<< Hide";
+    		final JButton moreButton = new JButton(expandText);
+    		moreButton.addActionListener(new ActionListener() {
+    			@Override
+    			public void actionPerformed(ActionEvent event)
+    			{
+    				scroll.setVisible( ! scroll.isVisible());
+    				moreButton.setText(scroll.isVisible() ? hideText : expandText);
+    				dialog.pack();
+    			}
+    		});
+		
+    		c = new GridBagConstraints();
+    		c.fill = GridBagConstraints.NONE;
+    		c.gridx = 1;
+    		c.gridy = 0;
+    		c.insets = new Insets(5, 0, 0, 5);
+    		panel.add(moreButton, c);
+    		
+    		c = new GridBagConstraints();
+    		c.fill = GridBagConstraints.BOTH;
+    		c.gridwidth = 3;
+    		c.gridx = 0;
+    		c.gridy = 1;
+    		c.insets = new Insets(5, 5, 0, 5);
+    		c.weightx = 1.0;
+    		c.weighty = 1.0;
+    		panel.add(scroll, c);
+		}
 		
 		final JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
@@ -91,32 +131,13 @@ public class ErrorPopup {
 			}
 		});
 		
-		JPanel panel = new JPanel(new GridBagLayout());
-		
-		GridBagConstraints c = new GridBagConstraints();
+   		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
 		c.insets = new Insets(5, 5, 0, 5);
 		c.weightx = 1.0;
 		panel.add(new PlainLabel(message), c);
-		
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.NONE;
-		c.gridx = 1;
-		c.gridy = 0;
-		c.insets = new Insets(5, 0, 0, 5);
-		panel.add(moreButton, c);
-		
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 3;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.insets = new Insets(5, 5, 0, 5);
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		panel.add(scroll, c);
 		
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_END;

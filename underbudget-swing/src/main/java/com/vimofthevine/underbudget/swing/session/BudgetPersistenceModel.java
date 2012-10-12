@@ -16,6 +16,7 @@
 
 package com.vimofthevine.underbudget.swing.session;
 
+import java.awt.Frame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ import com.vimofthevine.underbudget.swing.session.events.UpdateTemplateEvent;
 import com.vimofthevine.underbudget.swing.session.source.SelectSource;
 import com.vimofthevine.underbudget.swing.session.source.SourceSummary;
 import com.vimofthevine.underbudget.swing.status.StatusMessageEvent;
+import com.vimofthevine.underbudget.swing.widgets.ErrorPopup;
 import com.vimofthevine.underbudget.xml.budget.source.TemplateBudgetSource;
 
 /**
@@ -65,6 +67,11 @@ class BudgetPersistenceModel {
 	private final UserPreferences preferences;
 	
 	/**
+	 * Parent application window
+	 */
+	private final Frame parent;
+	
+	/**
 	 * Budget source
 	 */
 	private BudgetSource source;
@@ -78,7 +85,8 @@ class BudgetPersistenceModel {
 	 * @param prefs  application preferences
 	 */
 	BudgetPersistenceModel(EventBus bus, Budget budget,
-		BudgetSource source, UserPreferences prefs)
+		BudgetSource source, UserPreferences prefs,
+		Frame window)
 	{
 		eventBus = bus;
 		eventBus.register(this);
@@ -87,6 +95,8 @@ class BudgetPersistenceModel {
 		
 		this.budget = budget;
 		this.source = source;
+		
+		parent = window;
 	}
 	
 	@Subscribe
@@ -111,6 +121,7 @@ class BudgetPersistenceModel {
 			catch (BudgetSourceException bse)
 			{
 				logger.log(Level.WARNING, "Unable to save budget", bse);
+				ErrorPopup.show(bse, parent);
 			}
 		}
 	}
@@ -160,6 +171,7 @@ class BudgetPersistenceModel {
 		catch (BudgetSourceException bse)
 		{
 			logger.log(Level.WARNING, "Unable to update the template", bse);
+			ErrorPopup.show(bse, parent);
 		}
 	}
 

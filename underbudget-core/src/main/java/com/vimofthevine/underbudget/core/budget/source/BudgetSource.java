@@ -27,14 +27,14 @@ import com.vimofthevine.underbudget.core.budget.Budget;
 public interface BudgetSource {
 	
 	/**
-	 * Returns the budget defined by the specific
+	 * Retrieves the budget defined by the specific
 	 * source.
 	 * 
 	 * @return <code>Budget</code> defined by the source
 	 * @throws BudgetSourceException if the budget could not
 	 *         be retrieved from this budget source
 	 */
-	public Budget getBudget() throws BudgetSourceException;
+	public Budget retrieve() throws BudgetSourceException;
 	
 	/**
 	 * Applies any modifications made to the budget,

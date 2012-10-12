@@ -92,7 +92,7 @@ public class Session {
 	throws BudgetSourceException
 	{
 		budgetSource = source;
-		budget = budgetSource.getBudget();
+		budget = budgetSource.retrieve();
 		
 		eventBus = new EventBus(source.toString());
 		
@@ -104,7 +104,7 @@ public class Session {
 		BalanceCalculator calculator = new DefaultBalanceCalculator();
 		
 		state = new SessionState(globalBus, eventBus, budget);
-		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs);
+		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs, window);
 		
 		new BudgetSourceRequestBridge(globalBus, eventBus);
 		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
