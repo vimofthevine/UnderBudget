@@ -16,10 +16,10 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
+import java.awt.Component;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -28,7 +28,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
-import com.vimofthevine.underbudget.core.estimate.MutableEstimate;
+import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateAddedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateModifiedEvent;
@@ -65,17 +65,20 @@ class EstimateTreeViewModel {
 	private final EstimateTreeTableModel treeTableModel;
 	
 	/**
-	 * Add-child-to-root action
+	 * Estimate tree context menu
 	 */
-	private final AddChildAction addChildToRootAction;
+	private final EstimateTreeContextMenu contextMenu;
 	
 	/**
 	 * Constructs a new estimate tree-table view model.
 	 * 
-	 * @param bus   event bus
-	 * @param model estimate tree table model
+	 * @param bus    event bus
+	 * @param model  estimate tree table model
+	 * @param rules  assignment rules (used when deleting estimates)
+	 * @param parent parent component (usually the main window)
 	 */
-	public EstimateTreeViewModel(EventBus bus, EstimateTreeTableModel model)
+	public EstimateTreeViewModel(EventBus bus, EstimateTreeTableModel model,
+		ReverseLookupAssignmentRules rules, Component parent)
 	{
 		log = model.getClass().getSimpleName() + ": ";
 		
@@ -84,9 +87,8 @@ class EstimateTreeViewModel {
 		
 		treeTableModel = model;
 		
-		addChildToRootAction = new AddChildAction(bus);
-		addChildToRootAction.putValue(Action.NAME, "Create top-level estimate");
-		addChildToRootAction.setEstimate((MutableEstimate) model.getRoot());
+		contextMenu = new EstimateTreeContextMenu(eventBus,
+			(Estimate) model.getRoot(), rules, parent);
 	}
 	
 	/**
@@ -112,18 +114,18 @@ class EstimateTreeViewModel {
 	}
 	
 	/**
-	 * Returns the action model for adding new
-	 * estimates to the root estimate.
+	 * Returns the estimate tree context menu
+	 * model.
 	 * 
-	 * @return add-child-to-root action model
+	 * @return context menu model
 	 */
-	Action getAddChildToRootAction()
+	EstimateTreeContextMenu getContextMenu()
 	{
-		return addChildToRootAction;
+		return contextMenu;
 	}
 	
 	/**
-	 * Updates the estimate tree-table to reflect the
+	 * Updates the context menu actions to reflect the
 	 * currently selected estimate.
 	 * 
 	 * @param event estimate selection event
@@ -131,6 +133,7 @@ class EstimateTreeViewModel {
 	@Subscribe
 	public synchronized void estimateSelected(EstimateSelectedEvent event)
 	{
+		contextMenu.setEstimate(event.getEstimate());
 	}
 	
 	/**

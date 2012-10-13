@@ -66,7 +66,7 @@ public abstract class EstimateProgressViewFactory {
 		EstimateProgressTreeTableModel treeTableModel =
 			new EstimateProgressTreeTableModel(root, calculator, prefs);
 		EstimateTreeViewModel treeModel =
-			new EstimateTreeViewModel(bus, treeTableModel);
+			new EstimateTreeViewModel(bus, treeTableModel, rules, window);
 		EstimateDetailViewModel detailModel =
 			new EstimateDetailViewModel(bus, currency, window, rules);
 		EstimateAssignmentRulesViewModel rulesModel =

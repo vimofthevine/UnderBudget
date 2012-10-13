@@ -41,7 +41,7 @@ class AddChildAction extends AbstractAction {
 	/**
 	 * Currently represented estimate
 	 */
-	private MutableEstimate estimate;
+	private Estimate estimate;
 	
 	/**
 	 * Constructs a new add-child action.
@@ -61,17 +61,20 @@ class AddChildAction extends AbstractAction {
 	 * 
 	 * @param newEstimate estimate to be acted on
 	 */
-	void setEstimate(MutableEstimate newEstimate)
+	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
-		setEnabled(estimate != null);
+		setEnabled(estimate instanceof MutableEstimate);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent event)
 	{
-		Estimate child = estimate.createChild();
-		eventBus.post(new EstimateAddedEvent(estimate, child));
+		if (estimate instanceof MutableEstimate)
+		{
+    		Estimate child = ((MutableEstimate) estimate).createChild();
+    		eventBus.post(new EstimateAddedEvent(estimate, child));
+		}
 	}
 
 }

@@ -70,12 +70,9 @@ public class EstimateTreeView implements TableCellRenderer {
 		container.setLayout(new BorderLayout());
 		container.add(new JScrollPane(treeTable), BorderLayout.CENTER);
 		
-		createPopupMenu(model, treeTable);
+		createPopupMenu(model.getContextMenu(), treeTable);
 	}
 
-	/**
-     * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-     */
     @Override
     public Component getTableCellRendererComponent(JTable table,
     	Object value, boolean isSelected, boolean hasFocus, int row, int column)
@@ -93,10 +90,12 @@ public class EstimateTreeView implements TableCellRenderer {
     		return null;
     }
     
-    private void createPopupMenu(EstimateTreeViewModel model, Component component)
+    private void createPopupMenu(EstimateTreeContextMenu model, Component component)
     {
     	final JPopupMenu popup = new JPopupMenu();
     	popup.add(new JMenuItem(model.getAddChildToRootAction()));
+    	popup.add(new JMenuItem(model.getAddChildToSelectedAction()));
+    	popup.add(new JMenuItem(model.getDeleteSelectedAction()));
     	
     	component.addMouseListener(new MouseAdapter() {
 			@Override

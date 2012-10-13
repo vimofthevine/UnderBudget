@@ -56,7 +56,7 @@ class DeleteAction extends AbstractAction {
 	/**
 	 * Currently represented estimate
 	 */
-	private MutableEstimate estimate;
+	private Estimate estimate;
 	
 	/**
 	 * Constructs a new delete action.
@@ -82,7 +82,7 @@ class DeleteAction extends AbstractAction {
 	 * 
 	 * @param newEstimate estimate to be acted on
 	 */
-	void setEstimate(MutableEstimate newEstimate)
+	void setEstimate(Estimate newEstimate)
 	{
 		estimate = newEstimate;
 		
@@ -92,13 +92,17 @@ class DeleteAction extends AbstractAction {
 		}
 		else
 		{
-			setEnabled(estimate.getChildCount() == 0);
+			setEnabled((estimate instanceof MutableEstimate)
+				&& estimate.getChildCount() == 0);
 		}
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+		if ( ! (estimate instanceof MutableEstimate))
+			return;
+		
 		if (estimate.getChildCount() != 0)
 			return;
 		
@@ -118,7 +122,7 @@ class DeleteAction extends AbstractAction {
 						{
         					Estimate parent = estimate.getParent();
         					int index = parent.indexOf(estimate);
-        					estimate.delete();
+        					((MutableEstimate) estimate).delete();
         					eventBus.post(new EstimateRemovedEvent(parent, index, estimate));
         					
         					AssignmentRule[] assocRules = rules.getRules(estimate);
