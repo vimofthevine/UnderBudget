@@ -28,6 +28,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vimofthevine.underbudget.core.assignment.ActualFigures;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
+import com.vimofthevine.underbudget.core.estimate.EstimateField;
 import com.vimofthevine.underbudget.swing.assignment.ReverseLookupAssignmentRules;
 import com.vimofthevine.underbudget.swing.assignment.events.TransactionsAssignedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateAddedEvent;
@@ -155,6 +156,11 @@ class EstimateTreeViewModel {
 				// Update tree-table
 				logger.log(Level.FINE, log + "Updating tree-table to reflect modified estimate");
 				treeTableModel.valueForPathChanged(path, event.getEstimate());
+				
+				if (event.getChanges().containsKey(EstimateField.TYPE))
+				{
+					treeTableModel.refresh();
+				}
 			}
 		});
 	}

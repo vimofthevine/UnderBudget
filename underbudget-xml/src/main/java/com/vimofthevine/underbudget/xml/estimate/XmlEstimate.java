@@ -122,7 +122,6 @@ public class XmlEstimate implements MutableEstimate {
 	XmlEstimate()
 	{
 		uid = new Random().nextLong();
-		type = EstimateType.CATEGORY; // Default to category
 		children = new ArrayList<XmlEstimate>();
 	}
 	
@@ -169,7 +168,7 @@ public class XmlEstimate implements MutableEstimate {
 		this.name = name;
 		this.description = description;
 		this.amount = amount;
-		this.type = (type == null) ? EstimateType.CATEGORY : type;
+		this.type = (type == null) ? EstimateType.EXPENSE : type;
 		this.dueDate = dueDate;
 		this.complete = complete;
 		this.children = children;
@@ -188,6 +187,7 @@ public class XmlEstimate implements MutableEstimate {
 	{
 		children.add(child);
 		child.parent = this;
+		child.type = type;
 	}
 	
 	void remove(XmlEstimate child)
@@ -218,7 +218,7 @@ public class XmlEstimate implements MutableEstimate {
             public SimpleDate getDueDate() { return isRoot() ? null : dueDate; }
 
 			@Override
-            public EstimateType getType() { return isRoot() ? EstimateType.CATEGORY : type; }
+            public EstimateType getType() { return isRoot() ? EstimateType.ROOT : type; }
 
 			@Override
             public boolean isComplete() { return isRoot() ? false : complete; }
@@ -254,27 +254,55 @@ public class XmlEstimate implements MutableEstimate {
     {
 		return children.get(index);
     }
+	
+	/**
+	 * Counts the total estimated amount of an estimate, including
+	 * all child estimates if the estimate has children.
+	 * 
+	 * @param calculator currency calculator
+	 * @return total estimated amount of the sub-tree
+	 */
+	private CashCommodity countCategoryAmount(CurrencyCalculator calculator)
+	{
+		if (getChildCount() > 0)
+		{
+			CashCommodity total = calculator.zero();
+			
+			for (int i=0; i<getChildCount(); i++)
+			{
+				XmlEstimate child = children.get(i);
+				total = calculator.add(total, child.countCategoryAmount(calculator));
+			}
+			
+			return total;
+		}
+		else
+			return amount;
+	}
 
 	@Override
     public EstimateProgress getProgress(final ActualFigure actual,
     	final CurrencyCalculator calculator)
     {
+		CashCommodity estimated = countCategoryAmount(calculator);
+			
 		switch (type)
 		{
 			case INCOME:
-				return new IncomeProgress(amount, actual.getAmount(), dueDate);
+				return new IncomeProgress(estimated, actual.getAmount(), dueDate);
 				
 			case EXPENSE:
-				return new ExpenseProgress(amount, actual.getAmount(), dueDate);
+				return new ExpenseProgress(estimated, actual.getAmount(), dueDate);
 				
 			case TRANSFER:
-				return new TransferProgress(amount, actual.getAmount(), dueDate);
+				return new TransferProgress(estimated, actual.getAmount(), dueDate);
 				
+			case ROOT:
 			case CATEGORY:
 				return new CategoryProgress(calculator.zero(), calculator.zero());
 				
 			default:
-				throw new IllegalArgumentException("Invalid estimate type");
+				throw new IllegalArgumentException("Invalid estimate type, " + type);
 		}
     }
 
@@ -282,6 +310,9 @@ public class XmlEstimate implements MutableEstimate {
     public BalanceImpact getImpact(final ActualFigure actual,
     	final CurrencyCalculator calculator)
     {
+		if (getChildCount() > 0)
+			return new CategoryImpact(amount, actual.getAmount());
+		
 		switch (type)
 		{
 			case INCOME:
@@ -293,6 +324,7 @@ public class XmlEstimate implements MutableEstimate {
 			case TRANSFER:
 				return new TransferImpact(amount, actual.getAmount());
 				
+			case ROOT:
 			case CATEGORY:
 				return new CategoryImpact(amount, actual.getAmount());
 				
@@ -326,21 +358,21 @@ public class XmlEstimate implements MutableEstimate {
 			changeset.put(EstimateField.DESCRIPTION, description);
 		}
 		
-		if ((type == null) ? (definition.getType() != null)
-			: ( ! type.equals(definition.getType())))
+		// Can only change the type if top-level estimate
+		if (parent.isRoot())
 		{
-			type = definition.getType();
-			changeset.put(EstimateField.TYPE, type);
+    		if ((type == null) ? (definition.getType() != null)
+    			: ( ! type.equals(definition.getType())))
+    		{
+    			type = definition.getType();
+    			changeset.put(EstimateField.TYPE, type);
+    			
+    			// Propagate type change to all children
+    			setChildTypes(type);
+    		}
 		}
 		
-		// Estimates with children must be type category
-		if (getChildCount() > 0 && ! type.equals(EstimateType.CATEGORY))
-		{
-			type = EstimateType.CATEGORY;
-			changeset.put(EstimateField.TYPE, type);
-		}
-		
-		if (type.equals(EstimateType.CATEGORY))
+		if (getChildCount() > 0)
 		{
 			// Category estimates can only have a zero amount
 			CashCommodity zero = Commodity.zero(definition.getAmount().getCurrency());
@@ -397,6 +429,21 @@ public class XmlEstimate implements MutableEstimate {
 		
 		return changeset;
     }
+	
+	/**
+	 * Recursively update the estimate type for all
+	 * child estimates of this estimate.
+	 * 
+	 * @param type new estimate type
+	 */
+	private void setChildTypes(EstimateType type)
+	{
+		for (XmlEstimate child : children)
+		{
+			child.type = type;
+			child.setChildTypes(type);
+		}
+	}
 
 	@Override
     public Estimate createChild()
@@ -413,7 +460,7 @@ public class XmlEstimate implements MutableEstimate {
 				@Override
                 public SimpleDate getDueDate() { return null; }
 				@Override
-                public EstimateType getType() { return EstimateType.EXPENSE; }
+                public EstimateType getType() { return type; }
 				@Override
                 public boolean isComplete() { return false; }
 			};

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vimofthevine.underbudget.core.currency.CashCommodity;
 import com.vimofthevine.underbudget.core.currency.CurrencyCalculator;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.core.transaction.Transaction;
@@ -112,11 +113,26 @@ ActualFigures {
 	@Override
     public ActualFigure getActual(Estimate estimate)
     {
-		List<Transaction> transactions = estimateIdToTransactions.get(estimate.getId());
-		if (transactions != null)
-			return new DefaultActualFigure(calculator, transactions);
+		if (estimate.getChildCount() > 0)
+		{
+			CashCommodity total = calculator.zero();
+			
+			for (int i=0; i<estimate.getChildCount(); i++)
+			{
+				ActualFigure sub = getActual(estimate.getChildAt(i));
+				total = calculator.add(total, sub.getAmount());
+			}
+			
+			return new DefaultActualFigure(total);
+		}
 		else
-			return new NoActualFigure(calculator.zero());
+		{
+    		List<Transaction> transactions = estimateIdToTransactions.get(estimate.getId());
+    		if (transactions != null)
+    			return new DefaultActualFigure(calculator, transactions);
+    		else
+    			return new NoActualFigure(calculator.zero());
+		}
     }
 
 }
