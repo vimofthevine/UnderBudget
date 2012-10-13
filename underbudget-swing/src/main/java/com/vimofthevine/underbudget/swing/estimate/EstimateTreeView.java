@@ -27,7 +27,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 
@@ -62,8 +61,6 @@ public class EstimateTreeView implements TableCellRenderer {
 		});
 		
 		model.setTreeSelectionModel(treeTable.getTreeSelectionModel());
-		treeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		treeTable.addTreeSelectionListener(model.getSelectionListener());
 		
 		// Remove icons
 		treeTable.setClosedIcon(null);

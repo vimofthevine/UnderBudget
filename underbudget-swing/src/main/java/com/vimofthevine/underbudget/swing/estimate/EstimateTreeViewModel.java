@@ -16,14 +16,11 @@
 
 package com.vimofthevine.underbudget.swing.estimate;
 
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -73,16 +70,6 @@ class EstimateTreeViewModel {
 	private final AddChildAction addChildToRootAction;
 	
 	/**
-	 * Tree selection model
-	 */
-	private TreeSelectionModel selectionModel;
-	
-	/**
-	 * The currently selected path
-	 */
-	private TreePath currentSelectionPath;
-	
-	/**
 	 * Constructs a new estimate tree-table view model.
 	 * 
 	 * @param bus   event bus
@@ -121,7 +108,7 @@ class EstimateTreeViewModel {
 	 */
 	void setTreeSelectionModel(TreeSelectionModel model)
 	{
-		selectionModel = model;
+		new EstimateTreeSelectionModel(eventBus, model);
 	}
 	
 	/**
@@ -136,64 +123,6 @@ class EstimateTreeViewModel {
 	}
 	
 	/**
-	 * Constructs a TreePath for the given estimate.
-	 * 
-	 * @param estimate estimate whose path is to be created
-	 * @return tree path to the given estimate
-	 */
-	private TreePath getPath(Estimate estimate)
-	{
-		logger.log(Level.FINE, log + "Determining path to " + estimate);
-		
-		LinkedList<Estimate> path = new LinkedList<Estimate>();
-		
-		for (Estimate node = estimate; node != null; node = node.getParent())
-		{
-			path.add(0, node);
-		}
-		
-		logger.log(Level.FINE, log + "Got path: " + path);
-		
-		return new TreePath(path.toArray());
-	}
-	
-	/**
-	 * Creates a tree selection listener to receive notification
-	 * of estimate selections. A <code>EstimateSelectionEvent</code>
-	 * is fired upon notification of a selection change.
-	 * 
-	 * @return estimate tree-table selection listener
-	 */
-	public TreeSelectionListener getSelectionListener()
-	{
-		return new TreeSelectionListener() {
-			@Override
-			public void valueChanged(TreeSelectionEvent event)
-			{
-				// Don't do anything if already selected (avoid infinite loop)
-				if (currentSelectionPath == null ||
-					! currentSelectionPath.equals(event.getNewLeadSelectionPath()))
-				{
-    				currentSelectionPath = event.getNewLeadSelectionPath();
-    				if (currentSelectionPath != null &&
-    					currentSelectionPath.getLastPathComponent() instanceof Estimate)
-    				{
-    					final Estimate estimate = (Estimate) currentSelectionPath.getLastPathComponent();
-    					
-    					// Get off EDT
-    					new Thread() {
-    						public void run()
-    						{
-    							eventBus.post(new EstimateSelectedEvent(estimate, currentSelectionPath));
-    						}
-    					}.start();
-    				}
-				}
-			}
-		};
-	}
-	
-	/**
 	 * Updates the estimate tree-table to reflect the
 	 * currently selected estimate.
 	 * 
@@ -202,49 +131,6 @@ class EstimateTreeViewModel {
 	@Subscribe
 	public synchronized void estimateSelected(EstimateSelectedEvent event)
 	{
-		logger.log(Level.FINEST, log + "Estimate selected: " + event);
-		
-		if (event.getEstimate() == null)
-		{
-			currentSelectionPath = null;
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run()
-				{
-					selectionModel.clearSelection();
-				}
-			});
-			
-			return;
-		}
-		
-		TreePath selectionPath = (event.getTreePath() == null)
-			? getPath(event.getEstimate()) : event.getTreePath();
-		
-		// Don't do anything if already selected (avoid infinite loop)
-		if (currentSelectionPath == null ||
-			! currentSelectionPath.equals(selectionPath))
-		{
-			logger.log(Level.FINEST, log + "Selecting estimate, " + event.getTreePath());
-			currentSelectionPath = selectionPath;
-			
-			// Select the new estimate
-			if (selectionModel != null)
-			{
-				final TreePath newSelection = selectionPath;
-				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run()
-					{
-						logger.log(Level.FINEST, log + "Updating tree selection to selected estimate");
-						selectionModel.setSelectionPath(newSelection);
-					}
-				});
-			}
-		}
-		else
-		{
-			logger.log(Level.FINER, log + "Estimate is already selected");
-		}
 	}
 	
 	/**
@@ -258,7 +144,7 @@ class EstimateTreeViewModel {
 	{
 		logger.log(Level.FINE, log + "Estimate modified: " + event);
 		
-		final TreePath path = getPath(event.getEstimate());
+		final TreePath path = new EstimateTreePath(event.getEstimate());
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
@@ -283,8 +169,7 @@ class EstimateTreeViewModel {
 		
 		final Estimate parent = event.getParent();
 		final Estimate child = event.getChild();
-		final TreePath parentPath = getPath(parent);
-		final TreePath childPath = getPath(child);
+		final TreePath parentPath = new EstimateTreePath(parent);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
@@ -294,24 +179,6 @@ class EstimateTreeViewModel {
 				treeTableModel.fireEstimateAdded(parentPath, parent, child);
 			}
 		});
-		
-		// If the estimate was added to the currently selected estimate
-		if (currentSelectionPath != null
-			&& parent.equals(currentSelectionPath.getLastPathComponent()))
-		{
-			logger.log(Level.FINER, log + "New selection path of added estimate: " + childPath);
-			
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run()
-				{
-					if (selectionModel != null)
-					{
-						logger.log(Level.FINEST, log + "Updating tree selection to added estimate");
-						selectionModel.setSelectionPath(childPath);
-					}
-				}
-			});
-		}
 	}
 	
 	/**
@@ -328,7 +195,7 @@ class EstimateTreeViewModel {
 		final Estimate parent = event.getParent();
 		final Estimate child = event.getChild();
 		final int index = event.getIndex();
-		final TreePath parentPath = getPath(parent);
+		final TreePath parentPath = new EstimateTreePath(parent);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
@@ -338,24 +205,6 @@ class EstimateTreeViewModel {
 				treeTableModel.fireEstimateRemoved(parentPath, index, child);
 			}
 		});
-		
-		// If the estimate removed was the currently selected estimate
-		if (parent.equals(currentSelectionPath.getParentPath()
-				.getLastPathComponent()))
-		{
-			logger.log(Level.FINER, log + "New selection path of removed estimate's parent: " + parentPath);
-			
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run()
-				{
-					if (selectionModel != null)
-					{
-						logger.log(Level.FINEST, log + "Updating tree selection to parent of removed estimate");
-						selectionModel.setSelectionPath(parentPath);
-					}
-				}
-			});
-		}
 	}
 	
 	@Subscribe
