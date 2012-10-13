@@ -194,6 +194,12 @@ public class TemplateBudgetSource implements BudgetSource {
 	}
 	
 	@Override
+	public void close() throws BudgetSourceException
+	{
+		// Nothing to do
+	}
+	
+	@Override
 	public String getDescription()
 	{
 		return "Template";
