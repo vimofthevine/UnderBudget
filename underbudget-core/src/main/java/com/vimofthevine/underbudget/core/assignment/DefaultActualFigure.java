@@ -34,6 +34,17 @@ class DefaultActualFigure implements ActualFigure {
 	 * Actual figure
 	 */
 	private final CashCommodity actual;
+	
+	/**
+	 * Constructs a default actual figure with
+	 * the given value.
+	 * 
+	 * @param value actual value
+	 */
+	DefaultActualFigure(CashCommodity value)
+	{
+		actual = value;
+	}
 
 	/**
 	 * Constructs a default actual figure, which is

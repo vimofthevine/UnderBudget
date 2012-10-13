@@ -172,11 +172,6 @@ public class XmlEstimate implements MutableEstimate {
 		this.dueDate = dueDate;
 		this.complete = complete;
 		this.children = children;
-		
-		if (isRoot())
-		{
-			this.type = EstimateType.ROOT;
-		}
 	}
 	
 	@Commit
@@ -185,11 +180,6 @@ public class XmlEstimate implements MutableEstimate {
 		for (XmlEstimate child : children)
 		{
 			child.parent = this;
-			
-			if (type.equals(EstimateType.CATEGORY))
-			{
-				type = child.type;
-			}
 		}
 	}
 	
@@ -264,22 +254,50 @@ public class XmlEstimate implements MutableEstimate {
     {
 		return children.get(index);
     }
+	
+	/**
+	 * Counts the total estimated amount of an estimate, including
+	 * all child estimates if the estimate has children.
+	 * 
+	 * @param calculator currency calculator
+	 * @return total estimated amount of the sub-tree
+	 */
+	private CashCommodity countCategoryAmount(CurrencyCalculator calculator)
+	{
+		if (getChildCount() > 0)
+		{
+			CashCommodity total = calculator.zero();
+			
+			for (int i=0; i<getChildCount(); i++)
+			{
+				XmlEstimate child = children.get(i);
+				total = calculator.add(total, child.countCategoryAmount(calculator));
+			}
+			
+			return total;
+		}
+		else
+			return amount;
+	}
 
 	@Override
     public EstimateProgress getProgress(final ActualFigure actual,
     	final CurrencyCalculator calculator)
     {
+		CashCommodity estimated = countCategoryAmount(calculator);
+			
 		switch (type)
 		{
 			case INCOME:
-				return new IncomeProgress(amount, actual.getAmount(), dueDate);
+				return new IncomeProgress(estimated, actual.getAmount(), dueDate);
 				
 			case EXPENSE:
-				return new ExpenseProgress(amount, actual.getAmount(), dueDate);
+				return new ExpenseProgress(estimated, actual.getAmount(), dueDate);
 				
 			case TRANSFER:
-				return new TransferProgress(amount, actual.getAmount(), dueDate);
+				return new TransferProgress(estimated, actual.getAmount(), dueDate);
 				
+			case ROOT:
 			case CATEGORY:
 				return new CategoryProgress(calculator.zero(), calculator.zero());
 				
@@ -306,6 +324,7 @@ public class XmlEstimate implements MutableEstimate {
 			case TRANSFER:
 				return new TransferImpact(amount, actual.getAmount());
 				
+			case ROOT:
 			case CATEGORY:
 				return new CategoryImpact(amount, actual.getAmount());
 				
