@@ -22,8 +22,6 @@ import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import com.vimofthevine.underbudget.core.currency.DecimalNumber;
-
 /**
  * Input verifier to verify that a text field contains
  * a valid currency amount.
@@ -31,6 +29,11 @@ import com.vimofthevine.underbudget.core.currency.DecimalNumber;
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 class CurrencyInputVerifier extends InputVerifier {
+	
+	/**
+	 * Mathematical calculator
+	 */
+	private final Calculator calculator = new Calculator();
 
 	/**
 	 * Verifies that the input of a text field
@@ -49,8 +52,7 @@ class CurrencyInputVerifier extends InputVerifier {
 			try
 			{
 				String amount = document.getText(0, document.getLength());
-				new DecimalNumber(amount);
-				return true;
+				return (calculator.calculate(amount) != null);
 			}
 			catch (NumberFormatException nfe)
 			{

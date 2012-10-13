@@ -53,7 +53,7 @@ class Calculator {
 	 * @return value of the expression, or <code>null</code>
 	 *         if the expression is invalid
 	 */
-	float calculate(String expression)
+	Float calculate(String expression)
 	{
 		return evaluateExpression(expression, new IntPtr(0));
 	}
