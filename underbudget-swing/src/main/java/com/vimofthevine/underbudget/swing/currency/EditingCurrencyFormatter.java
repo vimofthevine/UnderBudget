@@ -38,6 +38,11 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	private final Currency currency;
 	
 	/**
+	 * Mathematical calculator
+	 */
+	private final Calculator calculator;
+	
+	/**
 	 * Currency field instance
 	 */
 	private CurrencyField currencyField;
@@ -51,6 +56,7 @@ class EditingCurrencyFormatter extends AbstractFormatter {
 	EditingCurrencyFormatter(Currency currency)
 	{
 		this.currency = currency;
+		calculator = new Calculator();
 	}
 	
 	@Override
@@ -81,7 +87,11 @@ class EditingCurrencyFormatter extends AbstractFormatter {
     {
 		try
 		{
-			return Commodity.create(currency, text);
+			Float amount = calculator.calculate(text);
+			if (amount == null)
+				throw new ParseException("Invalid currency input", 0);
+			
+			return Commodity.create(currency, String.valueOf(amount));
 		}
 		catch (NumberFormatException nfe)
 		{

@@ -38,6 +38,11 @@ class DisplayCurrencyFormatter extends AbstractFormatter {
 	private final Currency currency;
 	
 	/**
+	 * Mathematical calculator
+	 */
+	private final Calculator calculator;
+	
+	/**
 	 * Constructs a new non-editable currency formatter.
 	 * 
 	 * @param currency being used
@@ -45,12 +50,24 @@ class DisplayCurrencyFormatter extends AbstractFormatter {
 	DisplayCurrencyFormatter(Currency currency)
 	{
 		this.currency = currency;
+		calculator = new Calculator();
 	}
 	
 	@Override
     public Object stringToValue(String text) throws ParseException
     {
-		return Commodity.create(currency, text);
+		try
+		{
+			Float amount = calculator.calculate(text);
+			if (amount == null)
+				throw new ParseException("Invalid currency input", 0);
+			
+			return Commodity.create(currency, String.valueOf(amount));
+		}
+		catch (NumberFormatException nfe)
+		{
+			throw new ParseException("Invalid currency input", 0);
+		}
     }
 
 	@Override
