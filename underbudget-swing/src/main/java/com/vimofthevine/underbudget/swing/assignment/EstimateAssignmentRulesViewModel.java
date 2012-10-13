@@ -20,6 +20,8 @@ import javax.swing.Action;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
 import com.google.common.eventbus.EventBus;
@@ -28,7 +30,10 @@ import com.vimofthevine.underbudget.core.assignment.AssignmentRule;
 import com.vimofthevine.underbudget.core.estimate.Estimate;
 import com.vimofthevine.underbudget.swing.assignment.events.RuleAddedEvent;
 import com.vimofthevine.underbudget.swing.assignment.events.RuleRemovedEvent;
+import com.vimofthevine.underbudget.swing.assignment.events.RuleSelectedEvent;
 import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
+import com.vimofthevine.underbudget.swing.session.content.SessionContent;
+import com.vimofthevine.underbudget.swing.session.events.SessionContentEvent;
 
 /**
  * Presentation model for views that display a
@@ -37,7 +42,8 @@ import com.vimofthevine.underbudget.swing.estimate.events.EstimateSelectedEvent;
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
-public class EstimateAssignmentRulesViewModel {
+public class EstimateAssignmentRulesViewModel
+implements ListSelectionListener {
 	
 	/**
 	 * Event bus
@@ -88,6 +94,7 @@ public class EstimateAssignmentRulesViewModel {
 		
 		selectionModel = new DefaultListSelectionModel();
 		selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		selectionModel.addListSelectionListener(this);
 		
 		createRuleAction = new CreateRuleAction(eventBus, rules);
 	}
@@ -169,5 +176,26 @@ public class EstimateAssignmentRulesViewModel {
 			update();
 		}
 	}
+
+	@Override
+    public void valueChanged(ListSelectionEvent event)
+    {
+		if (selectionModel.isSelectionEmpty())
+			return;
+		
+		final AssignmentRule rule = tableModel.getRuleForRow(selectionModel.getLeadSelectionIndex());
+		
+		if (rule != null)
+		{
+			// Get off EDT
+			new Thread() {
+				public void run()
+				{
+					eventBus.post(new RuleSelectedEvent(rule));
+					eventBus.post(new SessionContentEvent(SessionContent.ASSIGNMENT_RULES));
+				}
+			}.start();
+		}
+    }
 	
 }

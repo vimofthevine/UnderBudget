@@ -44,6 +44,22 @@ class EstimateRulesTableModel extends AbstractTableModel {
 	}
 	
 	/**
+	 * Returns the assignment rule located at
+	 * the specified row.
+	 * 
+	 * @param row index of the requested row
+	 * @return estimate at the specified row,
+	 *         or <code>null</code> if invalid row given
+	 */
+	AssignmentRule getRuleForRow(int row)
+	{
+		if (row < 0 || row >= rules.length)
+			return null;
+		
+		return rules[row];
+	}
+	
+	/**
 	 * Updates the list of displayed assignment rules.
 	 * 
 	 * @param rules list of assignment rules
