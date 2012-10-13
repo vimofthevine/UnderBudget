@@ -138,6 +138,16 @@ class BudgetPersistenceModel {
             public void sourceSelected(BudgetSourceFactory factory,
             	SourceSummary summary)
             {
+				// Close current source
+				try
+				{
+					source.close();
+				}
+				catch (BudgetSourceException bse)
+				{
+					logger.log(Level.WARNING, "Unable to close budget source", bse);
+				}
+				
         		// Store budget source
         		source = factory.create(budget);
         		
@@ -175,4 +185,19 @@ class BudgetPersistenceModel {
 		}
 	}
 
+	/**
+	 * Closes the budget source.
+	 */
+	void close()
+	{
+		try
+		{
+			source.close();
+		}
+		catch (BudgetSourceException bse)
+		{
+			logger.log(Level.WARNING, "Error closing budget source", bse);
+		}
+	}
+	
 }
