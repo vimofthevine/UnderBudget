@@ -18,6 +18,7 @@ package com.vimofthevine.underbudget.xml.budget.source;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +49,11 @@ public class BudgetXmlFileSource implements BudgetSource {
 	private final File xmlFile;
 	
 	/**
+	 * Lock file
+	 */
+	private final File lockFile;
+	
+	/**
 	 * Simple XML serializer
 	 */
 	private final Serializer serializer;
@@ -66,6 +72,7 @@ public class BudgetXmlFileSource implements BudgetSource {
 	{
 		xmlFile = file;
 		serializer = BudgetSerializerFactory.createSerializer();
+		lockFile = obtainLock(file);
 	}
 	
 	/**
@@ -81,11 +88,45 @@ public class BudgetXmlFileSource implements BudgetSource {
 		budget = (budgetToCopy instanceof XmlBudget)
 			? (XmlBudget) budgetToCopy : new XmlBudget(budgetToCopy);
 		serializer = BudgetSerializerFactory.createSerializer();
+		lockFile = obtainLock(file);
+	}
+	
+	/**
+	 * Obtains a lock on the given file. If a lock
+	 * already exists, <code>null</code> is returned,
+	 * else the handle to the lock file is returned.
+	 * 
+	 * @param file file attempting to be opened
+	 * @return lock file handle, or <code>null</code>
+	 *         if the file is already locked
+	 */
+	private File obtainLock(File file)
+	{
+		File lock = new File(file.getAbsolutePath() + ".lock");
+		if (lock.exists())
+			return null;
+		
+		try
+		{
+			lock.createNewFile();
+		}
+		catch (IOException ioe)
+		{
+			logger.log(Level.WARNING, "Unable to create lock file for " + file.getAbsolutePath());
+		}
+		
+		return lock;
 	}
 		
 	@Override
     public Budget retrieve() throws BudgetSourceException
     {
+		if (lockFile == null)
+		{
+			throw new BudgetSourceException("File, " + xmlFile.getAbsolutePath()
+				+ " is already open");
+		}
+	
 		if ( ! xmlFile.exists())
 		{
 			throw new BudgetSourceException("File, " + xmlFile.getAbsolutePath()
@@ -112,6 +153,12 @@ public class BudgetXmlFileSource implements BudgetSource {
 	@Override
     public void persist() throws BudgetSourceException
     {
+		if (lockFile == null)
+		{
+			throw new BudgetSourceException("File, " + xmlFile.getAbsolutePath()
+				+ " is already open");
+		}
+		
 		logger.log(Level.FINE, "Saving to " + xmlFile.getAbsolutePath());
 		
 		if (budget == null)
@@ -137,6 +184,15 @@ public class BudgetXmlFileSource implements BudgetSource {
 			throw new BudgetSourceException("Unable to save budget", e);
 		}
     }
+	
+	@Override
+	public void close() throws BudgetSourceException
+	{
+		if (lockFile != null)
+		{
+			lockFile.delete();
+		}
+	}
 	
 	@Override
 	public String getDescription()

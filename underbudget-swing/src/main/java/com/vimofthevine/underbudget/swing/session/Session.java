@@ -40,26 +40,27 @@ import com.vimofthevine.underbudget.swing.transaction.OnDemandTransactionImporte
 import com.vimofthevine.underbudget.swing.transaction.wizard.TransactionSourceSelectionWizard;
 
 /**
- * 
+ * A session represents a single budget opened by the
+ * application.
  * 
  * @author Kyle Treubig <kyle@vimofthevine.com>
  */
 public class Session {
-
+	
 	/**
 	 * Session event bus
 	 */
 	private final EventBus eventBus;
 	
 	/**
-	 * Budget source
-	 */
-	private final BudgetSource budgetSource;
-	
-	/**
 	 * Budget
 	 */
 	private final Budget budget;
+	
+	/**
+	 * Budget persistence model
+	 */
+	private final BudgetPersistenceModel persistence;
 	
 	/**
 	 * Session state
@@ -91,8 +92,7 @@ public class Session {
 		UserPreferences prefs, BudgetSource source)
 	throws BudgetSourceException
 	{
-		budgetSource = source;
-		budget = budgetSource.retrieve();
+		budget = source.retrieve();
 		
 		eventBus = new EventBus(source.toString());
 		
@@ -104,7 +104,7 @@ public class Session {
 		BalanceCalculator calculator = new DefaultBalanceCalculator();
 		
 		state = new SessionState(globalBus, eventBus, budget);
-		new BudgetPersistenceModel(eventBus, budget, budgetSource, prefs, window);
+		persistence = new BudgetPersistenceModel(eventBus, budget, source, prefs, window);
 		
 		new BudgetSourceRequestBridge(globalBus, eventBus);
 		new TransactionSourceSelectionWizard(eventBus, window, currency, prefs);
@@ -175,6 +175,14 @@ public class Session {
 	public boolean isDirty()
 	{
 		return state.isDirty();
+	}
+	
+	/**
+	 * Closes the session, relinquishing any resources.
+	 */
+	void close()
+	{
+		persistence.close();
 	}
 	
 }

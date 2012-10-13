@@ -46,6 +46,15 @@ public interface BudgetSource {
 	public void persist() throws BudgetSourceException;
 	
 	/**
+	 * Relinquishes any resources held open by the budget
+	 * source.
+	 * 
+	 * @throws BudgetSourceException if the source could not
+	 *         be closed
+	 */
+	public void close() throws BudgetSourceException;
+	
+	/**
 	 * Returns a short description of this budget source,
 	 * suitable for displaying to the user.
 	 * 

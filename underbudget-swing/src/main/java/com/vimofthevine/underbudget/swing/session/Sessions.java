@@ -245,6 +245,7 @@ public class Sessions {
 				}
 			}
 			
+			activeSession.close();
 			sessions.remove(activeSession);
 			
 			setActive((sessions.size() > 0)
@@ -271,6 +272,8 @@ public class Sessions {
 					activeSession.post(new SaveSessionEvent());
 				}
 			}
+			
+			session.close();
 		}
 	}
 	
