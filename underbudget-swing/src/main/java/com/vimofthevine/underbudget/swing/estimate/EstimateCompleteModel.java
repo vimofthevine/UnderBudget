@@ -88,8 +88,7 @@ class EstimateCompleteModel extends ToggleInputModel {
 				
 				boolean mutable = (estimate instanceof MutableEstimate);
 				boolean category = (estimate == null) ? false
-					: estimate.getDefinition().getType()
-						.equals(EstimateType.CATEGORY);
+					: estimate.getChildCount() > 0;
 				setEnabled(mutable && ! category);
 			}
 		});

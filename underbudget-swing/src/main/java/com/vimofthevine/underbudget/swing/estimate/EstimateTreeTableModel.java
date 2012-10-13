@@ -85,7 +85,7 @@ abstract class EstimateTreeTableModel extends AbstractTreeTableModel {
 	/**
 	 * Notifies all registered listeners that a refresh is required.
 	 */
-	private void fireRefresh()
+	void refresh()
 	{
 		synchronized(listeners)
 		{
@@ -105,7 +105,7 @@ abstract class EstimateTreeTableModel extends AbstractTreeTableModel {
 	void setActuals(ActualFigures actuals)
 	{
 		this.actuals = actuals;
-		fireRefresh();
+		refresh();
 	}
 
 	@Override

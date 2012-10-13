@@ -25,7 +25,24 @@ public enum EstimateType {
 	INCOME("Income"),
 	EXPENSE("Expense"),
 	TRANSFER("Transfer"),
-	CATEGORY("Category");
+	@Deprecated
+	CATEGORY("Category"),
+	ROOT("Root");
+	
+	/**
+	 * Returns the subset of user-selectable
+	 * estimate types.
+	 * 
+	 * @return user-selectable types
+	 */
+	public static EstimateType[] selectableValues()
+	{
+		return new EstimateType[] {
+			INCOME,
+			EXPENSE,
+			TRANSFER,
+		};
+	}
 	
 	private final String name;
 	
@@ -33,6 +50,7 @@ public enum EstimateType {
 	{
 		this.name = name;
 	}
+	
 	
 	@Override
 	public String toString()

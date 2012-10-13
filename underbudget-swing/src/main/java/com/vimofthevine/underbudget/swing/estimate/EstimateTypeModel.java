@@ -61,7 +61,7 @@ class EstimateTypeModel extends ComboInputModel {
 	 */
 	EstimateTypeModel(EventBus bus)
 	{
-		super(EstimateType.values());
+		super(EstimateType.selectableValues());
 		eventBus = bus;
 	}
 	
