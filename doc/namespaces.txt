@@ -1,0 +1,5 @@
+/**
+ * @namespace ub::budget
+ *
+ * Classes that define a budget.
+ */
