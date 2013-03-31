@@ -10,6 +10,11 @@ set(CMAKE_AUTOMOC ON)
 # Have to include the binary dir for the moc-generated files
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+# Set -fPIC if needed
+if (Qt5_POSITION_INDEPENDENT_CODE)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 # So all includes will be relative to the src folder
 include_directories(src)
 
