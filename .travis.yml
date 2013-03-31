@@ -5,7 +5,7 @@ compiler:
 before_install:
   - sudo add-apt-repository -y ppa:canonical-qt5-edgers/qt5-proper # for Qt5
   - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa # for Qt5
-  - sudo add-apt-repository -y ppa:ppa:czchen/travis-ci # for CMake 2.8.9
+  - sudo add-apt-repository -y ppa:czchen/travis-ci # for CMake 2.8.9
   - sudo apt-get update
   - sudo apt-get install -qq ubuntu-sdk cmake
 script:
