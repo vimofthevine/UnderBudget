@@ -10,5 +10,5 @@ before_install:
   - sudo apt-get install -qq ubuntu-sdk cmake
 script:
   - cmake .
-  - make
+  - make VERBOSE=1
   - make test
