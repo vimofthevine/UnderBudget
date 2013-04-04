@@ -237,6 +237,11 @@ private slots:
 	 * Tests assignment operator.
 	 */
 	void assignment();
+
+	/**
+	 * Tests explicit conversion.
+	 */
+	void conversion();
 };
 
 }

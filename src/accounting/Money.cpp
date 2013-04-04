@@ -60,6 +60,22 @@ const Currency& Money::currency() const
 }
 
 //------------------------------------------------------------------------------
+Money Money::to(const Currency& target) const
+{
+	double rate = currencyUnit.conversionRate(target);
+	Money converted;
+	converted.scaledAmount = scaledAmount * rate;
+	converted.currencyUnit = target;
+	return converted;
+}
+
+//------------------------------------------------------------------------------
+Money Money::toLocal() const
+{
+	return to(Currency());
+}
+
+//------------------------------------------------------------------------------
 bool Money::isZero() const
 {
 	return (scaledAmount == 0.0);
@@ -121,7 +137,7 @@ const Money Money::operator/(double divisor) const
 //------------------------------------------------------------------------------
 double Money::convert(const Money& other) const
 {
-	double rate = currencyUnit.conversionRate(other.currencyUnit);
+	double rate = other.currencyUnit.conversionRate(currencyUnit);
 	return other.scaledAmount * rate;
 }
 
@@ -200,6 +216,12 @@ bool operator<(const Money& lhs, const Money& rhs)
 bool operator<=(const Money& lhs, const Money& rhs)
 {
 	return (lhs.scaledAmount <= lhs.convert(rhs));
+}
+
+//------------------------------------------------------------------------------
+QDataStream& operator<<(QDataStream& os, const Money& money)
+{
+	return os << money.toString();
 }
 
 }

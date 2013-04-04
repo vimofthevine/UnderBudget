@@ -491,5 +491,18 @@ void MoneyTest::assignment()
 	QCOMPARE(orig, next);
 }
 
+//------------------------------------------------------------------------------
+void MoneyTest::conversion()
+{
+	QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+	Money uah(16.0, "UAH");
+	Money local(8.0);
+
+	QCOMPARE(uah.to("USD"), Money(2.0, "USD"));
+	QCOMPARE(local.to("USD"), Money(8.0, "USD"));
+	QCOMPARE(uah.toLocal(), Money(2.0, "USD"));
+	QCOMPARE(local.toLocal(), Money(8.0, "USD"));
+}
+
 }
 

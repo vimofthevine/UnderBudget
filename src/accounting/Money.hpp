@@ -118,6 +118,23 @@ public:
 	const Currency& currency() const;
 
 	/**
+	 * Returns a money value representing this money value
+	 * in the given currency.
+	 *
+	 * @param[in] target target currency
+	 * @return this money value converted to the target currency
+	 */
+	Money to(const Currency& target) const;
+
+	/**
+	 * Returns a money value representing this money value
+	 * in the current locale's currency.
+	 *
+	 * @return this money value converted to the locale's currency
+	 */
+	Money toLocal() const;
+
+	/**
 	 * Checks if this money value is equal in value to zero.
 	 *
 	 * @return `true` if this money value is equal to zero
@@ -311,6 +328,14 @@ const Money operator-(const Money& minuend, const Money& subtrahend);
  * @return product of the given scalar and  money value
  */
 const Money operator*(double scalar, const Money& money);
+
+/**
+ * Prints this money value to the output stream.
+ *
+ * @param[in] os output stream
+ * @param[in] money money value
+ */
+QDataStream& operator<<(QDataStream& os, const Money& money);
 
 }
 
