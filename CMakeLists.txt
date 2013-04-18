@@ -21,6 +21,14 @@ include_directories(src)
 # Find the Qt libraries
 find_package(Qt5Widgets REQUIRED)
 
+# Determine application version
+exec_program(
+	"git"
+	${CMAKE_CURRENT_SOURCE_DIR}
+	ARGS "describe --always"
+	OUTPUT_VARIABLE APP_VERSION
+	)
+
 # Application source
 add_subdirectory(src)
 # Unit tests
