@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
+#ifndef INFO_HPP
+#define INFO_HPP
+
 // Qt include(s)
 #include <QApplication>
 
-// UnderBudget include(s)
-#include "info.hpp"
-#include "ui/MainWindow.hpp"
-
-int main(int argc, char* argv[])
+/**
+ * Sets up the application's name, version, and organization
+ * information.
+ *
+ * @param[in] app Qt application
+ */
+void setupApp(const QApplication& app)
 {
-	QApplication app(argc, argv);
-	setupApp(app);
-
-	ub::MainWindow* mainWindow = new ub::MainWindow();
-	mainWindow->show();
-
-	return app.exec();
+	app.setOrganizationName("vimofthevine");
+	app.setOrganizationDomain("underbudget.vimofthevine.com");
+	app.setApplicationName("UnderBudget");
+	app.setApplicationVersion("${APP_VERSION}");
 }
+
+#endif //INFO_HPP
