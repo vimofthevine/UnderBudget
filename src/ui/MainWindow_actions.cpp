@@ -221,6 +221,7 @@ void MainWindow::createMenus()
 void MainWindow::createToolBars()
 {
 	fileToolBar = addToolBar(tr("File"));
+	fileToolBar->setObjectName("FileToolBar");
 	fileToolBar->setFloatable(false);
 	fileToolBar->setMovable(false);
 	fileToolBar->addAction(newAction);
@@ -228,6 +229,7 @@ void MainWindow::createToolBars()
 	fileToolBar->addAction(saveAction);
 
 	editToolBar = addToolBar(tr("Edit"));
+	editToolBar->setObjectName("EditToolBar");
 	editToolBar->setFloatable(false);
 	editToolBar->setMovable(false);
 	editToolBar->addAction(editBudgetAction);
@@ -235,6 +237,7 @@ void MainWindow::createToolBars()
 	editToolBar->addAction(editRulesAction);
 
 	analyzeToolBar = addToolBar(tr("Analyze"));
+	analyzeToolBar->setObjectName("AnalyzeToolBar");
 	analyzeToolBar->setFloatable(false);
 	analyzeToolBar->setMovable(false);
 	analyzeToolBar->addAction(importAction);
