@@ -26,6 +26,9 @@ class QMdiArea;
 namespace ub
 {
 
+// Forward declaration(s)
+class Session;
+
 /**
  * The main, primary application window.
  */
@@ -53,6 +56,23 @@ private slots:
 	void notImpl();
 
 	/**
+	 * Creates a new budget session not yet associated with any file.
+	 */
+	void newBudget();
+
+	/**
+	 * Updates the menu actions according to whether a budget session
+	 * is currently open or active.
+	 */
+	void updateMenus();
+
+	/**
+	 * Updates the window menu as needed according to the currently
+	 * open budget sessions
+	 */
+	void updateWindowMenu();
+
+	/**
 	 * Displays information about the application.
 	 */
 	void about();
@@ -70,6 +90,8 @@ private:
 	QAction* exitAction;
 
 	// Edit menu actions
+	QAction* undoAction;
+	QAction* redoAction;
 	QAction* editBudgetAction;
 	QAction* editEstimatesAction;
 	QAction* editRulesAction;
@@ -84,6 +106,10 @@ private:
 	QAction* progressAction;
 	QAction* impactAction;
 	QAction* transactionsAction;
+
+	// Window menu actions
+	QAction* tileAction;
+	QAction* cascadeAction;
 
 	// Help menu actions
 	QAction* aboutAction;
@@ -122,6 +148,9 @@ private:
 
 	/** Restore saved window settings.  */
 	void readSettings();
+
+	/** Create a new session as a sub-window */
+	Session* createSession();
 };
 
 }

@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
+#include "ui/Session.hpp"
 
 namespace ub
 {
@@ -31,11 +32,14 @@ MainWindow::MainWindow()
 	mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	setCentralWidget(mdiArea);
+	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+		this, SLOT(updateMenus()));
 
 	createActions();
 	createMenus();
 	createToolBars();
 	createStatusBar();
+	updateMenus();
 
 	readSettings();
 
@@ -91,6 +95,22 @@ void MainWindow::notImpl()
 {
 	QMessageBox::warning(this, tr("Unimplemented Feature"),
 		tr("The requested feature has yet to be implemented."));
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::newBudget()
+{
+	Session* session = createSession();
+	session->newBudgetFile();
+	session->show();
+}
+
+//------------------------------------------------------------------------------
+Session* MainWindow::createSession()
+{
+	Session* session = new Session;
+	mdiArea->addSubWindow(session);
+	return session;
 }
 
 //--------------------------------------------------------------------------

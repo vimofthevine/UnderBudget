@@ -4,6 +4,7 @@
 set(ui_srcs
 	MainWindow.cpp
 	MainWindow_actions.cpp
+	Session.cpp
 )
 
 # Specify UI resource file

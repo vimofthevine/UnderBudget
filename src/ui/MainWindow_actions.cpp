@@ -30,7 +30,7 @@ void MainWindow::createActions()
 	newAction = new QAction(QIcon(":/icons/new"), tr("&New"), this);
 	newAction->setShortcuts(QKeySequence::New);
 	newAction->setStatusTip(tr("Create a new budget"));
-	connect(newAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(newAction, SIGNAL(triggered()), this, SLOT(newBudget()));
 
 	openAction = new QAction(QIcon(":/icons/open"), tr("&Open..."), this);
 	openAction->setShortcuts(QKeySequence::Open);
@@ -59,11 +59,11 @@ void MainWindow::createActions()
 	closeAction = new QAction(QIcon(":/icons/close"), tr("&Close"), this);
 	closeAction->setShortcuts(QKeySequence::Close);
 	closeAction->setStatusTip(tr("Close the budget"));
-	connect(closeAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(closeAction, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
 
 	closeAllAction = new QAction(QIcon(":/icons/closeAll"), tr("Close A&ll"), this);
 	closeAllAction->setStatusTip(tr("Close all budgets"));
-	connect(closeAllAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(closeAllAction, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
 
 	exitAction = new QAction(QIcon(":/icons/exit"), tr("E&xit"), this);
 	exitAction->setShortcuts(QKeySequence::Quit);
@@ -71,6 +71,16 @@ void MainWindow::createActions()
 	connect(exitAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
 	// Edit menu actions
+	undoAction = new QAction(QIcon(":/icons/undo"), tr("&Undo"), this);
+	undoAction->setShortcut(QKeySequence::Undo);
+	undoAction->setStatusTip(tr("Undo the last edit"));
+	connect(undoAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+
+	redoAction = new QAction(QIcon(":/icons/redo"), tr("Re&do"), this);
+	redoAction->setShortcut(QKeySequence::Redo);
+	redoAction->setStatusTip(tr("Re-apply the last undone edit"));
+	connect(redoAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+
 	editBudgetAction = new QAction(QIcon(":/icons/editBudget"), tr("&Budget"), this);
 	editBudgetAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
 	editBudgetAction->setStatusTip(tr("Edit budget"));
@@ -131,6 +141,15 @@ void MainWindow::createActions()
 	transactionsAction->setStatusTip(tr("View imported transactions"));
 	connect(transactionsAction, SIGNAL(triggered()), this, SLOT(notImpl()));
 
+	// Window menu actions
+	tileAction = new QAction(QIcon(":/icons/tile"), tr("&Tile"), this);
+	tileAction->setStatusTip(tr("Tile all open budgets"));
+	connect(tileAction, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
+
+	cascadeAction = new QAction(QIcon(":/icons/cascade"), tr("&Cascade"), this);
+	cascadeAction->setStatusTip("Cascade all open budgets");
+	connect(cascadeAction, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
+
 	// Help menu actions
 	aboutAction = new QAction(QIcon(":/icons/about"), tr("&About"), this);
 	aboutAction->setStatusTip(tr("About the application"));
@@ -166,6 +185,9 @@ void MainWindow::createMenus()
 	fileMenu->addAction(exitAction);
 
 	editMenu = menuBar()->addMenu(tr("&Edit"));
+	editMenu->addAction(undoAction);
+	editMenu->addAction(redoAction);
+	editMenu->addSeparator();
 	editMenu->addAction(editBudgetAction);
 	editMenu->addAction(editEstimatesAction);
 	editMenu->addAction(editRulesAction);
@@ -184,9 +206,8 @@ void MainWindow::createMenus()
 	analyzeMenu->addAction(transactionsAction);
 
 	windowMenu = menuBar()->addMenu(tr("&Window"));
-	//TODO uncomment this
-	//updateWindowMenu();
-	//connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
+	updateWindowMenu();
+	connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
 
 	menuBar()->addSeparator();
 
@@ -222,6 +243,49 @@ void MainWindow::createToolBars()
 	analyzeToolBar->addAction(progressAction);
 	analyzeToolBar->addAction(impactAction);
 	analyzeToolBar->addAction(transactionsAction);
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::updateWindowMenu()
+{
+	windowMenu->clear();
+	windowMenu->addAction(closeAction);
+	windowMenu->addAction(closeAllAction);
+	windowMenu->addSeparator();
+	windowMenu->addAction(tileAction);
+	windowMenu->addAction(cascadeAction);
+	windowMenu->addSeparator();
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::updateMenus()
+{
+	bool hasMdiChild = (mdiArea->activeSubWindow() != 0);
+	// File menu actions
+	saveAction->setEnabled(hasMdiChild);
+	saveAsAction->setEnabled(hasMdiChild);
+	saveAsTemplateAction->setEnabled(hasMdiChild);
+	exportAction->setEnabled(hasMdiChild);
+	closeAction->setEnabled(hasMdiChild);
+	closeAllAction->setEnabled(hasMdiChild);
+	// Edit menu actions
+	undoAction->setEnabled(hasMdiChild);
+	redoAction->setEnabled(hasMdiChild);
+	editBudgetAction->setEnabled(hasMdiChild);
+	editEstimatesAction->setEnabled(hasMdiChild);
+	editRulesAction->setEnabled(hasMdiChild);
+	// Analyze menu actions
+	importAction->setEnabled(hasMdiChild);
+	importFromAction->setEnabled(hasMdiChild);
+	assignAction->setEnabled(hasMdiChild);
+	calculateAction->setEnabled(hasMdiChild);
+	summaryAction->setEnabled(hasMdiChild);
+	progressAction->setEnabled(hasMdiChild);
+	impactAction->setEnabled(hasMdiChild);
+	transactionsAction->setEnabled(hasMdiChild);
+	// Window menu actions
+	tileAction->setEnabled(hasMdiChild);
+	cascadeAction->setEnabled(hasMdiChild);
 }
 
 }
