@@ -73,6 +73,61 @@ public:
 	bool saveAsTemplate();
 
 	/**
+	 * Displays the edit-budget view.
+	 */
+	void editBudget();
+
+	/**
+	 * Displays the edit-estimates view.
+	 */
+	void editEstimates();
+
+	/**
+	 * Displays the edit-rules view.
+	 */
+	void editAssignmentRules();
+
+	/**
+	 * Imports transactions from the last-used transaction file.
+	 */
+	void importTransactions();
+
+	/**
+	 * Imports transactions from a user-specified transaction file.
+	 */
+	void importTransactionsFrom();
+
+	/**
+	 * Displays the analysis summary view.
+	 */
+	void showAnalysisSummary();
+
+	/**
+	 * Displays the estimate progress view.
+	 */
+	void showEstimateProgress();
+
+	/**
+	 * Displays the estimate impact view.
+	 */
+	void showEstimateImpact();
+
+	/**
+	 * Displays the imported transactions view.
+	 */
+	void showImportedTransactions();
+
+	/**
+	 * Assigns imported transactions.
+	 */
+	void assignTransactions();
+
+	/**
+	 * Calculates ending balances.
+	 */
+	void calculateBalances();
+
+	/**
 	 * Returns the name of the budget associated with this session.
 	 *
 	 * @return name of the current budget

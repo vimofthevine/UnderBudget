@@ -83,6 +83,66 @@ private slots:
 	void saveBudgetAs();
 
 	/**
+	 * Saves the current budget as the template budget
+	 */
+	void saveBudgetAsTemplate();
+
+	/**
+	 * Displays the edit-budget view in the current session
+	 */
+	void editBudget();
+
+	/**
+	 * Displays the edit-estimates view in the current session
+	 */
+	void editEstimates();
+
+	/**
+	 * Displays the edit-rules view in the current session
+	 */
+	void editAssignmentRules();
+
+	/**
+	 * Re-imports transactions into the current session
+	 */
+	void importTransactions();
+
+	/**
+	 * Imports transactions from a file into the current session
+	 */
+	void importTransactionsFrom();
+
+	/**
+	 * Assigns imported transactions in the current session
+	 */
+	void assignTransactions();
+
+	/**
+	 * Calculates ending balances in the current session
+	 */
+	void calculateBalances();
+
+	/**
+	 * Displays the analysis summary view in the current session
+	 */
+	void showAnalysisSummary();
+
+	/**
+	 * Displays the estimate progress view in the current session
+	 */
+	void showEstimateProgress();
+
+	/**
+	 * Displays the estimate impact view in the current session
+	 */
+	void showEstimateImpact();
+
+	/**
+	 * Displays the imported transactions view in the current session
+	 */
+	void showImportedTransactions();
+
+	/**
 	 * Updates the menu actions according to whether a budget session
 	 * is currently open or active.
 	 */

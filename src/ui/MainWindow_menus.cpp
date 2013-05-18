@@ -55,7 +55,7 @@ void MainWindow::createActions()
 
 	saveAsTemplateAction = new QAction(QIcon(":/icons/saveAsTemplate"), tr("Save As &Template..."), this);
 	saveAsTemplateAction->setStatusTip(tr("Save as template for new budgets"));
-	connect(saveAsTemplateAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(saveAsTemplateAction, SIGNAL(triggered()), this, SLOT(saveBudgetAsTemplate()));
 
 	exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
 	exportAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
@@ -90,17 +90,17 @@ void MainWindow::createActions()
 	editBudgetAction = new QAction(QIcon(":/icons/editBudget"), tr("&Budget"), this);
 	editBudgetAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
 	editBudgetAction->setStatusTip(tr("Edit budget"));
-	connect(editBudgetAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(editBudgetAction, SIGNAL(triggered()), this, SLOT(editBudget()));
 
 	editEstimatesAction = new QAction(QIcon(":/icons/editEstimates"), tr("&Estimates"), this);
 	editEstimatesAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
 	editEstimatesAction->setStatusTip(tr("Edit estimates"));
-	connect(editEstimatesAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(editEstimatesAction, SIGNAL(triggered()), this, SLOT(editEstimates()));
 
 	editRulesAction = new QAction(QIcon(":/icons/editRules"), tr("Assignment &Rules"), this);
 	editRulesAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
 	editRulesAction->setStatusTip(tr("Edit assignment rules"));
-	connect(editRulesAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(editRulesAction, SIGNAL(triggered()), this, SLOT(editAssignmentRules()));
 
 	editPrefsAction = new QAction(QIcon(":/icons/editPrefs"), tr("&Preferences"), this);
 	editPrefsAction->setShortcuts(QKeySequence::Preferences);
@@ -111,41 +111,41 @@ void MainWindow::createActions()
 	importAction = new QAction(QIcon(":/icons/import"), tr("&Import transactions..."), this);
 	importAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
 	importAction->setStatusTip(tr("Import transactions from last-used file"));
-	connect(importAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(importAction, SIGNAL(triggered()), this, SLOT(importTransactions()));
 
 	importFromAction = new QAction(QIcon(":/icons/importFrom"), tr("Import transactions &from..."), this);
 	importFromAction->setStatusTip(tr("Import transactions from file"));
-	connect(importFromAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(importFromAction, SIGNAL(triggered()), this, SLOT(importTransactionsFrom()));
 
 	assignAction = new QAction(QIcon(":/icons/assign"), tr("&Assign transactions"), this);
 	assignAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
 	assignAction->setStatusTip(tr("Assign imported transactions"));
-	connect(assignAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(assignAction, SIGNAL(triggered()), this, SLOT(assignTransactions()));
 
 	calculateAction = new QAction(QIcon(":/icons/calculate"), tr("&Calculate balances"), this);
 	calculateAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
 	calculateAction->setStatusTip(tr("Calculate ending balances"));
-	connect(calculateAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(calculateAction, SIGNAL(triggered()), this, SLOT(calculateBalances()));
 
 	summaryAction = new QAction(QIcon(":/icons/summary"), tr("Anal&ysis summary"), this);
 	summaryAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Y));
 	summaryAction->setStatusTip(tr("Analysis summary"));
-	connect(summaryAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(summaryAction, SIGNAL(triggered()), this, SLOT(showAnalysisSummary()));
 
 	progressAction = new QAction(QIcon(":/icons/progress"), tr("Estimate &progress"), this);
 	progressAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
 	progressAction->setStatusTip(tr("Estimate progress"));
-	connect(progressAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(progressAction, SIGNAL(triggered()), this, SLOT(showEstimateProgress()));
 
 	impactAction = new QAction(QIcon(":/icons/impact"), tr("&Balance impact"), this);
 	impactAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
 	impactAction->setStatusTip(tr("Balance impact"));
-	connect(impactAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(impactAction, SIGNAL(triggered()), this, SLOT(showEstimateImpact()));
 
 	transactionsAction = new QAction(QIcon(":/icons/transactions"), tr("Impor&ted transactions"), this);
 	transactionsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
 	transactionsAction->setStatusTip(tr("View imported transactions"));
-	connect(transactionsAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(transactionsAction, SIGNAL(triggered()), this, SLOT(showImportedTransactions()));
 
 	// Window menu actions
 	tileAction = new QAction(QIcon(":/icons/tile"), tr("&Tile"), this);

@@ -135,9 +135,129 @@ void MainWindow::saveBudgetAs()
 	Session* session = activeSession();
 	if (session && session->saveAs())
 	{
+		QString fileName = session->currentFileName();
+
+		// Record the directory the new file is in so that the next open is
+		// in the same directory
+		QSettings settings;
+		QString fileDir = QFileInfo(fileName).canonicalPath();
+		settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
+		recordRecentBudget(fileName);
+
 		statusBar()->showMessage(
 			tr("%1 saved to %2").arg(session->budgetName())
-			.arg(session->currentFileName()), 2000);
+			.arg(fileName), 2000);
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::saveBudgetAsTemplate()
+{
+	Session* session = activeSession();
+	if (session && session->saveAsTemplate())
+	{
+		statusBar()->showMessage(
+			tr("Template budget updated with %1").arg(session->budgetName()),
+			2000);
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::editBudget()
+{
+	if (activeSession())
+	{
+		activeSession()->editBudget();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::editEstimates()
+{
+	if (activeSession())
+	{
+		activeSession()->editEstimates();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::editAssignmentRules()
+{
+	if (activeSession())
+	{
+		activeSession()->editAssignmentRules();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::importTransactions()
+{
+	if (activeSession())
+	{
+		activeSession()->importTransactions();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::importTransactionsFrom()
+{
+	if (activeSession())
+	{
+		activeSession()->importTransactionsFrom();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::assignTransactions()
+{
+	if (activeSession())
+	{
+		activeSession()->assignTransactions();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::calculateBalances()
+{
+	if (activeSession())
+	{
+		activeSession()->calculateBalances();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::showAnalysisSummary()
+{
+	if (activeSession())
+	{
+		activeSession()->showAnalysisSummary();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::showEstimateProgress()
+{
+	if (activeSession())
+	{
+		activeSession()->showEstimateProgress();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::showEstimateImpact()
+{
+	if (activeSession())
+	{
+		activeSession()->showEstimateImpact();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::showImportedTransactions()
+{
+	if (activeSession())
+	{
+		activeSession()->showImportedTransactions();
 	}
 }
 
