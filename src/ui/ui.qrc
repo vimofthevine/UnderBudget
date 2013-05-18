@@ -1,0 +1,22 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file alias="icons/new.png">icons/large-new.png</file>
+	<file alias="icons/open.png">icons/large-open.png</file>
+	<file alias="icons/save.png">icons/large-save.png</file>
+	<file alias="icons/saveAs.png">icons/small-save-as.png</file>
+	<file alias="icons/export.png">icons/small-export.png</file>
+	<file alias="icons/close.png">icons/small-close.png</file>
+	<file alias="icons/editBudget.png">icons/large-budget.png</file>
+	<file alias="icons/editEstimates.png">icons/large-estimates.png</file>
+	<file alias="icons/editRules.png">icons/large-rules.png</file>
+	<file alias="icons/editPrefs.png">icons/small-preferences.png</file>
+	<file alias="icons/import.png">icons/large-import.png</file>
+	<file alias="icons/assign.png">icons/large-assign.png</file>
+	<file alias="icons/calculate.png">icons/large-calc.png</file>
+	<file alias="icons/summary.png">icons/large-summary.png</file>
+	<file alias="icons/progress.png">icons/large-progress.png</file>
+	<file alias="icons/impact.png">icons/large-impact.png</file>
+	<file alias="icons/transactions.png">icons/large-transactions.png</file>
+	<file alias="icons/about.png">icons/small-about.png</file>
+</qresource>
+</RCC>

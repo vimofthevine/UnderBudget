@@ -27,10 +27,26 @@ namespace ub
 MainWindow::MainWindow()
 {
 	// Set up window widgets
-	setWindowTitle(qApp->applicationName());
+	mdiArea = new QMdiArea;
+	mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+	mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+	setCentralWidget(mdiArea);
 
-	QLabel* label = new QLabel(qApp->applicationVersion());
-	setCentralWidget(label);
+	createActions();
+	createMenus();
+	createToolBars();
+	createStatusBar();
+
+	readSettings();
+
+	setWindowTitle(qApp->applicationName());
+	setUnifiedTitleAndToolBarOnMac(true);
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::createStatusBar()
+{
+	statusBar()->showMessage(tr("Ready"));
 }
 
 //--------------------------------------------------------------------------
@@ -67,6 +83,13 @@ void MainWindow::about()
 			.arg(qApp->organizationDomain())
 			.toUtf8()
 		));
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::notImpl()
+{
+	QMessageBox::warning(this, tr("Unimplemented Feature"),
+		tr("The requested feature has yet to be implemented."));
 }
 
 //--------------------------------------------------------------------------

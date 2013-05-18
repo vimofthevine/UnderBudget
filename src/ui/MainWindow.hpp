@@ -20,6 +20,9 @@
 // Qt include(s)
 #include <QMainWindow>
 
+// Forward declaration(s)
+class QMdiArea;
+
 namespace ub
 {
 
@@ -47,20 +50,77 @@ protected:
 	void closeEvent(QCloseEvent* event);
 
 private slots:
+	void notImpl();
+
 	/**
 	 * Displays information about the application.
 	 */
 	void about();
 
 private:
-	/**
-	 * Store window settings such as size, geometry, etc.
-	 */
+	// File menu actions
+	QAction* newAction;
+	QAction* openAction;
+	QAction* saveAction;
+	QAction* saveAsAction;
+	QAction* saveAsTemplateAction;
+	QAction* exportAction;
+	QAction* closeAction;
+	QAction* closeAllAction;
+	QAction* exitAction;
+
+	// Edit menu actions
+	QAction* editBudgetAction;
+	QAction* editEstimatesAction;
+	QAction* editRulesAction;
+	QAction* editPrefsAction;
+
+	// Analyze menu actions
+	QAction* importAction;
+	QAction* importFromAction;
+	QAction* assignAction;
+	QAction* calculateAction;
+	QAction* summaryAction;
+	QAction* progressAction;
+	QAction* impactAction;
+	QAction* transactionsAction;
+
+	// Help menu actions
+	QAction* aboutAction;
+	QAction* aboutQtAction;
+
+	// Menus
+	QMenu* fileMenu;
+	QMenu* recentFilesMenu;
+	QMenu* editMenu;
+	QMenu* analyzeMenu;
+	QMenu* windowMenu;
+	QMenu* helpMenu;
+
+	// Toolbars
+	QToolBar* fileToolBar;
+	QToolBar* editToolBar;
+	QToolBar* analyzeToolBar;
+
+	// Content widgets
+	QMdiArea* mdiArea;
+
+	/** Creates all actions */
+	void createActions();
+
+	/** Creates all menus */
+	void createMenus();
+
+	/** Creates all toolbars */
+	void createToolBars();
+
+	/** Creates the status bar */
+	void createStatusBar();
+
+	/** Store window settings such as size, geometry, etc.  */
 	void writeSettings();
 
-	/**
-	 * Restore saved window settings.
-	 */
+	/** Restore saved window settings.  */
 	void readSettings();
 };
 

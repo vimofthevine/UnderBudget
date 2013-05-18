@@ -19,8 +19,13 @@ set(underbudget_srcs
 	main.cpp
 )
 
+# Specify resource files
+# (this can't be done directly in a subdirectory,
+# so sub-projects should set their respective _rcs variables)
+qt5_add_resources(ui_rcs_srcs ${ui_rcs})
+
 # Build underbudget executable
-add_executable(underbudget ${underbudget_srcs})
+add_executable(underbudget ${underbudget_srcs} ${ui_rcs_srcs})
 target_link_libraries(underbudget ui)
 qt5_use_modules(underbudget Core Widgets)
 
