@@ -68,10 +68,20 @@ private slots:
 	void openBudget();
 
 	/**
+	 * Opens a recent budget file
+	 */
+	void openRecentBudget();
+
+	/**
 	 * Updates the menu actions according to whether a budget session
 	 * is currently open or active.
 	 */
 	void updateMenus();
+
+	/**
+	 * Updates the recent-files menu with a list of recently-opened files
+	 */
+	void updateRecentFilesMenu();
 
 	/**
 	 * Updates the window menu as needed according to the currently
@@ -92,6 +102,9 @@ private slots:
 	void about();
 
 private:
+	// Maximum number of recent budget files to remember
+	static const int MAX_RECENT_BUDGET_FILES = 5;
+
 	// File menu actions
 	QAction* newAction;
 	QAction* openAction;
@@ -165,6 +178,14 @@ private:
 	void readSettings();
 
 	/**
+	 * Opens the budget defined in the specified file. If the given file name
+	 * is blank, or if the file could not be opened, no action is taken.
+	 *
+	 * @param[in] fileName budget file name
+	 */
+	void openBudget(const QString fileName);
+
+	/**
 	 * Returns the active session, or 0 if no active session.
 	 *
 	 * @return active session, or 0 if no active session
@@ -186,6 +207,14 @@ private:
 	 *         file, or 0 if no session exists
 	 */
 	QMdiSubWindow* findSession(const QString& file) const;
+
+	/**
+	 * Records the given file as a recent budget file, so it can
+	 * be displayed in the recent-files menu.
+	 *
+	 * @param[in] file budget file name to be recorded
+	 */
+	void recordRecentBudget(const QString& file);
 };
 
 }

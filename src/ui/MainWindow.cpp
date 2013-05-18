@@ -25,6 +25,9 @@ namespace ub
 {
 
 //------------------------------------------------------------------------------
+const int MainWindow::MAX_RECENT_BUDGET_FILES;
+
+//------------------------------------------------------------------------------
 MainWindow::MainWindow()
 {
 	// Set up window widgets
@@ -112,9 +115,28 @@ void MainWindow::newBudget()
 void MainWindow::openBudget()
 {
 	QSettings settings;
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Budget File"),
-		settings.value("LastUsedBudgetDir").toString(),
-		tr("Budgets (*.ub);;XML files (*.xml);;All (*)"));
+	openBudget(
+		QFileDialog::getOpenFileName(this, tr("Open Budget File"),
+			settings.value("LastUsedBudgetDir").toString(),
+			tr("Budgets (*.ub);;XML files (*.xml);;All (*)"))
+	);
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::openRecentBudget()
+{
+	// Get the file name from the triggering action
+	QAction* action = qobject_cast<QAction*>(sender());
+	if (action)
+	{
+		openBudget(action->data().toString());
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::openBudget(const QString fileName)
+{
+	QSettings settings;
 	if ( ! fileName.isEmpty())
 	{
 		QMdiSubWindow* existing = findSession(fileName);
@@ -127,8 +149,12 @@ void MainWindow::openBudget()
 		Session* session = createSession();
 		if (session->openBudgetFile(fileName))
 		{
+			// Record the directory this file is in so that the next open is
+			// in the same directory
 			QString fileDir = QFileInfo(fileName).canonicalPath();
 			settings.setValue("LastUsedBudgetDir", fileDir);
+			recordRecentBudget(fileName);
+
 			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);
 			session->show();
 		}
@@ -151,7 +177,10 @@ Session* MainWindow::activeSession() const
 Session* MainWindow::createSession()
 {
 	Session* session = new Session;
-	mdiArea->addSubWindow(session);
+	QMdiSubWindow* window = mdiArea->addSubWindow(session);
+	window->showMaximized();
+	connect(session, SIGNAL(budgetNameChanged(QString)),
+		window, SLOT(setWindowTitle(QString)));
 	return session;
 }
 
@@ -194,6 +223,20 @@ void MainWindow::writeSettings()
 	QSettings settings;
 	settings.setValue("MainWindowSize", size());
 	settings.setValue("MainWindowState", saveState());
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::recordRecentBudget(const QString& file)
+{
+	QSettings settings;
+	QStringList files = settings.value("RecentBudgetFiles").toStringList();
+	files.removeAll(file);
+	files.prepend(file);
+	while (files.size() > MAX_RECENT_BUDGET_FILES)
+	{
+		files.removeLast();
+	}
+	settings.setValue("RecentBudgetFiles", files);
 }
 
 }

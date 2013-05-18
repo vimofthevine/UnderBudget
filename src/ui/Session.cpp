@@ -33,12 +33,15 @@ void Session::closeEvent(QCloseEvent* event)
 
 //------------------------------------------------------------------------------
 void Session::newBudgetFile()
-{ }
+{
+	emit budgetNameChanged("New Budget");
+}
 
 //------------------------------------------------------------------------------
 bool Session::openBudgetFile(const QString& file)
 {
 	currentFile = file;
+	emit budgetNameChanged(file);
 	return true;
 }
 

@@ -169,10 +169,9 @@ void MainWindow::createMenus()
 	fileMenu->addAction(openAction);
 
 	recentFilesMenu = fileMenu->addMenu(tr("&Recent..."));
-	//TODO uncomment this
-	//updateRecentFilesMenu();
-	//connect(recentFilesMenu, SIGNAL(aboutToShow()),
-	//this, SLOT(updateRecentFilesMenu()));
+	updateRecentFilesMenu();
+	connect(recentFilesMenu, SIGNAL(aboutToShow()),
+	this, SLOT(updateRecentFilesMenu()));
 
 	fileMenu->addSeparator();
 	fileMenu->addAction(saveAction);
@@ -286,6 +285,34 @@ void MainWindow::updateWindowMenu()
 		action->setChecked(session == activeSession());
 		connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
 		windowMapper->setMapping(action, windows.at(i));
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::updateRecentFilesMenu()
+{
+	recentFilesMenu->clear();
+
+	QSettings settings;
+	QStringList recentFiles = settings.value("RecentBudgetFiles").toStringList();
+	int numRecentFiles = qMin(recentFiles.size(), MAX_RECENT_BUDGET_FILES);
+
+	for (int i=0; i<numRecentFiles; ++i)
+	{
+		QString fileName = QFileInfo(recentFiles[i]).fileName();
+		QString text;
+		if (i < 9)
+		{
+			text = tr("&%1 %2").arg(i+1).arg(fileName);
+		}
+		else
+		{
+			text = tr("%1 %2").arg(i+1).arg(fileName);
+		}
+
+		QAction* action = recentFilesMenu->addAction(text);
+		action->setData(recentFiles[i]);
+		connect(action, SIGNAL(triggered()), this, SLOT(openRecentBudget()));
 	}
 }
 
