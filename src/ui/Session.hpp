@@ -40,6 +40,54 @@ public:
 	 */
 	void newBudgetFile();
 
+	/**
+	 * Opens the budget defined in the specified file.
+	 *
+	 * @param[in] file budget file name
+	 * @return `true` if the file was successfully opened
+	 */
+	bool openBudgetFile(const QString& file);
+
+	/**
+	 * Saves any modifications to the budget.
+	 *
+	 * @return `true` if the budget was saved, or `false` if the user
+	 *         cancelled the save operation
+	 */
+	bool save();
+
+	/**
+	 * Saves this budget to a new file.
+	 *
+	 * @return `true` if the budget was saved, or `false` if the user
+	 *         cancelled the save operation
+	 */
+	bool saveAs();
+
+	/**
+	 * Saves this budget as the template budget.
+	 *
+	 * @return `true` if the budget was saved, or `false` if the user
+	 *         cancelled the save operation
+	 */
+	bool saveAsTemplate();
+
+	/**
+	 * Returns a user-friendly version of the name of the file
+	 * in which the current budget is defined.
+	 *
+	 * @return user-friendly name of the current budget file
+	 */
+	QString userFriendlyCurrentFile() const;
+
+	/**
+	 * Returns the name of the file in which the current budget
+	 * is defined.
+	 *
+	 * @return name of the current budget file
+	 */
+	QString currentFileName() const;
+
 protected:
 	/**
 	 * Intercepts the window closing event to prompt the
@@ -49,6 +97,12 @@ protected:
 	 * @param[in] event window closing event
 	 */
 	void closeEvent(QCloseEvent* event);
+
+private:
+	/** Name of the current budget file */
+	QString currentFile;
+	/** Whether the current budget file is untitled (e.g., unsaved) */
+	bool isUntitled;
 };
 
 }

@@ -22,6 +22,8 @@
 
 // Forward declaration(s)
 class QMdiArea;
+class QMdiSubWindow;
+class QSignalMapper;
 
 namespace ub
 {
@@ -61,6 +63,11 @@ private slots:
 	void newBudget();
 
 	/**
+	 * Creates a new budget session for the user-specified file.
+	 */
+	void openBudget();
+
+	/**
 	 * Updates the menu actions according to whether a budget session
 	 * is currently open or active.
 	 */
@@ -71,6 +78,13 @@ private slots:
 	 * open budget sessions
 	 */
 	void updateWindowMenu();
+
+	/**
+	 * Sets the active sub-window.
+	 *
+	 * @param[in] window new active sub-window
+	 */
+	void setActiveSubWindow(QWidget* window);
 
 	/**
 	 * Displays information about the application.
@@ -130,6 +144,7 @@ private:
 
 	// Content widgets
 	QMdiArea* mdiArea;
+	QSignalMapper* windowMapper;
 
 	/** Creates all actions */
 	void createActions();
@@ -149,8 +164,28 @@ private:
 	/** Restore saved window settings.  */
 	void readSettings();
 
-	/** Create a new session as a sub-window */
+	/**
+	 * Returns the active session, or 0 if no active session.
+	 *
+	 * @return active session, or 0 if no active session
+	 */
+	Session* activeSession() const;
+
+	/**
+	 * Create a new session as a sub-window.
+	 *
+	 * @return newly created session
+	 */
 	Session* createSession();
+
+	/**
+	 * Searches for an open session for the specified file.
+	 *
+	 * @param[in] file file name to be searched
+	 * @return sub-window whose session is associated with the given
+	 *         file, or 0 if no session exists
+	 */
+	QMdiSubWindow* findSession(const QString& file) const;
 };
 
 }

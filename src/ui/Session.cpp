@@ -35,5 +35,42 @@ void Session::closeEvent(QCloseEvent* event)
 void Session::newBudgetFile()
 { }
 
+//------------------------------------------------------------------------------
+bool Session::openBudgetFile(const QString& file)
+{
+	currentFile = file;
+	return true;
+}
+
+//------------------------------------------------------------------------------
+bool Session::save()
+{
+	return true;
+}
+
+//------------------------------------------------------------------------------
+bool Session::saveAs()
+{
+	return true;
+}
+
+//------------------------------------------------------------------------------
+bool Session::saveAsTemplate()
+{
+	return true;
+}
+
+//------------------------------------------------------------------------------
+QString Session::userFriendlyCurrentFile() const
+{
+	return currentFile;
+}
+
+//------------------------------------------------------------------------------
+QString Session::currentFileName() const
+{
+	return currentFile;
+}
+
 }
 

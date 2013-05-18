@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
+#include "ui/Session.hpp"
 
 namespace ub
 {
@@ -35,7 +36,7 @@ void MainWindow::createActions()
 	openAction = new QAction(QIcon(":/icons/open"), tr("&Open..."), this);
 	openAction->setShortcuts(QKeySequence::Open);
 	openAction->setStatusTip(tr("Open an existing budget"));
-	connect(openAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(openAction, SIGNAL(triggered()), this, SLOT(openBudget()));
 
 	saveAction = new QAction(QIcon(":/icons/save"), tr("&Save"), this);
 	saveAction->setShortcuts(QKeySequence::Save);
@@ -254,7 +255,35 @@ void MainWindow::updateWindowMenu()
 	windowMenu->addSeparator();
 	windowMenu->addAction(tileAction);
 	windowMenu->addAction(cascadeAction);
-	windowMenu->addSeparator();
+
+	QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
+	if ( ! windows.isEmpty())
+	{
+		windowMenu->addSeparator();
+	}
+
+	for (int i=0; i<windows.size(); ++i)
+	{
+		Session* session = qobject_cast<Session*>(windows.at(i)->widget());
+
+		QString text;
+		if (i < 9)
+		{
+			text = tr("&%1 %2").arg(i+1)
+				.arg(session->userFriendlyCurrentFile());
+		}
+		else
+		{
+			text = tr("%1 %2").arg(i+1)
+				.arg(session->userFriendlyCurrentFile());
+		}
+
+		QAction* action = windowMenu->addAction(text);
+		action->setCheckable(true);
+		action->setChecked(session == activeSession());
+		connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
+		windowMapper->setMapping(action, windows.at(i));
+	}
 }
 
 //------------------------------------------------------------------------------

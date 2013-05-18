@@ -34,6 +34,9 @@ MainWindow::MainWindow()
 	setCentralWidget(mdiArea);
 	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
 		this, SLOT(updateMenus()));
+	windowMapper = new QSignalMapper(this);
+	connect(windowMapper, SIGNAL(mapped(QWidget*)),
+		this, SLOT(setActiveSubWindow(QWidget*)));
 
 	createActions();
 	createMenus();
@@ -106,11 +109,70 @@ void MainWindow::newBudget()
 }
 
 //------------------------------------------------------------------------------
+void MainWindow::openBudget()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Budget File"),
+		"",
+		tr("Budgets (*.ub);;XML files (*.xml);;All (*)"));
+	if ( ! fileName.isEmpty())
+	{
+		QMdiSubWindow* existing = findSession(fileName);
+		if (existing)
+		{
+			mdiArea->setActiveSubWindow(existing);
+			return;
+		}
+
+		Session* session = createSession();
+		if (session->openBudgetFile(fileName))
+		{
+			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);
+			session->show();
+		}
+		else
+		{
+			session->close();
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+Session* MainWindow::activeSession() const
+{
+	if (QMdiSubWindow* activeSubWindow = mdiArea->activeSubWindow())
+		return qobject_cast<Session*>(activeSubWindow->widget());
+	return 0;
+}
+
+//------------------------------------------------------------------------------
 Session* MainWindow::createSession()
 {
 	Session* session = new Session;
 	mdiArea->addSubWindow(session);
 	return session;
+}
+
+//------------------------------------------------------------------------------
+QMdiSubWindow* MainWindow::findSession(const QString& file) const
+{
+	QString filePath = QFileInfo(file).canonicalFilePath();
+
+	foreach (QMdiSubWindow* window, mdiArea->subWindowList())
+	{
+		Session* session = qobject_cast<Session*>(window->widget());
+		if (session->currentFileName() == filePath)
+			return window;
+	}
+
+	return 0;
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::setActiveSubWindow(QWidget* window)
+{
+	if ( ! window)
+		return;
+	mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(window));
 }
 
 //--------------------------------------------------------------------------
