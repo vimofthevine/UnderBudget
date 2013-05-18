@@ -99,8 +99,6 @@ Session* MainWindow::createSession()
 	Session* session = new Session;
 	QMdiSubWindow* window = mdiArea->addSubWindow(session);
 	window->showMaximized();
-	connect(session, SIGNAL(budgetNameChanged(QString)),
-		window, SLOT(setWindowTitle(QString)));
 	return session;
 }
 

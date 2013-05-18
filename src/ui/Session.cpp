@@ -34,14 +34,14 @@ void Session::closeEvent(QCloseEvent* event)
 //------------------------------------------------------------------------------
 void Session::newBudgetFile()
 {
-	emit budgetNameChanged("New Budget");
+	setWindowTitle("New Budget");
 }
 
 //------------------------------------------------------------------------------
 bool Session::openBudgetFile(const QString& file)
 {
+	setWindowTitle(file);
 	currentFile = file;
-	emit budgetNameChanged(file);
 	return true;
 }
 

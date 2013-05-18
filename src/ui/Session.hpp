@@ -88,12 +88,6 @@ public:
 	QString currentFileName() const;
 
 signals:
-	/**
-	 * Emitted when the name of the budget belonging to this session changes.
-	 *
-	 * @param name new budget name
-	 */
-	void budgetNameChanged(QString name);
 
 protected:
 	/**
