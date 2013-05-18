@@ -143,6 +143,12 @@ public:
 	QString currentFileName() const;
 
 signals:
+	/**
+	 * Emitted to display a temporary status message to the user.
+	 *
+	 * @param message status message
+	 */
+	void showMessage(const QString& message);
 
 protected:
 	/**

@@ -70,6 +70,12 @@ void MainWindow::createStatusBar()
 	statusBar()->showMessage(tr("Ready"));
 }
 
+//------------------------------------------------------------------------------
+void MainWindow::showStatusMessage(const QString& message)
+{
+	statusBar()->showMessage(message, 2000);
+}
+
 //--------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent* event)
 {
@@ -98,6 +104,8 @@ Session* MainWindow::createSession()
 {
 	Session* session = new Session;
 	QMdiSubWindow* window = mdiArea->addSubWindow(session);
+	connect(session, SIGNAL(showMessage(QString)),
+		this, SLOT(showStatusMessage(QString)));
 	window->showMaximized();
 	return session;
 }

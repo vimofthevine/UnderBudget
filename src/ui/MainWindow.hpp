@@ -143,6 +143,13 @@ private slots:
 	void showImportedTransactions();
 
 	/**
+	 * Displays the given message temporarily in the status bar
+	 *
+	 * @param[in] message temporary status message
+	 */
+	void showStatusMessage(const QString& message);
+
+	/**
 	 * Updates the menu actions according to whether a budget session
 	 * is currently open or active.
 	 */

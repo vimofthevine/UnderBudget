@@ -85,7 +85,9 @@ void Session::importTransactionsFrom()
 
 //------------------------------------------------------------------------------
 void Session::assignTransactions()
-{ }
+{
+	emit showMessage("Transactions assigned");
+}
 
 //------------------------------------------------------------------------------
 void Session::calculateBalances()

@@ -107,7 +107,7 @@ void MainWindow::openBudget(const QString fileName)
 			settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
 			recordRecentBudget(fileName);
 
-			statusBar()->showMessage(tr("%1 opened").arg(fileName), 2000);
+			showStatusMessage(tr("%1 opened").arg(fileName));
 			session->show();
 		}
 		else
@@ -123,9 +123,8 @@ void MainWindow::saveBudget()
 	Session* session = activeSession();
 	if (session && session->save())
 	{
-		statusBar()->showMessage(
-			tr("%1 saved to %2").arg(session->budgetName())
-			.arg(session->currentFileName()), 2000);
+		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
+			.arg(session->currentFileName()));
 	}
 }
 
@@ -144,9 +143,8 @@ void MainWindow::saveBudgetAs()
 		settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
 		recordRecentBudget(fileName);
 
-		statusBar()->showMessage(
-			tr("%1 saved to %2").arg(session->budgetName())
-			.arg(fileName), 2000);
+		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
+			.arg(fileName));
 	}
 }
 
@@ -156,9 +154,8 @@ void MainWindow::saveBudgetAsTemplate()
 	Session* session = activeSession();
 	if (session && session->saveAsTemplate())
 	{
-		statusBar()->showMessage(
-			tr("Template budget updated with %1").arg(session->budgetName()),
-			2000);
+		showStatusMessage(tr("Template budget updated with %1")
+			.arg(session->budgetName()));
 	}
 }
 
