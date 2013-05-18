@@ -31,7 +31,11 @@ namespace ub
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-const int MainWindow::MAX_RECENT_BUDGET_FILES;
+const int MainWindow::MAX_RECENT_BUDGET_FILES = 5;
+const QString MainWindow::RECENT_BUDGET_FILES = "RecentBudgetFiles";
+const QString MainWindow::LAST_USED_BUDGET_DIR = "LastUsedBudgetDir";
+const QString MainWindow::MAIN_WINDOW_SIZE = "MainWindowSize";
+const QString MainWindow::MAIN_WINDOW_STATE = "MainWindowState";
 
 //------------------------------------------------------------------------------
 MainWindow::MainWindow()
@@ -129,8 +133,8 @@ void MainWindow::setActiveSubWindow(QWidget* window)
 void MainWindow::readSettings()
 {
 	QSettings settings;
-	QSize size = settings.value("MainWindowSize", QSize(600, 500)).toSize();
-	QByteArray state = settings.value("MainWindowState", QByteArray()).toByteArray();
+	QSize size = settings.value(MAIN_WINDOW_SIZE, QSize(600, 500)).toSize();
+	QByteArray state = settings.value(MAIN_WINDOW_STATE, QByteArray()).toByteArray();
 	restoreState(state);
 	resize(size);
 }
@@ -139,22 +143,22 @@ void MainWindow::readSettings()
 void MainWindow::writeSettings()
 {
 	QSettings settings;
-	settings.setValue("MainWindowSize", size());
-	settings.setValue("MainWindowState", saveState());
+	settings.setValue(MAIN_WINDOW_SIZE, size());
+	settings.setValue(MAIN_WINDOW_STATE, saveState());
 }
 
 //------------------------------------------------------------------------------
 void MainWindow::recordRecentBudget(const QString& file)
 {
 	QSettings settings;
-	QStringList files = settings.value("RecentBudgetFiles").toStringList();
+	QStringList files = settings.value(RECENT_BUDGET_FILES).toStringList();
 	files.removeAll(file);
 	files.prepend(file);
 	while (files.size() > MAX_RECENT_BUDGET_FILES)
 	{
 		files.removeLast();
 	}
-	settings.setValue("RecentBudgetFiles", files);
+	settings.setValue(RECENT_BUDGET_FILES, files);
 }
 
 //------------------------------------------------------------------------------
@@ -176,7 +180,7 @@ void MainWindow::openBudget(const QString fileName)
 			// Record the directory this file is in so that the next open is
 			// in the same directory
 			QString fileDir = QFileInfo(fileName).canonicalPath();
-			settings.setValue("LastUsedBudgetDir", fileDir);
+			settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
 			recordRecentBudget(fileName);
 
 			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);

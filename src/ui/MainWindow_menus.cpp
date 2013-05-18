@@ -299,7 +299,7 @@ void MainWindow::updateRecentFilesMenu()
 	recentFilesMenu->clear();
 
 	QSettings settings;
-	QStringList recentFiles = settings.value("RecentBudgetFiles").toStringList();
+	QStringList recentFiles = settings.value(RECENT_BUDGET_FILES).toStringList();
 	int numRecentFiles = qMin(recentFiles.size(), MAX_RECENT_BUDGET_FILES);
 
 	for (int i=0; i<numRecentFiles; ++i)

@@ -69,7 +69,7 @@ void MainWindow::openBudget()
 	QSettings settings;
 	openBudget(
 		QFileDialog::getOpenFileName(this, tr("Open Budget File"),
-			settings.value("LastUsedBudgetDir").toString(),
+			settings.value(LAST_USED_BUDGET_DIR).toString(),
 			tr("Budgets (*.ub);;XML files (*.xml);;All (*)"))
 	);
 }

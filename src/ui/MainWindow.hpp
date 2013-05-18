@@ -103,7 +103,15 @@ private slots:
 
 private:
 	// Maximum number of recent budget files to remember
-	static const int MAX_RECENT_BUDGET_FILES = 5;
+	static const int MAX_RECENT_BUDGET_FILES;
+	// Recent budget files settings key
+	static const QString RECENT_BUDGET_FILES;
+	// Last-used budget file directory settings key
+	static const QString LAST_USED_BUDGET_DIR;
+	// Main window size settings key
+	static const QString MAIN_WINDOW_SIZE;
+	// Main window state settings key
+	static const QString MAIN_WINDOW_STATE;
 
 	// File menu actions
 	QAction* newAction;
