@@ -111,8 +111,9 @@ void MainWindow::newBudget()
 //------------------------------------------------------------------------------
 void MainWindow::openBudget()
 {
+	QSettings settings;
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Budget File"),
-		"",
+		settings.value("LastUsedBudgetDir").toString(),
 		tr("Budgets (*.ub);;XML files (*.xml);;All (*)"));
 	if ( ! fileName.isEmpty())
 	{
@@ -126,6 +127,8 @@ void MainWindow::openBudget()
 		Session* session = createSession();
 		if (session->openBudgetFile(fileName))
 		{
+			QString fileDir = QFileInfo(fileName).canonicalPath();
+			settings.setValue("LastUsedBudgetDir", fileDir);
 			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);
 			session->show();
 		}
