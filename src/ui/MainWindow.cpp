@@ -40,6 +40,7 @@ MainWindow::MainWindow()
 	readSettings();
 
 	setWindowTitle(qApp->applicationName());
+	setWindowIcon(QIcon(":/logo"));
 	setUnifiedTitleAndToolBarOnMac(true);
 }
 
