@@ -64,9 +64,9 @@ bool Session::saveAsTemplate()
 }
 
 //------------------------------------------------------------------------------
-QString Session::userFriendlyCurrentFile() const
+QString Session::budgetName() const
 {
-	return currentFile;
+	return tr("Budget %1").arg(currentFile);
 }
 
 //------------------------------------------------------------------------------

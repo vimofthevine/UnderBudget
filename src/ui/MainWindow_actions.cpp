@@ -85,5 +85,61 @@ void MainWindow::openRecentBudget()
 	}
 }
 
+//------------------------------------------------------------------------------
+void MainWindow::openBudget(const QString fileName)
+{
+	QSettings settings;
+	if ( ! fileName.isEmpty())
+	{
+		QMdiSubWindow* existing = findSession(fileName);
+		if (existing)
+		{
+			mdiArea->setActiveSubWindow(existing);
+			return;
+		}
+
+		Session* session = createSession();
+		if (session->openBudgetFile(fileName))
+		{
+			// Record the directory this file is in so that the next open is
+			// in the same directory
+			QString fileDir = QFileInfo(fileName).canonicalPath();
+			settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
+			recordRecentBudget(fileName);
+
+			statusBar()->showMessage(tr("%1 opened").arg(fileName), 2000);
+			session->show();
+		}
+		else
+		{
+			session->close();
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::saveBudget()
+{
+	Session* session = activeSession();
+	if (session && session->save())
+	{
+		statusBar()->showMessage(
+			tr("%1 saved to %2").arg(session->budgetName())
+			.arg(session->currentFileName()), 2000);
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::saveBudgetAs()
+{
+	Session* session = activeSession();
+	if (session && session->saveAs())
+	{
+		statusBar()->showMessage(
+			tr("%1 saved to %2").arg(session->budgetName())
+			.arg(session->currentFileName()), 2000);
+	}
+}
+
 }
 

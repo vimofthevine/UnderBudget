@@ -73,12 +73,11 @@ public:
 	bool saveAsTemplate();
 
 	/**
-	 * Returns a user-friendly version of the name of the file
-	 * in which the current budget is defined.
+	 * Returns the name of the budget associated with this session.
 	 *
-	 * @return user-friendly name of the current budget file
+	 * @return name of the current budget
 	 */
-	QString userFriendlyCurrentFile() const;
+	QString budgetName() const;
 
 	/**
 	 * Returns the name of the file in which the current budget

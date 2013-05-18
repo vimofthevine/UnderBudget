@@ -73,17 +73,15 @@ void MainWindow::createStatusBar()
 //--------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-	int result = QMessageBox::warning(this, tr("Close?"),
-		tr("Close UnderBudget?"), QMessageBox::Yes | QMessageBox::Cancel);
-
-	if (result == QMessageBox::Yes)
+	mdiArea->closeAllSubWindows();
+	if (mdiArea->currentSubWindow())
 	{
-		writeSettings();
-		event->accept();
+		event->ignore();
 	}
 	else
 	{
-		event->ignore();
+		writeSettings();
+		event->accept();
 	}
 }
 
@@ -159,38 +157,6 @@ void MainWindow::recordRecentBudget(const QString& file)
 		files.removeLast();
 	}
 	settings.setValue(RECENT_BUDGET_FILES, files);
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::openBudget(const QString fileName)
-{
-	QSettings settings;
-	if ( ! fileName.isEmpty())
-	{
-		QMdiSubWindow* existing = findSession(fileName);
-		if (existing)
-		{
-			mdiArea->setActiveSubWindow(existing);
-			return;
-		}
-
-		Session* session = createSession();
-		if (session->openBudgetFile(fileName))
-		{
-			// Record the directory this file is in so that the next open is
-			// in the same directory
-			QString fileDir = QFileInfo(fileName).canonicalPath();
-			settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
-			recordRecentBudget(fileName);
-
-			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);
-			session->show();
-		}
-		else
-		{
-			session->close();
-		}
-	}
 }
 
 }

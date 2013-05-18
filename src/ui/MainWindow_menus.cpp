@@ -46,12 +46,12 @@ void MainWindow::createActions()
 	saveAction = new QAction(QIcon(":/icons/save"), tr("&Save"), this);
 	saveAction->setShortcuts(QKeySequence::Save);
 	saveAction->setStatusTip(tr("Save changes to the budget"));
-	connect(saveAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(saveAction, SIGNAL(triggered()), this, SLOT(saveBudget()));
 
 	saveAsAction = new QAction(QIcon(":/icons/saveAs"), tr("Save &As..."), this);
 	saveAsAction->setShortcuts(QKeySequence::SaveAs);
 	saveAsAction->setStatusTip(tr("Save as a new budget"));
-	connect(saveAsAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveBudgetAs()));
 
 	saveAsTemplateAction = new QAction(QIcon(":/icons/saveAsTemplate"), tr("Save As &Template..."), this);
 	saveAsTemplateAction->setStatusTip(tr("Save as template for new budgets"));
@@ -277,12 +277,12 @@ void MainWindow::updateWindowMenu()
 		if (i < 9)
 		{
 			text = tr("&%1 %2").arg(i+1)
-				.arg(session->userFriendlyCurrentFile());
+				.arg(session->budgetName());
 		}
 		else
 		{
 			text = tr("%1 %2").arg(i+1)
-				.arg(session->userFriendlyCurrentFile());
+				.arg(session->budgetName());
 		}
 
 		QAction* action = windowMenu->addAction(text);

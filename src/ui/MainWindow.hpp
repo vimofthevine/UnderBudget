@@ -73,6 +73,16 @@ private slots:
 	void openRecentBudget();
 
 	/**
+	 * Saves changes to the current budget
+	 */
+	void saveBudget();
+
+	/**
+	 * Saves the current budget to a new file
+	 */
+	void saveBudgetAs();
+
+	/**
 	 * Updates the menu actions according to whether a budget session
 	 * is currently open or active.
 	 */
