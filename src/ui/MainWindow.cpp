@@ -25,6 +25,12 @@ namespace ub
 {
 
 //------------------------------------------------------------------------------
+// This implementation file defines all MainWindow methods that are not:
+// - menu/toolbar action slots (MainWindow_actions.cpp)
+// - menu or toolbar methods (MainWindow_menus.cpp)
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 const int MainWindow::MAX_RECENT_BUDGET_FILES;
 
 //------------------------------------------------------------------------------
@@ -74,94 +80,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	else
 	{
 		event->ignore();
-	}
-}
-
-//--------------------------------------------------------------------------
-void MainWindow::about()
-{
-	QMessageBox::about(this, tr("About"),
-		tr(QString("<dl>"
-			"<dt>Title</dt><dd>%1</dd>"
-			"<dt>Version</dt><dd>%2</dd>"
-			"<dt>Copyright</dt><dd>Copyright (C) 2013</dd>"
-			"<dt>License</dt><dd>Apache License 2.0</dd>"
-			"<dt>Authors</dt><dd>Kyle Treubig</dd>"
-			"<dt>URL</dt><dd><a href=\"http://%3\">%3</a></dd>"
-			"</dl>")
-			.arg(qApp->applicationName())
-			.arg(qApp->applicationVersion())
-			.arg(qApp->organizationDomain())
-			.toUtf8()
-		));
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::notImpl()
-{
-	QMessageBox::warning(this, tr("Unimplemented Feature"),
-		tr("The requested feature has yet to be implemented."));
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::newBudget()
-{
-	Session* session = createSession();
-	session->newBudgetFile();
-	session->show();
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::openBudget()
-{
-	QSettings settings;
-	openBudget(
-		QFileDialog::getOpenFileName(this, tr("Open Budget File"),
-			settings.value("LastUsedBudgetDir").toString(),
-			tr("Budgets (*.ub);;XML files (*.xml);;All (*)"))
-	);
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::openRecentBudget()
-{
-	// Get the file name from the triggering action
-	QAction* action = qobject_cast<QAction*>(sender());
-	if (action)
-	{
-		openBudget(action->data().toString());
-	}
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::openBudget(const QString fileName)
-{
-	QSettings settings;
-	if ( ! fileName.isEmpty())
-	{
-		QMdiSubWindow* existing = findSession(fileName);
-		if (existing)
-		{
-			mdiArea->setActiveSubWindow(existing);
-			return;
-		}
-
-		Session* session = createSession();
-		if (session->openBudgetFile(fileName))
-		{
-			// Record the directory this file is in so that the next open is
-			// in the same directory
-			QString fileDir = QFileInfo(fileName).canonicalPath();
-			settings.setValue("LastUsedBudgetDir", fileDir);
-			recordRecentBudget(fileName);
-
-			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);
-			session->show();
-		}
-		else
-		{
-			session->close();
-		}
 	}
 }
 
@@ -237,6 +155,38 @@ void MainWindow::recordRecentBudget(const QString& file)
 		files.removeLast();
 	}
 	settings.setValue("RecentBudgetFiles", files);
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::openBudget(const QString fileName)
+{
+	QSettings settings;
+	if ( ! fileName.isEmpty())
+	{
+		QMdiSubWindow* existing = findSession(fileName);
+		if (existing)
+		{
+			mdiArea->setActiveSubWindow(existing);
+			return;
+		}
+
+		Session* session = createSession();
+		if (session->openBudgetFile(fileName))
+		{
+			// Record the directory this file is in so that the next open is
+			// in the same directory
+			QString fileDir = QFileInfo(fileName).canonicalPath();
+			settings.setValue("LastUsedBudgetDir", fileDir);
+			recordRecentBudget(fileName);
+
+			statusBar()->showMessage(QString("%1 opened").arg(fileName), 2000);
+			session->show();
+		}
+		else
+		{
+			session->close();
+		}
+	}
 }
 
 }

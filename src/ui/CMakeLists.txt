@@ -4,6 +4,7 @@
 set(ui_srcs
 	MainWindow.cpp
 	MainWindow_actions.cpp
+	MainWindow_menus.cpp
 	Session.cpp
 )
 
