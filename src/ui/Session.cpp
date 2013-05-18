@@ -77,7 +77,9 @@ void Session::editAssignmentRules()
 
 //------------------------------------------------------------------------------
 void Session::importTransactions()
-{ }
+{
+	emit showProgress(0, 0);
+}
 
 //------------------------------------------------------------------------------
 void Session::importTransactionsFrom()
@@ -87,11 +89,14 @@ void Session::importTransactionsFrom()
 void Session::assignTransactions()
 {
 	emit showMessage("Transactions assigned");
+	emit showProgress(66, 100);
 }
 
 //------------------------------------------------------------------------------
 void Session::calculateBalances()
-{ }
+{
+	emit showProgress(100, 100);
+}
 
 //------------------------------------------------------------------------------
 void Session::showAnalysisSummary()

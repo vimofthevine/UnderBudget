@@ -150,6 +150,14 @@ signals:
 	 */
 	void showMessage(const QString& message);
 
+	/**
+	 * Emitted to display progress of a particular task.
+	 *
+	 * @param value percent-complete value
+	 * @param max   maximum value
+	 */
+	void showProgress(int value, int max);
+
 protected:
 	/**
 	 * Intercepts the window closing event to prompt the

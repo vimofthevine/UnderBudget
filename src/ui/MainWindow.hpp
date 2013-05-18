@@ -23,6 +23,7 @@
 // Forward declaration(s)
 class QMdiArea;
 class QMdiSubWindow;
+class QProgressBar;
 class QSignalMapper;
 
 namespace ub
@@ -150,6 +151,20 @@ private slots:
 	void showStatusMessage(const QString& message);
 
 	/**
+	 * Displays the specified progress in the status bar.
+	 *
+	 * If both value and max are 0, then an indefinite, or busy, progress
+	 * will be displayed.
+	 *
+	 * If both value and max are the same, the progress bar will be
+	 * hidden.
+	 *
+	 * @param[in] value percent-complete value
+	 * @param[in] max   maximum value
+	 */
+	void showProgress(int value, int max);
+
+	/**
 	 * Updates the menu actions according to whether a budget session
 	 * is currently open or active.
 	 */
@@ -243,6 +258,7 @@ private:
 	// Content widgets
 	QMdiArea* mdiArea;
 	QSignalMapper* windowMapper;
+	QProgressBar* progressBar;
 
 	/** Creates all actions */
 	void createActions();

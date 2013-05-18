@@ -68,12 +68,49 @@ MainWindow::MainWindow()
 void MainWindow::createStatusBar()
 {
 	statusBar()->showMessage(tr("Ready"));
+
+	progressBar = new QProgressBar;
+	progressBar->setMaximumSize(170, 19);
+	progressBar->setTextVisible(false);
+	progressBar->setEnabled(false);
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(100);
+	progressBar->setValue(100);
+	progressBar->setVisible(false);
+	statusBar()->addPermanentWidget(progressBar);
 }
 
 //------------------------------------------------------------------------------
 void MainWindow::showStatusMessage(const QString& message)
 {
 	statusBar()->showMessage(message, 2000);
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::showProgress(int value, int max)
+{
+	// Indefinite/busy indicator
+	if (max == 0)
+	{
+		progressBar->setVisible(true);
+	}
+	else
+	{
+		// If finished (i.e., 100%)
+		if (value == max && progressBar->isVisible())
+		{
+			progressBar->setVisible(false);
+		}
+		// Else in-progress (0 <= % < 100)
+		else if (value != max && ! progressBar->isVisible())
+		{
+			progressBar->setVisible(true);
+		}
+	}
+
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(max);
+	progressBar->setValue(value);
 }
 
 //--------------------------------------------------------------------------
@@ -106,6 +143,8 @@ Session* MainWindow::createSession()
 	QMdiSubWindow* window = mdiArea->addSubWindow(session);
 	connect(session, SIGNAL(showMessage(QString)),
 		this, SLOT(showStatusMessage(QString)));
+	connect(session, SIGNAL(showProgress(int, int)),
+		this, SLOT(showProgress(int, int)));
 	window->showMaximized();
 	return session;
 }
