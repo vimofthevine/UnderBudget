@@ -30,7 +30,36 @@ Session::Session(QWidget* parent)
 
 //------------------------------------------------------------------------------
 void Session::closeEvent(QCloseEvent* event)
-{ }
+{
+	if (promptToSave())
+	{
+		event->accept();
+	}
+	else
+	{
+		event->ignore();
+	}
+}
+
+//------------------------------------------------------------------------------
+bool Session::promptToSave()
+{
+	if (isModified)
+	{
+		QMessageBox::StandardButton response;
+		response = QMessageBox::warning(this, tr("Unsaved Changes"),
+			tr("'%1' has been modified.\n"
+			   "Do you want to save your changes?").arg(budgetName()),
+			QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+		if (response == QMessageBox::Save)
+			return save();
+		else if (response == QMessageBox::Cancel)
+			return false;
+		// Else discard
+	}
+	return true;
+}
 
 //------------------------------------------------------------------------------
 void Session::newBudget()
@@ -72,7 +101,8 @@ bool Session::save(const QSharedPointer<BudgetSource>& source)
 {
 	budgetSource = source;
 	isUntitled = false;
-	setWindowModified(false);
+	isModified = false;
+	setWindowModified(isModified);
 	setWindowTitle(budgetName() + "[*]");
 	return true;
 }
@@ -88,6 +118,7 @@ void Session::editBudget()
 {
 	emit redoAvailable(true);
 	setWindowModified(true);
+	isModified = true;
 }
 
 //------------------------------------------------------------------------------

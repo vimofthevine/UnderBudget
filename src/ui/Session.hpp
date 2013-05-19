@@ -206,6 +206,18 @@ private:
 	QSharedPointer<BudgetSource> budgetSource;
 	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
+	/** Whether the current budget has been modified */
+	bool isModified;
+
+	/**
+	 * Prompts the user to save any unsaved changes. The user can
+	 * choose to either save the changes, discard the changes, or
+	 * cancel whatever operation has triggered this prompt.
+	 *
+	 * @return `true` if changes are saved or being discarded, or
+	 *         `false` if the triggering operation should be cancelled
+	 */
+	bool promptToSave();
 
 	/**
 	 * Saves the budget to the specified source.

@@ -160,7 +160,8 @@ QMdiSubWindow* MainWindow::findSession(const QSharedPointer<BudgetSource>& sourc
 	foreach (QMdiSubWindow* window, mdiArea->subWindowList())
 	{
 		Session* session = qobject_cast<Session*>(window->widget());
-		if (session->currentBudgetSource()->location() == location)
+		QSharedPointer<BudgetSource> src = session->currentBudgetSource();
+		if ( ! src.isNull() && src->location() == location)
 			return window;
 	}
 
