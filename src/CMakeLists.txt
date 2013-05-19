@@ -2,7 +2,7 @@
 
 # Add source sub-directories
 add_subdirectory(accounting)
-#add_subdirectory(budget)
+add_subdirectory(budget)
 #add_subdirectory(engine)
 #add_subdirectory(ledger)
 add_subdirectory(ui)
