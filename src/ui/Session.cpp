@@ -19,7 +19,7 @@
 
 // UnderBudget include(s)
 #include "ui/Session.hpp"
-#include "ui/wizard/BudgetFileWizard.hpp"
+#include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub {
 
@@ -60,7 +60,7 @@ bool Session::save()
 //------------------------------------------------------------------------------
 bool Session::saveAs()
 {
-	QString fileName = BudgetFileWizard::promptForFileToSave(this, currentFile);
+	QString fileName = BudgetSourceWizard::promptForFileToSave(this, currentFile);
 	if (fileName.isEmpty())
 		return false;
 	return save(fileName);

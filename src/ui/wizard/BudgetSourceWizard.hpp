@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef BUDGETFILEWIZARD_HPP
-#define BUDGETFILEWIZARD_HPP
+#ifndef BUDGETSOURCEWIZARD_HPP
+#define BUDGETSOURCEWIZARD_HPP
 
 // Qt include(s)
 #include <QString>
@@ -28,9 +28,9 @@ class QWidget;
 namespace ub {
 
 /**
- * Budget source file selection wizard.
+ * Budget source selection wizard.
  */
-class BudgetFileWizard {
+class BudgetSourceWizard {
 
 public:
 	static QString promptForFileToOpen(QWidget* parent);
@@ -44,4 +44,4 @@ private:
 
 }
 
-#endif //BUDGETFILEWIZARD_HPP
+#endif //BUDGETSOURCEWIZARD_HPP

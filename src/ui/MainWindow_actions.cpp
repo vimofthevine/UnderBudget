@@ -20,7 +20,7 @@
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
 #include "ui/Session.hpp"
-#include "ui/wizard/BudgetFileWizard.hpp"
+#include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub
 {
@@ -67,7 +67,7 @@ void MainWindow::newBudget()
 //------------------------------------------------------------------------------
 void MainWindow::openBudget()
 {
-	openBudget(BudgetFileWizard::promptForFileToOpen(this));
+	openBudget(BudgetSourceWizard::promptForFileToOpen(this));
 }
 
 //------------------------------------------------------------------------------

@@ -18,15 +18,15 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
-#include "ui/wizard/BudgetFileWizard.hpp"
+#include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-const QString BudgetFileWizard::LAST_USED_BUDGET_DIR = "LastUsedBudgetDir";
+const QString BudgetSourceWizard::LAST_USED_BUDGET_DIR = "LastUsedBudgetDir";
 
 //------------------------------------------------------------------------------
-QString BudgetFileWizard::promptForFileToOpen(QWidget* parent)
+QString BudgetSourceWizard::promptForFileToOpen(QWidget* parent)
 {
 	QSettings settings;
 	QString fileName = QFileDialog::getOpenFileName(parent,
@@ -46,7 +46,7 @@ QString BudgetFileWizard::promptForFileToOpen(QWidget* parent)
 }
 
 //------------------------------------------------------------------------------
-QString BudgetFileWizard::promptForFileToSave(QWidget* parent,
+QString BudgetSourceWizard::promptForFileToSave(QWidget* parent,
 	const QString& existing)
 {
 	QString dir = existing;

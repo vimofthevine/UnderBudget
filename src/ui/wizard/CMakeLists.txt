@@ -2,7 +2,7 @@
 
 # Specify UI wizard source files
 set(ui_wizard_srcs
-	BudgetFileWizard.cpp
+	BudgetSourceWizard.cpp
 )
 
 # Build UI wizard library
