@@ -84,9 +84,10 @@ void MainWindow::openRecentBudget()
 //------------------------------------------------------------------------------
 void MainWindow::openBudget(const QString fileName)
 {
-	QSettings settings;
 	if ( ! fileName.isEmpty())
 	{
+		// If this file is already open, don't re-open, just bring that
+		// window to the front
 		QMdiSubWindow* existing = findSession(fileName);
 		if (existing)
 		{
