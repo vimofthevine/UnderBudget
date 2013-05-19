@@ -18,7 +18,11 @@
 #define SESSION_HPP
 
 // Qt include(s)
+#include <QSharedPointer>
 #include <QStackedWidget>
+
+// UnderBudget include(s)
+#include "budget/storage/BudgetSource.hpp"
 
 namespace ub {
 
@@ -36,17 +40,17 @@ public:
 	Session(QWidget* parent = 0);
 
 	/**
-	 * Creates a new budget file
+	 * Creates a new budget
 	 */
-	void newBudgetFile();
+	void newBudget();
 
 	/**
-	 * Opens the budget defined in the specified file.
+	 * Opens the budget defined in the given budget source.
 	 *
-	 * @param[in] file budget file name
-	 * @return `true` if the file was successfully opened
+	 * @param[in] source budget source
+	 * @return `true` if the budget was successfully retrieved
 	 */
-	bool openBudgetFile(const QString& file);
+	bool openBudget(QSharedPointer<BudgetSource> source);
 
 	/**
 	 * Saves any modifications to the budget.
@@ -135,12 +139,11 @@ public:
 	QString budgetName() const;
 
 	/**
-	 * Returns the name of the file in which the current budget
-	 * is defined.
+	 * Returns the budget source associated with this session.
 	 *
-	 * @return name of the current budget file
+	 * @return current budget source
 	 */
-	QString currentFileName() const;
+	QSharedPointer<BudgetSource> currentBudgetSource() const;
 
 	/**
 	 * Checks if there are undo-able actions for this session.
@@ -199,17 +202,18 @@ protected:
 	void closeEvent(QCloseEvent* event);
 
 private:
-	/** Name of the current budget file */
-	QString currentFile;
-	/** Whether the current budget file is a new file */
+	/** Current budget source */
+	QSharedPointer<BudgetSource> budgetSource;
+	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
 
 	/**
-	 * Saves the budget to the specified file.
+	 * Saves the budget to the specified source.
 	 *
-	 * @param[in] file name of the file to which to save the budget
+	 * @param[in] source budget source to which to save the budget
+	 * @return `true` if the budget was saved successfully
 	 */
-	bool save(const QString& file);
+	bool save(const QSharedPointer<BudgetSource>& source);
 };
 
 }

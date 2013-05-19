@@ -19,6 +19,10 @@
 
 // Qt include(s)
 #include <QMainWindow>
+#include <QSharedPointer>
+
+// UnderBudget include(s)
+#include "budget/storage/BudgetSource.hpp"
 
 // Forward declaration(s)
 class QMdiArea;
@@ -277,12 +281,13 @@ private:
 	void readSettings();
 
 	/**
-	 * Opens the budget defined in the specified file. If the given file name
-	 * is blank, or if the file could not be opened, no action is taken.
+	 * Opens the budget defined in the given budget source. If the given
+	 * source is invalid, of the budget could not be retreived from the source,
+	 * no action is taken (no new sub-windows).
 	 *
-	 * @param[in] fileName budget file name
+	 * @param[in] source budget source
 	 */
-	void openBudget(const QString fileName);
+	void openBudget(QSharedPointer<BudgetSource> source);
 
 	/**
 	 * Returns the active session, or 0 if no active session.
@@ -299,13 +304,13 @@ private:
 	Session* createSession();
 
 	/**
-	 * Searches for an open session for the specified file.
+	 * Searches for an existing session for the given budget source.
 	 *
-	 * @param[in] file file name to be searched
+	 * @param[in] source budget source to be searched
 	 * @return sub-window whose session is associated with the given
-	 *         file, or 0 if no session exists
+	 *         budget source, or 0 if no session exists
 	 */
-	QMdiSubWindow* findSession(const QString& file) const;
+	QMdiSubWindow* findSession(const QSharedPointer<BudgetSource>& source) const;
 
 	/**
 	 * Records the given file as a recent budget file, so it can

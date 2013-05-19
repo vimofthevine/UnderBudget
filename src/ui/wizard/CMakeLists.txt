@@ -7,5 +7,6 @@ set(ui_wizard_srcs
 
 # Build UI wizard library
 add_library(ui_wizard ${ui_wizard_srcs})
+target_link_libraries(ui_wizard budget_storage)
 qt5_use_modules(ui_wizard Core Widgets)
 

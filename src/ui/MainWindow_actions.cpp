@@ -60,14 +60,14 @@ void MainWindow::about()
 void MainWindow::newBudget()
 {
 	Session* session = createSession();
-	session->newBudgetFile();
+	session->newBudget();
 	session->show();
 }
 
 //------------------------------------------------------------------------------
 void MainWindow::openBudget()
 {
-	openBudget(BudgetSourceWizard::promptForFileToOpen(this));
+	openBudget(BudgetSourceWizard::promptForBudgetToOpen(this));
 }
 
 //------------------------------------------------------------------------------
@@ -77,18 +77,19 @@ void MainWindow::openRecentBudget()
 	QAction* action = qobject_cast<QAction*>(sender());
 	if (action)
 	{
-		openBudget(action->data().toString());
+		openBudget(BudgetSourceWizard::promptToReOpen(this,
+			action->data().toString()));
 	}
 }
 
 //------------------------------------------------------------------------------
-void MainWindow::openBudget(const QString fileName)
+void MainWindow::openBudget(QSharedPointer<BudgetSource> source)
 {
-	if ( ! fileName.isEmpty())
+	if ( ! source.isNull())
 	{
-		// If this file is already open, don't re-open, just bring that
-		// window to the front
-		QMdiSubWindow* existing = findSession(fileName);
+		// If this budget source is already open, don't re-open, just bring
+		// that window to the front
+		QMdiSubWindow* existing = findSession(source);
 		if (existing)
 		{
 			mdiArea->setActiveSubWindow(existing);
@@ -96,10 +97,11 @@ void MainWindow::openBudget(const QString fileName)
 		}
 
 		Session* session = createSession();
-		if (session->openBudgetFile(fileName))
+		if (session->openBudget(source))
 		{
-			recordRecentBudget(fileName);
-			showStatusMessage(tr("%1 opened").arg(fileName));
+			recordRecentBudget(source->location());
+			showStatusMessage(tr("%1 opened")
+				.arg(session->currentBudgetSource()->location()));
 			session->show();
 		}
 		else
@@ -116,7 +118,7 @@ void MainWindow::saveBudget()
 	if (session && session->save())
 	{
 		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
-			.arg(session->currentFileName()));
+			.arg(session->currentBudgetSource()->location()));
 	}
 }
 
@@ -126,10 +128,10 @@ void MainWindow::saveBudgetAs()
 	Session* session = activeSession();
 	if (session && session->saveAs())
 	{
-		QString fileName = session->currentFileName();
-		recordRecentBudget(fileName);
+		QString location = session->currentBudgetSource()->location();
+		recordRecentBudget(location);
 		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
-			.arg(fileName));
+			.arg(location));
 	}
 }
 

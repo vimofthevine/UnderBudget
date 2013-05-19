@@ -33,18 +33,18 @@ void Session::closeEvent(QCloseEvent* event)
 { }
 
 //------------------------------------------------------------------------------
-void Session::newBudgetFile()
+void Session::newBudget()
 {
 	isUntitled = true;
-	setWindowTitle("New Budget");
+	setWindowTitle("New Budget[*]");
 }
 
 //------------------------------------------------------------------------------
-bool Session::openBudgetFile(const QString& file)
+bool Session::openBudget(QSharedPointer<BudgetSource> source)
 {
 	isUntitled = false;
-	setWindowTitle(file);
-	currentFile = file;
+	budgetSource = source;
+	setWindowTitle(budgetName() + "[*]");
 	return true;
 }
 
@@ -54,21 +54,26 @@ bool Session::save()
 	if (isUntitled)
 		return saveAs();
 	else
-		return save(currentFile);
+		return save(budgetSource);
 }
 
 //------------------------------------------------------------------------------
 bool Session::saveAs()
 {
-	QString fileName = BudgetSourceWizard::promptForFileToSave(this, currentFile);
-	if (fileName.isEmpty())
+	QSharedPointer<BudgetSource> newSource =
+		BudgetSourceWizard::promptForBudgetToSave(this, budgetSource);
+	if (newSource.isNull())
 		return false;
-	return save(fileName);
+	return save(newSource);
 }
 
 //------------------------------------------------------------------------------
-bool Session::save(const QString& file)
+bool Session::save(const QSharedPointer<BudgetSource>& source)
 {
+	budgetSource = source;
+	isUntitled = false;
+	setWindowModified(false);
+	setWindowTitle(budgetName() + "[*]");
 	return true;
 }
 
@@ -82,6 +87,7 @@ bool Session::saveAsTemplate()
 void Session::editBudget()
 {
 	emit redoAvailable(true);
+	setWindowModified(true);
 }
 
 //------------------------------------------------------------------------------
@@ -140,13 +146,15 @@ void Session::showImportedTransactions()
 //------------------------------------------------------------------------------
 QString Session::budgetName() const
 {
-	return tr("Budget %1").arg(currentFile);
+	if (budgetSource.isNull())
+		return tr("New Budget");
+	return tr("Budget %1").arg(budgetSource->location());
 }
 
 //------------------------------------------------------------------------------
-QString Session::currentFileName() const
+QSharedPointer<BudgetSource> Session::currentBudgetSource() const
 {
-	return currentFile;
+	return budgetSource;
 }
 
 //------------------------------------------------------------------------------
