@@ -65,15 +65,23 @@ bool Session::saveAsTemplate()
 
 //------------------------------------------------------------------------------
 void Session::editBudget()
-{ }
+{
+	emit redoAvailable(true);
+}
 
 //------------------------------------------------------------------------------
 void Session::editEstimates()
-{ }
+{
+	emit undoAvailable(false);
+	emit redoAvailable(true);
+}
 
 //------------------------------------------------------------------------------
 void Session::editAssignmentRules()
-{ }
+{
+	emit undoAvailable(true);
+	emit redoAvailable(false);
+}
 
 //------------------------------------------------------------------------------
 void Session::importTransactions()
@@ -124,6 +132,18 @@ QString Session::budgetName() const
 QString Session::currentFileName() const
 {
 	return currentFile;
+}
+
+//------------------------------------------------------------------------------
+bool Session::hasUndoableActions() const
+{
+	return true;
+}
+
+//------------------------------------------------------------------------------
+bool Session::hasRedoableActions() const
+{
+	return false;
 }
 
 }

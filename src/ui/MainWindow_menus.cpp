@@ -324,7 +324,9 @@ void MainWindow::updateRecentFilesMenu()
 //------------------------------------------------------------------------------
 void MainWindow::updateMenus()
 {
-	bool hasMdiChild = (mdiArea->activeSubWindow() != 0);
+	Session* session = activeSession();
+	bool hasMdiChild = (session != 0);
+
 	// File menu actions
 	saveAction->setEnabled(hasMdiChild);
 	saveAsAction->setEnabled(hasMdiChild);
@@ -333,8 +335,8 @@ void MainWindow::updateMenus()
 	closeAction->setEnabled(hasMdiChild);
 	closeAllAction->setEnabled(hasMdiChild);
 	// Edit menu actions
-	undoAction->setEnabled(hasMdiChild);
-	redoAction->setEnabled(hasMdiChild);
+	undoAction->setEnabled(hasMdiChild && session->hasUndoableActions());
+	redoAction->setEnabled(hasMdiChild && session->hasRedoableActions());
 	editBudgetAction->setEnabled(hasMdiChild);
 	editEstimatesAction->setEnabled(hasMdiChild);
 	editRulesAction->setEnabled(hasMdiChild);

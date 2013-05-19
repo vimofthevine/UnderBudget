@@ -141,6 +141,10 @@ Session* MainWindow::createSession()
 {
 	Session* session = new Session;
 	QMdiSubWindow* window = mdiArea->addSubWindow(session);
+	connect(session, SIGNAL(undoAvailable(bool)),
+		undoAction, SLOT(setEnabled(bool)));
+	connect(session, SIGNAL(redoAvailable(bool)),
+		redoAction, SLOT(setEnabled(bool)));
 	connect(session, SIGNAL(showMessage(QString)),
 		this, SLOT(showStatusMessage(QString)));
 	connect(session, SIGNAL(showProgress(int, int)),

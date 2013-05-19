@@ -142,6 +142,20 @@ public:
 	 */
 	QString currentFileName() const;
 
+	/**
+	 * Checks if there are undo-able actions for this session.
+	 *
+	 * @return `true` if there are undo-able actions
+	 */
+	bool hasUndoableActions() const;
+
+	/**
+	 * Checks if there are redo-able actions for this session.
+	 *
+	 * @return `true` if there are redo-able actions
+	 */
+	bool hasRedoableActions() const;
+
 signals:
 	/**
 	 * Emitted to display a temporary status message to the user.
@@ -157,6 +171,22 @@ signals:
 	 * @param max   maximum value
 	 */
 	void showProgress(int value, int max);
+
+	/**
+	 * Emitted to indicate that there are recent actions that can
+	 * be undone.
+	 *
+	 * @param available `true` if there are undo-able actions
+	 */
+	void undoAvailable(bool available);
+
+	/**
+	 * Emitted to indicate that there are recent actions that can
+	 * be redone.
+	 *
+	 * @param available `true` if there are redo-able actions
+	 */
+	void redoAvailable(bool available);
 
 protected:
 	/**
