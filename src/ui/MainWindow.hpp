@@ -198,8 +198,6 @@ private:
 	static const int MAX_RECENT_BUDGET_FILES;
 	// Recent budget files settings key
 	static const QString RECENT_BUDGET_FILES;
-	// Last-used budget file directory settings key
-	static const QString LAST_USED_BUDGET_DIR;
 	// Main window size settings key
 	static const QString MAIN_WINDOW_SIZE;
 	// Main window state settings key

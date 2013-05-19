@@ -33,7 +33,6 @@ namespace ub
 //------------------------------------------------------------------------------
 const int MainWindow::MAX_RECENT_BUDGET_FILES = 5;
 const QString MainWindow::RECENT_BUDGET_FILES = "RecentBudgetFiles";
-const QString MainWindow::LAST_USED_BUDGET_DIR = "LastUsedBudgetDir";
 const QString MainWindow::MAIN_WINDOW_SIZE = "MainWindowSize";
 const QString MainWindow::MAIN_WINDOW_STATE = "MainWindowState";
 

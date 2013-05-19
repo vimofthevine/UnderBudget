@@ -201,8 +201,15 @@ protected:
 private:
 	/** Name of the current budget file */
 	QString currentFile;
-	/** Whether the current budget file is untitled (e.g., unsaved) */
+	/** Whether the current budget file is a new file */
 	bool isUntitled;
+
+	/**
+	 * Saves the budget to the specified file.
+	 *
+	 * @param[in] file name of the file to which to save the budget
+	 */
+	bool save(const QString& file);
 };
 
 }

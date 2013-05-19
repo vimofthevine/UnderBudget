@@ -15,10 +15,11 @@
  */
 
 // Qt Include(s)
-#include <QtGui>
+#include <QtWidgets>
 
 // UnderBudget include(s)
 #include "ui/Session.hpp"
+#include "ui/wizard/BudgetFileWizard.hpp"
 
 namespace ub {
 
@@ -34,12 +35,14 @@ void Session::closeEvent(QCloseEvent* event)
 //------------------------------------------------------------------------------
 void Session::newBudgetFile()
 {
+	isUntitled = true;
 	setWindowTitle("New Budget");
 }
 
 //------------------------------------------------------------------------------
 bool Session::openBudgetFile(const QString& file)
 {
+	isUntitled = false;
 	setWindowTitle(file);
 	currentFile = file;
 	return true;
@@ -48,11 +51,23 @@ bool Session::openBudgetFile(const QString& file)
 //------------------------------------------------------------------------------
 bool Session::save()
 {
-	return true;
+	if (isUntitled)
+		return saveAs();
+	else
+		return save(currentFile);
 }
 
 //------------------------------------------------------------------------------
 bool Session::saveAs()
+{
+	QString fileName = BudgetFileWizard::promptForFileToSave(this, currentFile);
+	if (fileName.isEmpty())
+		return false;
+	return save(fileName);
+}
+
+//------------------------------------------------------------------------------
+bool Session::save(const QString& file)
 {
 	return true;
 }

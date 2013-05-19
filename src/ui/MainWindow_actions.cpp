@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
 #include "ui/Session.hpp"
+#include "ui/wizard/BudgetFileWizard.hpp"
 
 namespace ub
 {
@@ -66,12 +67,7 @@ void MainWindow::newBudget()
 //------------------------------------------------------------------------------
 void MainWindow::openBudget()
 {
-	QSettings settings;
-	openBudget(
-		QFileDialog::getOpenFileName(this, tr("Open Budget File"),
-			settings.value(LAST_USED_BUDGET_DIR).toString(),
-			tr("Budgets (*.ub);;XML files (*.xml);;All (*)"))
-	);
+	openBudget(BudgetFileWizard::promptForFileToOpen(this));
 }
 
 //------------------------------------------------------------------------------
@@ -101,12 +97,7 @@ void MainWindow::openBudget(const QString fileName)
 		Session* session = createSession();
 		if (session->openBudgetFile(fileName))
 		{
-			// Record the directory this file is in so that the next open is
-			// in the same directory
-			QString fileDir = QFileInfo(fileName).canonicalPath();
-			settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
 			recordRecentBudget(fileName);
-
 			showStatusMessage(tr("%1 opened").arg(fileName));
 			session->show();
 		}
@@ -135,14 +126,7 @@ void MainWindow::saveBudgetAs()
 	if (session && session->saveAs())
 	{
 		QString fileName = session->currentFileName();
-
-		// Record the directory the new file is in so that the next open is
-		// in the same directory
-		QSettings settings;
-		QString fileDir = QFileInfo(fileName).canonicalPath();
-		settings.setValue(LAST_USED_BUDGET_DIR, fileDir);
 		recordRecentBudget(fileName);
-
 		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
 			.arg(fileName));
 	}

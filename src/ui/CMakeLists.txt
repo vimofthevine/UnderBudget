@@ -1,5 +1,8 @@
 # UI source CMake configuration
 
+# Add UI source sub-directories
+add_subdirectory(wizard)
+
 # Specify UI source files
 set(ui_srcs
 	MainWindow.cpp
@@ -14,4 +17,5 @@ set(ui_rcs ui/ui.qrc PARENT_SCOPE)
 # Build UI library
 add_library(ui ${ui_srcs})
 qt5_use_modules(ui Core Widgets)
+target_link_libraries(ui ui_wizard)
 
