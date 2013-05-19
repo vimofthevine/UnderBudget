@@ -25,7 +25,9 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 Session::Session(QWidget* parent)
-	: QStackedWidget(parent)
+	: QStackedWidget(parent),
+	  isUntitled(true),
+	  isModified(false)
 { }
 
 //------------------------------------------------------------------------------
@@ -64,17 +66,25 @@ bool Session::promptToSave()
 //------------------------------------------------------------------------------
 void Session::newBudget()
 {
-	isUntitled = true;
 	setWindowTitle("New Budget[*]");
 }
 
 //------------------------------------------------------------------------------
 bool Session::openBudget(QSharedPointer<BudgetSource> source)
 {
-	isUntitled = false;
 	budgetSource = source;
-	setWindowTitle(budgetName() + "[*]");
-	return true;
+	budget = source->retrieve();
+	if (budget.isNull())
+	{
+		QMessageBox::warning(this, tr("Error"), source->error());
+		return false;
+	}
+	else
+	{
+		isUntitled = false;
+		setWindowTitle(sessionName() + "[*]");
+		return true;
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +113,7 @@ bool Session::save(const QSharedPointer<BudgetSource>& source)
 	isUntitled = false;
 	isModified = false;
 	setWindowModified(isModified);
-	setWindowTitle(budgetName() + "[*]");
+	setWindowTitle(sessionName() + "[*]");
 	return true;
 }
 
@@ -173,6 +183,25 @@ void Session::showEstimateImpact()
 //------------------------------------------------------------------------------
 void Session::showImportedTransactions()
 { }
+
+//------------------------------------------------------------------------------
+QString Session::sessionName() const
+{
+	QString location = tr("Unsaved");
+	if ( ! budgetSource.isNull())
+	{
+		location = budgetSource->location();
+
+		// If location is a file, truncate to just the file name
+		QFileInfo info(location);
+		if (info.exists())
+		{
+			location = info.fileName();
+		}
+	}
+
+	return tr("%1 (%2)").arg(budgetName()).arg(location);
+}
 
 //------------------------------------------------------------------------------
 QString Session::budgetName() const

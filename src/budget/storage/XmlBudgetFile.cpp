@@ -31,6 +31,7 @@ XmlBudgetFile::XmlBudgetFile(const QString& fileName)
 QSharedPointer<Budget> XmlBudgetFile::retrieve()
 {
 	QSharedPointer<Budget> budget;
+	errorMsg = "XML files not supported yet";
 	return budget;
 }
 

@@ -277,12 +277,12 @@ void MainWindow::updateWindowMenu()
 		if (i < 9)
 		{
 			text = tr("&%1 %2").arg(i+1)
-				.arg(session->budgetName());
+				.arg(session->sessionName());
 		}
 		else
 		{
 			text = tr("%1 %2").arg(i+1)
-				.arg(session->budgetName());
+				.arg(session->sessionName());
 		}
 
 		QAction* action = windowMenu->addAction(text);

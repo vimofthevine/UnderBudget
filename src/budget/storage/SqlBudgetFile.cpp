@@ -30,7 +30,7 @@ SqlBudgetFile::SqlBudgetFile(const QString& fileName)
 //------------------------------------------------------------------------------
 QSharedPointer<Budget> SqlBudgetFile::retrieve()
 {
-	QSharedPointer<Budget> budget;
+	QSharedPointer<Budget> budget(new Budget);
 	return budget;
 }
 

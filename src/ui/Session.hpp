@@ -22,6 +22,7 @@
 #include <QStackedWidget>
 
 // UnderBudget include(s)
+#include "budget/Budget.hpp"
 #include "budget/storage/BudgetSource.hpp"
 
 namespace ub {
@@ -132,6 +133,14 @@ public:
 	void calculateBalances();
 
 	/**
+	 * Returns the name of this session, which is a combination of
+	 * the budget name and source location.
+	 *
+	 * @return name of this session
+	 */
+	QString sessionName() const;
+
+	/**
 	 * Returns the name of the budget associated with this session.
 	 *
 	 * @return name of the current budget
@@ -204,6 +213,8 @@ protected:
 private:
 	/** Current budget source */
 	QSharedPointer<BudgetSource> budgetSource;
+	/** Current budget */
+	QSharedPointer<Budget> budget;
 	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
 	/** Whether the current budget has been modified */

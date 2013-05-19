@@ -106,7 +106,11 @@ void MainWindow::openBudget(QSharedPointer<BudgetSource> source)
 		}
 		else
 		{
-			session->close();
+			QMdiSubWindow* sub = findSession(source);
+			if (sub)
+			{
+				sub->close();
+			}
 		}
 	}
 }
