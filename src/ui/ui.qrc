@@ -1,0 +1,27 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file alias="logo">icons/logo.png</file>
+	<file alias="icons/new">icons/large-new.png</file>
+	<file alias="icons/open">icons/large-open.png</file>
+	<file alias="icons/save">icons/large-save.png</file>
+	<file alias="icons/saveAs">icons/small-save-as.png</file>
+	<file alias="icons/saveAsTemplate">icons/small-template.png</file>
+	<file alias="icons/export">icons/small-export.png</file>
+	<file alias="icons/close">icons/small-close.png</file>
+	<file alias="icons/exit">icons/small-exit.png</file>
+	<file alias="icons/undo">icons/small-undo.png</file>
+	<file alias="icons/redo">icons/small-redo.png</file>
+	<file alias="icons/editBudget">icons/large-budget.png</file>
+	<file alias="icons/editEstimates">icons/large-estimates.png</file>
+	<file alias="icons/editRules">icons/large-rules.png</file>
+	<file alias="icons/editPrefs">icons/small-preferences.png</file>
+	<file alias="icons/import">icons/large-import.png</file>
+	<file alias="icons/assign">icons/large-assign.png</file>
+	<file alias="icons/calculate">icons/large-calc.png</file>
+	<file alias="icons/summary">icons/large-summary.png</file>
+	<file alias="icons/progress">icons/large-progress.png</file>
+	<file alias="icons/impact">icons/large-impact.png</file>
+	<file alias="icons/transactions">icons/large-transactions.png</file>
+	<file alias="icons/about">icons/small-about.png</file>
+</qresource>
+</RCC>
