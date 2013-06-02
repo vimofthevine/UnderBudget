@@ -151,6 +151,24 @@ void MainWindow::saveBudgetAsTemplate()
 }
 
 //------------------------------------------------------------------------------
+void MainWindow::undo()
+{
+	if (activeSession())
+	{
+		activeSession()->undo();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::redo()
+{
+	if (activeSession())
+	{
+		activeSession()->redo();
+	}
+}
+
+//------------------------------------------------------------------------------
 void MainWindow::editBudget()
 {
 	if (activeSession())

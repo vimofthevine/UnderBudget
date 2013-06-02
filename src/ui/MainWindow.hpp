@@ -93,6 +93,16 @@ private slots:
 	void saveBudgetAsTemplate();
 
 	/**
+	 * Undoes the last modification made to the active budget
+	 */
+	void undo();
+
+	/**
+	 * Redoes the last undone modification made to the active budget
+	 */
+	void redo();
+
+	/**
 	 * Displays the edit-budget view in the current session
 	 */
 	void editBudget();

@@ -20,6 +20,9 @@
 // Qt include(s)
 #include <QObject>
 
+// Forward declaration(s)
+class QUndoCommand;
+
 namespace ub {
 
 class Budget : public QObject {
@@ -31,6 +34,8 @@ public:
 	 */
 	Budget();
 
+	~Budget() { }
+
 	/**
 	 * Returns the user-defined name for this budget.
 	 *
@@ -39,11 +44,14 @@ public:
 	QString name() const;
 
 	/**
-	 * Changes the name of the budget to the given new name.
+	 * Creates an undoable command to change the budget's name.
+	 * Ownership of the returned pointer is transfered to the
+	 * caller of this function.
 	 *
 	 * @param[in] newName new budget name
+	 * @return undoable command to apply the name change
 	 */
-	void changeName(const QString& newName);
+	QUndoCommand* changeName(const QString& newName);
 
 signals:
 	/**
@@ -56,6 +64,17 @@ signals:
 private:
 	/** User-defined name */
 	QString budgetName;
+
+	/**
+	 * Sets the budget's name to the given name, emitting
+	 * the `nameChanged` signal.
+	 *
+	 * @param[in] name new budget name
+	 */
+	void setName(const QString& name);
+
+	// Allow undoable commands direct field access
+	friend class ChangeBudgetNameCommand;
 };
 
 }

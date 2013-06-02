@@ -80,12 +80,12 @@ void MainWindow::createActions()
 	undoAction = new QAction(QIcon(":/icons/undo"), tr("&Undo"), this);
 	undoAction->setShortcut(QKeySequence::Undo);
 	undoAction->setStatusTip(tr("Undo the last edit"));
-	connect(undoAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
 
 	redoAction = new QAction(QIcon(":/icons/redo"), tr("Re&do"), this);
 	redoAction->setShortcut(QKeySequence::Redo);
 	redoAction->setStatusTip(tr("Re-apply the last undone edit"));
-	connect(redoAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
 
 	editBudgetAction = new QAction(QIcon(":/icons/editBudget"), tr("&Budget"), this);
 	editBudgetAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));

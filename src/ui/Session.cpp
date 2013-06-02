@@ -26,14 +26,28 @@ namespace ub {
 //------------------------------------------------------------------------------
 Session::Session(QWidget* parent)
 	: QStackedWidget(parent),
-	  isUntitled(true),
-	  isModified(false)
-{ }
+	  isUntitled(true)
+{
+	// Setup undo stack signals/slots
+	undoStack = new QUndoStack(this);
+	connect(undoStack, SIGNAL(cleanChanged(bool)),
+		this, SLOT(setWindowModified(bool)));
+	connect(undoStack, SIGNAL(canUndoChanged(bool)),
+		this, SIGNAL(undoAvailable(bool)));
+	connect(undoStack, SIGNAL(canRedoChanged(bool)),
+		this, SIGNAL(redoAvailable(bool)));
+}
 
 //------------------------------------------------------------------------------
 void Session::updateWindowTitle()
 {
 	setWindowTitle(sessionName() + "[*]");
+}
+
+//------------------------------------------------------------------------------
+void Session::setWindowModified(bool isClean)
+{
+	QStackedWidget::setWindowModified( ! isClean);
 }
 
 //------------------------------------------------------------------------------
@@ -52,7 +66,7 @@ void Session::closeEvent(QCloseEvent* event)
 //------------------------------------------------------------------------------
 bool Session::promptToSave()
 {
-	if (isModified)
+	if ( ! undoStack->isClean())
 	{
 		QMessageBox::StandardButton response;
 		response = QMessageBox::warning(this, tr("Unsaved Changes"),
@@ -121,8 +135,7 @@ bool Session::save(const QSharedPointer<BudgetSource>& source)
 {
 	budgetSource = source;
 	isUntitled = false;
-	isModified = false;
-	setWindowModified(isModified);
+	undoStack->setClean();
 	updateWindowTitle();
 	return true;
 }
@@ -138,25 +151,20 @@ void Session::editBudget()
 {
 	if (budget)
 	{
-		budget->changeName("named budget");
-		emit redoAvailable(true);
-		setWindowModified(true);
-		isModified = true;
+		QString name = QInputDialog::getText(this, tr("Budget Name"),
+			tr("Enter Budget Name"));
+		undoStack->push(budget->changeName(name));
 	}
 }
 
 //------------------------------------------------------------------------------
 void Session::editEstimates()
 {
-	emit undoAvailable(false);
-	emit redoAvailable(true);
 }
 
 //------------------------------------------------------------------------------
 void Session::editAssignmentRules()
 {
-	emit undoAvailable(true);
-	emit redoAvailable(false);
 }
 
 //------------------------------------------------------------------------------
@@ -234,13 +242,25 @@ QSharedPointer<BudgetSource> Session::currentBudgetSource() const
 //------------------------------------------------------------------------------
 bool Session::hasUndoableActions() const
 {
-	return true;
+	return undoStack->canUndo();
 }
 
 //------------------------------------------------------------------------------
 bool Session::hasRedoableActions() const
 {
-	return false;
+	return undoStack->canRedo();
+}
+
+//------------------------------------------------------------------------------
+void Session::undo()
+{
+	undoStack->undo();
+}
+
+//------------------------------------------------------------------------------
+void Session::redo()
+{
+	undoStack->redo();
 }
 
 }

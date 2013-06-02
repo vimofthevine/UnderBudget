@@ -1,5 +1,10 @@
 # UnderBudget source CMake configuration
 
+# Enable extra debugging options if debug build type
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+	add_definitions(-DQT_SHAREDPOINTER_TRACK_POINTERS)
+endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+
 # Add source sub-directories
 add_subdirectory(accounting)
 add_subdirectory(budget)

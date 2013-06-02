@@ -25,6 +25,9 @@
 #include "budget/Budget.hpp"
 #include "budget/storage/BudgetSource.hpp"
 
+// Forward declaration(s)
+class QUndoStack;
+
 namespace ub {
 
 /**
@@ -168,6 +171,17 @@ public:
 	 */
 	bool hasRedoableActions() const;
 
+	/**
+	 * Undoes the previous modification action perfomed in this session, if any.
+	 */
+	void undo();
+
+	/**
+	 * Redoes the previously undone modification action performed in this
+	 * session, if any.
+	 */
+	void redo();
+
 signals:
 	/**
 	 * Emitted to display a temporary status message to the user.
@@ -207,6 +221,14 @@ private slots:
 	 */
 	void updateWindowTitle();
 
+	/**
+	 * Sets the window modified flag based on the clean state of the undo stack.
+	 * Since the `QStackedWidget::setWindowModified` slot must be set to the
+	 * opposite of the `QUndoStack::cleanChanged` signal, they cannot be
+	 * directly connected.
+	 */
+	void setWindowModified(bool isClean);
+
 protected:
 	/**
 	 * Intercepts the window closing event to prompt the
@@ -218,14 +240,14 @@ protected:
 	void closeEvent(QCloseEvent* event);
 
 private:
+	/** Budget modification undo stack */
+	QUndoStack* undoStack;
 	/** Current budget source */
 	QSharedPointer<BudgetSource> budgetSource;
 	/** Current budget */
 	QSharedPointer<Budget> budget;
 	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
-	/** Whether the current budget has been modified */
-	bool isModified;
 
 	/**
 	 * Prompts the user to save any unsaved changes. The user can

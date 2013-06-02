@@ -18,33 +18,46 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "budget/Budget.hpp"
 #include "budget/ChangeBudgetNameCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-Budget::Budget()
-	: budgetName(tr("New Budget"))
+const int ChangeBudgetNameCommand::ID = 1262135353;
+
+//------------------------------------------------------------------------------
+ChangeBudgetNameCommand::ChangeBudgetNameCommand(Budget* budget,
+		const QString& oldName, const QString& newName)
+	: budget(budget), oldName(oldName), newName(newName)
 { }
 
 //------------------------------------------------------------------------------
-QString Budget::name() const
+int ChangeBudgetNameCommand::id() const
 {
-	return budgetName;
+	return ID;
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Budget::changeName(const QString& newName)
+bool ChangeBudgetNameCommand::mergeWith(const QUndoCommand* command)
 {
-	return new ChangeBudgetNameCommand(this, budgetName, newName);
+	if (command->id() != id())
+		return false;
+
+	// Use new name from the merged command
+	newName = static_cast<const ChangeBudgetNameCommand*>(command)->newName;
+	return true;
 }
 
 //------------------------------------------------------------------------------
-void Budget::setName(const QString& name)
+void ChangeBudgetNameCommand::redo()
 {
-	budgetName = name;
-	emit nameChanged(budgetName);
+	budget->setName(newName);
+}
+
+//------------------------------------------------------------------------------
+void ChangeBudgetNameCommand::undo()
+{
+	budget->setName(oldName);
 }
 
 }

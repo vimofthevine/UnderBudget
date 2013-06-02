@@ -6,9 +6,10 @@ add_subdirectory(storage)
 # Specify budget source files
 set(budget_srcs
 	Budget.cpp
+	ChangeBudgetNameCommand.cpp
 )
 
 # Build budget library
 add_library(budget ${budget_srcs})
-qt5_use_modules(budget Core)
+qt5_use_modules(budget Core Widgets)
 
