@@ -10,4 +10,5 @@ endmacro(build_test)
 
 # Add test sub-directories
 add_subdirectory(accounting)
+add_subdirectory(budget)
 

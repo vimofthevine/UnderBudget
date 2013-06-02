@@ -41,10 +41,10 @@ public:
 	 */
 	enum Type
 	{
-		/** Literal month (e.g., 4/1-4/30) */
-		LiteralMonth,
-		/** Literal year (e.g., 1/1/2012-12/31/2012) */
-		LiteralYear,
+		/** Calendar month (e.g., 4/1-4/30) */
+		CalendarMonth,
+		/** Calendar year (e.g., 1/1/2012-12/31/2012) */
+		CalendarYear,
 		/** Paydate month (first Friday of month to last Thursday of month) */
 		PaydateMonth,
 		/** Custom period */
@@ -64,8 +64,8 @@ public:
 		/**
 		 * Parameter #1.
 		 *
-		 * * Literal Year : 4-digit year
-		 * * Literal & Paydate Month : 4-digit year
+		 * * Calendar Year : 4-digit year
+		 * * Calendar & Paydate Month : 4-digit year
 		 * * Custom : start date
 		 */
 		QVariant param1;
@@ -73,7 +73,7 @@ public:
 		/**
 		 * Parameter #2.
 		 *
-		 * * Literal & Paydate Month : month of the year (1-12)
+		 * * Calendar & Paydate Month : month of the year (1-12)
 		 * * Custom : end date
 		 */
 		QVariant param2;
@@ -161,14 +161,14 @@ private:
 	void setParams(const Parameters& newParams);
 
 	/**
-	 * Calculates the start and end dates for a literal year period.
+	 * Calculates the start and end dates for a calendar year period.
 	 */
-	void calculateLiteralYearDates();
+	void calculateCalendarYearDates();
 
 	/**
-	 * Calculates the start and end dates for a literal month period.
+	 * Calculates the start and end dates for a calendar month period.
 	 */
-	void calculateLiteralMonthDates();
+	void calculateCalendarMonthDates();
 
 	/**
 	 * Calculates the start and end dates for a paydate month period.

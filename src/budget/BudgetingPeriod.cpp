@@ -33,7 +33,7 @@ BudgetingPeriod::BudgetingPeriod(const Parameters& params, QObject* parent)
 //------------------------------------------------------------------------------
 bool BudgetingPeriod::contains(const QDate& date) const
 {
-	return (periodStartDate <= date) || (date <= periodEndDate);
+	return (periodStartDate <= date) && (date <= periodEndDate);
 }
 
 //------------------------------------------------------------------------------
@@ -68,11 +68,11 @@ void BudgetingPeriod::setParams(const Parameters& newParams)
 
 	switch (periodParameters.type)
 	{
-	case LiteralMonth:
-		calculateLiteralMonthDates();
+	case CalendarMonth:
+		calculateCalendarMonthDates();
 		break;
-	case LiteralYear:
-		calculateLiteralYearDates();
+	case CalendarYear:
+		calculateCalendarYearDates();
 		break;
 	case PaydateMonth:
 		calculatePaydateMonthDates();

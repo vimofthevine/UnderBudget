@@ -23,7 +23,7 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
-void BudgetingPeriod::calculateLiteralYearDates()
+void BudgetingPeriod::calculateCalendarYearDates()
 {
 	int year = periodParameters.param1.toInt();
 	periodStartDate = QDate(year, 1, 1); // Jan 1st
@@ -31,7 +31,7 @@ void BudgetingPeriod::calculateLiteralYearDates()
 }
 
 //------------------------------------------------------------------------------
-void BudgetingPeriod::calculateLiteralMonthDates()
+void BudgetingPeriod::calculateCalendarMonthDates()
 {
 	int year = periodParameters.param1.toInt();
 	int month = periodParameters.param2.toInt();
