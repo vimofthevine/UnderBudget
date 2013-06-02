@@ -31,6 +31,12 @@ Session::Session(QWidget* parent)
 { }
 
 //------------------------------------------------------------------------------
+void Session::updateWindowTitle()
+{
+	setWindowTitle(sessionName() + "[*]");
+}
+
+//------------------------------------------------------------------------------
 void Session::closeEvent(QCloseEvent* event)
 {
 	if (promptToSave())
@@ -66,7 +72,11 @@ bool Session::promptToSave()
 //------------------------------------------------------------------------------
 void Session::newBudget()
 {
-	setWindowTitle("New Budget[*]");
+	budget = QSharedPointer<Budget>(new Budget);
+	isUntitled = true;
+	connect(budget.data(), SIGNAL(nameChanged(QString)),
+		this, SLOT(updateWindowTitle()));
+	updateWindowTitle();
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +84,7 @@ bool Session::openBudget(QSharedPointer<BudgetSource> source)
 {
 	budgetSource = source;
 	budget = source->retrieve();
-	if (budget.isNull())
+	if ( ! budget)
 	{
 		QMessageBox::warning(this, tr("Error"), source->error());
 		return false;
@@ -82,7 +92,7 @@ bool Session::openBudget(QSharedPointer<BudgetSource> source)
 	else
 	{
 		isUntitled = false;
-		setWindowTitle(sessionName() + "[*]");
+		updateWindowTitle();
 		return true;
 	}
 }
@@ -113,7 +123,7 @@ bool Session::save(const QSharedPointer<BudgetSource>& source)
 	isUntitled = false;
 	isModified = false;
 	setWindowModified(isModified);
-	setWindowTitle(sessionName() + "[*]");
+	updateWindowTitle();
 	return true;
 }
 
@@ -126,9 +136,13 @@ bool Session::saveAsTemplate()
 //------------------------------------------------------------------------------
 void Session::editBudget()
 {
-	emit redoAvailable(true);
-	setWindowModified(true);
-	isModified = true;
+	if (budget)
+	{
+		budget->changeName("named budget");
+		emit redoAvailable(true);
+		setWindowModified(true);
+		isModified = true;
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -206,9 +220,9 @@ QString Session::sessionName() const
 //------------------------------------------------------------------------------
 QString Session::budgetName() const
 {
-	if (budgetSource.isNull())
-		return tr("New Budget");
-	return tr("Budget %1").arg(budgetSource->location());
+	if (budget)
+		return budget->name();
+	return tr("No Budget");
 }
 
 //------------------------------------------------------------------------------

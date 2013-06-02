@@ -17,9 +17,45 @@
 #ifndef BUDGET_HPP
 #define BUDGET_HPP
 
+// Qt include(s)
+#include <QObject>
+
 namespace ub {
 
-class Budget {
+class Budget : public QObject {
+	Q_OBJECT
+
+public:
+	/**
+	 * Constructs a new, unpopulated budget.
+	 */
+	Budget();
+
+	/**
+	 * Returns the user-defined name for this budget.
+	 *
+	 * @return budget name
+	 */
+	QString name() const;
+
+	/**
+	 * Changes the name of the budget to the given new name.
+	 *
+	 * @param[in] newName new budget name
+	 */
+	void changeName(const QString& newName);
+
+signals:
+	/**
+	 * Emitted when the name of the budget is changed.
+	 *
+	 * @param name new budget name
+	 */
+	void nameChanged(const QString& name);
+
+private:
+	/** User-defined name */
+	QString budgetName;
 };
 
 }

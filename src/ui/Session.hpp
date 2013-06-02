@@ -200,6 +200,13 @@ signals:
 	 */
 	void redoAvailable(bool available);
 
+private slots:
+	/**
+	 * Updates the session window's title as the session name plus a
+	 * document-modified symbol.
+	 */
+	void updateWindowTitle();
+
 protected:
 	/**
 	 * Intercepts the window closing event to prompt the

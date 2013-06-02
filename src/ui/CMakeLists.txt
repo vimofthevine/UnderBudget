@@ -17,5 +17,5 @@ set(ui_rcs ui/ui.qrc PARENT_SCOPE)
 # Build UI library
 add_library(ui ${ui_srcs})
 qt5_use_modules(ui Core Widgets)
-target_link_libraries(ui ui_wizard)
+target_link_libraries(ui ui_wizard budget)
 

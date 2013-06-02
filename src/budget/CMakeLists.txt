@@ -4,10 +4,11 @@
 add_subdirectory(storage)
 
 # Specify budget source files
-#set(budget_srcs
-#	Estimate.cpp
-#)
+set(budget_srcs
+	Budget.cpp
+)
 
-# Tell CMake to create budget library
-#add_library(budget ${budget_srcs})
+# Build budget library
+add_library(budget ${budget_srcs})
+qt5_use_modules(budget Core)
 
