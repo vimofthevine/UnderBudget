@@ -6,7 +6,10 @@ add_subdirectory(storage)
 # Specify budget source files
 set(budget_srcs
 	Budget.cpp
+	BudgetingPeriod.cpp
+	BudgetingPeriod_calculations.cpp
 	ChangeBudgetNameCommand.cpp
+	ChangePeriodParamsCommand.cpp
 )
 
 # Build budget library
