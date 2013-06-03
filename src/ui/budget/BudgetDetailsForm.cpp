@@ -1,0 +1,58 @@
+/*
+ * Copyright 2013 Kyle Treubig
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Qt include(s)
+#include <QtWidgets>
+
+// UnderBudget include(s)
+#include "ui/budget/BudgetDetailsForm.hpp"
+
+namespace ub {
+
+//------------------------------------------------------------------------------
+BudgetDetailsForm::BudgetDetailsForm(QSharedPointer<Budget> budget,
+		QUndoStack* stack, QWidget* parent)
+	: QWidget(parent), budget(budget), undoStack(stack)
+{
+	// Setup name field
+	nameField = new QLineEdit(budget->name(), this);
+	connect(nameField, SIGNAL(textEdited(QString)),
+		this, SLOT(updateName(QString)));
+	connect(budget.data(), SIGNAL(nameChanged(QString)),
+		nameField, SLOT(setText(QString)));
+
+	// Setup form layout
+	QFormLayout* form = new QFormLayout;
+	form->addRow(tr("Name"), nameField);
+
+	// Setup group box
+	QGroupBox* group = new QGroupBox(tr("Budget Details"));
+	group->setLayout(form);
+
+	// Add to widget
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->addWidget(group);
+	setLayout(layout);
+}
+
+//------------------------------------------------------------------------------
+void BudgetDetailsForm::updateName(const QString& name)
+{
+	undoStack->push(budget->changeName(name));
+}
+
+}
+

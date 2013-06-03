@@ -30,6 +30,9 @@ class QUndoStack;
 
 namespace ub {
 
+// Forward declaration(s)
+class BudgetDetailsForm;
+
 /**
  * Widget for an open budget session.
  */
@@ -248,6 +251,16 @@ private:
 	QSharedPointer<Budget> budget;
 	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
+
+	/** Budget details form */
+	BudgetDetailsForm* budgetDetails;
+
+	/**
+	 * Creates all display widgets for this session. A budget must have
+	 * been created or provided to this session before performing this
+	 * operation, as the budget is provided to the child views.
+	 */
+	void createWidgets();
 
 	/**
 	 * Prompts the user to save any unsaved changes. The user can

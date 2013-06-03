@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "ui/Session.hpp"
+#include "ui/budget/BudgetDetailsForm.hpp"
 #include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub {
@@ -36,6 +37,14 @@ Session::Session(QWidget* parent)
 		this, SIGNAL(undoAvailable(bool)));
 	connect(undoStack, SIGNAL(canRedoChanged(bool)),
 		this, SIGNAL(redoAvailable(bool)));
+}
+
+//------------------------------------------------------------------------------
+void Session::createWidgets()
+{
+	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
+
+	addWidget(budgetDetails);
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +100,7 @@ void Session::newBudget()
 	connect(budget.data(), SIGNAL(nameChanged(QString)),
 		this, SLOT(updateWindowTitle()));
 	updateWindowTitle();
+	createWidgets();
 }
 
 //------------------------------------------------------------------------------
@@ -107,6 +117,7 @@ bool Session::openBudget(QSharedPointer<BudgetSource> source)
 	{
 		isUntitled = false;
 		updateWindowTitle();
+		createWidgets();
 		return true;
 	}
 }
@@ -149,11 +160,9 @@ bool Session::saveAsTemplate()
 //------------------------------------------------------------------------------
 void Session::editBudget()
 {
-	if (budget)
+	if (budget && budgetDetails)
 	{
-		QString name = QInputDialog::getText(this, tr("Budget Name"),
-			tr("Enter Budget Name"));
-		undoStack->push(budget->changeName(name));
+		setCurrentWidget(budgetDetails);
 	}
 }
 
