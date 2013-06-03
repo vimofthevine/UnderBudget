@@ -9,10 +9,12 @@ set(budget_srcs
 	BudgetingPeriod.cpp
 	BudgetingPeriod_calculations.cpp
 	ChangeBudgetNameCommand.cpp
+	ChangeInitialBalanceCommand.cpp
 	ChangePeriodParamsCommand.cpp
 )
 
 # Build budget library
 add_library(budget ${budget_srcs})
 qt5_use_modules(budget Core Widgets)
+target_link_libraries(budget accounting)
 

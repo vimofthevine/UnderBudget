@@ -18,48 +18,47 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "budget/Budget.hpp"
-#include "budget/ChangeBudgetNameCommand.hpp"
 #include "budget/ChangeInitialBalanceCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-Budget::Budget()
-	: budgetName(tr("New Budget"))
+const int ChangeInitialBalanceCommand::ID = 1256325346;
+
+//------------------------------------------------------------------------------
+ChangeInitialBalanceCommand::ChangeInitialBalanceCommand(Budget* budget,
+		const Money& oldBalance, const Money& newBalance, QUndoCommand* parent)
+	: QUndoCommand(parent),
+	budget(budget), oldBalance(oldBalance), newBalance(newBalance)
 { }
 
 //------------------------------------------------------------------------------
-QString Budget::name() const
+int ChangeInitialBalanceCommand::id() const
 {
-	return budgetName;
+	return ID;
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Budget::changeName(const QString& newName, QUndoCommand* parent)
+bool ChangeInitialBalanceCommand::mergeWith(const QUndoCommand* command)
 {
-	return new ChangeBudgetNameCommand(this, budgetName, newName, parent);
+	if (command->id() != id())
+		return false;
+
+	// Use new Balance from the merged command
+	newBalance = static_cast<const ChangeInitialBalanceCommand*>(command)->newBalance;
+	return true;
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Budget::changeInitialBalance(const Money& newBalance,
-	QUndoCommand* parent)
+void ChangeInitialBalanceCommand::redo()
 {
-	return new ChangeInitialBalanceCommand(this, initial, newBalance, parent);
+	budget->setInitialBalance(newBalance);
 }
 
 //------------------------------------------------------------------------------
-void Budget::setName(const QString& name)
+void ChangeInitialBalanceCommand::undo()
 {
-	budgetName = name;
-	emit nameChanged(budgetName);
-}
-
-//------------------------------------------------------------------------------
-void Budget::setInitialBalance(const Money& balance)
-{
-	initial = balance;
-	emit initialBalanceChanged(initial);
+	budget->setInitialBalance(oldBalance);
 }
 
 }

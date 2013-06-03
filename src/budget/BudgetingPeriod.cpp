@@ -24,6 +24,20 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
+BudgetingPeriod::BudgetingPeriod(QObject* parent)
+	: QObject(parent)
+{
+	BudgetingPeriod::Parameters params;
+	params.type = CalendarMonth;
+
+	QDate today = QDate::currentDate();
+	params.param1 = today.year();
+	params.param2 = today.month();
+
+	setParams(params);
+}
+
+//------------------------------------------------------------------------------
 BudgetingPeriod::BudgetingPeriod(const Parameters& params, QObject* parent)
 	: QObject(parent)
 {

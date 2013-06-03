@@ -27,8 +27,9 @@ const int ChangeBudgetNameCommand::ID = 1262135353;
 
 //------------------------------------------------------------------------------
 ChangeBudgetNameCommand::ChangeBudgetNameCommand(Budget* budget,
-		const QString& oldName, const QString& newName)
-	: budget(budget), oldName(oldName), newName(newName)
+		const QString& oldName, const QString& newName, QUndoCommand* parent)
+	: QUndoCommand(parent),
+	budget(budget), oldName(oldName), newName(newName)
 { }
 
 //------------------------------------------------------------------------------

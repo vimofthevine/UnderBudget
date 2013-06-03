@@ -90,6 +90,13 @@ public:
 	};
 
 	/**
+	 * Constructs a new budgeting period for the current calendar month.
+	 *
+	 * @param[in] parent parent object
+	 */
+	BudgetingPeriod(QObject* parent = 0);
+
+	/**
 	 * Constructs a new budgeting period.
 	 *
 	 * @param[in] params period parameters
