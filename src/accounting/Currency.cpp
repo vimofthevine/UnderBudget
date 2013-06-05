@@ -56,6 +56,14 @@ const QString& Currency::code() const
 }
 
 //------------------------------------------------------------------------------
+QChar Currency::symbol() const
+{
+	if (iso4217 == "USD")
+		return '$';
+	return '%';
+}
+
+//------------------------------------------------------------------------------
 QString Currency::format(double value) const
 {
 	Currency local = byLocale();

@@ -79,6 +79,11 @@ public:
 	const QString& code() const;
 
 	/**
+	 * Returns the UTF symbol for this currency.
+	 */
+	QChar symbol() const;
+
+	/**
 	 * Formats the given value according to this currency
 	 * and the current locale.
 	 *

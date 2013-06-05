@@ -8,5 +8,5 @@ set(ui_budget_srcs
 # Build UI budget library
 add_library(ui_budget ${ui_budget_srcs})
 qt5_use_modules(ui_budget Core Widgets)
-target_link_libraries(ui_budget budget)
+target_link_libraries(ui_budget budget ui_accounting)
 

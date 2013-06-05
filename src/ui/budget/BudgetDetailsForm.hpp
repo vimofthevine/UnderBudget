@@ -22,6 +22,7 @@
 #include <QWidget>
 
 // UnderBudget include(s)
+#include "accounting/Money.hpp"
 #include "budget/Budget.hpp"
 
 // Forward declaration(s)
@@ -29,6 +30,9 @@ class QLineEdit;
 class QUndoStack;
 
 namespace ub {
+
+// Forward declaration(s)
+class MoneyEdit;
 
 /**
  * Budget detail form widget.
@@ -56,11 +60,20 @@ private slots:
 	 */
 	void updateName(const QString& name);
 
+	/**
+	 * Updates the budget's initial balance based on the user-entered text.
+	 *
+	 * @param[in] amount new initial balance from the money input
+	 */
+	void updateInitialBalance(const Money& amount);
+
 private:
 	/** Budget being modified */
 	QSharedPointer<Budget> budget;
 	/** Budget name entry field */
 	QLineEdit* nameField;
+	/** Initial balance entry field */
+	MoneyEdit* initialBalanceField;
 
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;
