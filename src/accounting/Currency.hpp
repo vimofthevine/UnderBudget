@@ -81,7 +81,7 @@ public:
 	/**
 	 * Returns the UTF symbol for this currency.
 	 */
-	QChar symbol() const;
+	QString symbol() const;
 
 	/**
 	 * Formats the given value according to this currency

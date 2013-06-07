@@ -9,5 +9,5 @@ set(ui_accounting_srcs
 # Build UI accounting library
 add_library(ui_accounting ${ui_accounting_srcs})
 qt5_use_modules(ui_accounting Core Widgets)
-target_link_libraries(ui_accounting accounting)
+target_link_libraries(ui_accounting accounting ui_widgets)
 

@@ -18,8 +18,10 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "accounting/currencies.hpp"
 #include "ui/accounting/MoneyEdit.hpp"
 #include "ui/accounting/MoneyValidator.hpp"
+#include "ui/widgets/IgnoreUndoRedo.hpp"
 
 namespace ub {
 
@@ -42,12 +44,36 @@ MoneyEdit::MoneyEdit(const Money& contents, QWidget* parent)
 //------------------------------------------------------------------------------
 void MoneyEdit::setup()
 {
+	installEventFilter(new IgnoreUndoRedo(parent(), this));
+
 	validator = new MoneyValidator(this);
 	setValidator(validator);
 
 	connect(this, SIGNAL(editingFinished()), this, SLOT(finished()));
 	connect(this, SIGNAL(textEdited(QString)), this,
 		SLOT(updateFromText(QString)));
+}
+
+//------------------------------------------------------------------------------
+void MoneyEdit::contextMenuEvent(QContextMenuEvent* event)
+{
+	QMenu* menu = createStandardContextMenu();
+	menu->addSeparator();
+	QMenu* currencyMenu = menu->addMenu(tr("Currency"));
+
+	QStringList currencies = supportedCurrencies();
+	for (int i=0; i<currencies.size(); ++i)
+	{
+		QString code = currencies.at(i);
+		QAction* action = currencyMenu->addAction(code);
+		action->setCheckable(true);
+		action->setChecked(currentCurrency.code() == code);
+		action->setData(code);
+		connect(action, SIGNAL(triggered()), this, SLOT(setCurrency()));
+	}
+
+	menu->exec(event->globalPos());
+	delete menu;
 }
 
 //------------------------------------------------------------------------------
@@ -89,7 +115,19 @@ void MoneyEdit::setCurrency(const Currency& currency)
 		validator->setCurrency(currency);
 
 		moneyValue = moneyValue.to(currentCurrency);
+		setText(moneyValue.toString());
 		emit valueEdited(moneyValue);
+	}
+}
+
+//------------------------------------------------------------------------------
+void MoneyEdit::setCurrency()
+{
+	// Get currency code from the triggering action
+	QAction* action = qobject_cast<QAction*>(sender());
+	if (action)
+	{
+		setCurrency(action->data().toString());
 	}
 }
 

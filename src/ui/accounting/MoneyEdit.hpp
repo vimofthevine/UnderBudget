@@ -23,6 +23,9 @@
 // UnderBudget include(s)
 #include "accounting/Money.hpp"
 
+// Forward declaration(s)
+class QContextMenuEvent;
+
 namespace ub {
 
 // Forward declaration(s)
@@ -86,6 +89,13 @@ public slots:
 
 private slots:
 	/**
+	 * Sets the currency that will be used for all money values
+	 * entered into the editor, based on the user-selection from the
+	 * editor's context menu.
+	 */
+	void setCurrency();
+
+	/**
 	 * Updates the money value specified by the user input text.
 	 * This slot is connected to the QLineEdit's textEdited() signal so it
 	 * is updated whenever the user updates the editor value.
@@ -114,6 +124,12 @@ signals:
 	 * value is changed programmatically, for example, by calling setValue().
 	 */
 	void valueEdited(const Money& value);
+
+protected:
+	/**
+	 * Adds currency selections to the context menu for the money value editor.
+	 */
+	void contextMenuEvent(QContextMenuEvent* event);
 
 private:
 	/** Money input validator */

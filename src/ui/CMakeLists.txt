@@ -3,6 +3,7 @@
 # Add UI source sub-directories
 add_subdirectory(accounting)
 add_subdirectory(budget)
+add_subdirectory(widgets)
 add_subdirectory(wizard)
 
 # Specify UI source files
