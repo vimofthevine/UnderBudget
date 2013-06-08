@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/accounting/MoneyEdit.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
+#include "ui/widgets/LineEdit.hpp"
 
 namespace ub {
 
@@ -29,7 +30,7 @@ BudgetDetailsForm::BudgetDetailsForm(QSharedPointer<Budget> budget,
 	: QWidget(parent), budget(budget), undoStack(stack)
 {
 	// Setup name field
-	nameField = new QLineEdit(budget->name(), this);
+	nameField = new LineEdit(budget->name(), this);
 	connect(nameField, SIGNAL(textEdited(QString)),
 		this, SLOT(updateName(QString)));
 	connect(budget.data(), SIGNAL(nameChanged(QString)),
