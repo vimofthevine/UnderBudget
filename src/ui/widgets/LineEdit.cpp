@@ -25,14 +25,16 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 LineEdit::LineEdit(QWidget* parent)
-	: QLineEdit(parent)
+	: QLineEdit(parent),
+	  undoRedoEnabled(false)
 {
 	setup();
 }
 
 //------------------------------------------------------------------------------
 LineEdit::LineEdit(const QString& contents, QWidget* parent)
-	: QLineEdit(contents, parent)
+	: QLineEdit(contents, parent),
+	  undoRedoEnabled(false)
 {
 	setup();
 }
@@ -40,7 +42,39 @@ LineEdit::LineEdit(const QString& contents, QWidget* parent)
 //------------------------------------------------------------------------------
 void LineEdit::setup()
 {
-	installEventFilter(new IgnoreUndoRedo(parent(), this));
+	if ( ! undoRedoEnabled)
+	{
+		installEventFilter(new IgnoreUndoRedo(parent(), this));
+	}
+}
+
+//------------------------------------------------------------------------------
+void LineEdit::contextMenuEvent(QContextMenuEvent* event)
+{
+	QMenu* popup = createStandardContextMenu();
+	popup->exec(event->globalPos());
+	delete popup;
+}
+
+//------------------------------------------------------------------------------
+QMenu* LineEdit::createStandardContextMenu()
+{
+	QMenu* popup = QLineEdit::createStandardContextMenu();
+
+	if ( ! undoRedoEnabled)
+	{
+		QList<QAction*> actions = popup->actions();
+		for (int i=0; i<actions.size(); ++i)
+		{
+			if (actions.at(i)->text().contains(tr("Undo"))
+				|| actions.at(i)->text().contains(tr("&Redo")))
+			{
+				popup->removeAction(actions.at(i));
+			}
+		}
+	}
+
+	return popup;
 }
 
 }

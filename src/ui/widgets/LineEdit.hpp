@@ -20,6 +20,9 @@
 // Qt include(s)
 #include <QLineEdit>
 
+// Forward declaration(s)
+class QContextMenuEvent;
+
 namespace ub {
 
 /**
@@ -45,7 +48,21 @@ public:
 	 */
 	LineEdit(const QString& contents, QWidget* parent = 0);
 
+	/**
+	 * Reimplemented to omit the undo/redo actions.
+	 */
+	QMenu* createStandardContextMenu();
+
+protected:
+	/**
+	 * Removes undo/redo actions from the context menu.
+	 */
+	void contextMenuEvent(QContextMenuEvent* event);
+
 private:
+	/** Enables or disables the built-in undo/redo functionality */
+	bool undoRedoEnabled;
+
 	/**
 	 * Sets up the customized text editor.
 	 */
