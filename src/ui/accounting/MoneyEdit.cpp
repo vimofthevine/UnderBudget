@@ -21,20 +21,19 @@
 #include "accounting/currencies.hpp"
 #include "ui/accounting/MoneyEdit.hpp"
 #include "ui/accounting/MoneyValidator.hpp"
-#include "ui/widgets/IgnoreUndoRedo.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
 MoneyEdit::MoneyEdit(QWidget* parent)
-	: QLineEdit(parent)
+	: LineEdit(parent)
 {
 	setup();
 }
 
 //------------------------------------------------------------------------------
 MoneyEdit::MoneyEdit(const Money& contents, QWidget* parent)
-	: QLineEdit(parent),
+	: LineEdit(parent),
 	  moneyValue(contents),
 	  currentCurrency(contents.currency())
 {
@@ -44,8 +43,6 @@ MoneyEdit::MoneyEdit(const Money& contents, QWidget* parent)
 //------------------------------------------------------------------------------
 void MoneyEdit::setup()
 {
-	installEventFilter(new IgnoreUndoRedo(parent(), this));
-
 	validator = new MoneyValidator(this);
 	setValidator(validator);
 

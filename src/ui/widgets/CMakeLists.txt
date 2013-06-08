@@ -3,6 +3,7 @@
 # Specify UI widgets source files
 set(ui_widgets_srcs
 	IgnoreUndoRedo.cpp
+	LineEdit.cpp
 )
 
 # Build UI widgets library

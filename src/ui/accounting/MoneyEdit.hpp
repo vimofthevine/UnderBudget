@@ -18,10 +18,10 @@
 #define MONEYEDIT_HPP
 
 // Qt include(s)
-#include <QLineEdit>
 
 // UnderBudget include(s)
 #include "accounting/Money.hpp"
+#include "ui/widgets/LineEdit.hpp"
 
 // Forward declaration(s)
 class QContextMenuEvent;
@@ -34,7 +34,7 @@ class MoneyValidator;
 /**
  * A text editor for entering monetary values.
  */
-class MoneyEdit : public QLineEdit
+class MoneyEdit : public LineEdit
 {
 	Q_OBJECT
 
