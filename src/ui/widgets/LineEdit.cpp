@@ -77,5 +77,14 @@ QMenu* LineEdit::createStandardContextMenu()
 	return popup;
 }
 
+//------------------------------------------------------------------------------
+void LineEdit::setText(const QString& contents)
+{
+	if (contents != text())
+	{
+		QLineEdit::setText(contents);
+	}
+}
+
 }
 

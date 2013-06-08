@@ -53,6 +53,16 @@ public:
 	 */
 	QMenu* createStandardContextMenu();
 
+public slots:
+	/**
+	 * Reimplemented to only set the text if it differs from the
+	 * current editor contents. This eliminates an annoying behavior
+	 * where the cursor is moved to the end of the editor while
+	 * typing (due to the constant setting of the editor contents
+	 * due to the use of the command pattern).
+	 */
+	void setText(const QString& contents);
+
 protected:
 	/**
 	 * Removes undo/redo actions from the context menu.
