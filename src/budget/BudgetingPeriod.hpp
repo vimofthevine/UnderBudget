@@ -193,4 +193,8 @@ private:
 
 }
 
+// Make types known to the Qt meta object system
+Q_DECLARE_METATYPE(ub::BudgetingPeriod::Type);
+Q_DECLARE_METATYPE(ub::BudgetingPeriod::Parameters);
+
 #endif // BUDGETINGPERIOD_HPP

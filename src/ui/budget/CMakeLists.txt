@@ -3,6 +3,7 @@
 # Specify UI budget source files
 set(ui_budget_srcs
 	BudgetDetailsForm.cpp
+	BudgetingPeriodForm.cpp
 )
 
 # Build UI budget library

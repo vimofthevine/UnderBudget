@@ -26,13 +26,25 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 Budget::Budget()
-	: budgetName(tr("New Budget"))
+	: budgetName(tr("New Budget")), period(new BudgetingPeriod)
 { }
 
 //------------------------------------------------------------------------------
 QString Budget::name() const
 {
 	return budgetName;
+}
+
+//------------------------------------------------------------------------------
+Money Budget::initialBalance() const
+{
+	return initial;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<BudgetingPeriod> Budget::budgetingPeriod() const
+{
+	return period;
 }
 
 //------------------------------------------------------------------------------

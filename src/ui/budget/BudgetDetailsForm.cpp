@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/accounting/MoneyEdit.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
+#include "ui/budget/BudgetingPeriodForm.hpp"
 #include "ui/widgets/LineEdit.hpp"
 
 namespace ub {
@@ -37,16 +38,20 @@ BudgetDetailsForm::BudgetDetailsForm(QSharedPointer<Budget> budget,
 		nameField, SLOT(setText(QString)));
 
 	// Setup initial balance field
-	initialBalanceField = new MoneyEdit(this);
+	initialBalanceField = new MoneyEdit(budget->initialBalance(), this);
 	connect(initialBalanceField, SIGNAL(valueEdited(Money)),
 		this, SLOT(updateInitialBalance(Money)));
 	connect(budget.data(), SIGNAL(initialBalanceChanged(Money)),
 		initialBalanceField, SLOT(setValue(Money)));
 
+	// Setup budgeting period field
+	periodField = new BudgetingPeriodForm(budget->budgetingPeriod(), stack, this);
+
 	// Setup form layout
 	QFormLayout* form = new QFormLayout;
 	form->addRow(tr("Name"), nameField);
 	form->addRow(tr("Initial Balance"), initialBalanceField);
+	form->addRow(tr("Budgeting Period"), periodField);
 
 	// Setup group box
 	QGroupBox* group = new QGroupBox(tr("Budget Details"));

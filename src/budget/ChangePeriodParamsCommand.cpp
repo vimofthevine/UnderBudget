@@ -46,8 +46,16 @@ bool ChangePeriodParamsCommand::mergeWith(const QUndoCommand* command)
 	if (command->id() != id())
 		return false;
 
+	// Get params from the merged command
+	BudgetingPeriod::Parameters params =
+		static_cast<const ChangePeriodParamsCommand*>(command)->newParams;
+
+	// Don't merge if different period types
+	if (params.type != newParams.type)
+		return false;
+
 	// Use new params from the merged command
-	newParams = static_cast<const ChangePeriodParamsCommand*>(command)->newParams;
+	newParams = params;
 	return true;
 }
 

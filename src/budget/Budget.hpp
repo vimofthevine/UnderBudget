@@ -19,6 +19,7 @@
 
 // Qt include(s)
 #include <QObject>
+#include <QSharedPointer>
 
 // UnderBudget include(s)
 #include "accounting/Money.hpp"
@@ -50,7 +51,7 @@ public:
 	 *
 	 * @return budgeting period
 	 */
-	BudgetingPeriod budgetingPeriod() const;
+	QSharedPointer<BudgetingPeriod> budgetingPeriod() const;
 
 	/**
 	 * Returns the initial, starting balance for this budget.
@@ -101,7 +102,7 @@ private:
 	/** User-defined name */
 	QString budgetName;
 	/** Budgeting period */
-	BudgetingPeriod period;
+	QSharedPointer<BudgetingPeriod> period;
 	/** Initial balance */
 	Money initial;
 

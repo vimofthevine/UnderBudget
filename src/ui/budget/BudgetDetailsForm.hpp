@@ -32,6 +32,7 @@ class QUndoStack;
 namespace ub {
 
 // Forward declaration(s)
+class BudgetingPeriodForm;
 class MoneyEdit;
 
 /**
@@ -74,6 +75,8 @@ private:
 	QLineEdit* nameField;
 	/** Initial balance entry field */
 	MoneyEdit* initialBalanceField;
+	/** Budgeting period entry field */
+	BudgetingPeriodForm* periodField;
 
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;
