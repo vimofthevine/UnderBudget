@@ -200,6 +200,48 @@ public:
 	 */
 	QSharedPointer<Estimate> operator&() const;
 
+	/**
+	 * Returns the name of this estimate.
+	 *
+	 * @return name of this estimate
+	 */
+	QString estimateName() const;
+
+	/**
+	 * Returns the description of this estimate.
+	 *
+	 * @return description of this estimate
+	 */
+	QString estimateDescription() const;
+
+	/**
+	 * Returns the type of this estimate.
+	 *
+	 * @return type of this estimate
+	 */
+	Type estimateType() const;
+
+	/**
+	 * Returns the amount of this estimate.
+	 *
+	 * @return amount of this estimate
+	 */
+	Money estimatedAmount() const;
+
+	/**
+	 * Returns the due date for this estimate.
+	 *
+	 * @returns due date for this estimate
+	 */
+	QDate activityDueDate() const;
+
+	/**
+	 * Returns whether activity has finished for this estimate.
+	 *
+	 * @return `true` if estimate activity has finished
+	 */
+	bool isActivityFinished() const;
+
 	// -- Tree traversal methods
 
 	/**
@@ -208,6 +250,20 @@ public:
 	 * @return parent estimate
 	 */
 	QSharedPointer<Estimate> parentEstimate() const;
+
+	/**
+	 * Returns the number of child estimates under this estimate.
+	 *
+	 * @return number of child estimates
+	 */
+	int childCount() const;
+
+	/**
+	 * Returns the child estimate at the given index.
+	 *
+	 * @return child estimate at the given index
+	 */
+	QSharedPointer<Estimate> childAt(int index) const;
 
 signals:
 	/**

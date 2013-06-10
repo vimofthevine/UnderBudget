@@ -263,5 +263,69 @@ void Estimate::deleteSelf()
 	emit deleted();
 }
 
+//------------------------------------------------------------------------------
+QSharedPointer<Estimate> Estimate::operator&() const
+{
+	return estimates->value(id);
+}
+
+//------------------------------------------------------------------------------
+QString Estimate::estimateName() const
+{
+	return name;
+}
+
+//------------------------------------------------------------------------------
+QString Estimate::estimateDescription() const
+{
+	return description;
+}
+
+//------------------------------------------------------------------------------
+Estimate::Type Estimate::estimateType() const
+{
+	return type;
+}
+
+//------------------------------------------------------------------------------
+Money Estimate::estimatedAmount() const
+{
+	return amount;
+}
+
+//------------------------------------------------------------------------------
+QDate Estimate::activityDueDate() const
+{
+	return dueDate;
+}
+
+//------------------------------------------------------------------------------
+bool Estimate::isActivityFinished() const
+{
+	return finished;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<Estimate> Estimate::parentEstimate() const
+{
+	return estimates->value(parent, QSharedPointer<Estimate>());
+}
+
+//------------------------------------------------------------------------------
+int Estimate::childCount() const
+{
+	return children.size();
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<Estimate> Estimate::childAt(int index) const
+{
+	// Perform array bounds checking
+	if (index < 0 || index >= children.size())
+		return QSharedPointer<Estimate>();
+
+	return estimates->value(children.at(index), QSharedPointer<Estimate>());
+}
+
 }
 
