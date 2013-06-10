@@ -9,8 +9,15 @@ set(budget_srcs
 	BudgetingPeriod.cpp
 	BudgetingPeriod_calculations.cpp
 	ChangeBudgetNameCommand.cpp
+	ChangeEstimateAmountCommand.cpp
+	ChangeEstimateDescriptionCommand.cpp
+	ChangeEstimateDueDateCommand.cpp
+	ChangeEstimateFinishedCommand.cpp
+	ChangeEstimateNameCommand.cpp
+	ChangeEstimateTypeCommand.cpp
 	ChangeInitialBalanceCommand.cpp
 	ChangePeriodParamsCommand.cpp
+	Estimate.cpp
 )
 
 # Build budget library
