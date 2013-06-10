@@ -91,12 +91,6 @@ public:
 	Estimate(const Estimate& orig);
 
 	/**
-	 * Destroys the estimate. If this is the root estimate, the
-	 * backing map of all estimates is destroyed.
-	 */
-	~Estimate();
-
-	/**
 	 * Returns the progress of this estimate as compared
 	 * to the given actual figure.
 	 *

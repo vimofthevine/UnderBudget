@@ -35,10 +35,6 @@ Estimate::Estimate()
 { }
 
 //------------------------------------------------------------------------------
-Estimate::~Estimate()
-{ }
-
-//------------------------------------------------------------------------------
 Estimate::Estimate(QSharedPointer<Estimate> parent, uint id,
 		const QString& name, const QString& description, Type type,
 		const Money& amount, const QDate& dueDate, bool finished)
