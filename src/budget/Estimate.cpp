@@ -18,6 +18,7 @@
 #include <QtCore>
 
 // UnderBudget include(s)
+#include "budget/AddChildEstimateCommand.hpp"
 #include "budget/ChangeEstimateAmountCommand.hpp"
 #include "budget/ChangeEstimateDescriptionCommand.hpp"
 #include "budget/ChangeEstimateDueDateCommand.hpp"
@@ -32,7 +33,10 @@ namespace ub {
 Estimate::Estimate()
 	: estimates(new QHash<uint, QSharedPointer<Estimate> >),
 	  parent(-1), id(0), name(tr("Root")), type(Root), finished(false)
-{ }
+{
+	// Add self to estimate pointer map
+	estimates->insert(id, QSharedPointer<Estimate>(this));
+}
 
 //------------------------------------------------------------------------------
 Estimate::Estimate(QSharedPointer<Estimate> parent, uint id,
@@ -51,6 +55,8 @@ Estimate::Estimate(QSharedPointer<Estimate> parent, uint id,
 
 	// Grab estimate pointer map
 	estimates = parent->estimates;
+	// Add self to estimate pointer map
+	estimates->insert(id, QSharedPointer<Estimate>(this));
 }
 
 //------------------------------------------------------------------------------
@@ -210,6 +216,51 @@ void Estimate::setFinishedState(bool newState)
 		finished = newState;
 		emit finishedChanged(finished);
 	}
+}
+
+//------------------------------------------------------------------------------
+QUndoCommand* Estimate::addChild(QUndoCommand* cmd)
+{
+	return new AddChildEstimateCommand(estimates, id, cmd);
+}
+
+//------------------------------------------------------------------------------
+uint Estimate::createChild()
+{
+	uint id = QDateTime::currentDateTime().toTime_t();
+	createChild(id, name, description,
+		(type == Root) ? Expense : type,
+		amount, dueDate, finished);
+	return id;
+}
+
+//------------------------------------------------------------------------------
+void Estimate::createChild(uint id, const QString& name,
+	const QString& description, Type type, const Money& amount,
+	const QDate& dueDate, bool finished)
+{
+	// Figure out what the index of the created child will be
+	int index = children.size();
+
+	new Estimate(&(*this), id, name, description,
+		type, amount, dueDate, finished);
+
+	emit childAdded(index);
+}
+
+//------------------------------------------------------------------------------
+void Estimate::deleteSelf()
+{
+	// Remove self from parent's children
+	if (estimates->contains(parent))
+	{
+		estimates->value(parent)->children.removeOne(id);
+	}
+
+	// Remove self from estimate pointer map
+	estimates->remove(id);
+
+	emit deleted();
 }
 
 }

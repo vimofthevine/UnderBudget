@@ -191,6 +191,15 @@ public:
 	 */
 	QUndoCommand* deleteEstimate(QUndoCommand* cmd = 0);
 
+	// -- Property access methods
+
+	/**
+	 * Returns the pointer to this estimate.
+	 *
+	 * @return pointer to this estimate
+	 */
+	QSharedPointer<Estimate> operator&() const;
+
 	// -- Tree traversal methods
 
 	/**
@@ -347,39 +356,42 @@ private:
 	 * Creates a new child estimate under this estimate.
 	 * The parameters of the new estimate will be inherited
 	 * from this estimate.
+	 *
+	 * @return ID of the newly created child estimate
 	 */
-	QSharedPointer<Estimate> createChild();
+	uint createChild();
 
 	/**
-	 * Creates a new child estimate under this estimate.
+	 * Creates a new child estimate under this estimate with
+	 * the given parameters.
 	 *
-	 * @param[in] uid         estimate unique ID
+	 * @param[in] id          estimate unique ID
 	 * @param[in] name        estimate name
 	 * @param[in] description estimate description
 	 * @param[in] type        estimate type
 	 * @param[in] amount      estimated amount
-	 * @param[in] dueDate     due date
-	 * @param[in] finished    whether activity is finished
+	 * @param[in] dueDate     activity due date
+	 * @param[in] finished    activity finished state
 	 */
-	QSharedPointer<Estimate> createChild(long uid,
-		const QString& name, const QString& description,
-		Type type, const Money& amount,
+	void createChild(uint id, const QString& name,
+		const QString& description, Type type, const Money& amount,
 		const QDate& dueDate, bool finished);
 
 	/**
-	 * Removes this estimate from its parent estimate.
-	 * This estimate should be deleted after this
-	 * method is called.
+	 * Removes this estimate from the internal estimate pointer
+	 * map and from its parent estimate.
 	 */
-	void removeFromParent();
+	void deleteSelf();
 
 	// Allow undoable commands private access
+	friend class AddChildEstimateCommand;
 	friend class ChangeEstimateAmountCommand;
 	friend class ChangeEstimateDescriptionCommand;
 	friend class ChangeEstimateDueDateCommand;
 	friend class ChangeEstimateFinishedCommand;
 	friend class ChangeEstimateNameCommand;
 	friend class ChangeEstimateTypeCommand;
+	friend class DeleteEstimateCommand;
 };
 
 // Typedef this variable type since it's definition is quite wordy
