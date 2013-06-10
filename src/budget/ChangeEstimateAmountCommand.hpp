@@ -45,8 +45,8 @@ public:
 	 * @param[in] newAmount  new amount
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateAmountCommand(QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, const Money& oldAmount, const Money& newAmount,
+	ChangeEstimateAmountCommand(EstimatePointerMap estimates, uint estimateId,
+		const Money& oldAmount, const Money& newAmount,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -60,7 +60,7 @@ private:
 	/** Change estimate amount command ID */
 	static const int ID;
 	/** Map of estimates */
-	QHash<uint,QSharedPointer<Estimate> >* estimates;
+	EstimatePointerMap estimates;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous amount */

@@ -45,8 +45,8 @@ public:
 	 * @param[in] newDescrip new description
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateDescriptionCommand(QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, const QString& oldDescrip, const QString& newDescrip,
+	ChangeEstimateDescriptionCommand(EstimatePointerMap estimates, uint estimateId,
+		const QString& oldDescrip, const QString& newDescrip,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -60,7 +60,7 @@ private:
 	/** Change estimate description command ID */
 	static const int ID;
 	/** Map of estimates */
-	QHash<uint,QSharedPointer<Estimate> >* estimates;
+	EstimatePointerMap estimates;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous description */

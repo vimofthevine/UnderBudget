@@ -30,20 +30,13 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 Estimate::Estimate()
-	: parent(-1), id(0), name(tr("Root")), type(Root), finished(false)
-{
-	estimates = new QHash<uint, QSharedPointer<Estimate> >;
-}
+	: estimates(new QHash<uint, QSharedPointer<Estimate> >),
+	  parent(-1), id(0), name(tr("Root")), type(Root), finished(false)
+{ }
 
 //------------------------------------------------------------------------------
 Estimate::~Estimate()
-{
-	// Only delete the estimate pointer map when the root is destructed
-	if (id == 0)
-	{
-		delete estimates;
-	}
-}
+{ }
 
 //------------------------------------------------------------------------------
 Estimate::Estimate(QSharedPointer<Estimate> parent, uint id,

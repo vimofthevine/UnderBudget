@@ -45,8 +45,8 @@ public:
 	 * @param[in] newDate    new due date
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateDueDateCommand(QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, const QDate& oldDate, const QDate& newDate,
+	ChangeEstimateDueDateCommand(EstimatePointerMap estimates, uint estimateId,
+		const QDate& oldDate, const QDate& newDate,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -60,7 +60,7 @@ private:
 	/** Change estimate due date command ID */
 	static const int ID;
 	/** Map of estimates */
-	QHash<uint,QSharedPointer<Estimate> >* estimates;
+	EstimatePointerMap estimates;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous due date */

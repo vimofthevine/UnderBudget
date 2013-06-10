@@ -27,8 +27,8 @@ const int ChangeEstimateTypeCommand::ID = 448722313;
 
 //------------------------------------------------------------------------------
 ChangeEstimateTypeCommand::ChangeEstimateTypeCommand(
-		QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, Estimate::Type oldType, Estimate::Type newType,
+		EstimatePointerMap estimates, uint estimateId,
+		Estimate::Type oldType, Estimate::Type newType,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
 	  estimates(estimates), estimateId(estimateId),

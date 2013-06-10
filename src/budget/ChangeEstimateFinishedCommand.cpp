@@ -27,8 +27,8 @@ const int ChangeEstimateFinishedCommand::ID = 44232135;
 
 //------------------------------------------------------------------------------
 ChangeEstimateFinishedCommand::ChangeEstimateFinishedCommand(
-		QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, bool oldState, bool newState,
+		EstimatePointerMap estimates, uint estimateId,
+		bool oldState, bool newState,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
 	  estimates(estimates), estimateId(estimateId),

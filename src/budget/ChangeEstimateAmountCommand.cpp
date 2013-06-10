@@ -27,8 +27,8 @@ const int ChangeEstimateAmountCommand::ID = 442523535;
 
 //------------------------------------------------------------------------------
 ChangeEstimateAmountCommand::ChangeEstimateAmountCommand(
-		QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, const Money& oldAmount, const Money& newAmount,
+		EstimatePointerMap estimates, uint estimateId,
+		const Money& oldAmount, const Money& newAmount,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
 	  estimates(estimates), estimateId(estimateId),

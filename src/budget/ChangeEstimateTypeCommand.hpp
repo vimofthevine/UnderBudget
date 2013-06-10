@@ -45,8 +45,8 @@ public:
 	 * @param[in] newType    new type
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateTypeCommand(QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, Estimate::Type oldType, Estimate::Type newType,
+	ChangeEstimateTypeCommand(EstimatePointerMap estimates, uint estimateId,
+		Estimate::Type oldType, Estimate::Type newType,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -60,7 +60,7 @@ private:
 	/** Change estimate type command ID */
 	static const int ID;
 	/** Map of estimates */
-	QHash<uint,QSharedPointer<Estimate> >* estimates;
+	EstimatePointerMap estimates;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous type */

@@ -45,8 +45,8 @@ public:
 	 * @param[in] newState   new finished state
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateFinishedCommand(QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, bool oldState, bool newState,
+	ChangeEstimateFinishedCommand(EstimatePointerMap estimates, uint estimateId,
+		bool oldState, bool newState,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -60,7 +60,7 @@ private:
 	/** Change estimate finished state command ID */
 	static const int ID;
 	/** Map of estimates */
-	QHash<uint,QSharedPointer<Estimate> >* estimates;
+	EstimatePointerMap estimates;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous finished state */

@@ -45,8 +45,8 @@ public:
 	 * @param[in] newName    new name
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateNameCommand(QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, const QString& oldName, const QString& newName,
+	ChangeEstimateNameCommand(EstimatePointerMap estimates, uint estimateId,
+		const QString& oldName, const QString& newName,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -60,7 +60,7 @@ private:
 	/** Change estimate name command ID */
 	static const int ID;
 	/** Map of estimates */
-	QHash<uint,QSharedPointer<Estimate> >* estimates;
+	EstimatePointerMap estimates;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous name */

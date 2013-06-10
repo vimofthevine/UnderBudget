@@ -270,8 +270,8 @@ signals:
 	void deleted();
 
 private:
-	/** Estimate pointer map. This pointer is owned by the root estimate. */
-	QHash<uint, QSharedPointer<Estimate> >* estimates;
+	/** Estimate pointer map */
+	QSharedPointer<QHash<uint, QSharedPointer<Estimate> > > estimates;
 
 	/** Parent estimate ID */
 	uint parent;
@@ -387,6 +387,9 @@ private:
 	friend class ChangeEstimateNameCommand;
 	friend class ChangeEstimateTypeCommand;
 };
+
+// Typedef this variable type since it's definition is quite wordy
+typedef QSharedPointer<QHash<uint, QSharedPointer<Estimate> > > EstimatePointerMap;
 
 }
 

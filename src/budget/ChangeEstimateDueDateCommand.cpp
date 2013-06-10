@@ -27,8 +27,8 @@ const int ChangeEstimateDueDateCommand::ID = 44523352;
 
 //------------------------------------------------------------------------------
 ChangeEstimateDueDateCommand::ChangeEstimateDueDateCommand(
-		QHash<uint,QSharedPointer<Estimate> >* estimates,
-		uint estimateId, const QDate& oldDate, const QDate& newDate,
+		EstimatePointerMap estimates, uint estimateId,
+		const QDate& oldDate, const QDate& newDate,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
 	  estimates(estimates), estimateId(estimateId), oldDate(oldDate), newDate(newDate)
