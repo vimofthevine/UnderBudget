@@ -20,6 +20,7 @@ set(budget_srcs
 	ChangePeriodParamsCommand.cpp
 	DeleteEstimateCommand.cpp
 	Estimate.cpp
+	MoveEstimateCommand.cpp
 )
 
 # Build budget library

@@ -63,12 +63,18 @@ public:
 	};
 
 	/**
-	 * Constructs a new root estimate.
+	 * Creates a new root estimate.
 	 */
-	Estimate();
+	static QSharedPointer<Estimate> createRoot();
 
 	/**
-	 * Constructs a new estimate as a child of the given estimate.
+	 * Creates a new estimate as a child of the given estimate.
+	 *
+	 * If an index is specified (and is within a valid range), the estimate
+	 * will be inserted at that index into the parent estimate's children.
+	 * If the index is -1 or is invalid (e.g., specifying 5 when the parent
+	 * only has 2 children), the new child will be inserted at the end of
+	 * the parent's child list.
 	 *
 	 * @param[in] parent      parent estimate
 	 * @param[in] id          estimate unique ID
@@ -78,10 +84,11 @@ public:
 	 * @param[in] amount      estimated amount
 	 * @param[in] dueDate     activity due date
 	 * @param[in] finished    activity finished state
+	 * @param[in] index       child index
 	 */
-	Estimate(QSharedPointer<Estimate> parent, uint id,
-		const QString& name, const QString& description, Type type,
-		const Money& amount, const QDate& dueDate, bool finished);
+	static QSharedPointer<Estimate> create(QSharedPointer<Estimate> parent,
+		uint id, const QString& name, const QString& description, Type type,
+		const Money& amount, const QDate& dueDate, bool finished, int index = -1);
 
 	/**
 	 * Constructs an estimate as a copy of an existing estimate.
@@ -191,6 +198,16 @@ public:
 	 */
 	QUndoCommand* deleteEstimate(QUndoCommand* cmd = 0);
 
+	/**
+	 * Creates a command to move this estimate.
+	 *
+	 * @param[in] newParent new parent to which this estimate will be moved
+	 * @param[in] newIndex  new index under the parent
+	 * @param[in] cmd       parent command to be used for grouping
+	 */
+	QUndoCommand* moveTo(QSharedPointer<Estimate> newParent, int newIndex,
+		QUndoCommand* cmd = 0);
+
 	// -- Property access methods
 
 	/**
@@ -199,6 +216,13 @@ public:
 	 * @return pointer to this estimate
 	 */
 	QSharedPointer<Estimate> operator&() const;
+
+	/**
+	 * Returns the unique ID of this estimate.
+	 *
+	 * @return unique ID of this estimate
+	 */
+	uint estimateId() const;
 
 	/**
 	 * Returns the name of this estimate.
@@ -265,6 +289,15 @@ public:
 	 */
 	QSharedPointer<Estimate> childAt(int index) const;
 
+	/**
+	 * Returns the child index of the given child estimate,
+	 * if it is a parent of this estimate.
+	 *
+	 * @return index of the given child index, or -1 if the estimate
+	 *         is not a child of this estimate
+	 */
+	int indexOf(QSharedPointer<Estimate> child) const;
+
 signals:
 	/**
 	 * This signal is emitted whenever the name of this estimate
@@ -318,9 +351,32 @@ signals:
 	 * This signal is emitted whenever a child is
 	 * added to this estimate.
 	 *
+	 * @param child new child estimate that was added
 	 * @param index index of the new child estimate
 	 */
-	void childAdded(int index);
+	void childAdded(QSharedPointer<Estimate> child, int index);
+
+	/**
+	 * This signal is emitted whenever a child is removed
+	 * from this estimate.
+	 *
+	 * Note that the child estimate given in this signal does not
+	 * necessarily have a valid parent reference.
+	 *
+	 * @param child child estimate that was removed
+	 * @param index old index of the child
+	 */
+	void childRemoved(QSharedPointer<Estimate> child, int index);
+
+	/**
+	 * This signal is emitted whenever a child is moved within
+	 * this estimate's list of children.
+	 *
+	 * @param child    child estimate that was moved
+	 * @param oldIndex old index of the child estimate
+	 * @param newIndex new index of the child estimate
+	 */
+	void childMoved(QSharedPointer<Estimate> child, int oldIndex, int newIndex);
 
 	/**
 	 * This signal is emitted when this estimate is
@@ -353,6 +409,41 @@ private:
 	bool finished;
 
 	/**
+	 * Constructs a new root estimate.
+	 */
+	Estimate();
+
+	/**
+	 * Constructs a new estimate as a child of the given estimate.
+	 *
+	 * If an index is specified (and is within a valid range), the estimate
+	 * will be inserted at that index into the parent estimate's children.
+	 * If the index is -1 or is invalid (e.g., specifying 5 when the parent
+	 * only has 2 children), the index will be set to the index at which the
+	 * new child estimate was inserted.
+	 *
+	 * @param[in] parent      parent estimate
+	 * @param[in] id          estimate unique ID
+	 * @param[in] name        estimate name
+	 * @param[in] description estimate description
+	 * @param[in] type        estimate type
+	 * @param[in] amount      estimated amount
+	 * @param[in] dueDate     activity due date
+	 * @param[in] finished    activity finished state
+	 * @param[in] index       child index
+	 */
+	Estimate(QSharedPointer<Estimate> parent, uint id, const QString& name,
+		const QString& description, Type type, const Money& amount,
+		const QDate& dueDate, bool finished, int index);
+
+	/**
+	 * Returns the pointer to this estimate.
+	 *
+	 * @return pointer to this estimate
+	 */
+	QSharedPointer<Estimate> pointer() const;
+
+	/**
 	 * Checks if this estimate is the root estimate.
 	 *
 	 * @return `true` if this estimate is the root
@@ -365,6 +456,14 @@ private:
 	 * @return `true` if this estimate is a category of estimates
 	 */
 	bool isCategory() const;
+
+	/**
+	 * Retrieves the total estimated amount for all estimates that
+	 * are descendants of this estimate.
+	 *
+	 * @return total estimated amount for all descendants
+	 */
+	Money totalEstimatedAmount() const;
 
 	/**
 	 * Sets the name of this estimate.
@@ -428,16 +527,57 @@ private:
 	 * @param[in] amount      estimated amount
 	 * @param[in] dueDate     activity due date
 	 * @param[in] finished    activity finished state
+	 * @param[in] index       index at which to insert the new estimate into
+	 *                        the list of child estimates
 	 */
 	void createChild(uint id, const QString& name,
 		const QString& description, Type type, const Money& amount,
-		const QDate& dueDate, bool finished);
+		const QDate& dueDate, bool finished, int index = -1);
 
 	/**
 	 * Removes this estimate from the internal estimate pointer
 	 * map and from its parent estimate.
 	 */
 	void deleteSelf();
+
+	/**
+	 * Moves this estimate to the specified parent at the specified index.
+	 *
+	 * @param[in] newParentId new parent under which to move this estimate
+	 * @param[in] newIndex    new index at which to move this estimate
+	 */
+	void moveTo(uint newParentId, int newIndex);
+
+	// Parent-child relationship modification methods
+
+	/**
+	 * Adds the given child to this estimate at the specified index.
+	 *
+	 * Emits the childAdded() signal.
+	 *
+	 * @param[in] child child estimate to be added
+	 * @param[in] index child index
+	 */
+	void addChild(QSharedPointer<Estimate> child, int index);
+
+	/**
+	 * Removes the given child from this estimate.
+	 *
+	 * Emits the childRemoved() signal.
+	 *
+	 * @param[in] child child estimate to be removed
+	 */
+	void removeChild(QSharedPointer<Estimate> child);
+
+	/**
+	 * Moves the given child to the given index.
+	 *
+	 * Emits the childMoved() signal.
+	 *
+	 * @param[in] child child estimate to be moved
+	 * @param[in] index new index of the child estimate
+	 */
+	void moveChild(QSharedPointer<Estimate> child, int index);
 
 	// Allow undoable commands private access
 	friend class AddChildEstimateCommand;
@@ -448,6 +588,7 @@ private:
 	friend class ChangeEstimateNameCommand;
 	friend class ChangeEstimateTypeCommand;
 	friend class DeleteEstimateCommand;
+	friend class MoveEstimateCommand;
 };
 
 // Typedef this variable type since it's definition is quite wordy

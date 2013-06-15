@@ -18,70 +18,61 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "budget/DeleteEstimateCommand.hpp"
+#include "budget/MoveEstimateCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-const int DeleteEstimateCommand::ID = 451266234;
+const int MoveEstimateCommand::ID = 451423256;
 
 //------------------------------------------------------------------------------
-DeleteEstimateCommand::DeleteEstimateCommand(
+MoveEstimateCommand::MoveEstimateCommand(
 		EstimatePointerMap estimates, uint estimateId,
+		QSharedPointer<Estimate> newParent, int newIndex,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId)
+	  estimates(estimates), estimateId(estimateId), newIndex(newIndex)
 {
-	index = -1;
-
 	if (estimates->contains(estimateId))
 	{
 		QSharedPointer<Estimate> estimate = estimates->value(estimateId);
-		parentId = estimate->parent;
-		name = estimate->name;
-		description = estimate->description;
-		type = estimate->type;
-		amount = estimate->amount;
-		dueDate = estimate->dueDate;
-		finished = estimate->finished;
+		QSharedPointer<Estimate> oldParent = estimate->parentEstimate();
 
-		if (estimates->contains(parentId))
-		{
-			QSharedPointer<Estimate> parent = estimates->value(parentId);
-			index = parent->indexOf(estimate);
-		}
+		oldParentId = oldParent->estimateId();
+		newParentId = newParent->estimateId();
+
+		oldIndex = oldParent->indexOf(estimate);
 	}
 }
 
 //------------------------------------------------------------------------------
-int DeleteEstimateCommand::id() const
+int MoveEstimateCommand::id() const
 {
 	return ID;
 }
 
 //------------------------------------------------------------------------------
-bool DeleteEstimateCommand::mergeWith(const QUndoCommand* command)
+bool MoveEstimateCommand::mergeWith(const QUndoCommand* command)
 {
 	// This command can never be merged
 	return false;
 }
 
 //------------------------------------------------------------------------------
-void DeleteEstimateCommand::redo()
+void MoveEstimateCommand::redo()
 {
 	if (estimates->contains(estimateId))
 	{
-		estimates->value(estimateId)->deleteSelf();
+		estimates->value(estimateId)->moveTo(newParentId, newIndex);
 	}
 }
 
 //------------------------------------------------------------------------------
-void DeleteEstimateCommand::undo()
+void MoveEstimateCommand::undo()
 {
-	if (estimates->contains(parentId))
+	if (estimates->contains(estimateId))
 	{
-		estimates->value(parentId)->createChild(estimateId,
-			name, description, type, amount, dueDate, finished, index);
+		estimates->value(estimateId)->moveTo(oldParentId, oldIndex);
 	}
 }
 
