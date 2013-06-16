@@ -90,6 +90,8 @@ public:
 		uint id, const QString& name, const QString& description, Type type,
 		const Money& amount, const QDate& dueDate, bool finished, int index = -1);
 
+	~Estimate();
+
 	/**
 	 * Constructs an estimate as a copy of an existing estimate.
 	 *

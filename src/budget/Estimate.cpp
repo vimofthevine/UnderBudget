@@ -48,6 +48,12 @@ Estimate::Estimate()
 }
 
 //------------------------------------------------------------------------------
+Estimate::~Estimate()
+{
+	qDebug() << "Destructing" << name;
+}
+
+//------------------------------------------------------------------------------
 QSharedPointer<Estimate> Estimate::create(QSharedPointer<Estimate> parent,
 	uint id, const QString& name, const QString& description, Type type,
 	const Money& amount, const QDate& dueDate, bool finished, int index)
