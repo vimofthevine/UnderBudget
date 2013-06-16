@@ -65,6 +65,11 @@ private slots:
 	void parent();
 
 	/**
+	 * Tests ID-based retrieval of estimates.
+	 */
+	void find();
+
+	/**
 	 * Tests changing the name of an estimate.
 	 */
 	void changeName();

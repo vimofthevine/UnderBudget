@@ -29,6 +29,7 @@ namespace ub {
 //------------------------------------------------------------------------------
 void EstimateTest::init()
 {
+	qDebug() << "creating test fixtures";
 	root = Estimate::createRoot();
 	expenses = Estimate::create(root, 1111,
 		"Expenses", "", Estimate::Expense, Money(12.0), QDate(2013,3,31), false);
@@ -114,6 +115,20 @@ void EstimateTest::parent()
 	QCOMPARE(rent->parentEstimate(), utilities);
 	QCOMPARE(water->parentEstimate(), utilities);
 	QCOMPARE(food->parentEstimate(), expenses);
+}
+
+//------------------------------------------------------------------------------
+void EstimateTest::find()
+{
+	QCOMPARE(root->find(0), root);
+	QCOMPARE(root->find(1111), expenses);
+	QCOMPARE(root->find(1222), incomes);
+	QCOMPARE(root->find(2333), salary);
+	QCOMPARE(root->find(3444), utilities);
+	QCOMPARE(root->find(4555), rent);
+	QCOMPARE(root->find(4666), water);
+	QCOMPARE(root->find(3555), food);
+	QCOMPARE(root->find(9), QSharedPointer<Estimate>());
 }
 
 //------------------------------------------------------------------------------

@@ -298,6 +298,15 @@ public:
 	 */
 	int indexOf(QSharedPointer<Estimate> child) const;
 
+	/**
+	 * Searches the estimate tree for the estimate with the given ID.
+	 *
+	 * @param[in] estimateId estimate ID to be searched
+	 * @return estimate with the specified ID, or a null pointer if
+	 *         no estimate exists with that ID
+	 */
+	QSharedPointer<Estimate> find(uint estimateId) const;
+
 signals:
 	/**
 	 * This signal is emitted whenever the name of this estimate

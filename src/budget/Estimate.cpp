@@ -496,5 +496,11 @@ int Estimate::indexOf(QSharedPointer<Estimate> child) const
 	return children.indexOf(child->id);
 }
 
+//------------------------------------------------------------------------------
+QSharedPointer<Estimate> Estimate::find(uint estimateId) const
+{
+	return estimates->value(estimateId, QSharedPointer<Estimate>());
+}
+
 }
 
