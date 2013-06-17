@@ -396,13 +396,13 @@ signals:
 	void deleted();
 
 private:
-	/** Estimate pointer map */
-	QSharedPointer<QHash<uint, QSharedPointer<Estimate> > > estimates;
+	/** Estimate paths */
+	QSharedPointer<QHash<uint, QList<int> > > paths;
 
-	/** Parent estimate ID */
-	uint parent;
-	/** Child estimate IDs */
-	QList<uint> children;
+	/** Parent estimate */
+	Estimate* parent;
+	/** Child estimates */
+	QList<QSharedPointer<Estimate> > children;
 
 	/** Unique ID */
 	const uint id;
@@ -446,6 +446,21 @@ private:
 	Estimate(QSharedPointer<Estimate> parent, uint id, const QString& name,
 		const QString& description, Type type, const Money& amount,
 		const QDate& dueDate, bool finished, int index);
+
+	/**
+	 * Returns a pointer to the root estimate.
+	 *
+	 * @return root estimate
+	 */
+	Estimate* root() const;
+
+	/**
+	 * Returns the estimate located at the specified path.
+	 *
+	 * @param[in] path estimate ID path
+	 * @return estimate at the specified path
+	 */
+	QSharedPointer<Estimate> fromPath(const QList<int>& path) const;
 
 	/**
 	 * Returns the pointer to this estimate.

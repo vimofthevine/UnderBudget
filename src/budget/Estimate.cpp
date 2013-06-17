@@ -136,6 +136,37 @@ void Estimate::moveChild(QSharedPointer<Estimate> child, int newIndex)
 }
 
 //------------------------------------------------------------------------------
+Estimate* Estimate::root() const
+{
+	if (isRoot())
+		return this;
+	else
+		return parent->root();
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<Estimate> Estimate::fromPath(const QList<int>& path) const
+{
+	Estimate* root = root();
+	QSharedPointer<Estimate> estimate;
+	int index;
+
+	foreach(index, path)
+	{
+		if (estimate.isNull())
+		{
+			return QSharedPointer<Estimate>();
+		}
+		else
+		{
+			estimate = estimate->childAt(index);
+		}
+	}
+
+	return estimate;
+}
+
+//------------------------------------------------------------------------------
 bool Estimate::isRoot() const
 {
 	return (type == Root) && (parent == -1);
