@@ -561,13 +561,13 @@ void EstimateTest::deleteLastLeafFromParentOfMultiple()
 	// Verify child re-created correctly
 	Estimate* child = utilities->childAt(1);
 	QCOMPARE(child == 0, false);
-	QCOMPARE(child->estimateId(), water->estimateId());
-	QCOMPARE(child->estimateName(), water->estimateName());
-	QCOMPARE(child->estimateDescription(), water->estimateDescription());
-	QCOMPARE(child->estimateType(), water->estimateType());
-	QCOMPARE(child->estimatedAmount(), water->estimatedAmount());
-	QCOMPARE(child->activityDueDate(), water->activityDueDate());
-	QCOMPARE(child->isActivityFinished(), water->isActivityFinished());
+	QCOMPARE(child->estimateId(), WATER);
+	QCOMPARE(child->estimateName(), QString("Water"));
+	QCOMPARE(child->estimateDescription(), QString(""));
+	QCOMPARE(child->estimateType(), Estimate::Expense);
+	QCOMPARE(child->estimatedAmount(), Money(25.34));
+	QCOMPARE(child->activityDueDate(), QDate(2013,3,10));
+	QCOMPARE(child->isActivityFinished(), true);
 }
 
 //------------------------------------------------------------------------------
@@ -599,13 +599,13 @@ void EstimateTest::deleteFirstLeafFromParentOfMultiple()
 	// Verify child re-created correctly
 	Estimate* child = utilities->childAt(0);
 	QCOMPARE(child == 0, false);
-	QCOMPARE(child->estimateId(), rent->estimateId());
-	QCOMPARE(child->estimateName(), rent->estimateName());
-	QCOMPARE(child->estimateDescription(), rent->estimateDescription());
-	QCOMPARE(child->estimateType(), rent->estimateType());
-	QCOMPARE(child->estimatedAmount(), rent->estimatedAmount());
-	QCOMPARE(child->activityDueDate(), rent->activityDueDate());
-	QCOMPARE(child->isActivityFinished(), rent->isActivityFinished());
+	QCOMPARE(child->estimateId(), RENT);
+	QCOMPARE(child->estimateName(), QString("Rent"));
+	QCOMPARE(child->estimateDescription(), QString("Apt."));
+	QCOMPARE(child->estimateType(), Estimate::Expense);
+	QCOMPARE(child->estimatedAmount(), Money(500.0));
+	QCOMPARE(child->activityDueDate(), QDate(2013,3,28));
+	QCOMPARE(child->isActivityFinished(), false);
 }
 
 //------------------------------------------------------------------------------
@@ -634,13 +634,13 @@ void EstimateTest::deleteOnlyLeafFromParent()
 	// Verify child re-created correctly
 	Estimate* child = incomes->childAt(0);
 	QCOMPARE(child == 0, false);
-	QCOMPARE(child->estimateId(), salary->estimateId());
-	QCOMPARE(child->estimateName(), salary->estimateName());
-	QCOMPARE(child->estimateDescription(), salary->estimateDescription());
-	QCOMPARE(child->estimateType(), salary->estimateType());
-	QCOMPARE(child->estimatedAmount(), salary->estimatedAmount());
-	QCOMPARE(child->activityDueDate(), salary->activityDueDate());
-	QCOMPARE(child->isActivityFinished(), salary->isActivityFinished());
+	QCOMPARE(child->estimateId(), SALARY);
+	QCOMPARE(child->estimateName(), QString("Salary"));
+	QCOMPARE(child->estimateDescription(), QString(""));
+	QCOMPARE(child->estimateType(), Estimate::Income);
+	QCOMPARE(child->estimatedAmount(), Money(100.0));
+	QCOMPARE(child->activityDueDate(), QDate());
+	QCOMPARE(child->isActivityFinished(), false);
 }
 
 //------------------------------------------------------------------------------
@@ -670,24 +670,24 @@ void EstimateTest::deleteParentWithOneChild()
 	// Verify that parent re-created correctly
 	Estimate* parent = root->childAt(1);
 	QCOMPARE(parent == 0, false);
-	QCOMPARE(parent->estimateId(), incomes->estimateId());
-	QCOMPARE(parent->estimateName(), incomes->estimateName());
-	QCOMPARE(parent->estimateDescription(), incomes->estimateDescription());
-	QCOMPARE(parent->estimateType(), incomes->estimateType());
-	QCOMPARE(parent->estimatedAmount(), incomes->estimatedAmount());
-	QCOMPARE(parent->activityDueDate(), incomes->activityDueDate());
-	QCOMPARE(parent->isActivityFinished(), incomes->isActivityFinished());
+	QCOMPARE(parent->estimateId(), INCOMES);
+	QCOMPARE(parent->estimateName(), QString("Incomes"));
+	QCOMPARE(parent->estimateDescription(), QString(""));
+	QCOMPARE(parent->estimateType(), Estimate::Income);
+	QCOMPARE(parent->estimatedAmount(), Money());
+	QCOMPARE(parent->activityDueDate(), QDate());
+	QCOMPARE(parent->isActivityFinished(), false);
 	QCOMPARE(parent->childCount(), 1);
 	// Verify child re-created correctly
 	Estimate* child = parent->childAt(0);
 	QCOMPARE(child == 0, false);
-	QCOMPARE(child->estimateId(), salary->estimateId());
-	QCOMPARE(child->estimateName(), salary->estimateName());
-	QCOMPARE(child->estimateDescription(), salary->estimateDescription());
-	QCOMPARE(child->estimateType(), salary->estimateType());
-	QCOMPARE(child->estimatedAmount(), salary->estimatedAmount());
-	QCOMPARE(child->activityDueDate(), salary->activityDueDate());
-	QCOMPARE(child->isActivityFinished(), salary->isActivityFinished());
+	QCOMPARE(child->estimateId(), SALARY);
+	QCOMPARE(child->estimateName(), QString("Salary"));
+	QCOMPARE(child->estimateDescription(), QString(""));
+	QCOMPARE(child->estimateType(), Estimate::Income);
+	QCOMPARE(child->estimatedAmount(), Money(100.0));
+	QCOMPARE(child->activityDueDate(), QDate());
+	QCOMPARE(child->isActivityFinished(), false);
 }
 
 //------------------------------------------------------------------------------
@@ -720,32 +720,32 @@ void EstimateTest::deleteParentOfParent()
 
 	Estimate* reExpenses = root->childAt(0);
 	QCOMPARE(reExpenses == 0, false);
-	QCOMPARE(reExpenses->estimateId(), expenses->estimateId());
-	QCOMPARE(reExpenses->estimateName(), expenses->estimateName());
+	QCOMPARE(reExpenses->estimateId(), EXPENSES);
+	QCOMPARE(reExpenses->estimateName(), QString("Expenses"));
 	QCOMPARE(reExpenses->childCount(), 2);
 
 	Estimate* reUtilities = reExpenses->childAt(0);
 	QCOMPARE(reUtilities == 0, false);
-	QCOMPARE(reUtilities->estimateId(), utilities->estimateId());
-	QCOMPARE(reUtilities->estimateName(), utilities->estimateName());
+	QCOMPARE(reUtilities->estimateId(), UTILITIES);
+	QCOMPARE(reUtilities->estimateName(), QString("Utilities"));
 	QCOMPARE(reUtilities->childCount(), 2);
 
 	Estimate* reFood = reExpenses->childAt(1);
 	QCOMPARE(reFood == 0, false);
-	QCOMPARE(reFood->estimateId(), food->estimateId());
-	QCOMPARE(reFood->estimateName(), food->estimateName());
+	QCOMPARE(reFood->estimateId(), FOOD);
+	QCOMPARE(reFood->estimateName(), QString("Food"));
 	QCOMPARE(reFood->childCount(), 0);
 
 	Estimate* reRent = reUtilities->childAt(0);
 	QCOMPARE(reRent == 0, false);
-	QCOMPARE(reRent->estimateId(), rent->estimateId());
-	QCOMPARE(reRent->estimateName(), rent->estimateName());
+	QCOMPARE(reRent->estimateId(), RENT);
+	QCOMPARE(reRent->estimateName(), QString("Rent"));
 	QCOMPARE(reRent->childCount(), 0);
 
 	Estimate* reWater = reUtilities->childAt(1);
 	QCOMPARE(reWater == 0, false);
-	QCOMPARE(reWater->estimateId(), water->estimateId());
-	QCOMPARE(reWater->estimateName(), water->estimateName());
+	QCOMPARE(reWater->estimateId(), WATER);
+	QCOMPARE(reWater->estimateName(), QString("Water"));
 	QCOMPARE(reWater->childCount(), 0);
 }
 
