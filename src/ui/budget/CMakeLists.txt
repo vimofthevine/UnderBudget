@@ -4,6 +4,13 @@
 set(ui_budget_srcs
 	BudgetDetailsForm.cpp
 	BudgetingPeriodForm.cpp
+	EstimateDetailsForm.cpp
+	EstimateDisplayWidget.cpp
+	EstimateModel.cpp
+	EstimateTreeWidget.cpp
+	ProxyModelAddCommand.cpp
+	ProxyModelChangeCommand.cpp
+	ProxyModelDeleteCommand.cpp
 )
 
 # Build UI budget library

@@ -27,7 +27,26 @@ namespace ub {
 //------------------------------------------------------------------------------
 Budget::Budget()
 	: budgetName(tr("New Budget")), period(new BudgetingPeriod)
-{ }
+{
+	rootEstimate = Estimate::createRoot();
+	Estimate* root = rootEstimate.data();
+	Estimate* expenses = Estimate::create(root, 1001,
+		"Expenses", "", Estimate::Expense, Money(12.0), QDate(2013,3,31), false);
+	Estimate* incomes = Estimate::create(root, 1002,
+		"Incomes", "", Estimate::Income, Money(32.0), QDate(), true);
+	Estimate* salary = Estimate::create(incomes, 2001,
+		"Salary", "", Estimate::Income, Money(100.0), QDate(), false);
+	Estimate* utilities = Estimate::create(expenses, 3001,
+		"Utilities", "", Estimate::Expense, Money(50.0), QDate(), true);
+	Estimate* rent = Estimate::create(utilities, 4001,
+		"Rent", "Apt.", Estimate::Expense, Money(500.0), QDate(2013,3,28), false);
+	Estimate* water = Estimate::create(utilities, 4002,
+		"Water", "", Estimate::Expense, Money(25.34), QDate(2013,3,10), true);
+	Estimate* food = Estimate::create(expenses, 3002,
+		"Food", "", Estimate::Expense, Money(120.0), QDate(), false);
+	Estimate* loan = Estimate::create(root, 1003,
+		"Loan Payment", "", Estimate::Transfer, Money(50.0), QDate(2013,3,20), false);
+}
 
 //------------------------------------------------------------------------------
 QString Budget::name() const
@@ -45,6 +64,12 @@ Money Budget::initialBalance() const
 QSharedPointer<BudgetingPeriod> Budget::budgetingPeriod() const
 {
 	return period;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<Estimate> Budget::estimates() const
+{
+	return rootEstimate;
 }
 
 //------------------------------------------------------------------------------

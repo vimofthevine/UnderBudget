@@ -32,6 +32,7 @@ namespace ub {
 
 // Forward declaration(s)
 class BudgetDetailsForm;
+class EstimateDisplayWidget;
 
 /**
  * Widget for an open budget session.
@@ -254,6 +255,8 @@ private:
 
 	/** Budget details form */
 	BudgetDetailsForm* budgetDetails;
+	/** Estimate display widget */
+	EstimateDisplayWidget* estimateDisplay;
 
 	/**
 	 * Creates all display widgets for this session. A budget must have

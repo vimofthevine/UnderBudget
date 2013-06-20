@@ -24,6 +24,7 @@
 // UnderBudget include(s)
 #include "accounting/Money.hpp"
 #include "budget/BudgetingPeriod.hpp"
+#include "budget/Estimate.hpp"
 
 // Forward declaration(s)
 class QUndoCommand;
@@ -59,6 +60,13 @@ public:
 	 * @return initial balance
 	 */
 	Money initialBalance() const;
+
+	/**
+	 * Returns the root to the estimate tree.
+	 *
+	 * @return estimate tree root
+	 */
+	QSharedPointer<Estimate> estimates() const;
 
 	/**
 	 * Creates an undoable command to change the budget's name.
@@ -105,6 +113,8 @@ private:
 	QSharedPointer<BudgetingPeriod> period;
 	/** Initial balance */
 	Money initial;
+	/** Estimate tree (root) */
+	QSharedPointer<Estimate> rootEstimate;
 
 	/**
 	 * Sets the budget's name to the given name, emitting
