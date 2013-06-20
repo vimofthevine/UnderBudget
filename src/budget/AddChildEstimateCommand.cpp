@@ -27,17 +27,17 @@ const int AddChildEstimateCommand::ID = 451234686;
 
 //------------------------------------------------------------------------------
 AddChildEstimateCommand::AddChildEstimateCommand(
-		EstimatePointerMap estimates, uint parentId,
+		Estimate* root, uint parentId,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), parentId(parentId), childId(0)
+	  root(root), parentId(parentId), childId(0)
 {
-	if (estimates->contains(parentId))
+	Estimate* parentEstimate = root->find(parentId);
+	if (parentEstimate)
 	{
-		QSharedPointer<Estimate> parent = estimates->value(parentId);
-		parentAmount = parent->amount;
-		parentDueDate = parent->dueDate;
-		parentFinished = parent->finished;
+		parentAmount = parentEstimate->amount;
+		parentDueDate = parentEstimate->dueDate;
+		parentFinished = parentEstimate->finished;
 	}
 }
 
@@ -57,23 +57,29 @@ bool AddChildEstimateCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void AddChildEstimateCommand::redo()
 {
-	if ( ! childId && estimates->contains(parentId))
+	Estimate* parent = root->find(parentId);
+	if ( ! childId && parent)
 	{
-		childId = estimates->value(parentId)->createChild();
+		childId = parent->createChild();
 	}
 }
 
 //------------------------------------------------------------------------------
 void AddChildEstimateCommand::undo()
 {
-	if (childId && estimates->contains(childId))
+	if (childId)
 	{
-		estimates->value(childId)->deleteSelf();
+		Estimate* child = root->find(childId);
+		if (child)
+		{
+			child->deleteSelf();
+			childId = 0;
+		}
 	}
 
-	if (estimates->contains(parentId))
+	Estimate* parent = root->find(parentId);
+	if (parent)
 	{
-		QSharedPointer<Estimate> parent = estimates->value(parentId);
 		parent->setAmount(parentAmount);
 		parent->setDueDate(parentDueDate);
 		parent->setFinishedState(parentFinished);

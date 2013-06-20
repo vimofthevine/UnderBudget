@@ -39,11 +39,11 @@ public:
 	 * `QSharedPointer` to the encompassing budget, it should be impossible for
 	 * the estimate map to be deleted while this command is still relevant.
 	 *
-	 * @param[in] estimates map of estimates
+	 * @param[in] root      root estimate
 	 * @param[in] parentId  ID of the parent estimate
 	 * @param[in] parent    parent undoable command for grouping
 	 */
-	AddChildEstimateCommand(EstimatePointerMap estimates, uint parentId,
+	AddChildEstimateCommand(Estimate* root, uint parentId,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -56,8 +56,8 @@ public:
 private:
 	/** Add child estimate command ID */
 	static const int ID;
-	/** Map of estimates */
-	EstimatePointerMap estimates;
+	/** Root estimate */
+	Estimate* root;
 	/** The ID of the parent estimate */
 	uint parentId;
 	/** The ID of the child estimate */

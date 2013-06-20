@@ -39,14 +39,14 @@ public:
 	 * `QSharedPointer` to the encompassing budget, it should be impossible for
 	 * the estimate map to be deleted while this command is still relevant.
 	 *
-	 * @param[in] estimates  map of estimates
-	 * @param[in] estimateId ID of the estimate to be moved
-	 * @param[in] newParent  new parent to which to move the estimate
-	 * @param[in] newIndex   new index under the parent to which to move the estimate
-	 * @param[in] parent     parent undoable command for grouping
+	 * @param[in] root        root estimate
+	 * @param[in] estimateId  ID of the estimate to be moved
+	 * @param[in] newParentId ID of the new parent to which to move the estimate
+	 * @param[in] newIndex    new index under the parent to which to move the estimate
+	 * @param[in] parent      parent undoable command for grouping
 	 */
-	MoveEstimateCommand(EstimatePointerMap estimates, uint estimateId,
-		QSharedPointer<Estimate> newParent, int newIndex,
+	MoveEstimateCommand(Estimate* root, uint estimateId,
+		uint newParentId, int newIndex,
 		QUndoCommand* parent = 0);
 
 	// Overriding methods
@@ -59,8 +59,8 @@ public:
 private:
 	/** Move estimate command ID */
 	static const int ID;
-	/** Map of estimates */
-	EstimatePointerMap estimates;
+	/** Root estimate */
+	Estimate* root;
 	/** The ID of the estimate to be moved */
 	uint estimateId;
 	/** The ID of the old parent estimate */

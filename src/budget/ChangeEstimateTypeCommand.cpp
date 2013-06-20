@@ -27,11 +27,11 @@ const int ChangeEstimateTypeCommand::ID = 448722313;
 
 //------------------------------------------------------------------------------
 ChangeEstimateTypeCommand::ChangeEstimateTypeCommand(
-		EstimatePointerMap estimates, uint estimateId,
+		Estimate* root, uint estimateId,
 		Estimate::Type oldType, Estimate::Type newType,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId),
+	  root(root), estimateId(estimateId),
 	  oldType(oldType), newType(newType)
 { }
 
@@ -61,18 +61,19 @@ bool ChangeEstimateTypeCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void ChangeEstimateTypeCommand::redo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setType(newType);
+		estimate->setType(newType);
 	}
 }
 
 //------------------------------------------------------------------------------
 void ChangeEstimateTypeCommand::undo()
-{
-	if (estimates->contains(estimateId))
+{	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setType(oldType);
+		estimate->setType(oldType);
 	}
 }
 

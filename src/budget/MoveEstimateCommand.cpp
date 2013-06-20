@@ -27,20 +27,18 @@ const int MoveEstimateCommand::ID = 451423256;
 
 //------------------------------------------------------------------------------
 MoveEstimateCommand::MoveEstimateCommand(
-		EstimatePointerMap estimates, uint estimateId,
-		QSharedPointer<Estimate> newParent, int newIndex,
+		Estimate* root, uint estimateId,
+		uint newParentId, int newIndex,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId), newIndex(newIndex)
+	  root(root), estimateId(estimateId),
+	  newParentId(newParentId), newIndex(newIndex)
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		QSharedPointer<Estimate> estimate = estimates->value(estimateId);
-		QSharedPointer<Estimate> oldParent = estimate->parentEstimate();
-
+		Estimate* oldParent = estimate->parentEstimate();
 		oldParentId = oldParent->estimateId();
-		newParentId = newParent->estimateId();
-
 		oldIndex = oldParent->indexOf(estimate);
 	}
 }
@@ -61,18 +59,20 @@ bool MoveEstimateCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void MoveEstimateCommand::redo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->moveTo(newParentId, newIndex);
+		estimate->moveTo(newParentId, newIndex);
 	}
 }
 
 //------------------------------------------------------------------------------
 void MoveEstimateCommand::undo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->moveTo(oldParentId, oldIndex);
+		estimate->moveTo(oldParentId, oldIndex);
 	}
 }
 

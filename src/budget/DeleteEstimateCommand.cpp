@@ -27,17 +27,17 @@ const int DeleteEstimateCommand::ID = 451266234;
 
 //------------------------------------------------------------------------------
 DeleteEstimateCommand::DeleteEstimateCommand(
-		EstimatePointerMap estimates, uint estimateId,
+		Estimate* root, uint estimateId,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId)
+	  root(root), estimateId(estimateId)
 {
 	index = -1;
 
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		QSharedPointer<Estimate> estimate = estimates->value(estimateId);
-		parentId = estimate->parent;
+		parentId = estimate->parentEstimate()->estimateId();
 		name = estimate->name;
 		description = estimate->description;
 		type = estimate->type;
@@ -45,10 +45,10 @@ DeleteEstimateCommand::DeleteEstimateCommand(
 		dueDate = estimate->dueDate;
 		finished = estimate->finished;
 
-		if (estimates->contains(parentId))
+		Estimate* parentEstimate = root->find(parentId);
+		if (parentEstimate)
 		{
-			QSharedPointer<Estimate> parent = estimates->value(parentId);
-			index = parent->indexOf(estimate);
+			index = parentEstimate->indexOf(estimate);
 		}
 	}
 }
@@ -69,18 +69,20 @@ bool DeleteEstimateCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void DeleteEstimateCommand::redo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->deleteSelf();
+		estimate->deleteSelf();
 	}
 }
 
 //------------------------------------------------------------------------------
 void DeleteEstimateCommand::undo()
 {
-	if (estimates->contains(parentId))
+	Estimate* parent = root->find(parentId);
+	if (parent)
 	{
-		estimates->value(parentId)->createChild(estimateId,
+		parent->createChild(estimateId,
 			name, description, type, amount, dueDate, finished, index);
 	}
 }

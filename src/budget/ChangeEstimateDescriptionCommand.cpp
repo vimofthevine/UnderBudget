@@ -27,11 +27,11 @@ const int ChangeEstimateDescriptionCommand::ID = 446282623;
 
 //------------------------------------------------------------------------------
 ChangeEstimateDescriptionCommand::ChangeEstimateDescriptionCommand(
-		EstimatePointerMap estimates, uint estimateId,
+		Estimate* root, uint estimateId,
 		const QString& oldDescrip, const QString& newDescrip,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId),
+	  root(root), estimateId(estimateId),
 	  oldDescrip(oldDescrip), newDescrip(newDescrip)
 { }
 
@@ -61,18 +61,20 @@ bool ChangeEstimateDescriptionCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void ChangeEstimateDescriptionCommand::redo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setDescription(newDescrip);
+		estimate->setDescription(newDescrip);
 	}
 }
 
 //------------------------------------------------------------------------------
 void ChangeEstimateDescriptionCommand::undo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setDescription(oldDescrip);
+		estimate->setDescription(oldDescrip);
 	}
 }
 

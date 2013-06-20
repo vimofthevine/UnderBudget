@@ -27,11 +27,11 @@ const int ChangeEstimateDueDateCommand::ID = 44523352;
 
 //------------------------------------------------------------------------------
 ChangeEstimateDueDateCommand::ChangeEstimateDueDateCommand(
-		EstimatePointerMap estimates, uint estimateId,
+		Estimate* root, uint estimateId,
 		const QDate& oldDate, const QDate& newDate,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId), oldDate(oldDate), newDate(newDate)
+	  root(root), estimateId(estimateId), oldDate(oldDate), newDate(newDate)
 { }
 
 //------------------------------------------------------------------------------
@@ -60,18 +60,20 @@ bool ChangeEstimateDueDateCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void ChangeEstimateDueDateCommand::redo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setDueDate(newDate);
+		estimate->setDueDate(newDate);
 	}
 }
 
 //------------------------------------------------------------------------------
 void ChangeEstimateDueDateCommand::undo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setDueDate(oldDate);
+		estimate->setDueDate(oldDate);
 	}
 }
 
