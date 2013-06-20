@@ -34,34 +34,35 @@ namespace ub {
 //------------------------------------------------------------------------------
 QSharedPointer<Estimate> Estimate::createRoot()
 {
-	Estimate* root = new Estimate;
-	return root->pointer();
+	return QSharedPointer<Estimate>(new Estimate);
 }
 
 //------------------------------------------------------------------------------
 Estimate::Estimate()
-	: estimates(new QHash<uint, QSharedPointer<Estimate> >),
-	  parent(-1), id(0), name(tr("Root")), type(Root), finished(false)
+	: paths(new QHash<uint, QList<int> >),
+	  parent(0), id(0), name(tr("Root")), type(Root), finished(false)
+{ }
+
+//------------------------------------------------------------------------------
+Estimate::~Estimate()
 {
-	// Add self to estimate pointer map
-	estimates->insert(id, QSharedPointer<Estimate>(this));
+	qDeleteAll(children);
 }
 
 //------------------------------------------------------------------------------
-QSharedPointer<Estimate> Estimate::create(QSharedPointer<Estimate> parent,
+Estimate* Estimate::create(Estimate* parent,
 	uint id, const QString& name, const QString& description, Type type,
 	const Money& amount, const QDate& dueDate, bool finished, int index)
 {
-	Estimate* child = new Estimate(parent, id, name, description, type,
+	return new Estimate(parent, id, name, description, type,
 		amount, dueDate, finished, index);
-	return child->pointer();
 }
 
 //------------------------------------------------------------------------------
-Estimate::Estimate(QSharedPointer<Estimate> parent, uint id,
+Estimate::Estimate(Estimate* parent, uint id,
 		const QString& name, const QString& description, Type type,
 		const Money& amount, const QDate& dueDate, bool finished, int index)
-	: parent(parent->id), id(id), name(name), description(description),
+	: parent(parent), id(id), name(name), description(description),
 	  type(type), amount(amount), dueDate(dueDate), finished(finished)
 {
 	// Make parent category-compatible (before making it a category)
@@ -69,51 +70,56 @@ Estimate::Estimate(QSharedPointer<Estimate> parent, uint id,
 	parent->setDueDate(QDate());
 	parent->setFinishedState(false);
 
-	// Grab estimate pointer map
-	estimates = parent->estimates;
-	// Add self to estimate pointer map
-	estimates->insert(id, QSharedPointer<Estimate>(this));
-
 	// Add self to parent's children
-	parent->addChild(pointer(), index);
+	parent->addChild(this, index);
+
+	// Grab estimate path map
+	paths = parent->paths;
+	// Add self to estimate pointer map
+	paths->insert(id, path());
 }
 
 //------------------------------------------------------------------------------
 Estimate::Estimate(const Estimate& orig)
-	: estimates(orig.estimates), parent(orig.parent), id(orig.id),
+	: paths(orig.paths), parent(orig.parent), id(orig.id),
 	  name(orig.name), description(orig.description), type(orig.type),
 	  amount(orig.amount), dueDate(orig.dueDate), finished(orig.finished)
 { }
 
 //------------------------------------------------------------------------------
-void Estimate::addChild(QSharedPointer<Estimate> child, int index)
+void Estimate::addChild(Estimate* child, int index)
 {
 	if (index >= 0 && index <= children.size())
 	{
-		children.insert(index, child->estimateId());
+		children.insert(index, child);
 	}
 	else
 	{
 		index = children.size();
-		children.append(child->estimateId());
+		children.append(child);
 	}
 
 	emit childAdded(child, index);
 }
 
 //------------------------------------------------------------------------------
-void Estimate::removeChild(QSharedPointer<Estimate> child)
+void Estimate::removeChild(Estimate* child, bool del)
 {
 	int index = indexOf(child);
 	if (index != -1)
 	{
-		children.removeOne(child->estimateId());
+		children.removeOne(child);
 		emit childRemoved(child, index);
+	}
+
+	if (del)
+	{
+		delete child;
 	}
 }
 
 //------------------------------------------------------------------------------
-void Estimate::moveChild(QSharedPointer<Estimate> child, int newIndex)
+void Estimate::moveChild(Estimate* child, int newIndex)
 {
 	// Make sure new index is within the bounds of the child list
 	if (newIndex < 0)
@@ -125,14 +131,71 @@ void Estimate::moveChild(QSharedPointer<Estimate> child, int newIndex)
 	if (oldIndex != -1)
 	{
 		children.move(oldIndex, newIndex);
+
+		// Re-determine all paths for children under this estimate
+		for (int i=0; i<children.size(); ++i)
+		{
+			Estimate* c = children.at(i);
+			paths->insert(c->estimateId(), c->path());
+		}
+
 		emit childMoved(child, oldIndex, newIndex);
 	}
 }
 
 //------------------------------------------------------------------------------
+Estimate* Estimate::root() const
+{
+	if (isRoot())
+		return const_cast<Estimate*>(this);
+	else
+		return parent->root();
+}
+
+//------------------------------------------------------------------------------
+Estimate* Estimate::fromPath(const QList<int>& path) const
+{
+	if (path.size() == 0)
+		return 0;
+
+	Estimate* estimate = root();
+	int index;
+
+	foreach(index, path)
+	{
+		if ( ! estimate)
+		{
+			return 0;
+		}
+		else
+		{
+			estimate = estimate->childAt(index);
+		}
+	}
+
+	return estimate;
+}
+
+//------------------------------------------------------------------------------
+QList<int> Estimate::path() const
+{
+	QList<int> path;
+	Estimate* estimate = const_cast<Estimate*>(this);
+
+	// Work our way up the tree until we hit root
+	while ( ! estimate->isRoot())
+	{
+		path.insert(0, estimate->parentEstimate()->indexOf(estimate));
+		estimate = estimate->parentEstimate();
+	}
+
+	return path;
+}
+
+//------------------------------------------------------------------------------
 bool Estimate::isRoot() const
 {
-	return (type == Root) && (parent == -1);
+	return (type == Root) && ( ! parent);
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +208,7 @@ bool Estimate::isCategory() const
 QUndoCommand* Estimate::changeName(const QString& newName,
 		QUndoCommand* cmd)
 {
-	return new ChangeEstimateNameCommand(estimates, id, name, newName, cmd);
+	return new ChangeEstimateNameCommand(root(), id, name, newName, cmd);
 }
 
 //------------------------------------------------------------------------------
@@ -166,7 +229,7 @@ void Estimate::setName(const QString& newName)
 QUndoCommand* Estimate::changeDescription(const QString& newDescrip,
 		QUndoCommand* cmd)
 {
-	return new ChangeEstimateDescriptionCommand(estimates, id,
+	return new ChangeEstimateDescriptionCommand(root(), id,
 		description, newDescrip, cmd);
 }
 
@@ -192,16 +255,12 @@ QUndoCommand* Estimate::changeType(Type newType, QUndoCommand* cmd)
 		cmd = new QUndoCommand;
 	}
 
-	new ChangeEstimateTypeCommand(estimates, id, type, newType, cmd);
+	new ChangeEstimateTypeCommand(root(), id, type, newType, cmd);
 
 	// Propagate type change down estimate sub-tree
 	for (int i=0; i<children.size(); ++i)
 	{
-		uint child = children.at(i);
-		if (estimates->contains(child))
-		{
-			estimates->value(child)->changeType(newType, cmd);
-		}
+		children.at(i)->changeType(newType, cmd);
 	}
 
 	return cmd;
@@ -224,7 +283,7 @@ void Estimate::setType(Type newType)
 //------------------------------------------------------------------------------
 QUndoCommand* Estimate::changeAmount(const Money& newAmt, QUndoCommand* cmd)
 {
-	return new ChangeEstimateAmountCommand(estimates, id, amount, newAmt, cmd);
+	return new ChangeEstimateAmountCommand(root(), id, amount, newAmt, cmd);
 }
 
 //------------------------------------------------------------------------------
@@ -244,7 +303,7 @@ void Estimate::setAmount(const Money& newAmt)
 //------------------------------------------------------------------------------
 QUndoCommand* Estimate::changeDueDate(const QDate& newDate, QUndoCommand* cmd)
 {
-	return new ChangeEstimateDueDateCommand(estimates, id, dueDate, newDate, cmd);
+	return new ChangeEstimateDueDateCommand(root(), id, dueDate, newDate, cmd);
 }
 
 //------------------------------------------------------------------------------
@@ -269,16 +328,12 @@ QUndoCommand* Estimate::changeFinishedState(bool newState, QUndoCommand* cmd)
 		cmd = new QUndoCommand;
 	}
 
-	new ChangeEstimateFinishedCommand(estimates, id, finished, newState, cmd);
+	new ChangeEstimateFinishedCommand(root(), id, finished, newState, cmd);
 
 	// Propagate finished state change down estimate sub-tree
 	for (int i=0; i<children.size(); ++i)
 	{
-		uint child = children.at(i);
-		if (estimates->contains(child))
-		{
-			estimates->value(child)->changeFinishedState(newState, cmd);
-		}
+		children.at(i)->changeFinishedState(newState, cmd);
 	}
 
 	return cmd;
@@ -294,14 +349,14 @@ void Estimate::setFinishedState(bool newState)
 	if (finished != newState)
 	{
 		finished = newState;
-		emit finishedChanged(finished);
+		emit finishedStateChanged(finished);
 	}
 }
 
 //------------------------------------------------------------------------------
 QUndoCommand* Estimate::addChild(QUndoCommand* cmd)
 {
-	return new AddChildEstimateCommand(estimates, id, cmd);
+	return new AddChildEstimateCommand(root(), id, cmd);
 }
 
 //------------------------------------------------------------------------------
@@ -315,15 +370,11 @@ QUndoCommand* Estimate::deleteEstimate(QUndoCommand* cmd)
 	// Propagate delete down estimate sub-tree, starting with children
 	for (int i=0; i<children.size(); ++i)
 	{
-		uint child = children.at(i);
-		if (estimates->contains(child))
-		{
-			estimates->value(child)->deleteEstimate(cmd);
-		}
+		children.at(i)->deleteEstimate(cmd);
 	}
 
 	// Delete parent after children
-	new DeleteEstimateCommand(estimates, id, cmd);
+	new DeleteEstimateCommand(root(), id, cmd);
 
 	return cmd;
 }
@@ -343,24 +394,24 @@ void Estimate::createChild(uint id, const QString& name,
 	const QString& description, Type type, const Money& amount,
 	const QDate& dueDate, bool finished, int index)
 {
-	new Estimate(pointer(), id, name, description,
+	new Estimate(this, id, name, description,
 		type, amount, dueDate, finished, index);
 }
 
 //------------------------------------------------------------------------------
 void Estimate::deleteSelf()
 {
-	// Remove self from parent's children
-	parentEstimate()->removeChild(pointer());
-
-	// Remove self from estimate pointer map
-	estimates->remove(id);
+	// Remove self from estimate paths map
+	paths->remove(id);
 
 	emit deleted();
+
+	// Remove self from parent's children and delete the estimate
+	parentEstimate()->removeChild(this, true);
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Estimate::moveTo(QSharedPointer<Estimate> newParent, int newIndex,
+QUndoCommand* Estimate::moveTo(Estimate* newParent, int newIndex,
 	QUndoCommand* cmd)
 {
 	if (cmd == 0)
@@ -376,7 +427,8 @@ QUndoCommand* Estimate::moveTo(QSharedPointer<Estimate> newParent, int newIndex,
 	// Change type to that of the new parent (if it differs)
 	changeType(newParent->estimateType(), cmd);
 
-	new MoveEstimateCommand(estimates, id, newParent, newIndex, cmd);
+	new MoveEstimateCommand(root(), id, newParent->estimateId(),
+		newIndex, cmd);
 
 	return cmd;
 }
@@ -384,29 +436,26 @@ QUndoCommand* Estimate::moveTo(QSharedPointer<Estimate> newParent, int newIndex,
 //------------------------------------------------------------------------------
 void Estimate::moveTo(uint newParentId, int newIndex)
 {
+	Estimate* newParent = root()->find(newParentId);
+	if ( ! newParent)
+		return;
+
 	// Moving from one parent to another
-	if (parent != newParentId)
+	if (parent != newParent)
 	{
-		parentEstimate()->removeChild(pointer());
-		parent = newParentId;
-		parentEstimate()->addChild(pointer(), (newIndex < 0) ? 0 : newIndex);
+		// Remove from old parent
+		parentEstimate()->removeChild(this);
+		paths->remove(id);
+
+		// Add to new parent
+		parent = newParent;
+		parentEstimate()->addChild(this, (newIndex < 0) ? 0 : newIndex);
+		paths->insert(id, path());
 	}
 	else
 	{
-		parentEstimate()->moveChild(pointer(), newIndex);
+		parentEstimate()->moveChild(this, newIndex);
 	}
-}
-
-//------------------------------------------------------------------------------
-QSharedPointer<Estimate> Estimate::operator&() const
-{
-	return pointer();
-}
-
-//------------------------------------------------------------------------------
-QSharedPointer<Estimate> Estimate::pointer() const
-{
-	return estimates->value(id);
 }
 
 //------------------------------------------------------------------------------
@@ -446,14 +495,30 @@ Money Estimate::totalEstimatedAmount() const
 
 	for (int i=0; i<children.size(); ++i)
 	{
-		uint child = children.at(i);
-		if (estimates->contains(child))
-		{
-			sum += estimates->value(child)->totalEstimatedAmount();
-		}
+		sum += children.at(i)->totalEstimatedAmount();
 	}
 
 	return sum;
+}
+
+//------------------------------------------------------------------------------
+Money Estimate::totalActualAmount(const QHash<uint,Money>& actuals) const
+{
+	if (isCategory())
+	{
+		Money sum;
+
+		for (int i=0; i<children.size(); ++i)
+		{
+			sum += children.at(i)->totalActualAmount(actuals);
+		}
+
+		return sum;
+	}
+	else
+	{
+		return actuals.value(id, Money());
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -469,9 +534,9 @@ bool Estimate::isActivityFinished() const
 }
 
 //------------------------------------------------------------------------------
-QSharedPointer<Estimate> Estimate::parentEstimate() const
+Estimate* Estimate::parentEstimate() const
 {
-	return estimates->value(parent, QSharedPointer<Estimate>());
+	return parent;
 }
 
 //------------------------------------------------------------------------------
@@ -481,19 +546,104 @@ int Estimate::childCount() const
 }
 
 //------------------------------------------------------------------------------
-QSharedPointer<Estimate> Estimate::childAt(int index) const
+Estimate* Estimate::childAt(int index) const
 {
 	// Perform array bounds checking
 	if (index < 0 || index >= children.size())
-		return QSharedPointer<Estimate>();
+		return 0;
 
-	return estimates->value(children.at(index), QSharedPointer<Estimate>());
+	return children.at(index);
 }
 
 //------------------------------------------------------------------------------
-int Estimate::indexOf(QSharedPointer<Estimate> child) const
+int Estimate::indexOf(Estimate* child) const
 {
-	return children.indexOf(child->id);
+	return children.indexOf(child);
+}
+
+//------------------------------------------------------------------------------
+Estimate* Estimate::find(uint estimateId) const
+{
+	if (estimateId == 0)
+		return root();
+	return fromPath(paths->value(estimateId, QList<int>()));
+}
+
+//------------------------------------------------------------------------------
+Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals) const
+{
+	Estimate::Progress progress;
+	progress.isHealthy = true;
+
+	// Root is a special case, it is never populated
+	if ( ! isRoot())
+	{
+		// Get total/hierarchical values
+		progress.estimated = totalEstimatedAmount();
+		progress.actual = totalActualAmount(actuals);
+
+		if (progress.actual.isZero() && dueDate.isValid())
+		{
+			progress.note = tr("Due on %1").arg(dueDate.toString());
+		}
+
+		switch (type)
+		{
+		case Expense:
+		case Transfer:
+			progress.isHealthy = progress.actual <= progress.estimated;
+			break;
+
+		case Income:
+			progress.isHealthy = progress.actual >= progress.estimated;
+			break;
+		}
+	}
+
+	return progress;
+}
+
+//------------------------------------------------------------------------------
+Estimate::Impact Estimate::impact(const QHash<uint,Money>& actuals) const
+{
+	Estimate::Impact impact;
+
+	// Categories have no impact
+	if ( ! isCategory())
+	{
+		const Money actual = actuals.value(id, Money());
+
+		switch (type)
+		{
+		case Expense:
+			// Negate the values so they are subtracted from the balance
+			impact.estimated = -amount;
+			impact.actual = -actual;
+			break;
+
+		case Income:
+			// Keep the values positive so they are added to the balance
+			impact.estimated = amount;
+			impact.actual = actual;
+			break;
+
+		// Transfers have no impact
+		}
+
+		if (finished)
+		{
+			// Use actual if activity is finished
+			impact.expected = impact.actual;
+		}
+		else
+		{
+			// Use actual if it is greater than the estimated
+			impact.expected = (actual > amount)
+				? impact.actual : impact.estimated;
+		}
+	}
+
+	return impact;
 }
 
 }

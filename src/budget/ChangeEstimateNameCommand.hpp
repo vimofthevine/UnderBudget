@@ -39,13 +39,13 @@ public:
 	 * `QSharedPointer` to the encompassing budget, it should be impossible for
 	 * the estimate map to be deleted while this command is still relevant.
 	 *
-	 * @param[in] estimates  map of estimates
+	 * @param[in] root       root estimate
 	 * @param[in] estimateId ID of the estimate being modified
 	 * @param[in] oldName    old name
 	 * @param[in] newName    new name
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeEstimateNameCommand(EstimatePointerMap estimates, uint estimateId,
+	ChangeEstimateNameCommand(Estimate* root, uint estimateId,
 		const QString& oldName, const QString& newName,
 		QUndoCommand* parent = 0);
 
@@ -59,8 +59,8 @@ public:
 private:
 	/** Change estimate name command ID */
 	static const int ID;
-	/** Map of estimates */
-	EstimatePointerMap estimates;
+	/** Root estimate */
+	Estimate* root;
 	/** The ID of the estimate being modified */
 	uint estimateId;
 	/** The previous name */

@@ -65,6 +65,11 @@ private slots:
 	void parent();
 
 	/**
+	 * Tests ID-based retrieval of estimates.
+	 */
+	void find();
+
+	/**
 	 * Tests changing the name of an estimate.
 	 */
 	void changeName();
@@ -188,7 +193,7 @@ private slots:
 	/**
 	 * Tests reordering of estimates within the same parent.
 	 */
-	void redorderWithinParent();
+	void reorderWithinParent();
 
 	/**
 	 * Tests moving of an estimate to another parent of the same type.
@@ -239,35 +244,187 @@ private slots:
 	void moveWithInvalidPositiveIndex();
 
 	/**
-	 * Tests estimate progress.
+	 * Tests estimate progress with no actual data.
 	 */
-	void estimateProgress();
+	void progressNoActuals();
 
 	/**
-	 * Test data for estimate progress.
+	 * Test data for estimate progress with no actual data.
 	 */
-	void estimateProgress_data();
+	void progressNoActuals_data();
 
 	/**
-	 * Tests balance impact.
+	 * Tests estimate progress with some missing actual data.
 	 */
-	void balanceImpact();
+	void progressSomeDataMissing();
 
 	/**
-	 * Test data for balance impact.
+	 * Test data for estimate progress with some missing actual data.
 	 */
-	void balanceImpact_data();
+	void progressSomeDataMissing_data();
+
+	/**
+	 * Tests estimate progress with no missing actual data.
+	 */
+	void progressNoDataMissing();
+
+	/**
+	 * Test data for estimate progress with no missing actual data.
+	 */
+	void progressNoDataMissing_data();
+
+	/**
+	 * Tests estimate progress with extra actual data.
+	 */
+	void progressExtraData();
+
+	/**
+	 * Test data for estimate progress with extra actual data.
+	 */
+	void progressExtraData_data();
+
+	/**
+	 * Tests estimate progress with all actuals under estimated.
+	 */
+	void progressUnderEstimated();
+
+	/**
+	 * Test data for estimate progress with all actuals under estimated.
+	 */
+	void progressUnderEstimated_data();
+
+	/**
+	 * Tests estimate progress with all actuals over estimated.
+	 */
+	void progressOverEstimated();
+
+	/**
+	 * Test data for estimate progress with all actuals over estimated.
+	 */
+	void progressOverEstimated_data();
+
+	/**
+	 * Tests estimate progress with all actuals exactly as estimated.
+	 */
+	void progressAsEstimated();
+
+	/**
+	 * Test data for estimate progress with all actuals exactly as estimated.
+	 */
+	void progressAsEstimated_data();
+
+	/**
+	 * Tests estimate progress with due date notices.
+	 */
+	void progressDueDateNote();
+
+	/**
+	 * Test data for estimate progress with due date notices.
+	 */
+	void progressDueDateNote_data();
+
+	/**
+	 * Tests estimate progress with no due date notices.
+	 */
+	void progressNoDueDateNote();
+
+	/**
+	 * Test data for estimate progress with no due date notices.
+	 */
+	void progressNoDueDateNote_data();
+
+	/**
+	 * Tests balance impact with no actual data.
+	 */
+	void impactNoActuals();
+
+	/**
+	 * Test data for balance impact with no actual data.
+	 */
+	void impactNoActuals_data();
+
+	/**
+	 * Tests balance impact with some missing actual data.
+	 */
+	void impactSomeDataMissing();
+
+	/**
+	 * Test data for balance impact with some missing actual data.
+	 */
+	void impactSomeDataMissing_data();
+
+	/**
+	 * Tests balance impact with no missing actual data.
+	 */
+	void impactNoDataMissing();
+
+	/**
+	 * Test data for balance impact with no missing actual data.
+	 */
+	void impactNoDataMissing_data();
+
+	/**
+	 * Tests balance impact with extra actual data.
+	 */
+	void impactExtraData();
+
+	/**
+	 * Test data for balance impact with extra actual data.
+	 */
+	void impactExtraData_data();
+
+	/**
+	 * Tests balance impact with all actuals under estimated.
+	 */
+	void impactUnderEstimated();
+
+	/**
+	 * Test data for balance impact with all actuals under estimated.
+	 */
+	void impactUnderEstimated_data();
+
+	/**
+	 * Tests balance impact with all actuals over estimated.
+	 */
+	void impactOverEstimated();
+
+	/**
+	 * Test data for balance impact with all actuals over estimated.
+	 */
+	void impactOverEstimated_data();
+
+	/**
+	 * Tests balance impact with all actuals exactly as estimated.
+	 */
+	void impactAsEstimated();
+
+	/**
+	 * Test data for balance impact with all actuals exactly as estimated.
+	 */
+	void impactAsEstimated_data();
+
+	/**
+	 * Tests balance impact when finished.
+	 */
+	void impactWhenFinished();
+
+	/**
+	 * Test data for balance impact when finished.
+	 */
+	void impactWhenFinished_data();
 
 private:
 	// Test estimates
-	QSharedPointer<Estimate> root;
-	QSharedPointer<Estimate> expenses;
-	QSharedPointer<Estimate> incomes;
-	QSharedPointer<Estimate> salary;
-	QSharedPointer<Estimate> utilities;
-	QSharedPointer<Estimate> rent;
-	QSharedPointer<Estimate> water;
-	QSharedPointer<Estimate> food;
+	QSharedPointer<Estimate> rootEstimate;
+	Estimate* root;
+	Estimate* expenses;
+	Estimate* incomes;
+	Estimate* salary;
+	Estimate* utilities;
+	Estimate* rent;
+	Estimate* water;
+	Estimate* food;
+	Estimate* loan;
 };
 
 }

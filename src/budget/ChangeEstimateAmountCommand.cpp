@@ -27,11 +27,11 @@ const int ChangeEstimateAmountCommand::ID = 442523535;
 
 //------------------------------------------------------------------------------
 ChangeEstimateAmountCommand::ChangeEstimateAmountCommand(
-		EstimatePointerMap estimates, uint estimateId,
+		Estimate* root, uint estimateId,
 		const Money& oldAmount, const Money& newAmount,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  estimates(estimates), estimateId(estimateId),
+	  root(root), estimateId(estimateId),
 	  oldAmount(oldAmount), newAmount(newAmount)
 { }
 
@@ -61,18 +61,20 @@ bool ChangeEstimateAmountCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void ChangeEstimateAmountCommand::redo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setAmount(newAmount);
+		estimate->setAmount(newAmount);
 	}
 }
 
 //------------------------------------------------------------------------------
 void ChangeEstimateAmountCommand::undo()
 {
-	if (estimates->contains(estimateId))
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		estimates->value(estimateId)->setAmount(oldAmount);
+		estimate->setAmount(oldAmount);
 	}
 }
 
