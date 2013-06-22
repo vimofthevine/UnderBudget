@@ -133,6 +133,8 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 		return impact.expected.toString();
 	case 9: // impact notice
 		return impact.note;
+	default:
+		return QVariant();
 	}
 }
 
