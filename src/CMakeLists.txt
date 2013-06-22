@@ -5,6 +5,14 @@ if (CMAKE_BUILD_TYPE MATCHES DEBUG)
 	add_definitions(-DQT_SHAREDPOINTER_TRACK_POINTERS)
 endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
 
+# If windows, make sure we don't generate a console application
+# in a Release build
+if (WIN32)
+	if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+		set(CMAKE_EXE_LINKER_FLAGS "-mwindows")
+	endif (CMAKE_BUILD_TYPE MATCHES RELEASE)
+endif (WIN32)
+
 # Add source sub-directories
 add_subdirectory(accounting)
 add_subdirectory(budget)
