@@ -48,25 +48,77 @@ public:
 
 	// Overridden methods
 
-	int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	/**
+	 * Reimplemented to return the total number of available columns/fields.
+	 */
 	int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-	QVariant data(const QModelIndex& index, int role) const;
+	/**
+	 * Reimplemented to return a title for the specified column/field.
+	 */
 	QVariant headerData(int section, Qt::Orientation orientation,
 		int role = Qt::DisplayRole) const;
 
+	/**
+	 * Reimplemented to return the appropriate field for the estimate
+	 * at the given index.
+	 */
+	QVariant data(const QModelIndex& index, int role) const;
+
+	/**
+	 * Reimplemented to return the child count for the estimate at the
+	 * given index.
+	 */
+	int rowCount(const QModelIndex& parent = QModelIndex()) const;
+
+	/**
+	 * Reimplemented to return an index of a child to the given parent.
+	 */
 	QModelIndex index(int row, int column,
 		const QModelIndex& parent = QModelIndex()) const;
+
+	/**
+	 * Reimplemented to return an index of the parent to the given child.
+	 */
 	QModelIndex parent(const QModelIndex& index) const;
 
+	/**
+	 * Reimplemented to return the appropriate flags that will allow:
+	 * - moving of an estimate
+	 * - editing of user-defined fields
+	 */
 	Qt::ItemFlags flags(const QModelIndex& index) const;
+
+	/**
+	 * Reimplemented to return a move action.
+	 */
 	Qt::DropActions supportedDragActions() const;
+
+	/**
+	 * Reimplemented to return a move action.
+	 */
 	Qt::DropActions supportedDropActions() const;
 
+	/**
+	 * Reimplemented to return the following mime types:
+	 * - Moved estimate origin data
+	 */
 	QStringList mimeTypes() const;
+
+	/**
+	 * Reimplemented to create mime data consisting of origin
+	 * location data for a moved estimate.
+	 */
 	QMimeData* mimeData(const QModelIndexList& indices) const;
+
+	/**
+	 * Reimplemented to execute a move-estimate operation based on
+	 * the origin location data in the given mime data.
+	 */
 	bool dropMimeData(const QMimeData* data, Qt::DropAction action,
 		int row, int column, const QModelIndex& parent);
+
+	// End of overridden methods
 
 	/**
 	 * Creates an index to the given estimate, if the estimate
