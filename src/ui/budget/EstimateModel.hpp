@@ -130,6 +130,30 @@ public:
 	 */
 	QModelIndex index(uint estimateId) const;
 
+	/**
+	 * Returns a list of columns that display the editable
+	 * definition fields of an estimate.
+	 *
+	 * @return list of definition columns
+	 */
+	QList<int> definitionFieldColumns() const;
+
+	/**
+	 * Returns a list of columns that display the estimate
+	 * progress analysis fields of an estimate.
+	 *
+	 * @return list of progress columns
+	 */
+	QList<int> progressFieldColumns() const;
+
+	/**
+	 * Returns a list of columns that display the balance
+	 * impact analysis fields of an estimate.
+	 *
+	 * @return list of impact columns
+	 */
+	QList<int> impactFieldColumns() const;
+
 public slots:
 	/**
 	 * Updates the specified estimate's name.
@@ -198,8 +222,15 @@ private:
 	QSharedPointer<Estimate> root;
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;
+
 	/** Header titles */
 	QList<QString> headers;
+	/** Definition columns */
+	QList<int> definitionColumns;
+	/** Progress columns */
+	QList<int> progressColumns;
+	/** Impact columns */
+	QList<int> impactColumns;
 
 	/** Activity actuals */
 	QHash<uint,Money> actuals;

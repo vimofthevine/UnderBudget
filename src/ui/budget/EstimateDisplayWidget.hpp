@@ -56,6 +56,11 @@ public:
 
 public slots:
 	/**
+	 * Displays the definitions of each estimate.
+	 */
+	void showEstimateDefinitions();
+
+	/**
 	 * Displays the progress of each estimate as a comparison against
 	 * actual activity data.
 	 */

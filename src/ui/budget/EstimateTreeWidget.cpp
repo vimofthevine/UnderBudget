@@ -30,7 +30,7 @@ EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
 {
 	setModel(model);
 	expandAll();
-	showEstimateProgressColumns();
+	showEstimateDefinitionColumns();
 
 	// Give the name column the most weight
 	header()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -72,35 +72,75 @@ void EstimateTreeWidget::contextMenuEvent(QContextMenuEvent* event)
 }
 
 //------------------------------------------------------------------------------
-void EstimateTreeWidget::showEstimateProgressColumns()
+void EstimateTreeWidget::showEstimateDefinitionColumns()
 {
+	int column;
+
 	// Have to display columns before hiding others, otherwise the widths get
 	// all screwed up
-	showColumn(1);
-	showColumn(2);
-	showColumn(3);
-	showColumn(4);
-	showColumn(5);
-	hideColumn(6);
-	hideColumn(7);
-	hideColumn(8);
-	hideColumn(9);
+	foreach (column, model->definitionFieldColumns())
+	{
+		showColumn(column);
+	}
+
+	foreach (column, model->progressFieldColumns())
+	{
+		if (column == 0) continue;
+		hideColumn(column);
+	}
+	foreach (column, model->impactFieldColumns())
+	{
+		if (column == 0) continue;
+		hideColumn(column);
+	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateTreeWidget::showEstimateProgressColumns()
+{
+	int column;
+
+	// Have to display columns before hiding others, otherwise the widths get
+	// all screwed up
+	foreach (column, model->progressFieldColumns())
+	{
+		showColumn(column);
+	}
+
+	foreach (column, model->definitionFieldColumns())
+	{
+		if (column == 0) continue;
+		hideColumn(column);
+	}
+	foreach (column, model->impactFieldColumns())
+	{
+		if (column == 0) continue;
+		hideColumn(column);
+	}
 }
 
 //------------------------------------------------------------------------------
 void EstimateTreeWidget::showBalanceImpactColumns()
 {
+	int column;
+
 	// Have to display columns before hiding others, otherwise the widths get
 	// all screwed up
-	showColumn(6);
-	showColumn(7);
-	showColumn(8);
-	showColumn(9);
-	hideColumn(1);
-	hideColumn(2);
-	hideColumn(3);
-	hideColumn(4);
-	hideColumn(5);
+	foreach (column, model->impactFieldColumns())
+	{
+		showColumn(column);
+	}
+
+	foreach (column, model->definitionFieldColumns())
+	{
+		if (column == 0) continue;
+		hideColumn(column);
+	}
+	foreach (column, model->progressFieldColumns())
+	{
+		if (column == 0) continue;
+		hideColumn(column);
+	}
 }
 
 //------------------------------------------------------------------------------

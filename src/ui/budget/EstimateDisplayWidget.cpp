@@ -50,6 +50,12 @@ EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
 }
 
 //------------------------------------------------------------------------------
+void EstimateDisplayWidget::showEstimateDefinitions()
+{
+	tree->showEstimateDefinitionColumns();
+}
+
+//------------------------------------------------------------------------------
 void EstimateDisplayWidget::showEstimateProgress()
 {
 	tree->showEstimateProgressColumns();

@@ -44,6 +44,11 @@ public:
 
 public slots:
 	/**
+	 * Displays only the columns showing defined fields.
+	 */
+	void showEstimateDefinitionColumns();
+
+	/**
 	 * Displays only the columns relevant to estimate progress.
 	 */
 	void showEstimateProgressColumns();

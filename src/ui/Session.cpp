@@ -175,6 +175,7 @@ void Session::editEstimates()
 {
 	if (budget && estimateDisplay)
 	{
+		estimateDisplay->showEstimateDefinitions();
 		setCurrentWidget(estimateDisplay);
 	}
 }

@@ -27,16 +27,55 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
+static QString toString(Estimate::Type type)
+{
+	switch (type)
+	{
+	case Estimate::Income:
+		return QObject::tr("Income");
+	case Estimate::Expense:
+		return QObject::tr("Expense");
+	case Estimate::Transfer:
+		return QObject::tr("Transfer");
+	default:
+		return "";
+	}
+}
+
+//------------------------------------------------------------------------------
 EstimateModel::EstimateModel(QSharedPointer<Estimate> root, QUndoStack* stack,
 		QObject* parent)
 	: QAbstractItemModel(parent), root(root), undoStack(stack)
 {
 	headers << tr("Name")
+		// Definition columns
+		<< tr("Description") << tr("Type") << tr("Amount") << tr("Due Date") << tr("Finished")
 		// Progress columns
-		<< tr("Progress")
-		<< tr("Estimated") << tr("Actual") << tr("Difference") << tr("Notice")
-		// Impact colums
+		<< tr("Progress") << tr("Estimated") << tr("Actual") << tr("Difference") << tr("Notice")
+		// Impact columns
 		<< tr("Estimated") << tr("Actual") << tr("Expected") << tr("Notice");
+
+	definitionColumns << 0 << 1 << 2 << 3 << 4 << 5;
+	progressColumns << 0 << 6 << 7 << 8 << 9 << 10;
+	impactColumns << 0 << 11 << 12 << 13 << 14;
+}
+
+//------------------------------------------------------------------------------
+QList<int> EstimateModel::definitionFieldColumns() const
+{
+	return definitionColumns;
+}
+
+//------------------------------------------------------------------------------
+QList<int> EstimateModel::progressFieldColumns() const
+{
+	return progressColumns;
+}
+
+//------------------------------------------------------------------------------
+QList<int> EstimateModel::impactFieldColumns() const
+{
+	return impactColumns;
 }
 
 //------------------------------------------------------------------------------
@@ -115,23 +154,33 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 	{
 	case 0: // name
 		return estimate->estimateName();
-	case 1: // progress
+	case 1: // defined description
+		return estimate->estimateDescription();
+	case 2: // defined type
+		return toString(estimate->estimateType());
+	case 3: // defined amount
+		return estimate->estimatedAmount().toString();
+	case 4: // defined due date
+		return estimate->activityDueDate();
+	case 5: // defined finished state
+		return estimate->isActivityFinished();
+	case 6: // progress
 		return (progress.actual / progress.estimated);
-	case 2: // progress estimated
+	case 7: // progress estimated
 		return progress.estimated.toString();
-	case 3: // progress actual
+	case 8: // progress actual
 		return progress.actual.toString();
-	case 4: // progress difference
+	case 9: // progress difference
 		return (progress.estimated - progress.actual).toString();
-	case 5: // progress notice
+	case 10: // progress notice
 		return progress.note;
-	case 6: // impact estimated
+	case 11: // impact estimated
 		return impact.estimated.toString();
-	case 7: // impact actual
+	case 12: // impact actual
 		return impact.actual.toString();
-	case 8: // impact expected
+	case 13: // impact expected
 		return impact.expected.toString();
-	case 9: // impact notice
+	case 14: // impact notice
 		return impact.note;
 	default:
 		return QVariant();
