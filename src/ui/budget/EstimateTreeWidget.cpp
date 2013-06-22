@@ -32,17 +32,43 @@ EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
 	expandAll();
 	showEstimateProgressColumns();
 
+	// Give the name column the most weight
+	header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	header()->setSectionResizeMode(0, QHeaderView::Stretch);
+
 	// Setup context menu
-	setContextMenuPolicy(Qt::ActionsContextMenu);
+	setContextMenuPolicy(Qt::DefaultContextMenu);
+
+	// Enable re-ordering/moving
+	setDragDropMode(QAbstractItemView::InternalMove);
+}
+
+//------------------------------------------------------------------------------
+void EstimateTreeWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+	// Actions specific to the selected estimate
 
 	QAction* addChildAction = new QAction(tr("Add Child"), this);
+	addChildAction->setEnabled(currentIndex().isValid());
 	connect(addChildAction, SIGNAL(triggered()),
 		this, SLOT(addChildToSelectedEstimate()));
-	addAction(addChildAction);
 
 	QAction* delAction = new QAction(tr("Delete"), this);
+	delAction->setEnabled(currentIndex().isValid());
 	connect(delAction, SIGNAL(triggered()), this, SLOT(deleteSelectedEstimate()));
-	addAction(delAction);
+
+	// Global actions
+
+	QAction* addToRootAction = new QAction(tr("Add New Estimate"), this);
+	connect(addToRootAction, SIGNAL(triggered()),
+		this, SLOT(addToRootEstimate()));
+
+	QMenu* menu = new QMenu(this);
+	menu->addAction(addChildAction);
+	menu->addAction(delAction);
+	menu->addSeparator();
+	menu->addAction(addToRootAction);
+	menu->exec(event->globalPos());
 }
 
 //------------------------------------------------------------------------------
@@ -95,6 +121,12 @@ void EstimateTreeWidget::addChildToSelectedEstimate()
 	{
 		model->addChild(current);
 	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateTreeWidget::addToRootEstimate()
+{
+	model->addChild(QModelIndex());
 }
 
 }

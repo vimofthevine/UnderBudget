@@ -22,6 +22,7 @@
 #include "ui/budget/ProxyModelAddCommand.hpp"
 #include "ui/budget/ProxyModelChangeCommand.hpp"
 #include "ui/budget/ProxyModelDeleteCommand.hpp"
+#include "ui/budget/ProxyModelMoveCommand.hpp"
 
 namespace ub {
 
@@ -36,6 +37,31 @@ EstimateModel::EstimateModel(QSharedPointer<Estimate> root, QUndoStack* stack,
 		<< tr("Estimated") << tr("Actual") << tr("Difference") << tr("Notice")
 		// Impact colums
 		<< tr("Estimated") << tr("Actual") << tr("Expected") << tr("Notice");
+}
+
+//------------------------------------------------------------------------------
+Qt::ItemFlags EstimateModel::flags(const QModelIndex& index) const
+{
+	// Make sure drag and drop are enabled
+	Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+	defaultFlags = Qt::ItemIsDropEnabled | defaultFlags;
+
+	if (index.isValid() && index.column() == 0)
+		return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+	else
+		return defaultFlags;
+}
+
+//------------------------------------------------------------------------------
+Qt::DropActions EstimateModel::supportedDragActions() const
+{
+	return Qt::MoveAction;
+}
+
+//------------------------------------------------------------------------------
+Qt::DropActions EstimateModel::supportedDropActions() const
+{
+	return Qt::MoveAction;
 }
 
 //------------------------------------------------------------------------------
@@ -107,6 +133,28 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 		return impact.expected.toString();
 	case 9: // impact notice
 		return impact.note;
+	}
+}
+
+//------------------------------------------------------------------------------
+QModelIndex EstimateModel::index(uint estimateId) const
+{
+	Estimate* estimate = root->find(estimateId);
+	// If no estimate found
+	if ( ! estimate)
+	{
+		return QModelIndex();
+	}
+	// If the estimate is root
+	else if ( ! estimate->parentEstimate())
+	{
+		return QModelIndex();
+	}
+	else
+	{
+		// Work our way up the estimate tree
+		Estimate* parent = estimate->parentEstimate();
+		return index(parent->indexOf(estimate), 0, index(parent->estimateId()));
 	}
 }
 
@@ -207,8 +255,13 @@ void EstimateModel::deleteEstimate(const QModelIndex& index)
 {
 	if (index.isValid())
 	{
-		undoStack->push(new ProxyModelDeleteCommand(this, index,
-			cast(index)->deleteEstimate()));
+		Estimate* estimate = cast(index);
+		Estimate* parent = estimate->parentEstimate();
+		undoStack->push(new ProxyModelDeleteCommand(this,
+			(parent ? parent->estimateId() : 0),
+			estimate->estimateId(),
+			index.row(),
+			estimate->deleteEstimate()));
 	}
 }
 
@@ -217,9 +270,92 @@ void EstimateModel::addChild(const QModelIndex& index)
 {
 	if (index.isValid())
 	{
-		undoStack->push(new ProxyModelAddCommand(this, index,
-			cast(index)->addChild()));
+		Estimate* estimate = cast(index);
+		undoStack->push(new ProxyModelAddCommand(this,
+			estimate->estimateId(),
+			estimate->addChild()));
 	}
+	else
+	{
+		undoStack->push(new ProxyModelAddCommand(this,
+			root->estimateId(), root->addChild()));
+	}
+}
+
+//------------------------------------------------------------------------------
+QStringList EstimateModel::mimeTypes() const
+{
+	QStringList types;
+	types << "application/estimate.origin";
+	return types;
+}
+
+//------------------------------------------------------------------------------
+QMimeData* EstimateModel::mimeData(const QModelIndexList& indices) const
+{
+	// Serialize original estimate location data
+	QMimeData* mimeData = new QMimeData;
+	QByteArray encoded;
+	QDataStream stream(&encoded, QIODevice::WriteOnly);
+	QModelIndex index = indices.at(0);
+	if (index.isValid())
+	{
+		stream << cast(index)->estimateId();
+		stream << cast(index)->parentEstimate()->estimateId();
+		stream << index.row();
+	}
+
+	mimeData->setData("application/estimate.origin", encoded);
+	return mimeData;
+}
+
+//------------------------------------------------------------------------------
+bool EstimateModel::dropMimeData(const QMimeData* data, Qt::DropAction action,
+		int row, int column, const QModelIndex& parent)
+{
+	if (action == Qt::IgnoreAction)
+		return true;
+
+	if (action != Qt::MoveAction
+		|| ! data->hasFormat("application/estimate.origin"))
+	{
+		return false;
+	}
+
+	// Unserialize estimate's original location
+	QByteArray encoded = data->data("application/estimate.origin");
+	QDataStream stream(&encoded, QIODevice::ReadOnly);
+	uint childId, oldParentId;
+	int oldRow;
+	stream >> childId;
+	stream >> oldParentId;
+	stream >> oldRow;
+
+	// If new parent index is not valid, assume moving to root
+	uint newParentId = parent.isValid() ? cast(parent)->estimateId() : 0;
+	// Make sure new row is not < 0 (use rowCount if < 0)
+	int newRow = (row < 0) ? rowCount(parent) : row;
+
+	// Grab the estimates
+	Estimate* child = root->find(childId);
+	Estimate* newParent = root->find(newParentId);
+
+	if (child && newParent)
+	{
+		undoStack->push(new ProxyModelMoveCommand(this,
+			oldParentId, oldRow, newParentId, newRow,
+			child->moveTo(newParent, newRow)));
+	}
+	else
+	{
+		qDebug() << "invalid child or parent";
+		qDebug() << "mime data:" << childId << oldParentId << oldRow;
+		qDebug() << "drop data:" << newParentId << newRow;
+		qDebug() << "child" << child;
+		qDebug() << "new parent" << newParent;
+	}
+
+	return true;
 }
 
 //------------------------------------------------------------------------------

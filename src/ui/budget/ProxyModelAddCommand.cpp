@@ -24,11 +24,11 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
-ProxyModelAddCommand::ProxyModelAddCommand(EstimateModel* model,
-		const QModelIndex& index, QUndoCommand* cmd)
-	: model(model), parent(index), cmd(cmd)
+ProxyModelAddCommand::ProxyModelAddCommand(EstimateModel* model, uint id,
+		QUndoCommand* cmd)
+	: model(model), estimateId(id), cmd(cmd)
 {
-	row = model->rowCount(index);
+	row = model->rowCount(model->index(estimateId));
 }
 
 //------------------------------------------------------------------------------
@@ -49,7 +49,8 @@ bool ProxyModelAddCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void ProxyModelAddCommand::redo()
 {
-	model->beginInsertRows(parent, row, row);
+	QModelIndex index = model->index(estimateId);
+	model->beginInsertRows(index, row, row);
 	cmd->redo();
 	model->endInsertRows();
 }
@@ -57,7 +58,8 @@ void ProxyModelAddCommand::redo()
 //------------------------------------------------------------------------------
 void ProxyModelAddCommand::undo()
 {
-	model->beginRemoveRows(parent, row, row);
+	QModelIndex index = model->index(estimateId);
+	model->beginRemoveRows(index, row, row);
 	cmd->undo();
 	model->endRemoveRows();
 }

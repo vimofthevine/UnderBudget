@@ -99,6 +99,9 @@ void Estimate::addChild(Estimate* child, int index)
 		children.append(child);
 	}
 
+	// Re-determine all paths for children under this estimate
+	repath();
+
 	emit childAdded(child, index);
 }
 
@@ -109,6 +112,10 @@ void Estimate::removeChild(Estimate* child, bool del)
 	if (index != -1)
 	{
 		children.removeOne(child);
+
+		// Re-determine all paths for children under this estimate
+		repath();
+
 		emit childRemoved(child, index);
 	}
 
@@ -133,11 +140,7 @@ void Estimate::moveChild(Estimate* child, int newIndex)
 		children.move(oldIndex, newIndex);
 
 		// Re-determine all paths for children under this estimate
-		for (int i=0; i<children.size(); ++i)
-		{
-			Estimate* c = children.at(i);
-			paths->insert(c->estimateId(), c->path());
-		}
+		repath();
 
 		emit childMoved(child, oldIndex, newIndex);
 	}
@@ -190,6 +193,17 @@ QList<int> Estimate::path() const
 	}
 
 	return path;
+}
+
+//------------------------------------------------------------------------------
+void Estimate::repath()
+{
+	for (int i=0; i<children.size(); ++i)
+	{
+		Estimate* child = children.at(i);
+		paths->insert(child->estimateId(), child->path());
+		child->repath();
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -368,7 +382,7 @@ QUndoCommand* Estimate::deleteEstimate(QUndoCommand* cmd)
 	}
 
 	// Propagate delete down estimate sub-tree, starting with children
-	for (int i=0; i<children.size(); ++i)
+	for (int i=children.size()-1; i>=0; --i)
 	{
 		children.at(i)->deleteEstimate(cmd);
 	}
@@ -380,9 +394,9 @@ QUndoCommand* Estimate::deleteEstimate(QUndoCommand* cmd)
 }
 
 //------------------------------------------------------------------------------
-uint Estimate::createChild()
+uint Estimate::createChild(uint newId)
 {
-	uint id = QDateTime::currentDateTime().toTime_t();
+	uint id = (newId == 0) ? QDateTime::currentDateTime().toTime_t() : newId;
 	createChild(id, name, description,
 		(type == Root) ? Expense : type,
 		amount, dueDate, finished);

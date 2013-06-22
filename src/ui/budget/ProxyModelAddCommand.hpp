@@ -40,11 +40,10 @@ public:
 	 * Constructs a new model add-child proxy command.
 	 *
 	 * @param[in] model estimate tree model
-	 * @param[in] index index of the estimate to add a child
+	 * @param[in] id    ID of the estimate to which to add a child
 	 * @param[in] cmd   original add-child command
 	 */
-	ProxyModelAddCommand(EstimateModel* model, const QModelIndex& index,
-		QUndoCommand* cmd);
+	ProxyModelAddCommand(EstimateModel* model, uint id, QUndoCommand* cmd);
 
 	// Overriding methods
 
@@ -56,8 +55,8 @@ public:
 private:
 	/** Estimate tree model */
 	EstimateModel* model;
-	/** Index of the estimate to add a child */
-	QPersistentModelIndex parent;
+	/** ID of the estimate to which to add a child */
+	uint estimateId;
 	/** Row of the new child estimate */
 	int row;
 	/** Original command */

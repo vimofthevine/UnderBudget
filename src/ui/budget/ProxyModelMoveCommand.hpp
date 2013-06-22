@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PROXYMODELDELETECOMMAND_HPP
-#define PROXYMODELDELETECOMMAND_HPP
+#ifndef PROXYMODELMOVECOMMAND_HPP
+#define PROXYMODELMOVECOMMAND_HPP
 
 // Qt include(s)
 #include <QPersistentModelIndex>
@@ -30,23 +30,24 @@ namespace ub {
 class EstimateModel;
 
 /**
- * Undoable command proxy for a delete command on the underlying model,
+ * Undoable command proxy for a move command on the underlying model,
  * that will trigger the correct signals on the original view model.
  */
-class ProxyModelDeleteCommand : public QUndoCommand
+class ProxyModelMoveCommand : public QUndoCommand
 {
 public:
 	/**
-	 * Constructs a new model delete proxy command.
+	 * Constructs a new model move proxy command.
 	 *
-	 * @param[in] model    estimate tree model
-	 * @param[in] parentId ID of the parent of the estimate
-	 * @param[in] childId  ID of the estimate to be deleted
-	 * @param[in] row      row of the child under the parent
-	 * @param[in] cmd      original delete command
+	 * @param[in] model       estimate tree model
+	 * @param[in] oldParentId ID of the old parent
+	 * @param[in] oldRow      old row of the moved estimate
+	 * @param[in] newParentId ID of the new parent
+	 * @param[in] newRow      new row for the moved estimate
+	 * @param[in] cmd         original move command
 	 */
-	ProxyModelDeleteCommand(EstimateModel* model, uint parentId,
-		uint childId, int row, QUndoCommand* cmd);
+	ProxyModelMoveCommand(EstimateModel* model, uint oldParentId,
+		int oldRow, uint newParentId, int newRow, QUndoCommand* cmd);
 
 	// Overriding methods
 
@@ -58,17 +59,19 @@ public:
 private:
 	/** Estimate tree model */
 	EstimateModel* model;
-	/** ID of the parent of the deleted estimate */
-	uint parentId;
-	/** ID of the estimate to be deleted */
-	uint childId;
-	/** Row of the estimate to be deleted under the parent */
-	int row;
+	/** ID of the old parent of the moved estimate */
+	uint oldParentId;
+	/** Old row of the moved estimate */
+	int oldRow;
+	/** ID of the new parent of the moved estimate */
+	uint newParentId;
+	/** New row of the moved estimate */
+	int newRow;
 	/** Original command */
 	QUndoCommand* cmd;
 };
 
 }
 
-#endif //PROXYMODELDELETECOMMAND_HPP
+#endif //PROXYMODELMOVECOMMAND_HPP
 

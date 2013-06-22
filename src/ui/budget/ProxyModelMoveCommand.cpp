@@ -19,47 +19,53 @@
 
 // UnderBudget include(s)
 #include "ui/budget/EstimateModel.hpp"
-#include "ui/budget/ProxyModelDeleteCommand.hpp"
+#include "ui/budget/ProxyModelMoveCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-ProxyModelDeleteCommand::ProxyModelDeleteCommand(EstimateModel* model,
-		uint parentId, uint childId, int row, QUndoCommand* cmd)
-	: model(model), parentId(parentId), childId(childId), row(row), cmd(cmd)
+ProxyModelMoveCommand::ProxyModelMoveCommand(EstimateModel* model,
+		uint oldParentId, int oldRow, uint newParentId, int newRow,
+		QUndoCommand* cmd)
+	: model(model), oldParentId(oldParentId), oldRow(oldRow),
+	  newParentId(newParentId), newRow(newRow), cmd(cmd)
 { }
 
 //------------------------------------------------------------------------------
-int ProxyModelDeleteCommand::id() const
+int ProxyModelMoveCommand::id() const
 {
-	return 7633252;
+	return 7633254;
 }
 
 //------------------------------------------------------------------------------
-bool ProxyModelDeleteCommand::mergeWith(const QUndoCommand* command)
+bool ProxyModelMoveCommand::mergeWith(const QUndoCommand* command)
 {
 	if (command->id() != id())
 		return false;
 
-	return cmd->mergeWith(static_cast<const ProxyModelDeleteCommand*>(command)->cmd);
+	return cmd->mergeWith(static_cast<const ProxyModelMoveCommand*>(command)->cmd);
 }
 
 //------------------------------------------------------------------------------
-void ProxyModelDeleteCommand::redo()
+void ProxyModelMoveCommand::redo()
 {
-	QModelIndex index = model->index(parentId);
-	model->beginRemoveRows(index, row, row);
+	QModelIndex oldParentIndex = model->index(oldParentId);
+	QModelIndex newParentIndex = model->index(newParentId);
+
+	model->beginMoveRows(oldParentIndex, oldRow, oldRow, newParentIndex, newRow);
 	cmd->redo();
-	model->endRemoveRows();
+	model->endMoveRows();
 }
 
 //------------------------------------------------------------------------------
-void ProxyModelDeleteCommand::undo()
+void ProxyModelMoveCommand::undo()
 {
-	QModelIndex index = model->index(parentId);
-	model->beginInsertRows(index, row, row);
+	QModelIndex oldParentIndex = model->index(oldParentId);
+	QModelIndex newParentIndex = model->index(newParentId);
+
+	model->beginMoveRows(newParentIndex, newRow, newRow, oldParentIndex, oldRow);
 	cmd->undo();
-	model->endInsertRows();
+	model->endMoveRows();
 }
 
 }

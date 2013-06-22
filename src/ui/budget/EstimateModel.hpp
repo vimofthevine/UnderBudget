@@ -59,21 +59,24 @@ public:
 		const QModelIndex& parent = QModelIndex()) const;
 	QModelIndex parent(const QModelIndex& index) const;
 
-	/**
-	 * Emits a data changed signal for the given index.
-	 *
-	 * @param[in] index index of the data changed
-	 */
-	void emitDataChanged(const QModelIndex& index);
+	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::DropActions supportedDragActions() const;
+	Qt::DropActions supportedDropActions() const;
+
+	QStringList mimeTypes() const;
+	QMimeData* mimeData(const QModelIndexList& indices) const;
+	bool dropMimeData(const QMimeData* data, Qt::DropAction action,
+		int row, int column, const QModelIndex& parent);
 
 	/**
-	 * Emits a data changed signal for the given index range.
+	 * Creates an index to the given estimate, if the estimate
+	 * exists in this estimate tree.
 	 *
-	 * @param[in] topLeft     top left index of the changed data
-	 * @param[in] bottomRight bottom right index of the changed data
+	 * @param[in] estimateId ID of the estimate
+	 * @return index to the estimate, if it exists in the tree,
+	 *         else an invalid index
 	 */
-	void emitDataChanged(const QModelIndex& topLeft,
-		const QModelIndex& bottomRight);
+	QModelIndex index(uint estimateId) const;
 
 public slots:
 	/**
@@ -158,9 +161,27 @@ private:
 	 */
 	Estimate* cast(const QModelIndex& index) const;
 
+	/**
+	 * Emits a data changed signal for the given index.
+	 *
+	 * @param[in] index index of the data changed
+	 */
+	void emitDataChanged(const QModelIndex& index);
+
+	/**
+	 * Emits a data changed signal for the given index range.
+	 *
+	 * @param[in] topLeft     top left index of the changed data
+	 * @param[in] bottomRight bottom right index of the changed data
+	 */
+	void emitDataChanged(const QModelIndex& topLeft,
+		const QModelIndex& bottomRight);
+
 	// Allow command classes access to private data
+	friend class ProxyModelChangeCommand;
 	friend class ProxyModelAddCommand;
 	friend class ProxyModelDeleteCommand;
+	friend class ProxyModelMoveCommand;
 };
 
 }

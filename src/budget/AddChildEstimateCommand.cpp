@@ -58,9 +58,9 @@ bool AddChildEstimateCommand::mergeWith(const QUndoCommand* command)
 void AddChildEstimateCommand::redo()
 {
 	Estimate* parent = root->find(parentId);
-	if ( ! childId && parent)
+	if (parent)
 	{
-		childId = parent->createChild();
+		childId = parent->createChild(childId);
 	}
 }
 
@@ -73,7 +73,6 @@ void AddChildEstimateCommand::undo()
 		if (child)
 		{
 			child->deleteSelf();
-			childId = 0;
 		}
 	}
 

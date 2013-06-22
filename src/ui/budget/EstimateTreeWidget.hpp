@@ -64,6 +64,19 @@ private slots:
 	 */
 	void addChildToSelectedEstimate();
 
+	/**
+	 * Adds a child to the root estimate.
+	 */
+	void addToRootEstimate();
+
+protected:
+	/**
+	 * Displays a context menu for operating on the estimate tree.
+	 *
+	 * @param[in] event context menu event
+	 */
+	void contextMenuEvent(QContextMenuEvent* event);
+
 private:
 	/** Estimate tree model */
 	EstimateModel* model;

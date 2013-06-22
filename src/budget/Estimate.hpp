@@ -702,6 +702,12 @@ private:
 	QList<int> path() const;
 
 	/**
+	 * Reinserts paths for all estimates under this estimate
+	 * into the path map.
+	 */
+	void repath();
+
+	/**
 	 * Checks if this estimate is the root estimate.
 	 *
 	 * @return `true` if this estimate is the root
@@ -791,9 +797,10 @@ private:
 	 * The parameters of the new estimate will be inherited
 	 * from this estimate.
 	 *
+	 * @param[in] newId optional new ID of the child to be created
 	 * @return ID of the newly created child estimate
 	 */
-	uint createChild();
+	uint createChild(uint newId = 0);
 
 	/**
 	 * Creates a new child estimate under this estimate with

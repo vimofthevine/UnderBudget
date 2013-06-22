@@ -11,6 +11,7 @@ set(ui_budget_srcs
 	ProxyModelAddCommand.cpp
 	ProxyModelChangeCommand.cpp
 	ProxyModelDeleteCommand.cpp
+	ProxyModelMoveCommand.cpp
 )
 
 # Build UI budget library
