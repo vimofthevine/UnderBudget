@@ -587,7 +587,6 @@ Estimate* Estimate::find(uint estimateId) const
 Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals) const
 {
 	Estimate::Progress progress;
-	progress.isHealthy = true;
 
 	// Root is a special case, it is never populated
 	if ( ! isRoot())
@@ -611,6 +610,9 @@ Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals) const
 		case Income:
 			progress.isHealthy = progress.actual >= progress.estimated;
 			break;
+
+		default:
+			progress.isHealthy = true;
 		}
 	}
 
@@ -641,7 +643,9 @@ Estimate::Impact Estimate::impact(const QHash<uint,Money>& actuals) const
 			impact.actual = actual;
 			break;
 
-		// Transfers have no impact
+		default:
+			// Root/transfers have no impact
+			break;
 		}
 
 		if (finished)
