@@ -348,15 +348,22 @@ QMimeData* EstimateModel::mimeData(const QModelIndexList& indices) const
 	QMimeData* mimeData = new QMimeData;
 	QByteArray encoded;
 	QDataStream stream(&encoded, QIODevice::WriteOnly);
+
+	// Only one estimate/index can be moved at a time
 	QModelIndex index = indices.at(0);
 	if (index.isValid())
 	{
-		stream << cast(index)->estimateId();
-		stream << cast(index)->parentEstimate()->estimateId();
+		Estimate* estimate = cast(index);
+		qDebug() << "Serializing estimate origin mime data:"
+			<< "move" << estimate->estimateId()
+			<< "from" << estimate->parentEstimate()->estimateId()
+			<< "at index" << index.row();
+		stream << estimate->estimateId();
+		stream << estimate->parentEstimate()->estimateId();
 		stream << index.row();
 	}
-
 	mimeData->setData("application/estimate.origin", encoded);
+
 	return mimeData;
 }
 
@@ -381,15 +388,27 @@ bool EstimateModel::dropMimeData(const QMimeData* data, Qt::DropAction action,
 	stream >> childId;
 	stream >> oldParentId;
 	stream >> oldRow;
+	qDebug() << "Unserialized estimate origin mime data:"
+		<< "move" << childId << "from" << oldParentId << "at index" << oldRow;
 
 	// If new parent index is not valid, assume moving to root
 	uint newParentId = parent.isValid() ? cast(parent)->estimateId() : 0;
 	// Make sure new row is not < 0 (use rowCount if < 0)
 	int newRow = (row < 0) ? rowCount(parent) : row;
+	qDebug() << "Target estimate location:"
+		<< "move to" << newParentId << "at index" << newRow;
 
 	// Grab the estimates
 	Estimate* child = root->find(childId);
 	Estimate* newParent = root->find(newParentId);
+
+	if (newParentId == oldParentId)
+	{
+		// Don't do anything for invalid or no-op moves
+		// (i.e., moving 2 to 3, which is still 2)
+		if (oldRow == newRow || (oldRow+1) == newRow)
+			return true;
+	}
 
 	if (child && newParent)
 	{

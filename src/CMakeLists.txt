@@ -1,16 +1,21 @@
 # UnderBudget source CMake configuration
 
+# Disable debug print statements for release build
+if (CMAKE_BUILD_TYPE MATCHES Release)
+	add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif (CMAKE_BUILD_TYPE MATCHES Release)
+
 # Enable extra debugging options if debug build type
-if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions(-DQT_SHAREDPOINTER_TRACK_POINTERS)
-endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+endif (CMAKE_BUILD_TYPE MATCHES Debug)
 
 # If windows, make sure we don't generate a console application
 # in a Release build
 if (WIN32)
-	if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+	if (CMAKE_BUILD_TYPE MATCHES Release)
 		set(CMAKE_EXE_LINKER_FLAGS "-mwindows")
-	endif (CMAKE_BUILD_TYPE MATCHES RELEASE)
+	endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif (WIN32)
 
 # Add source sub-directories

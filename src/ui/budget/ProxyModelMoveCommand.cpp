@@ -49,23 +49,56 @@ bool ProxyModelMoveCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void ProxyModelMoveCommand::redo()
 {
+	qDebug() << "applying move from" << oldParentId << "at index" << oldRow
+		<< "to" << newParentId << "at index" << newRow;
 	QModelIndex oldParentIndex = model->index(oldParentId);
 	QModelIndex newParentIndex = model->index(newParentId);
 
-	model->beginMoveRows(oldParentIndex, oldRow, oldRow, newParentIndex, newRow);
-	cmd->redo();
-	model->endMoveRows();
+	if (model->beginMoveRows(oldParentIndex, oldRow, oldRow, newParentIndex, newRow))
+	{
+		cmd->redo();
+		model->endMoveRows();
+		model->emitDataChanged(QModelIndex());
+	}
+	else
+	{
+		qDebug() << "move rows rejected";
+	}
 }
 
 //------------------------------------------------------------------------------
 void ProxyModelMoveCommand::undo()
 {
+	qDebug() << "undoing move from" << oldParentId << "at index" << oldRow
+		<< "to" << newParentId << "at index" << newRow;
 	QModelIndex oldParentIndex = model->index(oldParentId);
 	QModelIndex newParentIndex = model->index(newParentId);
+	qDebug() << "old parent index valid?" << oldParentIndex.isValid();
+	qDebug() << "new parent index valid?" << newParentIndex.isValid();
+	int originRow = newRow;
 
-	model->beginMoveRows(newParentIndex, newRow, newRow, oldParentIndex, oldRow);
-	cmd->undo();
-	model->endMoveRows();
+	// If the original move was a re-ordering under the same parent
+	if (oldParentId == newParentId)
+	{
+		// If it was a move to the end of the parent's children
+		int numChildren = model->rowCount(newParentIndex);
+		if (numChildren == newRow)
+		{
+			qDebug() << "undoing reorder to end of list";
+			originRow = numChildren - 1;
+		}
+	}
+
+	if (model->beginMoveRows(newParentIndex, originRow, originRow, oldParentIndex, oldRow))
+	{
+		cmd->undo();
+		model->endMoveRows();
+		model->emitDataChanged(QModelIndex());
+	}
+	else
+	{
+		qDebug() << "move rows rejected";
+	}
 }
 
 }
