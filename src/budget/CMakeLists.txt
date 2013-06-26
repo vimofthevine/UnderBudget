@@ -6,6 +6,9 @@ add_subdirectory(storage)
 # Specify budget source files
 set(budget_srcs
 	AddChildEstimateCommand.cpp
+	AddConditionCommand.cpp
+	AssignmentRule.cpp
+	AssignmentRules.cpp
 	Budget.cpp
 	BudgetingPeriod.cpp
 	BudgetingPeriod_calculations.cpp
@@ -21,6 +24,8 @@ set(budget_srcs
 	DeleteEstimateCommand.cpp
 	Estimate.cpp
 	MoveEstimateCommand.cpp
+	RemoveConditionCommand.cpp
+	UpdateConditionCommand.cpp
 )
 
 # Build budget library

@@ -1,6 +1,7 @@
 # Budget test CMake configuration
 
 # Build unit tests
+build_test(AssignmentRuleTest budget)
 build_test(BudgetingPeriodTest budget)
 build_test(EstimateTest budget)
 
