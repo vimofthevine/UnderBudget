@@ -1,0 +1,27 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file alias="logo">icons/logo.png</file>
+	<file alias="icons/new">icons/oxygen/document-new.png</file>
+	<file alias="icons/open">icons/oxygen/document-open.png</file>
+	<file alias="icons/save">icons/oxygen/document-save.png</file>
+	<file alias="icons/saveAs">icons/oxygen/document-save-as.png</file>
+	<file alias="icons/saveAsTemplate">icons/oxygen/document-edit-sign.png</file>
+	<file alias="icons/export">icons/oxygen/document-export.png</file>
+	<file alias="icons/close">icons/oxygen/document-close.png</file>
+	<file alias="icons/exit">icons/oxygen/application-exit.png</file>
+	<file alias="icons/undo">icons/oxygen/edit-undo.png</file>
+	<file alias="icons/redo">icons/oxygen/edit-redo.png</file>
+	<file alias="icons/editBudget">icons/oxygen/view-bank.png</file>
+	<file alias="icons/editEstimates">icons/oxygen/view-list-tree.png</file>
+	<file alias="icons/editRules">icons/oxygen/format-list-ordered.png</file>
+	<file alias="icons/editPrefs">icons/oxygen/preferences-other.png</file>
+	<file alias="icons/import">icons/oxygen/document-import.png</file>
+	<file alias="icons/assign">icons/oxygen/go-next-use.png</file>
+	<file alias="icons/calculate">icons/oxygen/accessories-calculator.png</file>
+	<file alias="icons/summary">icons/oxygen/view-statistics.png</file>
+	<file alias="icons/progress">icons/oxygen/office-chart-bar-percentage.png</file>
+	<file alias="icons/impact">icons/oxygen/view-financial-forecast.png</file>
+	<file alias="icons/transactions">icons/oxygen/wallet-open.png</file>
+	<file alias="icons/about">icons/oxygen/help-about.png</file>
+</qresource>
+</RCC>
