@@ -587,6 +587,7 @@ Estimate* Estimate::find(uint estimateId) const
 Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals) const
 {
 	Estimate::Progress progress;
+	progress.isHealthy = true;
 
 	// Root is a special case, it is never populated
 	if ( ! isRoot())
