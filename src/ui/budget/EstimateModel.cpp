@@ -165,7 +165,8 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 	case 5: // defined finished state
 		return estimate->isActivityFinished();
 	case 6: // progress
-		return (progress.actual / progress.estimated);
+		return QVariant(progress.isHealthy ? 1 : 0).toByteArray()
+			+ QVariant(progress.actual / progress.estimated).toByteArray();
 	case 7: // progress estimated
 		return progress.estimated.toString();
 	case 8: // progress actual

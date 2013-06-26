@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/EstimateTreeWidget.hpp"
+#include "ui/budget/ProgressDelegate.hpp"
 
 namespace ub {
 
@@ -41,6 +42,9 @@ EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
 
 	// Enable re-ordering/moving
 	setDragDropMode(QAbstractItemView::InternalMove);
+
+	// Display progress bar for estimate progress
+	setItemDelegateForColumn(6, new ProgressDelegate(this));
 }
 
 //------------------------------------------------------------------------------

@@ -8,6 +8,7 @@ set(ui_budget_srcs
 	EstimateDisplayWidget.cpp
 	EstimateModel.cpp
 	EstimateTreeWidget.cpp
+	ProgressDelegate.cpp
 	ProxyModelAddCommand.cpp
 	ProxyModelChangeCommand.cpp
 	ProxyModelDeleteCommand.cpp
