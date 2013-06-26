@@ -40,20 +40,21 @@ void MainWindow::notImpl()
 //--------------------------------------------------------------------------
 void MainWindow::about()
 {
-	QMessageBox::about(this, tr("About"),
-		tr(QString("<dl>"
-			"<dt>Title</dt><dd>%1</dd>"
-			"<dt>Version</dt><dd>%2</dd>"
-			"<dt>Copyright</dt><dd>Copyright (C) 2013</dd>"
-			"<dt>License</dt><dd>Apache License 2.0</dd>"
-			"<dt>Authors</dt><dd>Kyle Treubig</dd>"
-			"<dt>URL</dt><dd><a href=\"http://%3\">%3</a></dd>"
-			"</dl>")
-			.arg(qApp->applicationName())
-			.arg(qApp->applicationVersion())
-			.arg(qApp->organizationDomain())
-			.toUtf8()
-		));
+	QString title = tr("About %1").arg(qApp->applicationName());
+	QString about = QString("<html><b><p>%1</p></b>")
+		+ "<p>"
+		+ tr("Advanced personal budget analysis.")
+		+ "</p>"
+		+ tr("Version") + ": %2<br>"
+		+ tr("Authors") + ": Kyle Treubig<br>"
+		+ tr("Homepage") + ": <a href=\"http://%3\">%3</a><br>"
+		+ tr("License") + ": Apache License 2.0<br>"
+		+ tr("Copyright") + " &copy; 2013, Kyle Treubig";
+	about = about.arg(qApp->applicationName())
+		.arg(qApp->applicationVersion())
+		.arg(qApp->organizationDomain());
+
+	QMessageBox::about(this, title, about);
 }
 
 //------------------------------------------------------------------------------

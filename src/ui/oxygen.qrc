@@ -23,5 +23,6 @@
 	<file alias="icons/impact">icons/oxygen/view-financial-forecast.png</file>
 	<file alias="icons/transactions">icons/oxygen/wallet-open.png</file>
 	<file alias="icons/about">icons/oxygen/help-about.png</file>
+	<file alias="icons/aboutQt">icons/Qt.png</file>
 </qresource>
 </RCC>
