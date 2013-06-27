@@ -49,6 +49,36 @@ private slots:
 	 */
 	void conditionAt();
 
+	/**
+	 * Tests adding of conditions to rules.
+	 */
+	void addCondition();
+
+	/**
+	 * Test data for adding conditions to rules.
+	 */
+	void addCondition_data();
+
+	/**
+	 * Tests removing of conditions from a rule with no conditions.
+	 */
+	void removeConditionFromRuleWithNone();
+
+	/**
+	 * Tests removing of conditions from a rule with one condition.
+	 */
+	void removeConditionFromRuleWithOne();
+
+	/**
+	 * Tests removing of conditions from a rule with many conditions.
+	 */
+	void removeConditionFromRuleWithMany();
+
+	/**
+	 * Tests updating of a condition for a rule.
+	 */
+	void updateCondition();
+
 private:
 	// Test rules
 	QSharedPointer<AssignmentRules> rules;

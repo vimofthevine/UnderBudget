@@ -40,6 +40,8 @@ QUndoCommand* AssignmentRule::addCondition(QUndoCommand* cmd)
 //------------------------------------------------------------------------------
 QUndoCommand* AssignmentRule::removeCondition(int index, QUndoCommand* cmd)
 {
+	if (conditions.size() == 0)
+		return new QUndoCommand(cmd);
 	return new RemoveConditionCommand(rules, id, index, cmd);
 }
 
@@ -88,6 +90,9 @@ void AssignmentRule::addCondition(const Condition& condition, int index)
 //------------------------------------------------------------------------------
 void AssignmentRule::deleteCondition(int index)
 {
+	if (conditions.size() == 0)
+		return;
+
 	if (index < 0)
 		index = 0;
 	if (index >= conditions.size())
@@ -103,7 +108,7 @@ void AssignmentRule::updateCondition(const Condition& condition, int index)
 		index = 0;
 	if (index >= conditions.size())
 		index = conditions.size() - 1;
-	conditions.insert(index, condition);
+	conditions.replace(index, condition);
 	emit conditionUpdated(condition, index);
 }
 

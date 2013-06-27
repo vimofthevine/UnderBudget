@@ -134,5 +134,130 @@ void AssignmentRuleTest::conditionAt()
 	QCOMPARE(ruleWithMultipleConditions->conditionAt(1).field, AssignmentRule::DepositAccount);
 }
 
+//------------------------------------------------------------------------------
+void AssignmentRuleTest::addCondition_data()
+{
+	QTest::addColumn<uint>("ruleId");
+	QTest::addColumn<int>("oldCount");
+	QTest::addColumn<int>("newCount");
+	QTest::addColumn<int>("newIndex");
+	QTest::addColumn<int>("existingIndex");
+
+	QTest::newRow("no-conditions") << NO_COND << 0 << 1 << 0 << -1;
+	QTest::newRow("one-condition") << ONE_COND << 1 << 2 << 1 << 0;
+	QTest::newRow("many-conditions") << MULTI_COND << 2 << 3 << 2 << 1;
+}
+
+//------------------------------------------------------------------------------
+void AssignmentRuleTest::addCondition()
+{
+	QFETCH(uint, ruleId);
+	QFETCH(int, oldCount);
+	QFETCH(int, newCount);
+	QFETCH(int, newIndex);
+	QFETCH(int, existingIndex);
+
+	AssignmentRule* rule = rules->find(ruleId);
+	QUndoCommand* cmd = rule->addCondition();
+
+	QCOMPARE(rule->conditionCount(), oldCount);
+	AssignmentRule::Field field;
+	if (existingIndex >= 0)
+	{
+		field = rule->conditionAt(existingIndex).field;
+	}
+
+	cmd->redo();
+	QCOMPARE(rule->conditionCount(), newCount);
+	QCOMPARE(rule->conditionAt(newIndex).field, AssignmentRule::FieldNotDefined);
+	if (existingIndex >= 0)
+	{
+		QCOMPARE(rule->conditionAt(existingIndex).field, field);
+	}
+
+	cmd->undo();
+	QCOMPARE(rule->conditionCount(), oldCount);
+	if (existingIndex >= 0)
+	{
+		QCOMPARE(rule->conditionAt(existingIndex).field, field);
+	}
+}
+
+//------------------------------------------------------------------------------
+void AssignmentRuleTest::removeConditionFromRuleWithNone()
+{
+	AssignmentRule* rule(ruleWithNoConditions);
+	QUndoCommand* cmd = rule->removeCondition(0);
+
+	QCOMPARE(rule->conditionCount(), 0);
+	cmd->redo();
+	QCOMPARE(rule->conditionCount(), 0);
+	cmd->undo();
+	QCOMPARE(rule->conditionCount(), 0);
+}
+
+//------------------------------------------------------------------------------
+void AssignmentRuleTest::removeConditionFromRuleWithOne()
+{
+	AssignmentRule* rule(ruleWithOneCondition);
+	QUndoCommand* cmd = rule->removeCondition(0);
+
+	QCOMPARE(rule->conditionCount(), 1);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+	cmd->redo();
+	QCOMPARE(rule->conditionCount(), 0);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::FieldNotDefined);
+	cmd->undo();
+	QCOMPARE(rule->conditionCount(), 1);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+}
+
+//------------------------------------------------------------------------------
+void AssignmentRuleTest::removeConditionFromRuleWithMany()
+{
+	AssignmentRule* rule(ruleWithMultipleConditions);
+	QUndoCommand* cmd = rule->removeCondition(0);
+
+	QCOMPARE(rule->conditionCount(), 2);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+	QCOMPARE(rule->conditionAt(1).field, AssignmentRule::DepositAccount);
+	cmd->redo();
+	QCOMPARE(rule->conditionCount(), 1);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::DepositAccount);
+	cmd->undo();
+	QCOMPARE(rule->conditionCount(), 2);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+	QCOMPARE(rule->conditionAt(1).field, AssignmentRule::DepositAccount);
+}
+
+//------------------------------------------------------------------------------
+void AssignmentRuleTest::updateCondition()
+{
+	AssignmentRule* rule(ruleWithMultipleConditions);
+	QUndoCommand* cmd = rule->updateCondition(1,
+		AssignmentRule::Condition(AssignmentRule::Date, AssignmentRule::Before, false, "5/5/13"));
+
+	// Assert pre-conditions
+	QCOMPARE(rule->conditionCount(), 2);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+	QCOMPARE(rule->conditionAt(1).field, AssignmentRule::DepositAccount);
+	QCOMPARE(rule->conditionAt(1).op, AssignmentRule::BeginsWith);
+	QCOMPARE(rule->conditionAt(1).value, QString("Condition2"));
+
+	cmd->redo();
+	QCOMPARE(rule->conditionCount(), 2);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+	QCOMPARE(rule->conditionAt(1).field, AssignmentRule::Date);
+	QCOMPARE(rule->conditionAt(1).op, AssignmentRule::Before);
+	QCOMPARE(rule->conditionAt(1).value, QString("5/5/13"));
+
+	cmd->undo();
+	QCOMPARE(rule->conditionCount(), 2);
+	QCOMPARE(rule->conditionAt(0).field, AssignmentRule::Payee);
+	QCOMPARE(rule->conditionAt(1).field, AssignmentRule::DepositAccount);
+	QCOMPARE(rule->conditionAt(1).op, AssignmentRule::BeginsWith);
+	QCOMPARE(rule->conditionAt(1).value, QString("Condition2"));
+}
+
 }
 
