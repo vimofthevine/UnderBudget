@@ -2,6 +2,7 @@
 
 # Specify UI budget source files
 set(ui_budget_srcs
+	AssignmentRulesModel.cpp
 	BudgetDetailsForm.cpp
 	BudgetingPeriodForm.cpp
 	EstimateDetailsForm.cpp
