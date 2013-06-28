@@ -23,8 +23,11 @@ set(budget_srcs
 	ChangePeriodParamsCommand.cpp
 	DeleteEstimateCommand.cpp
 	Estimate.cpp
+	InsertRuleCommand.cpp
 	MoveEstimateCommand.cpp
+	MoveRuleCommand.cpp
 	RemoveConditionCommand.cpp
+	RemoveRuleCommand.cpp
 	UpdateConditionCommand.cpp
 )
 

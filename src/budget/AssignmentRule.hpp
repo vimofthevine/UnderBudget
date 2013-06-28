@@ -19,6 +19,7 @@
 
 // Qt include(s)
 #include <QObject>
+#include <QDebug>
 
 // Forward declaration(s)
 class QUndoCommand;
