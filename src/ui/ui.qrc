@@ -23,5 +23,6 @@
 	<file alias="icons/impact">icons/large-impact.png</file>
 	<file alias="icons/transactions">icons/large-transactions.png</file>
 	<file alias="icons/about">icons/small-about.png</file>
+	<file alias="icons/aboutQt">icons/Qt.png</file>
 </qresource>
 </RCC>

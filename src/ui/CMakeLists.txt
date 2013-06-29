@@ -22,7 +22,11 @@ set(ui_libs
 )
 
 # Specify UI resource file
-set(ui_rcs ui/ui.qrc PARENT_SCOPE)
+if(ICON_SET MATCHES V2Style)
+	set(ui_rcs ui/ui.qrc PARENT_SCOPE)
+else()
+	set(ui_rcs ui/oxygen.qrc PARENT_SCOPE)
+endif (ICON_SET MATCHES V2Style)
 
 # Build UI library
 add_library(ui ${ui_srcs})

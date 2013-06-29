@@ -77,7 +77,7 @@ void MoneyTest::toString_data()
 	QTest::newRow("decimal") << Money(43.72, "USD") << "$43.72";
 	QTest::newRow("thousands") << Money(1322.04, "USD") << "$1,322.04";
 	QTest::newRow("negative") << Money(-3.92, "USD") << "($3.92)";
-	QTest::newRow("foreign") << Money(1322.04, "UAH") << "UAH1,322.04";
+	QTest::newRow("foreign") << Money(1322.04, "UAH") << QChar(8372) + QString("1,322.04");
 }
 
 //------------------------------------------------------------------------------

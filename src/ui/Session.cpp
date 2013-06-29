@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/Session.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
+#include "ui/budget/EstimateDisplayWidget.hpp"
 #include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub {
@@ -43,8 +44,11 @@ Session::Session(QWidget* parent)
 void Session::createWidgets()
 {
 	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
+	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
+		undoStack, this);
 
 	addWidget(budgetDetails);
+	addWidget(estimateDisplay);
 }
 
 //------------------------------------------------------------------------------
@@ -169,6 +173,11 @@ void Session::editBudget()
 //------------------------------------------------------------------------------
 void Session::editEstimates()
 {
+	if (budget && estimateDisplay)
+	{
+		estimateDisplay->showEstimateDefinitions();
+		setCurrentWidget(estimateDisplay);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -205,11 +214,23 @@ void Session::showAnalysisSummary()
 
 //------------------------------------------------------------------------------
 void Session::showEstimateProgress()
-{ }
+{
+	if (budget && estimateDisplay)
+	{
+		estimateDisplay->showEstimateProgress();
+		setCurrentWidget(estimateDisplay);
+	}
+}
 
 //------------------------------------------------------------------------------
 void Session::showEstimateImpact()
-{ }
+{
+	if (budget && estimateDisplay)
+	{
+		estimateDisplay->showBalanceImpact();
+		setCurrentWidget(estimateDisplay);
+	}
+}
 
 //------------------------------------------------------------------------------
 void Session::showImportedTransactions()
