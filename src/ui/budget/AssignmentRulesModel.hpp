@@ -19,11 +19,18 @@
 
 // Qt include(s)
 #include <QAbstractItemModel>
+#include <QSharedPointer>
 
 // UnderBudget include(s)
 #include "budget/AssignmentRules.hpp"
 
+// Forward declaration(s)
+class QUndoStack;
+
 namespace ub {
+
+// Forward declaration(s)
+class Estimate;
 
 /**
  * Assignment rules list model to serve as a proxy between various UI
@@ -37,12 +44,23 @@ public:
 	/**
 	 * Constructs a new estimate tree model.
 	 *
-	 * @param[in] rules  assignment rules list
-	 * @param[in] stack  undo stack
-	 * @param[in] parent parent object
+	 * @param[in] rules     assignment rules list
+	 * @param[in] estimates root of the estimate tree
+	 * @param[in] stack     undo stack
+	 * @param[in] parent    parent object
 	 */
 	AssignmentRulesModel(QSharedPointer<AssignmentRules> rules,
+		QSharedPointer<Estimate> estimates,
 		QUndoStack* stack, QObject* parent = 0);
+
+	/**
+	 * Returns the assignment rule located at the specified index. If the
+	 * index is for a condition, the containing rule is returned.
+	 *
+	 * @param[in] index model index at which to retrieve a rule
+	 * @return assignment rule located at the specified index
+	 */
+	AssignmentRule* ruleAt(const QModelIndex& index) const;
 
 	// Overridden methods
 
@@ -86,6 +104,8 @@ public:
 private:
 	/** Assignment rules list */
 	QSharedPointer<AssignmentRules> rules;
+	/** Estimate tree */
+	QSharedPointer<Estimate> estimates;
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;
 

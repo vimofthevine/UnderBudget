@@ -22,10 +22,10 @@
 #include <QMultiHash>
 #include <QObject>
 
-namespace ub {
+// UnderBudget include(s)
+#include "budget/AssignmentRule.hpp"
 
-// Forward declaration(s)
-class AssignmentRule;
+namespace ub {
 
 /**
  * A user-defined list of assignment rules.

@@ -67,5 +67,13 @@ void EstimateDisplayWidget::showBalanceImpact()
 	tree->showBalanceImpactColumns();
 }
 
+//------------------------------------------------------------------------------
+void EstimateDisplayWidget::selectEstimate(uint estimateId)
+{
+	QModelIndex index = model->index(estimateId);
+	selectionModel->setCurrentIndex(index,
+		QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+}
+
 }
 

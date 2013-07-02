@@ -71,6 +71,13 @@ public slots:
 	 */
 	void showBalanceImpact();
 
+	/**
+	 * Updates the current selection to that of the given estimate ID.
+	 *
+	 * @param[in] estimateId ID of the estimate to be selected
+	 */
+	void selectEstimate(uint estimateId);
+
 private:
 	/** Root estimate */
 	QSharedPointer<Estimate> root;

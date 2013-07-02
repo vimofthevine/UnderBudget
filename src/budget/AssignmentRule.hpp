@@ -284,6 +284,22 @@ private:
 	friend class AssignmentRules;
 };
 
+/**
+ * Returns a string representation of the given condition field.
+ *
+ * @param[in] field condition field enumeration
+ * @return string representation of the condition field
+ */
+QString toString(AssignmentRule::Field field);
+
+/**
+ * Returns a string representation of the given condition operator.
+ *
+ * @param[in] oper condition operator enumeration
+ * @return string representation of the condition operator
+ */
+QString toString(AssignmentRule::Operator oper);
+
 }
 
 // Make types known to Qt meta object system

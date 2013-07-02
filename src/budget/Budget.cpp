@@ -18,6 +18,7 @@
 #include <QtCore>
 
 // UnderBudget include(s)
+#include "budget/AssignmentRules.hpp"
 #include "budget/Budget.hpp"
 #include "budget/ChangeBudgetNameCommand.hpp"
 #include "budget/ChangeInitialBalanceCommand.hpp"
@@ -46,6 +47,17 @@ Budget::Budget()
 		"Food", "", Estimate::Expense, Money(120.0), QDate(), false);
 	Estimate* loan = Estimate::create(root, 1003,
 		"Loan Payment", "", Estimate::Transfer, Money(50.0), QDate(2013,3,20), false);
+
+	assignmentRules = AssignmentRules::create();
+	QList<AssignmentRule::Condition> conditions;
+	conditions << AssignmentRule::Condition(AssignmentRule::Payee, AssignmentRule::StringEquals, false, "Vendor");
+
+	assignmentRules->createRule(20010, 2001, conditions);
+	assignmentRules->createRule(40010, 4001, conditions);
+	conditions << AssignmentRule::Condition(AssignmentRule::DepositAccount, AssignmentRule::EndsWith, true, "Acct");
+	assignmentRules->createRule(30020, 3002, conditions);
+	conditions.removeAt(0);
+	assignmentRules->createRule(10030, 1003, conditions);
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +82,12 @@ QSharedPointer<BudgetingPeriod> Budget::budgetingPeriod() const
 QSharedPointer<Estimate> Budget::estimates() const
 {
 	return rootEstimate;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<AssignmentRules> Budget::rules() const
+{
+	return assignmentRules;
 }
 
 //------------------------------------------------------------------------------

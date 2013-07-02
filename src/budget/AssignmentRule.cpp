@@ -112,5 +112,61 @@ void AssignmentRule::updateCondition(const Condition& condition, int index)
 	emit conditionUpdated(condition, index);
 }
 
+//------------------------------------------------------------------------------
+QString toString(AssignmentRule::Field field)
+{
+	switch (field)
+	{
+	case ub::AssignmentRule::Date:
+		return QObject::tr("Date");
+	case ub::AssignmentRule::Amount:
+		return QObject::tr("Amount");
+	case ub::AssignmentRule::Payee:
+		return QObject::tr("Payee");
+	case ub::AssignmentRule::Memo:
+		return QObject::tr("Memo");
+	case ub::AssignmentRule::DepositAccount:
+		return QObject::tr("Deposit Account");
+	case ub::AssignmentRule::WithdrawalAccount:
+		return QObject::tr("Withdrawal Account");
+	default:
+		return QObject::tr("Unknown field");
+	}
+}
+
+//------------------------------------------------------------------------------
+QString toString(AssignmentRule::Operator oper)
+{
+	switch (oper)
+	{
+	case ub::AssignmentRule::BeginsWith:
+		return QObject::tr("Begins With");
+	case ub::AssignmentRule::EndsWith:
+		return QObject::tr("Ends With");
+	case ub::AssignmentRule::StringEquals:
+		return QObject::tr("Equals (String)");
+	case ub::AssignmentRule::Contains:
+		return QObject::tr("Contains");
+	case ub::AssignmentRule::Before:
+		return QObject::tr("Before");
+	case ub::AssignmentRule::After:
+		return QObject::tr("After");
+	case ub::AssignmentRule::DateEquals:
+		return QObject::tr("Equals (Date)");
+	case ub::AssignmentRule::LessThan:
+		return QObject::tr("Less Than");
+	case ub::AssignmentRule::LessThanOrEqual:
+		return QObject::tr("Less Than Or Equal");
+	case ub::AssignmentRule::GreaterThan:
+		return QObject::tr("Greater Than");
+	case ub::AssignmentRule::GreaterThanOrEqual:
+		return QObject::tr("Greater Than Or Equal");
+	case ub::AssignmentRule::AmountEquals:
+		return QObject::tr("Equals (Money)");
+	default:
+		return QObject::tr("Unknown operator");
+	}
+}
+
 }
 

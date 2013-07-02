@@ -19,8 +19,10 @@
 
 // UnderBudget include(s)
 #include "ui/Session.hpp"
+#include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
 #include "ui/budget/EstimateDisplayWidget.hpp"
+#include "ui/budget/RulesListWidget.hpp"
 #include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub {
@@ -47,8 +49,17 @@ void Session::createWidgets()
 	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
 		undoStack, this);
 
+	AssignmentRulesModel* model = new AssignmentRulesModel(budget->rules(),
+		budget->estimates(), undoStack, this);
+	assignmentRules = new RulesListWidget(model, this);
+
 	addWidget(budgetDetails);
 	addWidget(estimateDisplay);
+	addWidget(assignmentRules);
+
+	// Connect the selection of estimates and rules
+	connect(assignmentRules, SIGNAL(estimateSelected(uint)),
+		estimateDisplay, SLOT(selectEstimate(uint)));
 }
 
 //------------------------------------------------------------------------------
@@ -183,6 +194,10 @@ void Session::editEstimates()
 //------------------------------------------------------------------------------
 void Session::editAssignmentRules()
 {
+	if (budget && assignmentRules)
+	{
+		setCurrentWidget(assignmentRules);
+	}
 }
 
 //------------------------------------------------------------------------------
