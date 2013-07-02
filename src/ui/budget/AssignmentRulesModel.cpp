@@ -21,6 +21,7 @@
 #include "budget/AssignmentRule.hpp"
 #include "budget/Estimate.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
+#include "ui/budget/ProxyRuleModelChangeCommand.hpp"
 
 namespace ub {
 
@@ -128,6 +129,12 @@ int AssignmentRulesModel::rowCount(const QModelIndex& parent) const
 }
 
 //------------------------------------------------------------------------------
+QModelIndex AssignmentRulesModel::indexFor(uint ruleId) const
+{
+	return index(rules->indexOf(ruleId), 0, QModelIndex());
+}
+
+//------------------------------------------------------------------------------
 QModelIndex AssignmentRulesModel::index(int row, int column,
 	const QModelIndex& parent) const
 {
@@ -167,10 +174,44 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 {
 	if ( ! index.isValid())
 		return QVariant();
+	if (role == Qt::CheckStateRole)
+		return checkStateData(index);
+	if (role == Qt::DisplayRole)
+		return displayData(index);
+	if (role == Qt::EditRole)
+		return editData(index);
+	return QVariant();
+}
 
-	if (role != Qt::DisplayRole)
+//------------------------------------------------------------------------------
+QVariant AssignmentRulesModel::checkStateData(const QModelIndex& index) const
+{
+	// Only column 4 (case-sensitivity) is checkable
+	if (index.column() != 4)
 		return QVariant();
 
+	if (isCondition(index))
+	{
+		AssignmentRule::Condition condition = castToCondition(index);
+		return condition.sensitive ? Qt::Checked : Qt::Unchecked;
+	}
+	else if (isRule(index))
+	{
+		// Only when rule has just one condition
+		AssignmentRule* rule = castToRule(index);
+		if (rule->conditionCount() == 1)
+		{
+			AssignmentRule::Condition condition = rule->conditionAt(0);
+			return condition.sensitive ? Qt::Checked : Qt::Unchecked;
+		}
+	}
+
+	return QVariant();
+}
+
+//------------------------------------------------------------------------------
+QVariant AssignmentRulesModel::displayData(const QModelIndex& index) const
+{
 	if (isRule(index))
 	{
 		AssignmentRule* rule = castToRule(index);
@@ -192,9 +233,6 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 		case 3:
 			return (count == 1) ? toString(rule->conditionAt(0).op)
 				: tr("%1 conditions").arg(count);
-		case 4:
-			return (count == 1) ? rule->conditionAt(0).sensitive
-				: QVariant();
 		case 5:
 			return (count == 1) ? rule->conditionAt(0).value
 				: tr("%1 values").arg(count);
@@ -216,6 +254,51 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 			return toString(condition.field);
 		case 3:
 			return toString(condition.op);
+		case 5:
+			return condition.value;
+		default:
+			return QVariant();
+		}
+	}
+
+	return QVariant();
+}
+
+//------------------------------------------------------------------------------
+QVariant AssignmentRulesModel::editData(const QModelIndex& index) const
+{
+	if ( ! index.isValid())
+		return QVariant();
+
+	if (isRule(index))
+	{
+		AssignmentRule* rule = castToRule(index);
+		if (rule->conditionCount() == 1)
+		{
+			switch (index.column())
+			{
+			case 2:
+				return rule->conditionAt(0).field;
+			case 3:
+				return rule->conditionAt(0).op;
+			case 4:
+				return rule->conditionAt(0).sensitive;
+			case 5:
+				return rule->conditionAt(0).value;
+			default:
+				return QVariant();
+			}
+		}
+	}
+	else if (isCondition(index))
+	{
+		AssignmentRule::Condition condition = castToCondition(index);
+		switch (index.column())
+		{
+		case 2:
+			return condition.field;
+		case 3:
+			return condition.op;
 		case 4:
 			return condition.sensitive;
 		case 5:
@@ -224,9 +307,101 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 			return QVariant();
 		}
 	}
-	else
-		return QVariant();
+
+	return QVariant();
 }
+
+//------------------------------------------------------------------------------
+Qt::ItemFlags AssignmentRulesModel::flags(const QModelIndex& index) const
+{
+	Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+
+	// If the case-sensitivity column
+	if (index.column() == 4)
+	{
+		flags |= Qt::ItemIsUserCheckable;
+	}
+
+	// If a condition and one of the condition columns (not 0 or 1)
+	if (isCondition(index) && index.column() > 1)
+	{
+		flags |= Qt::ItemIsEditable;
+	}
+	// If a rule and one of the condition columns (not 0 or 1)
+	else if (isRule(index) && index.column() > 1)
+	{
+		// Only editable if only one condition for the rule
+		if (castToRule(index)->conditionCount() == 1)
+		{
+			flags |= Qt::ItemIsEditable;
+		}
+	}
+
+	return flags;
+}
+
+//------------------------------------------------------------------------------
+bool AssignmentRulesModel::setData(const QModelIndex& index,
+	const QVariant& value, int role)
+{
+	AssignmentRule* rule = 0;
+	AssignmentRule::Condition condition;
+	int row = -1;
+
+	if (isRule(index))
+	{
+		rule = castToRule(index);
+		if (rule->conditionCount() == 1)
+		{
+			condition = rule->conditionAt(0);
+			row = 0;
+		}
+	}
+	else if (isCondition(index))
+	{
+		rule = rules->find(index.internalId());
+		condition = castToCondition(index);
+		row = index.row();
+	}
+
+	if (rule && row >= 0)
+	{
+		switch (index.column())
+		{
+		case 2:
+			condition.field = static_cast<AssignmentRule::Field>(value.toInt());
+			break;
+		case 3:
+			condition.op = static_cast<AssignmentRule::Operator>(value.toInt());
+			break;
+		case 4:
+			condition.sensitive = value.toBool();
+			break;
+		case 5:
+			condition.value = value.toString();
+			break;
+		default:
+			break;
+		}
+
+		undoStack->push(new ProxyRuleModelChangeCommand(this, rule->ruleId(),
+			rule->updateCondition(row, condition)));
+		return true;
+	}
+
+	return false;
+}
+
+//------------------------------------------------------------------------------
+void AssignmentRulesModel::emitDataChanged(const QModelIndex& changed)
+{
+	// Emit signal for the entire row
+	emit dataChanged(
+		index(changed.row(), 0, changed.parent()),
+		index(changed.row(), columnCount(changed)-1, changed.parent())
+	);
+}
+
 
 }
 

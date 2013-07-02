@@ -5,6 +5,8 @@ set(ui_budget_srcs
 	AssignmentRulesModel.cpp
 	BudgetDetailsForm.cpp
 	BudgetingPeriodForm.cpp
+	ConditionFieldDelegate.cpp
+	ConditionOperatorDelegate.cpp
 	EstimateDetailsForm.cpp
 	EstimateDisplayWidget.cpp
 	EstimateModel.cpp
@@ -14,6 +16,7 @@ set(ui_budget_srcs
 	ProxyModelChangeCommand.cpp
 	ProxyModelDeleteCommand.cpp
 	ProxyModelMoveCommand.cpp
+	ProxyRuleModelChangeCommand.cpp
 	RulesListWidget.cpp
 )
 

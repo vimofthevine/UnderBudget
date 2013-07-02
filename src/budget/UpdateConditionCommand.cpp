@@ -53,10 +53,14 @@ bool UpdateConditionCommand::mergeWith(const QUndoCommand* command)
 	if (command->id() != id())
 		return false;
 
-	// Only merge if change is for the same rule
+	// Only merge if change is for the same rule and condition index
 	uint otherId =
 		static_cast<const UpdateConditionCommand*>(command)->ruleId;
+	int otherIndex =
+		static_cast<const UpdateConditionCommand*>(command)->index;
 	if (otherId != ruleId)
+		return false;
+	if (otherIndex != index)
 		return false;
 
 	// Use new condition parameters from the merged command

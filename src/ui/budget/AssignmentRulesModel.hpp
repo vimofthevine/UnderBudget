@@ -62,6 +62,13 @@ public:
 	 */
 	AssignmentRule* ruleAt(const QModelIndex& index) const;
 
+	/**
+	 * Creates an index to the specified rule.
+	 *
+	 * @param[in] ruleId ID of the rule to be indexed
+	 */
+	QModelIndex indexFor(uint ruleId) const;
+
 	// Overridden methods
 
 	/**
@@ -100,6 +107,18 @@ public:
 	 * the rule or condition at the given index.
 	 */
 	QVariant data(const QModelIndex& index, int role) const;
+
+	/**
+	 * Reimplemented to return appropriate editable flags for
+	 * items that are editable by the user.
+	 */
+	Qt::ItemFlags flags(const QModelIndex& index) const;
+
+	/**
+	 * Reimplemented to update condition parameters.
+	 */
+	bool setData(const QModelIndex& index, const QVariant& value,
+		int role = Qt::EditRole);
 
 private:
 	/** Assignment rules list */
@@ -144,6 +163,40 @@ private:
 	 * @return `true` if the index references a rule condition
 	 */
 	bool isCondition(const QModelIndex& index) const;
+
+	/**
+	 * Returns check state data for the given index.
+	 *
+	 * @param[in] index model index
+	 * @return check state data for the given index
+	 */
+	QVariant checkStateData(const QModelIndex& index) const;
+
+	/**
+	 * Returns display data for the given index.
+	 *
+	 * @param[in] index model index
+	 * @return display data for the given index
+	 */
+	QVariant displayData(const QModelIndex& index) const;
+
+	/**
+	 * Returns edit data for the given index.
+	 *
+	 * @param[in] index model index
+	 * @return edit data for the given index
+	 */
+	QVariant editData(const QModelIndex& index) const;
+
+	/**
+	 * Emits a data changed signal for the given index.
+	 *
+	 * @param[in] index index of the data changed
+	 */
+	void emitDataChanged(const QModelIndex& index);
+
+	// Allow command classes access to private data
+	friend class ProxyRuleModelChangeCommand;
 };
 
 }
