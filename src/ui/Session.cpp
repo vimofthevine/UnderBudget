@@ -45,13 +45,13 @@ Session::Session(QWidget* parent)
 //------------------------------------------------------------------------------
 void Session::createWidgets()
 {
+	AssignmentRulesModel* rulesModel = new AssignmentRulesModel(budget->rules(),
+		budget->estimates(), undoStack, this);
+
 	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
 	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
-		undoStack, this);
-
-	AssignmentRulesModel* model = new AssignmentRulesModel(budget->rules(),
-		budget->estimates(), undoStack, this);
-	assignmentRules = new RulesListWidget(model, this);
+		rulesModel, undoStack, this);
+	assignmentRules = new RulesListWidget(rulesModel, this);
 
 	addWidget(budgetDetails);
 	addWidget(estimateDisplay);

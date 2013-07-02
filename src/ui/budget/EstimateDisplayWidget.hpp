@@ -23,14 +23,17 @@
 
 // Forward declaration(s)
 class QItemSelectionModel;
+class QSortFilterProxyModel;
 class QTabWidget;
 
 namespace ub {
 
 // Forward declaration(s)
+class AssignmentRulesModel;
 class Estimate;
 class EstimateModel;
 class EstimateTreeWidget;
+class RulesListWidget;
 
 /**
  * A widget for displaying all estimates in the current budget.
@@ -52,7 +55,7 @@ public:
 	 * @param[in] parent parent widget
 	 */
 	EstimateDisplayWidget(QSharedPointer<Estimate> root,
-		QUndoStack* stack, QWidget* parent = 0);
+		AssignmentRulesModel* rules, QUndoStack* stack, QWidget* parent = 0);
 
 public slots:
 	/**
@@ -78,6 +81,16 @@ public slots:
 	 */
 	void selectEstimate(uint estimateId);
 
+private slots:
+	/**
+	 * Updates the filtered rules list according to the currently
+	 * selected estimate.
+	 *
+	 * @param[in] current  currently selected estimate index
+	 * @param[in] previous previously selected estimate index
+	 */
+	void updateRuleFilter(const QModelIndex& current, const QModelIndex& previous);
+
 private:
 	/** Root estimate */
 	QSharedPointer<Estimate> root;
@@ -90,6 +103,8 @@ private:
 	EstimateTreeWidget* tree;
 	/** Tab widget for detailed views */
 	QTabWidget* tabs;
+	/** Associated rules list */
+	RulesListWidget* ruleList;
 
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;

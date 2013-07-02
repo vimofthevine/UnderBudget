@@ -20,6 +20,9 @@
 // Qt include(s)
 #include <QTreeView>
 
+// Forward declaration(s)
+class QSortFilterProxyModel;
+
 namespace ub {
 
 // Forward declaration
@@ -52,6 +55,15 @@ signals:
 	 */
 	void estimateSelected(uint estimateId);
 
+public slots:
+	/**
+	 * Filters the list of displayed assignment rules to only those
+	 * matching the given estimate ID.
+	 *
+	 * @param[in] estimateId ID of the estimate on which to filter
+	 */
+	void filter(uint estimateId);
+
 private slots:
 	/**
 	 * Responds to rule or condition selections.
@@ -64,6 +76,8 @@ private slots:
 private:
 	/** Assignment rules list model */
 	AssignmentRulesModel* model;
+	/** Filter proxy model */
+	QSortFilterProxyModel* ruleFilter;
 };
 
 }

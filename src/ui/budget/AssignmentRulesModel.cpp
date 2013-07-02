@@ -78,12 +78,7 @@ AssignmentRule::Condition AssignmentRulesModel::castToCondition(
 //------------------------------------------------------------------------------
 int AssignmentRulesModel::columnCount(const QModelIndex& parent) const
 {
-	return 5;
-	//if (isRule(parent))
-		//return 4; // Conditions have 4 columns (field, operator, sensitive, value)
-	//if (isCondition(parent))
-		//return 0; // No items under conditions
-	//return 1; // Rules have 1 column (estimate)
+	return 6;
 }
 
 //------------------------------------------------------------------------------
@@ -97,12 +92,14 @@ QVariant AssignmentRulesModel::headerData(int section, Qt::Orientation orientati
 		case 0:
 			return tr("Estimate");
 		case 1:
-			return tr("Field");
+			return tr("Estimate ID");
 		case 2:
-			return tr("Operator");
+			return tr("Field");
 		case 3:
-			return tr("Case-Sensitive?");
+			return tr("Operator");
 		case 4:
+			return tr("Case-Sensitive?");
+		case 5:
 			return tr("Value");
 		default:
 			return QVariant();
@@ -188,15 +185,17 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 			return estimate ? estimate->estimateName() : QVariant(estimateId);
 		}
 		case 1:
+			return rule->estimateId();
+		case 2:
 			return (count == 1) ? toString(rule->conditionAt(0).field)
 				: tr("%1 fields").arg(count);
-		case 2:
+		case 3:
 			return (count == 1) ? toString(rule->conditionAt(0).op)
 				: tr("%1 conditions").arg(count);
-		case 3:
+		case 4:
 			return (count == 1) ? rule->conditionAt(0).sensitive
 				: QVariant();
-		case 4:
+		case 5:
 			return (count == 1) ? rule->conditionAt(0).value
 				: tr("%1 values").arg(count);
 		default:
@@ -209,12 +208,17 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 		switch (index.column())
 		{
 		case 1:
-			return toString(condition.field);
+		{
+			AssignmentRule* rule = rules->find(index.internalId());
+			return rule->estimateId();
+		}
 		case 2:
-			return toString(condition.op);
+			return toString(condition.field);
 		case 3:
-			return condition.sensitive;
+			return toString(condition.op);
 		case 4:
+			return condition.sensitive;
+		case 5:
 			return condition.value;
 		default:
 			return QVariant();

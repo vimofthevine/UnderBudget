@@ -28,12 +28,19 @@ RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 		QWidget* parent)
 	: QTreeView(parent), model(model)
 {
-	setModel(model);
+	ruleFilter = new QSortFilterProxyModel(this);
+	ruleFilter->setSourceModel(model);
+	ruleFilter->setFilterKeyColumn(1); // Filter on estimate ID
+	setModel(ruleFilter);
+
 	setAlternatingRowColors(true);
 
 	// Give the estimate name column the most weight
 	header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	header()->setSectionResizeMode(0, QHeaderView::Stretch);
+
+	// Hide the estimate ID column (only used for filtering)
+	hideColumn(1);
 
 	connect(selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(selectionChanged(QModelIndex, QModelIndex)));
@@ -43,12 +50,19 @@ RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 void RulesListWidget::selectionChanged(const QModelIndex& current,
 	const QModelIndex& previous)
 {
-	AssignmentRule* oldRule = model->ruleAt(previous);
-	AssignmentRule* newRule = model->ruleAt(current);
+	AssignmentRule* oldRule = model->ruleAt(ruleFilter->mapToSource(previous));
+	AssignmentRule* newRule = model->ruleAt(ruleFilter->mapToSource(current));
 	if (oldRule != newRule)
 	{
 		emit estimateSelected(newRule->estimateId());
 	}
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::filter(uint estimateId)
+{
+	QString idString = QString("%1").arg(estimateId);
+	ruleFilter->setFilterRegExp(QRegExp(idString));
 }
 
 }

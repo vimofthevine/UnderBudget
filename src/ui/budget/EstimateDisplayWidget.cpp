@@ -18,16 +18,18 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateDetailsForm.hpp"
 #include "ui/budget/EstimateDisplayWidget.hpp"
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/EstimateTreeWidget.hpp"
+#include "ui/budget/RulesListWidget.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
 EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
-		QUndoStack* stack, QWidget* parent)
+		AssignmentRulesModel* rules, QUndoStack* stack, QWidget* parent)
 	: QSplitter(Qt::Vertical, parent), root(root), undoStack(stack)
 {
 	model = new EstimateModel(root, undoStack, this);
@@ -35,12 +37,20 @@ EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
 	tree = new EstimateTreeWidget(model, this);
 	selectionModel = tree->selectionModel();
 
+	// Estimate details
 	EstimateDetailsForm* details = new EstimateDetailsForm(model, undoStack, this);
 	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		details, SLOT(estimateSelected(QModelIndex,QModelIndex)));
 
+	// Associated rules
+	ruleList = new RulesListWidget(rules, this);
+	ruleList->filter(999999999); // Show nothing initially
+	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+		this, SLOT(updateRuleFilter(QModelIndex,QModelIndex)));
+
 	tabs = new QTabWidget(this);
 	tabs->addTab(details, tr("Estimate Details"));
+	tabs->addTab(ruleList, tr("Associated Rules"));
 
 	addWidget(tree);
 	addWidget(tabs);
@@ -73,6 +83,21 @@ void EstimateDisplayWidget::selectEstimate(uint estimateId)
 	QModelIndex index = model->index(estimateId);
 	selectionModel->setCurrentIndex(index,
 		QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+}
+
+//------------------------------------------------------------------------------
+void EstimateDisplayWidget::updateRuleFilter(const QModelIndex& current,
+	const QModelIndex& previous)
+{
+	if (current.isValid())
+	{
+		Estimate* estimate = static_cast<Estimate*>(current.internalPointer());
+		ruleList->filter(estimate->estimateId());
+	}
+	else
+	{
+		ruleList->filter(0); // Show nothing
+	}
 }
 
 }
