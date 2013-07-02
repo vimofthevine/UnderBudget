@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PROXYRULEMODELCHANGECOMMAND_HPP
-#define PROXYRULEMODELCHANGECOMMAND_HPP
+#ifndef RULECHANGEPROXYCOMMAND_HPP
+#define RULECHANGEPROXYCOMMAND_HPP
 
 // Qt include(s)
 #include <QPersistentModelIndex>
@@ -33,7 +33,7 @@ class AssignmentRulesModel;
  * Undoable command proxy for a change command on the underlying model,
  * that will trigger the correct signals on the original view model.
  */
-class ProxyRuleModelChangeCommand : public QUndoCommand
+class RuleChangeProxyCommand : public QUndoCommand
 {
 public:
 	/**
@@ -43,7 +43,7 @@ public:
 	 * @param[in] ruleId ID of the modified rule
 	 * @param[in] cmd    original change command
 	 */
-	ProxyRuleModelChangeCommand(AssignmentRulesModel* model,
+	RuleChangeProxyCommand(AssignmentRulesModel* model,
 		uint ruleId, QUndoCommand* cmd);
 
 	// Overriding methods
@@ -64,4 +64,4 @@ private:
 
 }
 
-#endif //PROXYRULEMODELCHANGECOMMAND_HPP
+#endif //RULECHANGEPROXYCOMMAND_HPP

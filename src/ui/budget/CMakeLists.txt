@@ -11,12 +11,12 @@ set(ui_budget_srcs
 	EstimateDisplayWidget.cpp
 	EstimateModel.cpp
 	EstimateTreeWidget.cpp
+	RuleChangeProxyCommand.cpp
 	ProgressDelegate.cpp
 	ProxyModelAddCommand.cpp
 	ProxyModelChangeCommand.cpp
 	ProxyModelDeleteCommand.cpp
 	ProxyModelMoveCommand.cpp
-	ProxyRuleModelChangeCommand.cpp
 	RulesListWidget.cpp
 )
 

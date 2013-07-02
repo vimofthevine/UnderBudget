@@ -21,7 +21,7 @@
 #include "budget/AssignmentRule.hpp"
 #include "budget/Estimate.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
-#include "ui/budget/ProxyRuleModelChangeCommand.hpp"
+#include "ui/budget/RuleChangeProxyCommand.hpp"
 
 namespace ub {
 
@@ -384,7 +384,7 @@ bool AssignmentRulesModel::setData(const QModelIndex& index,
 			break;
 		}
 
-		undoStack->push(new ProxyRuleModelChangeCommand(this, rule->ruleId(),
+		undoStack->push(new RuleChangeProxyCommand(this, rule->ruleId(),
 			rule->updateCondition(row, condition)));
 		return true;
 	}

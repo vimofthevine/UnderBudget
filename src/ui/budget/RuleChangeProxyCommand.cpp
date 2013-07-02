@@ -19,40 +19,40 @@
 
 // UnderBudget include(s)
 #include "ui/budget/AssignmentRulesModel.hpp"
-#include "ui/budget/ProxyRuleModelChangeCommand.hpp"
+#include "ui/budget/RuleChangeProxyCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-ProxyRuleModelChangeCommand::ProxyRuleModelChangeCommand(AssignmentRulesModel* model,
+RuleChangeProxyCommand::RuleChangeProxyCommand(AssignmentRulesModel* model,
 		uint ruleId, QUndoCommand* cmd)
 	: model(model), ruleId(ruleId), cmd(cmd)
 { }
 
 //------------------------------------------------------------------------------
-int ProxyRuleModelChangeCommand::id() const
+int RuleChangeProxyCommand::id() const
 {
 	return 5633251;
 }
 
 //------------------------------------------------------------------------------
-bool ProxyRuleModelChangeCommand::mergeWith(const QUndoCommand* command)
+bool RuleChangeProxyCommand::mergeWith(const QUndoCommand* command)
 {
 	if (command->id() != id())
 		return false;
 
-	return cmd->mergeWith(static_cast<const ProxyRuleModelChangeCommand*>(command)->cmd);
+	return cmd->mergeWith(static_cast<const RuleChangeProxyCommand*>(command)->cmd);
 }
 
 //------------------------------------------------------------------------------
-void ProxyRuleModelChangeCommand::redo()
+void RuleChangeProxyCommand::redo()
 {
 	cmd->redo();
 	model->emitDataChanged(model->indexFor(ruleId));
 }
 
 //------------------------------------------------------------------------------
-void ProxyRuleModelChangeCommand::undo()
+void RuleChangeProxyCommand::undo()
 {
 	cmd->undo();
 	model->emitDataChanged(model->indexFor(ruleId));

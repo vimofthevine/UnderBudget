@@ -196,7 +196,7 @@ private:
 	void emitDataChanged(const QModelIndex& index);
 
 	// Allow command classes access to private data
-	friend class ProxyRuleModelChangeCommand;
+	friend class RuleChangeProxyCommand;
 };
 
 }
