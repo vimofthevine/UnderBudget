@@ -230,6 +230,12 @@ private:
 	AssignmentRules();
 
 	/**
+	 * Re-indexes the entire rules list. This operation could take a substantial
+	 * amount of time if run too often.
+	 */
+	void reindex();
+
+	/**
 	 * Creates a new rule at the end of this rules list, with the given
 	 * parameters. The `ruleAdded()` signal is emitted.
 	 *

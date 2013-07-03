@@ -50,6 +50,20 @@ AssignmentRule* AssignmentRules::createRule(uint ruleId, uint estimateId,
 }
 
 //------------------------------------------------------------------------------
+void AssignmentRules::reindex()
+{
+	ridToIndex.clear();
+	eidToIndex.clear();
+
+	for (int i=0; i<rules.size(); ++i)
+	{
+		AssignmentRule* rule = rules.at(i);
+		ridToIndex.insert(rule->ruleId(), i);
+		eidToIndex.insert(rule->estimateId(), i);
+	}
+}
+
+//------------------------------------------------------------------------------
 int AssignmentRules::size() const
 {
 	return rules.size();
@@ -134,8 +148,7 @@ AssignmentRule* AssignmentRules::insert(int index, uint ruleId, uint estimateId,
 {
 	AssignmentRule* rule = new AssignmentRule(ruleId, estimateId, conditions, this);
 	rules.insert(index, rule);
-	ridToIndex.insert(ruleId, index);
-	eidToIndex.insert(estimateId, index);
+	reindex();
 	emit ruleAdded(rule, index);
 	return rule;
 }
@@ -188,8 +201,7 @@ void AssignmentRules::remove(int index)
 	if (index >= 0 && index < rules.size())
 	{
 		AssignmentRule* rule = rules.takeAt(index);
-		ridToIndex.remove(rule->ruleId());
-		eidToIndex.remove(rule->estimateId(), index);
+		reindex();
 		emit ruleRemoved(rule, index);
 		delete rule;
 	}
@@ -212,9 +224,7 @@ void AssignmentRules::moveRule(int from, int to)
 
 	AssignmentRule* rule = at(from);
 	rules.move(from, to);
-	ridToIndex.insert(rule->ruleId(), to);
-	eidToIndex.remove(rule->estimateId(), from);
-	eidToIndex.insert(rule->estimateId(), to);
+	reindex();
 	emit ruleMoved(rule, from, to);
 }
 

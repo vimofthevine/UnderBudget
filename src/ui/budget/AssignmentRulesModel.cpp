@@ -422,7 +422,6 @@ void AssignmentRulesModel::clone(const QModelIndex& index)
 
 	if (rule && row >= 0)
 	{
-		qDebug() << "cloneing" << rule->ruleId() << "at" << row;
 		undoStack->push(new RuleAddProxyCommand(this, row,
 			rules->cloneRule(rule->ruleId())));
 	}
