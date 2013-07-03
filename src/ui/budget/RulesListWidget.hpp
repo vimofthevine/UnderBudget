@@ -73,11 +73,31 @@ private slots:
 	 */
 	void selectionChanged(const QModelIndex& current, const QModelIndex& previous);
 
+	/**
+	 * Clones the currently selected assignment rule.
+	 */
+	void cloneSelectedRule();
+
+	/**
+	 * Deletes the currently selected assignment rule.
+	 */
+	void deleteSelectedRule();
+
+protected:
+	/**
+	 * Displays a context menu for operating on the rules list.
+	 *
+	 * @param[in] event context menu event
+	 */
+	void contextMenuEvent(QContextMenuEvent* event);
+
 private:
 	/** Assignment rules list model */
 	AssignmentRulesModel* model;
 	/** Filter proxy model */
 	QSortFilterProxyModel* ruleFilter;
+	/** Tracks whether list is currently filtered */
+	bool filtered;
 };
 
 }

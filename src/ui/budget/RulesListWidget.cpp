@@ -28,7 +28,7 @@ namespace ub {
 //------------------------------------------------------------------------------
 RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 		QWidget* parent)
-	: QTreeView(parent), model(model)
+	: QTreeView(parent), model(model), filtered(false)
 {
 	ruleFilter = new QSortFilterProxyModel(this);
 	ruleFilter->setSourceModel(model);
@@ -42,6 +42,9 @@ RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 	// Give the estimate name column the most weight
 	header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	header()->setSectionResizeMode(0, QHeaderView::Stretch);
+
+	// Setup context menu
+	setContextMenuPolicy(Qt::DefaultContextMenu);
 
 	// Hide the estimate ID column (only used for filtering)
 	hideColumn(1);
@@ -67,6 +70,50 @@ void RulesListWidget::filter(uint estimateId)
 {
 	QString idString = QString("%1").arg(estimateId);
 	ruleFilter->setFilterRegExp(QRegExp(idString));
+	filtered = true;
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+	QAction* cloneAction = new QAction(tr("Clone Rule"), this);
+	cloneAction->setEnabled(currentIndex().isValid());
+	connect(cloneAction, SIGNAL(triggered()),
+		this, SLOT(cloneSelectedRule()));
+
+	QAction* delAction = new QAction(tr("Delete"), this);
+	delAction->setEnabled(currentIndex().isValid());
+	connect(delAction, SIGNAL(triggered()),
+		this, SLOT(deleteSelectedRule()));
+
+	QAction* moveUpAction = new QAction(tr("Raise in Priority"), this);
+	moveUpAction->setEnabled( ! filtered
+		&& currentIndex().isValid()
+		&& (currentIndex().row() > 0));
+
+	QAction* moveDownAction = new QAction(tr("Lower in Priority"), this);
+	moveDownAction->setEnabled( ! filtered
+		&& currentIndex().isValid()
+		&& (currentIndex().row() < model->rowCount() - 1));
+
+	QMenu* menu = new QMenu(this);
+	menu->addAction(cloneAction);
+	menu->addAction(delAction);
+	menu->addSeparator();
+	menu->addAction(moveUpAction);
+	menu->addAction(moveDownAction);
+	menu->exec(event->globalPos());
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::cloneSelectedRule()
+{
+	model->clone(ruleFilter->mapToSource(currentIndex()));
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::deleteSelectedRule()
+{
 }
 
 }

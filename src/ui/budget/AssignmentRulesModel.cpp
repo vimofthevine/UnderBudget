@@ -21,6 +21,7 @@
 #include "budget/AssignmentRule.hpp"
 #include "budget/Estimate.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
+#include "ui/budget/RuleAddProxyCommand.hpp"
 #include "ui/budget/RuleChangeProxyCommand.hpp"
 
 namespace ub {
@@ -402,6 +403,30 @@ void AssignmentRulesModel::emitDataChanged(const QModelIndex& changed)
 	);
 }
 
+//------------------------------------------------------------------------------
+void AssignmentRulesModel::clone(const QModelIndex& index)
+{
+	AssignmentRule* rule = 0;
+	int row = -1;
+
+	if (isRule(index))
+	{
+		rule = castToRule(index);
+		row = index.row();
+	}
+	else if (isCondition(index))
+	{
+		rule = rules->find(index.internalId());
+		row = rules->indexOf(rule->ruleId());
+	}
+
+	if (rule && row >= 0)
+	{
+		qDebug() << "cloneing" << rule->ruleId() << "at" << row;
+		undoStack->push(new RuleAddProxyCommand(this, row,
+			rules->cloneRule(rule->ruleId())));
+	}
+}
 
 }
 

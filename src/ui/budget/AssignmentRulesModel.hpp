@@ -69,6 +69,13 @@ public:
 	 */
 	QModelIndex indexFor(uint ruleId) const;
 
+	/**
+	 * Clones the rule located at the specified index.
+	 *
+	 * @param[in] index index of the rule to be cloned
+	 */
+	void clone(const QModelIndex& index);
+
 	// Overridden methods
 
 	/**
@@ -196,6 +203,7 @@ private:
 	void emitDataChanged(const QModelIndex& index);
 
 	// Allow command classes access to private data
+	friend class RuleAddProxyCommand;
 	friend class RuleChangeProxyCommand;
 };
 
