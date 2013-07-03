@@ -114,6 +114,8 @@ void RulesListWidget::cloneSelectedRule()
 //------------------------------------------------------------------------------
 void RulesListWidget::deleteSelectedRule()
 {
+	qDebug() << ruleFilter->mapToSource(currentIndex());
+	model->remove(ruleFilter->mapToSource(currentIndex()));
 }
 
 }

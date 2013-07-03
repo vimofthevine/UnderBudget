@@ -76,6 +76,13 @@ public:
 	 */
 	void clone(const QModelIndex& index);
 
+	/**
+	 * Removes the rule located at the specified index.
+	 *
+	 * @param[in] index index of the rule to be removed
+	 */
+	void remove(const QModelIndex& index);
+
 	// Overridden methods
 
 	/**
@@ -202,9 +209,13 @@ private:
 	 */
 	void emitDataChanged(const QModelIndex& index);
 
+	void emitLayoutAboutToBeChanged();
+	void emitLayoutChanged();
+
 	// Allow command classes access to private data
 	friend class RuleAddProxyCommand;
 	friend class RuleChangeProxyCommand;
+	friend class RuleRemoveProxyCommand;
 };
 
 }
