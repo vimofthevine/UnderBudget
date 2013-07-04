@@ -42,9 +42,10 @@ public:
 	 * @param[in] model  assignment rules list model
 	 * @param[in] ruleId ID of the modified rule
 	 * @param[in] cmd    original change command
+	 * @param[in] layout change affects structural layout
 	 */
 	RuleChangeProxyCommand(AssignmentRulesModel* model,
-		uint ruleId, QUndoCommand* cmd);
+		uint ruleId, QUndoCommand* cmd, bool layout = false);
 
 	// Overriding methods
 
@@ -60,6 +61,8 @@ private:
 	const uint ruleId;
 	/** Original command */
 	QUndoCommand* cmd;
+	/** Whether command affects structural layout */
+	bool layoutChange;
 };
 
 }

@@ -86,6 +86,11 @@ void RulesListWidget::contextMenuEvent(QContextMenuEvent* event)
 	connect(delAction, SIGNAL(triggered()),
 		this, SLOT(deleteSelectedRule()));
 
+	QAction* addConditionAction = new QAction(tr("Add Condition"), this);
+	addConditionAction->setEnabled(currentIndex().isValid());
+	connect(addConditionAction, SIGNAL(triggered()),
+		this, SLOT(addConditionToSelectedRule()));
+
 	QAction* moveUpAction = new QAction(tr("Raise in Priority"), this);
 	moveUpAction->setEnabled( ! filtered
 		&& currentIndex().isValid()
@@ -99,6 +104,8 @@ void RulesListWidget::contextMenuEvent(QContextMenuEvent* event)
 	QMenu* menu = new QMenu(this);
 	menu->addAction(cloneAction);
 	menu->addAction(delAction);
+	menu->addSeparator();
+	menu->addAction(addConditionAction);
 	menu->addSeparator();
 	menu->addAction(moveUpAction);
 	menu->addAction(moveDownAction);
@@ -114,8 +121,13 @@ void RulesListWidget::cloneSelectedRule()
 //------------------------------------------------------------------------------
 void RulesListWidget::deleteSelectedRule()
 {
-	qDebug() << ruleFilter->mapToSource(currentIndex());
 	model->remove(ruleFilter->mapToSource(currentIndex()));
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::addConditionToSelectedRule()
+{
+	model->addCondition(ruleFilter->mapToSource(currentIndex()));
 }
 
 }

@@ -25,8 +25,8 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 RuleChangeProxyCommand::RuleChangeProxyCommand(AssignmentRulesModel* model,
-		uint ruleId, QUndoCommand* cmd)
-	: model(model), ruleId(ruleId), cmd(cmd)
+		uint ruleId, QUndoCommand* cmd, bool layout)
+	: model(model), ruleId(ruleId), cmd(cmd), layoutChange(layout)
 { }
 
 //------------------------------------------------------------------------------
@@ -47,15 +47,35 @@ bool RuleChangeProxyCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void RuleChangeProxyCommand::redo()
 {
+	if (layoutChange)
+	{
+		model->emitLayoutAboutToBeChanged();
+	}
+
 	cmd->redo();
 	model->emitDataChanged(model->indexFor(ruleId));
+
+	if (layoutChange)
+	{
+		model->emitLayoutChanged();
+	}
 }
 
 //------------------------------------------------------------------------------
 void RuleChangeProxyCommand::undo()
 {
+	if (layoutChange)
+	{
+		model->emitLayoutAboutToBeChanged();
+	}
+
 	cmd->undo();
 	model->emitDataChanged(model->indexFor(ruleId));
+
+	if (layoutChange)
+	{
+		model->emitLayoutChanged();
+	}
 }
 
 }

@@ -100,6 +100,13 @@ public:
 	 */
 	void remove(const QModelIndex& index);
 
+	/**
+	 * Adds a condition to the rule located at the specified index.
+	 *
+	 * @param[in] index index of the rule to which to add a condition
+	 */
+	void addCondition(const QModelIndex& index);
+
 	// Overridden methods
 
 	/**

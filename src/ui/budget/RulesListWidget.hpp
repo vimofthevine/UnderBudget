@@ -83,6 +83,11 @@ private slots:
 	 */
 	void deleteSelectedRule();
 
+	/**
+	 * Creates a new condition for the currently selected assignment rule.
+	 */
+	void addConditionToSelectedRule();
+
 protected:
 	/**
 	 * Displays a context menu for operating on the rules list.
