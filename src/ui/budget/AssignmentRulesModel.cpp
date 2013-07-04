@@ -498,5 +498,16 @@ void AssignmentRulesModel::addCondition(const QModelIndex& index)
 	}
 }
 
+//------------------------------------------------------------------------------
+void AssignmentRulesModel::removeCondition(const QModelIndex& index)
+{
+	if (isCondition(index))
+	{
+		AssignmentRule* rule = rules->find(index.internalId());
+		undoStack->push(new RuleChangeProxyCommand(this, rule->ruleId(),
+			rule->removeCondition(index.row()), true));
+	}
+}
+
 }
 

@@ -88,6 +88,11 @@ private slots:
 	 */
 	void addConditionToSelectedRule();
 
+	/**
+	 * Removes the currently selected condition from its parent assignment rule.
+	 */
+	void removeSelectedCondition();
+
 protected:
 	/**
 	 * Displays a context menu for operating on the rules list.

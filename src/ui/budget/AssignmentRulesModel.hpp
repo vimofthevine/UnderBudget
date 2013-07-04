@@ -54,6 +54,22 @@ public:
 		QUndoStack* stack, QObject* parent = 0);
 
 	/**
+	 * Checks if the given index references an assignment rule.
+	 *
+	 * @param[in] index model index
+	 * @return `true` if the index references an assignment rule
+	 */
+	bool isRule(const QModelIndex& index) const;
+
+	/**
+	 * Checks if the given index references a rule condition.
+	 *
+	 * @param[in] index model index
+	 * @return `true` if the index references a rule condition
+	 */
+	bool isCondition(const QModelIndex& index) const;
+
+	/**
 	 * Returns the assignment rule located at the specified index. If the
 	 * index is for a condition, the containing rule is returned.
 	 *
@@ -106,6 +122,13 @@ public:
 	 * @param[in] index index of the rule to which to add a condition
 	 */
 	void addCondition(const QModelIndex& index);
+
+	/**
+	 * Removes the condition located at the specified index.
+	 *
+	 * @param[in] index index of the condition to be removed
+	 */
+	void removeCondition(const QModelIndex& index);
 
 	// Overridden methods
 
@@ -185,22 +208,6 @@ private:
 	 * @return assignment rule condition referenced by the model index
 	 */
 	AssignmentRule::Condition castToCondition(const QModelIndex& index) const;
-
-	/**
-	 * Checks if the given index references an assignment rule.
-	 *
-	 * @param[in] index model index
-	 * @return `true` if the index references an assignment rule
-	 */
-	bool isRule(const QModelIndex& index) const;
-
-	/**
-	 * Checks if the given index references a rule condition.
-	 *
-	 * @param[in] index model index
-	 * @return `true` if the index references a rule condition
-	 */
-	bool isCondition(const QModelIndex& index) const;
 
 	/**
 	 * Returns check state data for the given index.
