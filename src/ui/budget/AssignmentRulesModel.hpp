@@ -78,6 +78,15 @@ public:
 	int countFor(uint estimateId) const;
 
 	/**
+	 * Creates a new rule to be associated with the given estimate,
+	 * and appends it to the end of the rules list.
+	 *
+	 * @param[in] estimateId ID of the estimate to which to associate
+	 *                       the new rule
+	 */
+	void addTo(uint estimateId);
+
+	/**
 	 * Clones the rule located at the specified index.
 	 *
 	 * @param[in] index index of the rule to be cloned

@@ -34,7 +34,7 @@ EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
 {
 	model = new EstimateModel(root, rules, undoStack, this);
 
-	tree = new EstimateTreeWidget(model, this);
+	tree = new EstimateTreeWidget(model, rules, this);
 	selectionModel = tree->selectionModel();
 
 	// Estimate details

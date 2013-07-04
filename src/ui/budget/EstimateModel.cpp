@@ -215,6 +215,12 @@ QModelIndex EstimateModel::index(uint estimateId) const
 }
 
 //------------------------------------------------------------------------------
+Estimate* EstimateModel::at(const QModelIndex& index) const
+{
+	return cast(index);
+}
+
+//------------------------------------------------------------------------------
 QModelIndex EstimateModel::index(int row, int column, const QModelIndex& parent) const
 {
 	if ( ! hasIndex(row, column, parent))

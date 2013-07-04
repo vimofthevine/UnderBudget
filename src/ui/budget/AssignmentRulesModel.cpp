@@ -423,6 +423,13 @@ void AssignmentRulesModel::emitLayoutChanged()
 }
 
 //------------------------------------------------------------------------------
+void AssignmentRulesModel::addTo(uint estimateId)
+{
+	undoStack->push(new RuleAddProxyCommand(this, rules->size(),
+		rules->addRule(estimateId)));
+}
+
+//------------------------------------------------------------------------------
 void AssignmentRulesModel::clone(const QModelIndex& index)
 {
 	AssignmentRule* rule = 0;

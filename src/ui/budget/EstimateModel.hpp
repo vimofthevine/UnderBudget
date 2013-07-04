@@ -133,6 +133,14 @@ public:
 	QModelIndex index(uint estimateId) const;
 
 	/**
+	 * Returns the estimate located at the given index.
+	 *
+	 * @param[in] index model index at which to retrieve the estimate
+	 * @return estimate located at the given index
+	 */
+	Estimate* at(const QModelIndex& index) const;
+
+	/**
 	 * Returns a list of columns that display the editable
 	 * definition fields of an estimate.
 	 *
