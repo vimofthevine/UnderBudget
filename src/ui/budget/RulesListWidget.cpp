@@ -51,6 +51,25 @@ RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 
 	connect(selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(selectionChanged(QModelIndex, QModelIndex)));
+
+	// Add shortcut actions
+	QAction* delAction = new QAction(tr("Delete"), this);
+	delAction->setShortcut(QKeySequence::Delete);
+	connect(delAction, SIGNAL(triggered()),
+		this, SLOT(deleteSelectedRule()));
+	addAction(delAction);
+
+	QAction* moveUpAction = new QAction(tr("Raise in Priority"), this);
+	moveUpAction->setShortcut(Qt::CTRL + Qt::Key_Up);
+	connect(moveUpAction, SIGNAL(triggered()),
+		this, SLOT(moveSelectedRuleUp()));
+	addAction(moveUpAction);
+
+	QAction* moveDownAction = new QAction(tr("Lower in Priority"), this);
+	moveDownAction->setShortcut(Qt::CTRL + Qt::Key_Down);
+	connect(moveDownAction, SIGNAL(triggered()),
+		this, SLOT(moveSelectedRuleDown()));
+	addAction(moveDownAction);
 }
 
 //------------------------------------------------------------------------------
@@ -82,6 +101,7 @@ void RulesListWidget::contextMenuEvent(QContextMenuEvent* event)
 		this, SLOT(cloneSelectedRule()));
 
 	QAction* delAction = new QAction(tr("Delete"), this);
+	delAction->setShortcut(QKeySequence::Delete);
 	delAction->setEnabled(currentIndex().isValid());
 	connect(delAction, SIGNAL(triggered()),
 		this, SLOT(deleteSelectedRule()));
@@ -98,14 +118,20 @@ void RulesListWidget::contextMenuEvent(QContextMenuEvent* event)
 		this, SLOT(removeSelectedCondition()));
 
 	QAction* moveUpAction = new QAction(tr("Raise in Priority"), this);
+	moveUpAction->setShortcut(Qt::CTRL + Qt::Key_Up);
 	moveUpAction->setEnabled( ! filtered
 		&& currentIndex().isValid()
 		&& (currentIndex().row() > 0));
+	connect(moveUpAction, SIGNAL(triggered()),
+		this, SLOT(moveSelectedRuleUp()));
 
 	QAction* moveDownAction = new QAction(tr("Lower in Priority"), this);
+	moveDownAction->setShortcut(Qt::CTRL + Qt::Key_Down);
 	moveDownAction->setEnabled( ! filtered
 		&& currentIndex().isValid()
 		&& (currentIndex().row() < model->rowCount() - 1));
+	connect(moveDownAction, SIGNAL(triggered()),
+		this, SLOT(moveSelectedRuleDown()));
 
 	QMenu* menu = new QMenu(this);
 	menu->addAction(cloneAction);
@@ -129,6 +155,34 @@ void RulesListWidget::cloneSelectedRule()
 void RulesListWidget::deleteSelectedRule()
 {
 	model->remove(ruleFilter->mapToSource(currentIndex()));
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::moveSelectedRuleUp()
+{
+	if (filtered)
+		return;
+
+	QModelIndex index = ruleFilter->mapToSource(currentIndex());
+	// Can't move first rule up any higher
+	if (index.row() > 0)
+	{
+		model->move(index.row(), index.row() - 1);
+	}
+}
+
+//------------------------------------------------------------------------------
+void RulesListWidget::moveSelectedRuleDown()
+{
+	if (filtered)
+		return;
+
+	QModelIndex index = ruleFilter->mapToSource(currentIndex());
+	// Can't move last rule down any lower
+	if (index.row() < (model->rowCount() - 1))
+	{
+		model->move(index.row(), index.row() + 1);
+	}
 }
 
 //------------------------------------------------------------------------------

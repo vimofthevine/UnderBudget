@@ -117,6 +117,15 @@ public:
 	void remove(const QModelIndex& index);
 
 	/**
+	 * Moves the rule from the given origin row to the specified
+	 * destination row.
+	 *
+	 * @param[in] from origin index or row of the rule to be moved
+	 * @param[in] to   destination index or row of the rule to be moved
+	 */
+	void move(int from, int to);
+
+	/**
 	 * Adds a condition to the rule located at the specified index.
 	 *
 	 * @param[in] index index of the rule to which to add a condition
@@ -246,6 +255,7 @@ private:
 	// Allow command classes access to private data
 	friend class RuleAddProxyCommand;
 	friend class RuleChangeProxyCommand;
+	friend class RuleMoveProxyCommand;
 	friend class RuleRemoveProxyCommand;
 };
 

@@ -84,6 +84,16 @@ private slots:
 	void deleteSelectedRule();
 
 	/**
+	 * Moves the currently selected assignment rule up in the rules list.
+	 */
+	void moveSelectedRuleUp();
+
+	/**
+	 * Moves the currently selected assignment rule down in the rules list.
+	 */
+	void moveSelectedRuleDown();
+
+	/**
 	 * Creates a new condition for the currently selected assignment rule.
 	 */
 	void addConditionToSelectedRule();
