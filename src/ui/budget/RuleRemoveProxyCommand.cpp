@@ -47,16 +47,9 @@ bool RuleRemoveProxyCommand::mergeWith(const QUndoCommand* command)
 //------------------------------------------------------------------------------
 void RuleRemoveProxyCommand::redo()
 {
-	qDebug() << "beginning layout change";
-	model->emitLayoutAboutToBeChanged();
-	qDebug() << "beginning remove rows";
 	model->beginRemoveRows(QModelIndex(), index, index);
-	qDebug() << "executing command";
 	cmd->redo();
-	qDebug() << "done with remove rows";
 	model->endRemoveRows();
-	qDebug() << "done with layout change";
-	model->emitLayoutChanged();
 }
 
 //------------------------------------------------------------------------------

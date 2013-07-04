@@ -154,7 +154,7 @@ QModelIndex AssignmentRulesModel::index(int row, int column,
 	else
 	{
 		// Need to return index to rule
-		return createIndex(row, column, (uint) 0);
+		return createIndex(row, column, (quintptr) 0);
 	}
 }
 
@@ -165,7 +165,7 @@ QModelIndex AssignmentRulesModel::parent(const QModelIndex& index) const
 	{
 		// Use rule ID stored as index internal ID
 		int row = rules->indexOf(index.internalId());
-		return createIndex(row, 0, (uint) 0);
+		return createIndex(row, 0, (quintptr) 0);
 	}
 	else // If a rule or the root index itself
 		return QModelIndex();

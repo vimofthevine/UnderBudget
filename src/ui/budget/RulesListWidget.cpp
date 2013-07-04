@@ -61,7 +61,7 @@ void RulesListWidget::selectionChanged(const QModelIndex& current,
 	AssignmentRule* newRule = model->ruleAt(ruleFilter->mapToSource(current));
 	if (oldRule != newRule)
 	{
-		emit estimateSelected(newRule->estimateId());
+		emit estimateSelected(newRule ? newRule->estimateId() : 0);
 	}
 }
 
