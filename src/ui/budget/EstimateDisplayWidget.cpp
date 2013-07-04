@@ -32,7 +32,7 @@ EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
 		AssignmentRulesModel* rules, QUndoStack* stack, QWidget* parent)
 	: QSplitter(Qt::Vertical, parent), root(root), undoStack(stack)
 {
-	model = new EstimateModel(root, undoStack, this);
+	model = new EstimateModel(root, rules, undoStack, this);
 
 	tree = new EstimateTreeWidget(model, this);
 	selectionModel = tree->selectionModel();

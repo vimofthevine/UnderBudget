@@ -44,7 +44,7 @@ EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
 	setDragDropMode(QAbstractItemView::InternalMove);
 
 	// Display progress bar for estimate progress
-	setItemDelegateForColumn(6, new ProgressDelegate(this));
+	setItemDelegateForColumn(7, new ProgressDelegate(this));
 }
 
 //------------------------------------------------------------------------------

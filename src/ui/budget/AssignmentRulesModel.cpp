@@ -35,6 +35,12 @@ AssignmentRulesModel::AssignmentRulesModel(QSharedPointer<AssignmentRules> rules
 { }
 
 //------------------------------------------------------------------------------
+int AssignmentRulesModel::countFor(uint estimateId) const
+{
+	return rules->findFor(estimateId).size();
+}
+
+//------------------------------------------------------------------------------
 AssignmentRule* AssignmentRulesModel::ruleAt(const QModelIndex& index) const
 {
 	if (isRule(index))

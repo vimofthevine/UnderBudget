@@ -70,6 +70,14 @@ public:
 	QModelIndex indexFor(uint ruleId) const;
 
 	/**
+	 * Returns the number of rules defined for the given estimate.
+	 *
+	 * @param[in] estimateId ID of an estimate
+	 * @return number of rules associated with the specified estimate
+	 */
+	int countFor(uint estimateId) const;
+
+	/**
 	 * Clones the rule located at the specified index.
 	 *
 	 * @param[in] index index of the rule to be cloned
