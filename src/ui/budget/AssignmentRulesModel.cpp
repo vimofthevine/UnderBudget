@@ -336,6 +336,11 @@ Qt::ItemFlags AssignmentRulesModel::flags(const QModelIndex& index) const
 	{
 		flags |= Qt::ItemIsEditable;
 	}
+	// If a rule and the estimate name column
+	else if (isRule(index) && index.column() == 0)
+	{
+		flags |= Qt::ItemIsDragEnabled;
+	}
 	// If a rule and one of the condition columns (not 0 or 1)
 	else if (isRule(index) && index.column() > 1)
 	{
@@ -344,6 +349,11 @@ Qt::ItemFlags AssignmentRulesModel::flags(const QModelIndex& index) const
 		{
 			flags |= Qt::ItemIsEditable;
 		}
+	}
+	// Allows moving of rules to indices between other rules
+	else if ( ! index.isValid())
+	{
+		flags |= Qt::ItemIsDropEnabled;
 	}
 
 	return flags;
@@ -399,6 +409,85 @@ bool AssignmentRulesModel::setData(const QModelIndex& index,
 	}
 
 	return false;
+}
+
+//------------------------------------------------------------------------------
+QStringList AssignmentRulesModel::mimeTypes() const
+{
+	QStringList types;
+	types << "application/rule.origin";
+	return types;
+}
+
+//------------------------------------------------------------------------------
+Qt::DropActions AssignmentRulesModel::supportedDragActions() const
+{
+	return Qt::MoveAction;
+}
+
+//------------------------------------------------------------------------------
+Qt::DropActions AssignmentRulesModel::supportedDropActions() const
+{
+	return Qt::MoveAction;
+}
+
+//------------------------------------------------------------------------------
+QMimeData* AssignmentRulesModel::mimeData(const QModelIndexList& indices) const
+{
+	// Serialize original rule location data
+	QMimeData* mimeData = new QMimeData;
+	QByteArray encoded;
+	QDataStream stream(&encoded, QIODevice::WriteOnly);
+
+	// Only one rule/index can be moved at a time
+	QModelIndex index = indices.at(0);
+	if (isRule(index))
+	{
+		qDebug() << "Serializing rule origin mime data:"
+			<< "from" << index.row();
+		stream << index.row();
+		mimeData->setData("application/rule.origin", encoded);
+	}
+
+	return mimeData;
+}
+
+//------------------------------------------------------------------------------
+bool AssignmentRulesModel::dropMimeData(const QMimeData* data,
+	Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{
+	if (action == Qt::IgnoreAction)
+		return true;
+
+	if (action != Qt::MoveAction
+		|| ! data->hasFormat("application/rule.origin"))
+	{
+		qDebug() << "not move action or origin mime";
+		return false;
+	}
+
+	// Unserialize rule's original location
+	QByteArray encoded = data->data("application/rule.origin");
+	QDataStream stream(&encoded, QIODevice::ReadOnly);
+	int oldRow;
+	stream >> oldRow;
+	qDebug() << "Unserialized rule origin mime data:"
+		<< "from" << oldRow;
+
+	// Make sure new row is not < 0 (use rowCount if < 0)
+	int newRow = (row < 0) ? rowCount() : row;
+	// If trying to move down the list, adjust target index so it points to
+	// the desired end-result index, not the index of the next item
+	if (newRow > oldRow)
+	{
+		newRow = newRow - 1;
+	}
+	qDebug() << "Target rule location:"
+		<< "move to" << row << newRow;
+
+	undoStack->push(new RuleMoveProxyCommand(this, oldRow, newRow,
+		rules->move(oldRow, newRow)));
+	return true;
 }
 
 //------------------------------------------------------------------------------

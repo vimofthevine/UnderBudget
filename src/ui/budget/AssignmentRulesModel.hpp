@@ -190,6 +190,35 @@ public:
 	bool setData(const QModelIndex& index, const QVariant& value,
 		int role = Qt::EditRole);
 
+	/**
+	 * Reimplemented to return the following mime types:
+	 * - Moved rule origin data
+	 */
+	QStringList mimeTypes() const;
+
+	/**
+	 * Reimplemented to support a move action.
+	 */
+	Qt::DropActions supportedDragActions() const;
+
+	/**
+	 * Reimplemented to support a move action.
+	 */
+	Qt::DropActions supportedDropActions() const;
+
+	/**
+	 * Reimplemented to create mime data consisting of origin
+	 * location data for a moved rule.
+	 */
+	QMimeData* mimeData(const QModelIndexList& indices) const;
+
+	/**
+	 * Reimplemented to execute a move-rule operation based on
+	 * the origin location data in the given mime data.
+	 */
+	bool dropMimeData(const QMimeData* data, Qt::DropAction action,
+		int row, int column, const QModelIndex& parent);
+
 private:
 	/** Assignment rules list */
 	QSharedPointer<AssignmentRules> rules;

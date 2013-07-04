@@ -49,6 +49,9 @@ RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 	// Hide the estimate ID column (only used for filtering)
 	hideColumn(1);
 
+	// Enable re-ordering/moving
+	setDragDropMode(QAbstractItemView::InternalMove);
+
 	connect(selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(selectionChanged(QModelIndex, QModelIndex)));
 
@@ -90,6 +93,7 @@ void RulesListWidget::filter(uint estimateId)
 	QString idString = QString("%1").arg(estimateId);
 	ruleFilter->setFilterRegExp(QRegExp(idString));
 	filtered = true;
+	setDragDropMode(QAbstractItemView::NoDragDrop);
 }
 
 //------------------------------------------------------------------------------
