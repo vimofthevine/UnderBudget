@@ -68,7 +68,7 @@ void CurrencyTest::format_data()
 		<< -234.32 << "($234.32)";
 	QTest::newRow("en-US_uah")
 		<< QLocale(QLocale::English, QLocale::UnitedStates) << Currency("UAH")
-		<< 1234.0 << "UAH1,234.00";
+		<< 1234.0 << QChar(8372) + QString("1,234.00");
 	QTest::newRow("uk-UA_uah_short")
 		<< QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency("UAH")
 		<< 4.0 << QString::fromUtf8("4,00\u00A0\u20B4");
@@ -80,7 +80,7 @@ void CurrencyTest::format_data()
 		<< -234.32 << QString::fromUtf8("-234,32\u00A0\u20B4");
 	QTest::newRow("uk-UA_usd")
 		<< QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency("USD")
-		<< 1234.0 << "1\u00A0234,00\u00A0USD";
+		<< 1234.0 << "1\u00A0234,00\u00A0$";
 }
 
 //------------------------------------------------------------------------------

@@ -14,34 +14,42 @@
  * limitations under the License.
  */
 
-#ifndef BUDGETFILEWIZARD_HPP
-#define BUDGETFILEWIZARD_HPP
+#ifndef XMLBUDGETFILE_HPP
+#define XMLBUDGETFILE_HPP
 
 // Qt include(s)
-#include <QString>
 
 // UnderBudget include(s)
-
-// Forward declaration(s)
-class QWidget;
+#include "budget/storage/BudgetSource.hpp"
 
 namespace ub {
 
 /**
- * Budget source file selection wizard.
+ * A budget source for budgets stored in an XML file.
  */
-class BudgetFileWizard {
-
+class XmlBudgetFile : public BudgetSource {
 public:
-	static QString promptForFileToOpen(QWidget* parent);
+	/**
+	 * Constructs an XML budget file source for the specified file path.
+	 *
+	 * @param[in] fileName XML budget file location
+	 */
+	XmlBudgetFile(const QString& fileName);
 
-	static QString promptForFileToSave(QWidget* parent, const QString& existing);
+	// Implemented base methods
+	QSharedPointer<Budget> retrieve();
+	bool store(QSharedPointer<Budget> budget);
+	QString error() const;
+	QString location() const;
 
 private:
-	// Last-used budget file directory settings key
-	static const QString LAST_USED_BUDGET_DIR;
+	/** XML budget file name */
+	const QString xmlFile;
+	/** Last error message */
+	QString errorMsg;
 };
 
 }
 
-#endif //BUDGETFILEWIZARD_HPP
+#endif //XMLBUDGETFILE_HPP
+

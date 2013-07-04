@@ -2,6 +2,7 @@
 
 # Specify accounting source files
 set(accounting_srcs
+	currencies.cpp
 	ConversionRatesSource.cpp
 	Currency.cpp
 	Money.cpp

@@ -19,33 +19,122 @@
 
 // UnderBudget include(s)
 #include "ui/Session.hpp"
-#include "ui/wizard/BudgetFileWizard.hpp"
+#include "ui/budget/AssignmentRulesModel.hpp"
+#include "ui/budget/BudgetDetailsForm.hpp"
+#include "ui/budget/EstimateDisplayWidget.hpp"
+#include "ui/budget/RulesListWidget.hpp"
+#include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
 Session::Session(QWidget* parent)
-	: QStackedWidget(parent)
-{ }
-
-//------------------------------------------------------------------------------
-void Session::closeEvent(QCloseEvent* event)
-{ }
-
-//------------------------------------------------------------------------------
-void Session::newBudgetFile()
+	: QStackedWidget(parent),
+	  isUntitled(true)
 {
-	isUntitled = true;
-	setWindowTitle("New Budget");
+	// Setup undo stack signals/slots
+	undoStack = new QUndoStack(this);
+	connect(undoStack, SIGNAL(cleanChanged(bool)),
+		this, SLOT(setWindowModified(bool)));
+	connect(undoStack, SIGNAL(canUndoChanged(bool)),
+		this, SIGNAL(undoAvailable(bool)));
+	connect(undoStack, SIGNAL(canRedoChanged(bool)),
+		this, SIGNAL(redoAvailable(bool)));
 }
 
 //------------------------------------------------------------------------------
-bool Session::openBudgetFile(const QString& file)
+void Session::createWidgets()
 {
-	isUntitled = false;
-	setWindowTitle(file);
-	currentFile = file;
+	AssignmentRulesModel* rulesModel = new AssignmentRulesModel(budget->rules(),
+		budget->estimates(), undoStack, this);
+
+	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
+	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
+		rulesModel, undoStack, this);
+	assignmentRules = new RulesListWidget(rulesModel, this);
+
+	addWidget(budgetDetails);
+	addWidget(estimateDisplay);
+	addWidget(assignmentRules);
+
+	// Connect the selection of estimates and rules
+	connect(assignmentRules, SIGNAL(estimateSelected(uint)),
+		estimateDisplay, SLOT(selectEstimate(uint)));
+}
+
+//------------------------------------------------------------------------------
+void Session::updateWindowTitle()
+{
+	setWindowTitle(sessionName() + "[*]");
+}
+
+//------------------------------------------------------------------------------
+void Session::setWindowModified(bool isClean)
+{
+	QStackedWidget::setWindowModified( ! isClean);
+}
+
+//------------------------------------------------------------------------------
+void Session::closeEvent(QCloseEvent* event)
+{
+	if (promptToSave())
+	{
+		event->accept();
+	}
+	else
+	{
+		event->ignore();
+	}
+}
+
+//------------------------------------------------------------------------------
+bool Session::promptToSave()
+{
+	if ( ! undoStack->isClean())
+	{
+		QMessageBox::StandardButton response;
+		response = QMessageBox::warning(this, tr("Unsaved Changes"),
+			tr("'%1' has been modified.\n"
+			   "Do you want to save your changes?").arg(budgetName()),
+			QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+		if (response == QMessageBox::Save)
+			return save();
+		else if (response == QMessageBox::Cancel)
+			return false;
+		// Else discard
+	}
 	return true;
+}
+
+//------------------------------------------------------------------------------
+void Session::newBudget()
+{
+	budget = QSharedPointer<Budget>(new Budget);
+	isUntitled = true;
+	connect(budget.data(), SIGNAL(nameChanged(QString)),
+		this, SLOT(updateWindowTitle()));
+	updateWindowTitle();
+	createWidgets();
+}
+
+//------------------------------------------------------------------------------
+bool Session::openBudget(QSharedPointer<BudgetSource> source)
+{
+	budgetSource = source;
+	budget = source->retrieve();
+	if ( ! budget)
+	{
+		QMessageBox::warning(this, tr("Error"), source->error());
+		return false;
+	}
+	else
+	{
+		isUntitled = false;
+		updateWindowTitle();
+		createWidgets();
+		return true;
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -54,21 +143,26 @@ bool Session::save()
 	if (isUntitled)
 		return saveAs();
 	else
-		return save(currentFile);
+		return save(budgetSource);
 }
 
 //------------------------------------------------------------------------------
 bool Session::saveAs()
 {
-	QString fileName = BudgetFileWizard::promptForFileToSave(this, currentFile);
-	if (fileName.isEmpty())
+	QSharedPointer<BudgetSource> newSource =
+		BudgetSourceWizard::promptForBudgetToSave(this, budgetSource);
+	if (newSource.isNull())
 		return false;
-	return save(fileName);
+	return save(newSource);
 }
 
 //------------------------------------------------------------------------------
-bool Session::save(const QString& file)
+bool Session::save(const QSharedPointer<BudgetSource>& source)
 {
+	budgetSource = source;
+	isUntitled = false;
+	undoStack->setClean();
+	updateWindowTitle();
 	return true;
 }
 
@@ -81,21 +175,29 @@ bool Session::saveAsTemplate()
 //------------------------------------------------------------------------------
 void Session::editBudget()
 {
-	emit redoAvailable(true);
+	if (budget && budgetDetails)
+	{
+		setCurrentWidget(budgetDetails);
+	}
 }
 
 //------------------------------------------------------------------------------
 void Session::editEstimates()
 {
-	emit undoAvailable(false);
-	emit redoAvailable(true);
+	if (budget && estimateDisplay)
+	{
+		estimateDisplay->showEstimateDefinitions();
+		setCurrentWidget(estimateDisplay);
+	}
 }
 
 //------------------------------------------------------------------------------
 void Session::editAssignmentRules()
 {
-	emit undoAvailable(true);
-	emit redoAvailable(false);
+	if (budget && assignmentRules)
+	{
+		setCurrentWidget(assignmentRules);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -127,38 +229,83 @@ void Session::showAnalysisSummary()
 
 //------------------------------------------------------------------------------
 void Session::showEstimateProgress()
-{ }
+{
+	if (budget && estimateDisplay)
+	{
+		estimateDisplay->showEstimateProgress();
+		setCurrentWidget(estimateDisplay);
+	}
+}
 
 //------------------------------------------------------------------------------
 void Session::showEstimateImpact()
-{ }
+{
+	if (budget && estimateDisplay)
+	{
+		estimateDisplay->showBalanceImpact();
+		setCurrentWidget(estimateDisplay);
+	}
+}
 
 //------------------------------------------------------------------------------
 void Session::showImportedTransactions()
 { }
 
 //------------------------------------------------------------------------------
-QString Session::budgetName() const
+QString Session::sessionName() const
 {
-	return tr("Budget %1").arg(currentFile);
+	QString location = tr("Unsaved");
+	if ( ! budgetSource.isNull())
+	{
+		location = budgetSource->location();
+
+		// If location is a file, truncate to just the file name
+		QFileInfo info(location);
+		if (info.exists())
+		{
+			location = info.fileName();
+		}
+	}
+
+	return tr("%1 (%2)").arg(budgetName()).arg(location);
 }
 
 //------------------------------------------------------------------------------
-QString Session::currentFileName() const
+QString Session::budgetName() const
 {
-	return currentFile;
+	if (budget)
+		return budget->name();
+	return tr("No Budget");
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<BudgetSource> Session::currentBudgetSource() const
+{
+	return budgetSource;
 }
 
 //------------------------------------------------------------------------------
 bool Session::hasUndoableActions() const
 {
-	return true;
+	return undoStack->canUndo();
 }
 
 //------------------------------------------------------------------------------
 bool Session::hasRedoableActions() const
 {
-	return false;
+	return undoStack->canRedo();
+}
+
+//------------------------------------------------------------------------------
+void Session::undo()
+{
+	undoStack->undo();
+}
+
+//------------------------------------------------------------------------------
+void Session::redo()
+{
+	undoStack->redo();
 }
 
 }

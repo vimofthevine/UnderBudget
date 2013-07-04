@@ -22,16 +22,25 @@ include_directories(src)
 find_package(Qt5Widgets REQUIRED)
 
 # Determine application version
-exec_program(
-	"git"
-	${CMAKE_CURRENT_SOURCE_DIR}
-	ARGS "describe --always"
-	OUTPUT_VARIABLE APP_VERSION
-	)
+if (NOT DEFINED USE_GIT_VERSION)
+	set(USE_GIT_VERSION true)
+endif (NOT DEFINED USE_GIT_VERSION)
+if (USE_GIT_VERSION)
+	message("Getting application version from git...")
+	exec_program(
+		"git"
+		${CMAKE_CURRENT_SOURCE_DIR}
+		ARGS "describe --always"
+		OUTPUT_VARIABLE APP_VERSION
+		)
+else (USE_GIT_VERSION)
+	set(APP_VERSION "3.0-beta")
+	message("Using hardcoded ${APP_VERSION} as application version")
+endif (USE_GIT_VERSION)
 
 # Application source
 add_subdirectory(src)
 # Unit tests
 add_subdirectory(test)
 # Documentation
-add_subdirectory(doc)
+#add_subdirectory(doc)

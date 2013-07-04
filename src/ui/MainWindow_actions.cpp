@@ -20,7 +20,7 @@
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
 #include "ui/Session.hpp"
-#include "ui/wizard/BudgetFileWizard.hpp"
+#include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub
 {
@@ -40,34 +40,35 @@ void MainWindow::notImpl()
 //--------------------------------------------------------------------------
 void MainWindow::about()
 {
-	QMessageBox::about(this, tr("About"),
-		tr(QString("<dl>"
-			"<dt>Title</dt><dd>%1</dd>"
-			"<dt>Version</dt><dd>%2</dd>"
-			"<dt>Copyright</dt><dd>Copyright (C) 2013</dd>"
-			"<dt>License</dt><dd>Apache License 2.0</dd>"
-			"<dt>Authors</dt><dd>Kyle Treubig</dd>"
-			"<dt>URL</dt><dd><a href=\"http://%3\">%3</a></dd>"
-			"</dl>")
-			.arg(qApp->applicationName())
-			.arg(qApp->applicationVersion())
-			.arg(qApp->organizationDomain())
-			.toUtf8()
-		));
+	QString title = tr("About %1").arg(qApp->applicationName());
+	QString about = QString("<html><b><p>%1</p></b>")
+		+ "<p>"
+		+ tr("Advanced personal budget analysis.")
+		+ "</p>"
+		+ tr("Version") + ": %2<br>"
+		+ tr("Authors") + ": Kyle Treubig<br>"
+		+ tr("Homepage") + ": <a href=\"http://%3\">%3</a><br>"
+		+ tr("License") + ": Apache License 2.0<br>"
+		+ tr("Copyright") + " &copy; 2013, Kyle Treubig";
+	about = about.arg(qApp->applicationName())
+		.arg(qApp->applicationVersion())
+		.arg(qApp->organizationDomain());
+
+	QMessageBox::about(this, title, about);
 }
 
 //------------------------------------------------------------------------------
 void MainWindow::newBudget()
 {
 	Session* session = createSession();
-	session->newBudgetFile();
+	session->newBudget();
 	session->show();
 }
 
 //------------------------------------------------------------------------------
 void MainWindow::openBudget()
 {
-	openBudget(BudgetFileWizard::promptForFileToOpen(this));
+	openBudget(BudgetSourceWizard::promptForBudgetToOpen(this));
 }
 
 //------------------------------------------------------------------------------
@@ -77,17 +78,19 @@ void MainWindow::openRecentBudget()
 	QAction* action = qobject_cast<QAction*>(sender());
 	if (action)
 	{
-		openBudget(action->data().toString());
+		openBudget(BudgetSourceWizard::promptToReOpen(this,
+			action->data().toString()));
 	}
 }
 
 //------------------------------------------------------------------------------
-void MainWindow::openBudget(const QString fileName)
+void MainWindow::openBudget(QSharedPointer<BudgetSource> source)
 {
-	QSettings settings;
-	if ( ! fileName.isEmpty())
+	if ( ! source.isNull())
 	{
-		QMdiSubWindow* existing = findSession(fileName);
+		// If this budget source is already open, don't re-open, just bring
+		// that window to the front
+		QMdiSubWindow* existing = findSession(source);
 		if (existing)
 		{
 			mdiArea->setActiveSubWindow(existing);
@@ -95,15 +98,20 @@ void MainWindow::openBudget(const QString fileName)
 		}
 
 		Session* session = createSession();
-		if (session->openBudgetFile(fileName))
+		if (session->openBudget(source))
 		{
-			recordRecentBudget(fileName);
-			showStatusMessage(tr("%1 opened").arg(fileName));
+			recordRecentBudget(source->location());
+			showStatusMessage(tr("%1 opened")
+				.arg(session->currentBudgetSource()->location()));
 			session->show();
 		}
 		else
 		{
-			session->close();
+			QMdiSubWindow* sub = findSession(source);
+			if (sub)
+			{
+				sub->close();
+			}
 		}
 	}
 }
@@ -115,7 +123,7 @@ void MainWindow::saveBudget()
 	if (session && session->save())
 	{
 		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
-			.arg(session->currentFileName()));
+			.arg(session->currentBudgetSource()->location()));
 	}
 }
 
@@ -125,10 +133,10 @@ void MainWindow::saveBudgetAs()
 	Session* session = activeSession();
 	if (session && session->saveAs())
 	{
-		QString fileName = session->currentFileName();
-		recordRecentBudget(fileName);
+		QString location = session->currentBudgetSource()->location();
+		recordRecentBudget(location);
 		showStatusMessage(tr("%1 saved to %2").arg(session->budgetName())
-			.arg(fileName));
+			.arg(location));
 	}
 }
 
@@ -140,6 +148,24 @@ void MainWindow::saveBudgetAsTemplate()
 	{
 		showStatusMessage(tr("Template budget updated with %1")
 			.arg(session->budgetName()));
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::undo()
+{
+	if (activeSession())
+	{
+		activeSession()->undo();
+	}
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::redo()
+{
+	if (activeSession())
+	{
+		activeSession()->redo();
 	}
 }
 

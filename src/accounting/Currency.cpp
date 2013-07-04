@@ -18,6 +18,7 @@
 #include <QtCore>
 
 // UnderBudget include(s)
+#include "accounting/currencies.hpp"
 #include "accounting/ConversionRatesSource.hpp"
 #include "accounting/Currency.hpp"
 
@@ -56,6 +57,12 @@ const QString& Currency::code() const
 }
 
 //------------------------------------------------------------------------------
+QString Currency::symbol() const
+{
+	return currencySymbol(iso4217);
+}
+
+//------------------------------------------------------------------------------
 QString Currency::format(double value) const
 {
 	Currency local = byLocale();
@@ -65,7 +72,7 @@ QString Currency::format(double value) const
 	}
 	else
 	{
-		return QLocale().toCurrencyString(value, iso4217);
+		return QLocale().toCurrencyString(value, symbol());
 	}
 }
 

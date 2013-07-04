@@ -18,9 +18,22 @@
 #define SESSION_HPP
 
 // Qt include(s)
+#include <QSharedPointer>
 #include <QStackedWidget>
 
+// UnderBudget include(s)
+#include "budget/Budget.hpp"
+#include "budget/storage/BudgetSource.hpp"
+
+// Forward declaration(s)
+class QUndoStack;
+
 namespace ub {
+
+// Forward declaration(s)
+class BudgetDetailsForm;
+class EstimateDisplayWidget;
+class RulesListWidget;
 
 /**
  * Widget for an open budget session.
@@ -36,17 +49,17 @@ public:
 	Session(QWidget* parent = 0);
 
 	/**
-	 * Creates a new budget file
+	 * Creates a new budget
 	 */
-	void newBudgetFile();
+	void newBudget();
 
 	/**
-	 * Opens the budget defined in the specified file.
+	 * Opens the budget defined in the given budget source.
 	 *
-	 * @param[in] file budget file name
-	 * @return `true` if the file was successfully opened
+	 * @param[in] source budget source
+	 * @return `true` if the budget was successfully retrieved
 	 */
-	bool openBudgetFile(const QString& file);
+	bool openBudget(QSharedPointer<BudgetSource> source);
 
 	/**
 	 * Saves any modifications to the budget.
@@ -128,6 +141,14 @@ public:
 	void calculateBalances();
 
 	/**
+	 * Returns the name of this session, which is a combination of
+	 * the budget name and source location.
+	 *
+	 * @return name of this session
+	 */
+	QString sessionName() const;
+
+	/**
 	 * Returns the name of the budget associated with this session.
 	 *
 	 * @return name of the current budget
@@ -135,12 +156,11 @@ public:
 	QString budgetName() const;
 
 	/**
-	 * Returns the name of the file in which the current budget
-	 * is defined.
+	 * Returns the budget source associated with this session.
 	 *
-	 * @return name of the current budget file
+	 * @return current budget source
 	 */
-	QString currentFileName() const;
+	QSharedPointer<BudgetSource> currentBudgetSource() const;
 
 	/**
 	 * Checks if there are undo-able actions for this session.
@@ -155,6 +175,17 @@ public:
 	 * @return `true` if there are redo-able actions
 	 */
 	bool hasRedoableActions() const;
+
+	/**
+	 * Undoes the previous modification action perfomed in this session, if any.
+	 */
+	void undo();
+
+	/**
+	 * Redoes the previously undone modification action performed in this
+	 * session, if any.
+	 */
+	void redo();
 
 signals:
 	/**
@@ -188,6 +219,21 @@ signals:
 	 */
 	void redoAvailable(bool available);
 
+private slots:
+	/**
+	 * Updates the session window's title as the session name plus a
+	 * document-modified symbol.
+	 */
+	void updateWindowTitle();
+
+	/**
+	 * Sets the window modified flag based on the clean state of the undo stack.
+	 * Since the `QStackedWidget::setWindowModified` slot must be set to the
+	 * opposite of the `QUndoStack::cleanChanged` signal, they cannot be
+	 * directly connected.
+	 */
+	void setWindowModified(bool isClean);
+
 protected:
 	/**
 	 * Intercepts the window closing event to prompt the
@@ -199,17 +245,46 @@ protected:
 	void closeEvent(QCloseEvent* event);
 
 private:
-	/** Name of the current budget file */
-	QString currentFile;
-	/** Whether the current budget file is a new file */
+	/** Budget modification undo stack */
+	QUndoStack* undoStack;
+	/** Current budget source */
+	QSharedPointer<BudgetSource> budgetSource;
+	/** Current budget */
+	QSharedPointer<Budget> budget;
+	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
 
+	/** Budget details form */
+	BudgetDetailsForm* budgetDetails;
+	/** Estimate display widget */
+	EstimateDisplayWidget* estimateDisplay;
+	/** Assignment rules list widget */
+	RulesListWidget* assignmentRules;
+
 	/**
-	 * Saves the budget to the specified file.
-	 *
-	 * @param[in] file name of the file to which to save the budget
+	 * Creates all display widgets for this session. A budget must have
+	 * been created or provided to this session before performing this
+	 * operation, as the budget is provided to the child views.
 	 */
-	bool save(const QString& file);
+	void createWidgets();
+
+	/**
+	 * Prompts the user to save any unsaved changes. The user can
+	 * choose to either save the changes, discard the changes, or
+	 * cancel whatever operation has triggered this prompt.
+	 *
+	 * @return `true` if changes are saved or being discarded, or
+	 *         `false` if the triggering operation should be cancelled
+	 */
+	bool promptToSave();
+
+	/**
+	 * Saves the budget to the specified source.
+	 *
+	 * @param[in] source budget source to which to save the budget
+	 * @return `true` if the budget was saved successfully
+	 */
+	bool save(const QSharedPointer<BudgetSource>& source);
 };
 
 }

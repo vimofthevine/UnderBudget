@@ -153,14 +153,15 @@ Session* MainWindow::createSession()
 }
 
 //------------------------------------------------------------------------------
-QMdiSubWindow* MainWindow::findSession(const QString& file) const
+QMdiSubWindow* MainWindow::findSession(const QSharedPointer<BudgetSource>& source) const
 {
-	QString filePath = QFileInfo(file).canonicalFilePath();
+	QString location = source->location();
 
 	foreach (QMdiSubWindow* window, mdiArea->subWindowList())
 	{
 		Session* session = qobject_cast<Session*>(window->widget());
-		if (session->currentFileName() == filePath)
+		QSharedPointer<BudgetSource> src = session->currentBudgetSource();
+		if ( ! src.isNull() && src->location() == location)
 			return window;
 	}
 
