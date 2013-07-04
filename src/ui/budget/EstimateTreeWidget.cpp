@@ -18,6 +18,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/EstimateTreeWidget.hpp"
 #include "ui/budget/ProgressDelegate.hpp"
@@ -26,8 +27,8 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
-		QWidget* parent)
-	: QTreeView(parent), model(model)
+		AssignmentRulesModel* rules, QWidget* parent)
+	: QTreeView(parent), model(model), rules(rules)
 {
 	setModel(model);
 	expandAll();
@@ -44,7 +45,7 @@ EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
 	setDragDropMode(QAbstractItemView::InternalMove);
 
 	// Display progress bar for estimate progress
-	setItemDelegateForColumn(6, new ProgressDelegate(this));
+	setItemDelegateForColumn(7, new ProgressDelegate(this));
 }
 
 //------------------------------------------------------------------------------
@@ -61,6 +62,11 @@ void EstimateTreeWidget::contextMenuEvent(QContextMenuEvent* event)
 	delAction->setEnabled(currentIndex().isValid());
 	connect(delAction, SIGNAL(triggered()), this, SLOT(deleteSelectedEstimate()));
 
+	QAction* addRuleAction = new QAction(tr("Add Rule"), this);
+	addRuleAction->setEnabled(currentIndex().isValid()
+		&& (model->at(currentIndex())->childCount() == 0));
+	connect(addRuleAction, SIGNAL(triggered()), this, SLOT(addRuleToSelectedEstimate()));
+
 	// Global actions
 
 	QAction* addToRootAction = new QAction(tr("Add New Estimate"), this);
@@ -70,6 +76,8 @@ void EstimateTreeWidget::contextMenuEvent(QContextMenuEvent* event)
 	QMenu* menu = new QMenu(this);
 	menu->addAction(addChildAction);
 	menu->addAction(delAction);
+	menu->addSeparator();
+	menu->addAction(addRuleAction);
 	menu->addSeparator();
 	menu->addAction(addToRootAction);
 	menu->exec(event->globalPos());
@@ -164,6 +172,20 @@ void EstimateTreeWidget::addChildToSelectedEstimate()
 	if (current.isValid())
 	{
 		model->addChild(current);
+	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateTreeWidget::addRuleToSelectedEstimate()
+{
+	QModelIndex current = currentIndex();
+	if (current.isValid())
+	{
+		Estimate* estimate = model->at(current);
+		if (estimate)
+		{
+			rules->addTo(estimate->estimateId());
+		}
 	}
 }
 

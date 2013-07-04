@@ -23,9 +23,10 @@
 // UnderBudget include(s)
 #include "budget/Estimate.hpp"
 
-// Forward declaration(s)
-
 namespace ub {
+
+// Forward declaration(s)
+class AssignmentRulesModel;
 
 /**
  * Estimate tree model to serve as a proxy between various UI
@@ -40,11 +41,12 @@ public:
 	 * Constructs a new estimate tree model.
 	 *
 	 * @param[in] root   root of the estimate tree
+	 * @param[in] rules  assignment rules list model
 	 * @param[in] stack  undo stack
 	 * @param[in] parent parent object
 	 */
-	EstimateModel(QSharedPointer<Estimate> root, QUndoStack* stack,
-		QObject* parent = 0);
+	EstimateModel(QSharedPointer<Estimate> root, AssignmentRulesModel* rules,
+		QUndoStack* stack, QObject* parent = 0);
 
 	// Overridden methods
 
@@ -129,6 +131,14 @@ public:
 	 *         else an invalid index
 	 */
 	QModelIndex index(uint estimateId) const;
+
+	/**
+	 * Returns the estimate located at the given index.
+	 *
+	 * @param[in] index model index at which to retrieve the estimate
+	 * @return estimate located at the given index
+	 */
+	Estimate* at(const QModelIndex& index) const;
 
 	/**
 	 * Returns a list of columns that display the editable
@@ -220,6 +230,8 @@ public slots:
 private:
 	/** Root estimate */
 	QSharedPointer<Estimate> root;
+	/** Assignment rules list model */
+	AssignmentRulesModel* rules;
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;
 

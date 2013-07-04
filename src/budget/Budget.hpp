@@ -31,6 +31,9 @@ class QUndoCommand;
 
 namespace ub {
 
+// Forward declaration(s)
+class AssignmentRules;
+
 class Budget : public QObject {
 	Q_OBJECT
 
@@ -67,6 +70,13 @@ public:
 	 * @return estimate tree root
 	 */
 	QSharedPointer<Estimate> estimates() const;
+
+	/**
+	 * Returns the assignment rules list.
+	 *
+	 * @return assignment rules list
+	 */
+	QSharedPointer<AssignmentRules> rules() const;
 
 	/**
 	 * Creates an undoable command to change the budget's name.
@@ -115,6 +125,8 @@ private:
 	Money initial;
 	/** Estimate tree (root) */
 	QSharedPointer<Estimate> rootEstimate;
+	/** Assignment rules */
+	QSharedPointer<AssignmentRules> assignmentRules;
 
 	/**
 	 * Sets the budget's name to the given name, emitting

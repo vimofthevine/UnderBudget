@@ -23,6 +23,7 @@
 namespace ub {
 
 // Forward declaration
+class AssignmentRulesModel;
 class EstimateModel;
 
 /**
@@ -37,9 +38,10 @@ public:
 	 * Constructs a new estimate tree widget.
 	 *
 	 * @param[in] model  estimate tree model
+	 * @param[in] rules  assignment rules list model
 	 * @param[in] parent parent widget
 	 */
-	EstimateTreeWidget(EstimateModel* model,
+	EstimateTreeWidget(EstimateModel* model, AssignmentRulesModel* rules,
 		QWidget* parent = 0);
 
 public slots:
@@ -70,6 +72,11 @@ private slots:
 	void addChildToSelectedEstimate();
 
 	/**
+	 * Adds a new assignment rule to the currently selected estimate.
+	 */
+	void addRuleToSelectedEstimate();
+
+	/**
 	 * Adds a child to the root estimate.
 	 */
 	void addToRootEstimate();
@@ -85,6 +92,8 @@ protected:
 private:
 	/** Estimate tree model */
 	EstimateModel* model;
+	/** Assignment rules list model */
+	AssignmentRulesModel* rules;
 };
 
 }

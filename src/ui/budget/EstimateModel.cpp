@@ -18,6 +18,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/ProxyModelAddCommand.hpp"
 #include "ui/budget/ProxyModelChangeCommand.hpp"
@@ -43,21 +44,22 @@ static QString toString(Estimate::Type type)
 }
 
 //------------------------------------------------------------------------------
-EstimateModel::EstimateModel(QSharedPointer<Estimate> root, QUndoStack* stack,
-		QObject* parent)
-	: QAbstractItemModel(parent), root(root), undoStack(stack)
+EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
+		AssignmentRulesModel* rules, QUndoStack* stack, QObject* parent)
+	: QAbstractItemModel(parent), root(root), rules(rules), undoStack(stack)
 {
 	headers << tr("Name")
 		// Definition columns
-		<< tr("Description") << tr("Type") << tr("Amount") << tr("Due Date") << tr("Finished")
+		<< tr("Description") << tr("Type") << tr("Amount")
+		<< tr("Due Date") << tr("Finished") << tr("Rules")
 		// Progress columns
 		<< tr("Progress") << tr("Estimated") << tr("Actual") << tr("Difference") << tr("Notice")
 		// Impact columns
 		<< tr("Estimated") << tr("Actual") << tr("Expected") << tr("Notice");
 
-	definitionColumns << 0 << 1 << 2 << 3 << 4 << 5;
-	progressColumns << 0 << 6 << 7 << 8 << 9 << 10;
-	impactColumns << 0 << 11 << 12 << 13 << 14;
+	definitionColumns << 0 << 1 << 2 << 3 << 4 << 5 << 6;
+	progressColumns << 0 << 7 << 8 << 9 << 10 << 11;
+	impactColumns << 0 << 12 << 13 << 14 << 15;
 }
 
 //------------------------------------------------------------------------------
@@ -164,24 +166,26 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 		return estimate->activityDueDate();
 	case 5: // defined finished state
 		return estimate->isActivityFinished();
-	case 6: // progress
+	case 6: // defined rules
+		return tr("%1 rules").arg(rules->countFor(estimate->estimateId()));
+	case 7: // progress
 		return QVariant(progress.isHealthy ? 1 : 0).toByteArray()
 			+ QVariant(progress.actual / progress.estimated).toByteArray();
-	case 7: // progress estimated
+	case 8: // progress estimated
 		return progress.estimated.toString();
-	case 8: // progress actual
+	case 9: // progress actual
 		return progress.actual.toString();
-	case 9: // progress difference
+	case 10: // progress difference
 		return (progress.estimated - progress.actual).toString();
-	case 10: // progress notice
+	case 11: // progress notice
 		return progress.note;
-	case 11: // impact estimated
+	case 12: // impact estimated
 		return impact.estimated.toString();
-	case 12: // impact actual
+	case 13: // impact actual
 		return impact.actual.toString();
-	case 13: // impact expected
+	case 14: // impact expected
 		return impact.expected.toString();
-	case 14: // impact notice
+	case 15: // impact notice
 		return impact.note;
 	default:
 		return QVariant();
@@ -208,6 +212,12 @@ QModelIndex EstimateModel::index(uint estimateId) const
 		Estimate* parent = estimate->parentEstimate();
 		return index(parent->indexOf(estimate), 0, index(parent->estimateId()));
 	}
+}
+
+//------------------------------------------------------------------------------
+Estimate* EstimateModel::at(const QModelIndex& index) const
+{
+	return cast(index);
 }
 
 //------------------------------------------------------------------------------

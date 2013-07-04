@@ -200,6 +200,10 @@ public:
 	 * the parent estimate is deleted and when the estimate is removed
 	 * from the tree as a requested operation.
 	 *
+	 * This method for creating estimates should only be used when constructing
+	 * an estimate tree from a persistent storage medium. Once constructed,
+	 * new estimates should be added to the tree using `addChild()`.
+	 *
 	 * If an index is specified (and is within a valid range), the estimate
 	 * will be inserted at that index into the parent estimate's children.
 	 * If the index is -1 or is invalid (e.g., specifying 5 when the parent
@@ -633,12 +637,15 @@ private:
 	bool finished;
 
 	/**
-	 * Constructs a new root estimate.
+	 * Constructs a new root estimate. This constructor is private so that
+	 * client code cannot create a root estimate on the stack.
 	 */
 	Estimate();
 
 	/**
-	 * Constructs a new estimate as a child of the given estimate.
+	 * Constructs a new estimate as a child of the given estimate. This
+	 * constructor is private so that client code cannot create an estimate
+	 * on the stack.
 	 *
 	 * If an index is specified (and is within a valid range), the estimate
 	 * will be inserted at that index into the parent estimate's children.
