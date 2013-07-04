@@ -63,7 +63,8 @@ void EstimateTreeWidget::contextMenuEvent(QContextMenuEvent* event)
 	connect(delAction, SIGNAL(triggered()), this, SLOT(deleteSelectedEstimate()));
 
 	QAction* addRuleAction = new QAction(tr("Add Rule"), this);
-	addRuleAction->setEnabled(currentIndex().isValid());
+	addRuleAction->setEnabled(currentIndex().isValid()
+		&& (model->at(currentIndex())->childCount() == 0));
 	connect(addRuleAction, SIGNAL(triggered()), this, SLOT(addRuleToSelectedEstimate()));
 
 	// Global actions
