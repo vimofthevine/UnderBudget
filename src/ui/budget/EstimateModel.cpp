@@ -28,22 +28,6 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
-static QString toString(Estimate::Type type)
-{
-	switch (type)
-	{
-	case Estimate::Income:
-		return QObject::tr("Income");
-	case Estimate::Expense:
-		return QObject::tr("Expense");
-	case Estimate::Transfer:
-		return QObject::tr("Transfer");
-	default:
-		return "";
-	}
-}
-
-//------------------------------------------------------------------------------
 EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
 		AssignmentRulesModel* rules, QUndoStack* stack, QObject* parent)
 	: QAbstractItemModel(parent), root(root), rules(rules), undoStack(stack)
