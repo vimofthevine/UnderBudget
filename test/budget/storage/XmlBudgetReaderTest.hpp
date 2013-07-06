@@ -63,13 +63,40 @@ private slots:
 	void readOldVersion();
 
 	/**
-	 * Tests reading of a valid version 4.0 XML budget.
+	 * Tests reading of a full valid version 4.0 XML budget.
 	 */
-	void readVersion4Budget();
+	void readFullBudget();
+
+	/**
+	 * Tests reading of an incomplete, yet valid version 4.0 budget.
+	 */
+	void readIncompleteBudget();
+
+	/**
+	 * Tests reading of budgeting periods.
+	 */
+	void readBudgetingPeriods();
+
+	/**
+	 * Test data for reading of budgeting periods.
+	 */
+	void readBudgetingPeriods_data();
+
+	/**
+	 * Tests reading of rule conditions.
+	 */
+	void readRuleConditions();
+
+	/**
+	 * Test data for reading of rule conditions.
+	 */
+	void readRuleConditions_data();
 
 private:
 	/** Well-formed version 4.0 XML budget */
-	QIODevice* version4;
+	QIODevice* fullBudget;
+	/** Incomplete, yet valid version 4.0 budget */
+	QIODevice* incompleteBudget;
 	/** Obsolete version XML budget */
 	QIODevice* oldVersion;
 	/** Invalid XML budget */

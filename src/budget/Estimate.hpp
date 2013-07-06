@@ -894,6 +894,14 @@ private:
 	friend class MoveEstimateCommand;
 };
 
+/**
+ * Returns a string representation of the given estimate type.
+ *
+ * @param[in] type estimate type enumeration
+ * @return string representation of the estimate type
+ */
+QString toString(Estimate::Type type);
+
 }
 
 // Make types known to Qt meta object system

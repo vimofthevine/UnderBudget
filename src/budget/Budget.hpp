@@ -44,6 +44,19 @@ public:
 	Budget();
 
 	/**
+	 * Constructs a new budget with the given parameters.
+	 *
+	 * @param[in] name    budget name
+	 * @param[in] period  budgeting period
+	 * @param[in] initial initial balance
+	 * @param[in] root    root of the estimate tree
+	 * @param[in] rules   assignment rules list
+	 */
+	Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
+		const Money& initial, QSharedPointer<Estimate> root,
+		QSharedPointer<AssignmentRules> rules);
+
+	/**
 	 * Returns the user-defined name for this budget.
 	 *
 	 * @return budget name
