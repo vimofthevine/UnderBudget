@@ -21,6 +21,7 @@
 
 // UnderBudget include(s)
 #include "budget/storage/BudgetSource.hpp"
+#include "budget/storage/XmlBudgetReader.hpp"
 
 namespace ub {
 
@@ -43,6 +44,8 @@ public:
 	QString location() const;
 
 private:
+	/** XML budget reader */
+	XmlBudgetReader reader;
 	/** XML budget file name */
 	const QString xmlFile;
 	/** Last error message */

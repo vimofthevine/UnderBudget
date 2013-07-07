@@ -61,6 +61,14 @@ Budget::Budget()
 }
 
 //------------------------------------------------------------------------------
+Budget::Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
+		const Money& initial, QSharedPointer<Estimate> root,
+		QSharedPointer<AssignmentRules> rules)
+	: budgetName(name), period(period), initial(initial), rootEstimate(root),
+	  assignmentRules(rules)
+{ }
+
+//------------------------------------------------------------------------------
 QString Budget::name() const
 {
 	return budgetName;

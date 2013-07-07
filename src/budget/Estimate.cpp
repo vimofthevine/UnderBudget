@@ -665,5 +665,23 @@ Estimate::Impact Estimate::impact(const QHash<uint,Money>& actuals) const
 	return impact;
 }
 
+//------------------------------------------------------------------------------
+QString toString(Estimate::Type type)
+{
+	switch (type)
+	{
+	case Estimate::Income:
+		return QObject::tr("Income");
+	case Estimate::Expense:
+		return QObject::tr("Expense");
+	case Estimate::Transfer:
+		return QObject::tr("Transfer");
+	case Estimate::Root:
+		return QObject::tr("Root");
+	default:
+		return "";
+	}
+}
+
 }
 
