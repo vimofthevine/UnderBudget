@@ -43,7 +43,7 @@ bool XmlBudgetReader::read(QIODevice* device)
 			if (version == "4.0")
 				readVersion4();
 			else
-				xml.raiseError(QObject::tr("Unknown budget version, %1").arg(version));
+				xml.raiseError(QObject::tr("Unsupported budget version, %1").arg(version));
 		}
 		else
 			xml.raiseError(QObject::tr("The given XML is not a budget definition."));
@@ -61,10 +61,15 @@ QSharedPointer<Budget> XmlBudgetReader::lastReadBudget() const
 //------------------------------------------------------------------------------
 QString XmlBudgetReader::errorString() const
 {
-	return QObject::tr("%1\nLine %2, column %3")
-		.arg(xml.errorString())
-		.arg(xml.lineNumber())
-		.arg(xml.columnNumber());
+	if (xml.error() == QXmlStreamReader::CustomError)
+		return xml.errorString();
+	else
+	{
+		return QObject::tr("%1\nLine %2, column %3")
+			.arg(xml.errorString())
+			.arg(xml.lineNumber())
+			.arg(xml.columnNumber());
+	}
 }
 
 //------------------------------------------------------------------------------
