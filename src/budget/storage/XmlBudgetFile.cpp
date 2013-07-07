@@ -31,7 +31,28 @@ XmlBudgetFile::XmlBudgetFile(const QString& fileName)
 QSharedPointer<Budget> XmlBudgetFile::retrieve()
 {
 	QSharedPointer<Budget> budget;
-	errorMsg = "XML files not supported yet";
+
+	QFile file(xmlFile);
+	if (file.open(QIODevice::ReadOnly))
+	{
+		if (reader.read(&file))
+		{
+			budget = reader.lastReadBudget();
+			errorMsg = "";
+		}
+		else
+		{
+			errorMsg = reader.errorString();
+		}
+	}
+	else
+	{
+		errorMsg = file.exists()
+			? QObject::tr("File, %1, could not be read.\n%2").arg(xmlFile)
+				.arg(file.errorString())
+			: QObject::tr("File, %1, does not exist.").arg(xmlFile);
+	}
+
 	return budget;
 }
 
