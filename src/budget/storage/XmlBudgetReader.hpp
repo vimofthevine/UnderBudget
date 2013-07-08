@@ -28,6 +28,9 @@ namespace ub {
 // Forward declaration(s)
 class Budget;
 
+/**
+ * XML stream reader for unserializing a budget from an XML document.
+ */
 class XmlBudgetReader
 {
 public:

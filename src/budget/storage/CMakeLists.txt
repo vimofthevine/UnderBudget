@@ -5,6 +5,7 @@ set(budget_storage_srcs
 	SqlBudgetFile.cpp
 	XmlBudgetFile.cpp
 	XmlBudgetReader.cpp
+	XmlBudgetWriter.cpp
 )
 
 # Build budget storage library
