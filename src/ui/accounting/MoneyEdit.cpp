@@ -44,7 +44,10 @@ MoneyEdit::MoneyEdit(const Money& contents, QWidget* parent)
 void MoneyEdit::setup()
 {
 	validator = new MoneyValidator(this);
+	validator->setCurrency(moneyValue.currency());
 	setValidator(validator);
+
+	setText(moneyValue.toString());
 
 	connect(this, SIGNAL(editingFinished()), this, SLOT(finished()));
 	connect(this, SIGNAL(textEdited(QString)), this,
