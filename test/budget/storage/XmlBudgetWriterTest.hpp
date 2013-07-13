@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef XMLBUDGETREADERTEST_HPP
-#define XMLBUDGETREADERTEST_HPP
+#ifndef XMLBUDGETWRITERTEST_HPP
+#define XMLBUDGETWRITERTEST_HPP
 
 // Qt include(s)
 #include <QtTest/QtTest>
@@ -23,30 +23,29 @@
 namespace ub {
 
 /**
- * Unit test for the XmlBudgetReader class when used on invalid or
- * unsupported budgets.
+ * Unit test for the XmlBudgetWriter class.
  */
-class XmlBudgetReaderTest : public QObject
+class XmlBudgetWriterTest : public QObject
 {
 	Q_OBJECT
 
 private slots:
 	/**
-	 * Tests reading of an invalid XML budget.
+	 * Tests writing of a full budget.
 	 */
-	void readInvalidXml();
+	void writeCompleteBudget();
 
 	/**
-	 * Tests reading of valid XML that is not a budget.
+	 * Tests writing of budgeting periods.
 	 */
-	void readNonBudgetXml();
+	void writeBudgetingPeriods();
 
 	/**
-	 * Tests reading of an XML budget from an older version.
+	 * Test data for writing of budgeting periods.
 	 */
-	void readOldVersion();
+	void writeBudgetingPeriods_data();
 };
 
 }
 
-#endif //XMLBUDGETREADERTEST_HPP
+#endif //XMLBUDGETWRITERTEST_HPP

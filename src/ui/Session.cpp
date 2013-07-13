@@ -159,11 +159,19 @@ bool Session::saveAs()
 //------------------------------------------------------------------------------
 bool Session::save(const QSharedPointer<BudgetSource>& source)
 {
-	budgetSource = source;
-	isUntitled = false;
-	undoStack->setClean();
-	updateWindowTitle();
-	return true;
+	if (source->store(budget))
+	{
+		budgetSource = source;
+		isUntitled = false;
+		undoStack->setClean();
+		updateWindowTitle();
+		return true;
+	}
+	else
+	{
+		QMessageBox::warning(this, tr("Error"), source->error());
+		return false;
+	}
 }
 
 //------------------------------------------------------------------------------

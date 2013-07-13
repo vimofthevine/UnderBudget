@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "budget/storage/XmlBudgetFile.hpp"
+#include "budget/storage/XmlBudgetWriter.hpp"
 
 namespace ub {
 
@@ -59,7 +60,19 @@ QSharedPointer<Budget> XmlBudgetFile::retrieve()
 //------------------------------------------------------------------------------
 bool XmlBudgetFile::store(QSharedPointer<Budget> budget)
 {
-	return false;
+	QFile file(xmlFile);
+	if (file.open(QIODevice::WriteOnly))
+	{
+		errorMsg = QObject::tr("Unknown error writing to XML file.");
+		return XmlBudgetWriter::write(&file, budget);
+	}
+	else
+	{
+		errorMsg = QObject::tr("File, %1, could not be written.\n%2")
+			.arg(xmlFile)
+			.arg(file.errorString());
+		return false;
+	}
 }
 
 //------------------------------------------------------------------------------

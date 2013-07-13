@@ -20,6 +20,9 @@
 // Qt include(s)
 #include <QSharedPointer>
 
+// UnderBudget include(s)
+#include "budget/AssignmentRule.hpp"
+
 // Forward declaration(s)
 class QIODevice;
 
@@ -27,7 +30,12 @@ namespace ub {
 
 // Forward declaration(s)
 class Budget;
+class BudgetingPeriod;
+class Estimate;
 
+/**
+ * XML stream reader for unserializing a budget from an XML document.
+ */
 class XmlBudgetReader
 {
 public:
@@ -75,11 +83,23 @@ private:
 	void readVersion4();
 
 	/**
+	 * Reads the XML as a version 5.0 budget definition.
+	 */
+	void readVersion5();
+
+	/**
 	 * Reads a budgeting period defined by the version 4.0 schema.
 	 *
 	 * @param[in,out] budgeting period
 	 */
 	void readVersion4Period(QSharedPointer<BudgetingPeriod>& period);
+
+	/**
+	 * Reads a budgeting period defined by the version 5.0 schema.
+	 *
+	 * @param[in,out] budgeting period
+	 */
+	void readVersion5Period(QSharedPointer<BudgetingPeriod>& period);
 
 	/**
 	 * Reads a date defined by three elements for the day, month,
@@ -102,12 +122,38 @@ private:
 	void readVersion4Estimate(Estimate* parent);
 
 	/**
+	 * Reads an estimate as defined by the version 5.0 schema,
+	 * adding it to the given parent estimate. This method will
+	 * execute recursively to parse all children of the current
+	 * estimate in the XML data.
+	 *
+	 * @param[in] parent parent estimate
+	 */
+	void readVersion5Estimate(Estimate* parent);
+
+	/**
 	 * Reads an assignment rule as defined by the version 4.0 schema,
-	 * addint it to the given assignment rules list.
+	 * adding it to the given assignment rules list.
 	 *
 	 * @param[in] rules assignment rules list
 	 */
 	void readVersion4Rule(QSharedPointer<AssignmentRules> rules);
+
+	/**
+	 * Reads an assignment rule as defined by the version 5.0 schema,
+	 * adding it to the given assignment rules list.
+	 *
+	 * @param[in] rules assignment rules list
+	 */
+	void readVersion5Rule(QSharedPointer<AssignmentRules> rules);
+
+	/**
+	 * Reads a rule condition as defined by the version 5.0 schema,
+	 * adding it to the given rule conditions list.
+	 *
+	 * @param[in] conditions rule conditions list
+	 */
+	void readVersion5Condition(QList<AssignmentRule::Condition>& conditions);
 };
 
 }

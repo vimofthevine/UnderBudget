@@ -147,10 +147,10 @@ const QString& BudgetingPeriodForm::typeDescription(const BudgetingPeriod::Type&
 			return PAYDATE_MONTH;
 		case BudgetingPeriod::CustomDateRange:
 			return CUSTOM_RANGE;
+		default:
+			static QString defStr;
+			return defStr;
 	}
-
-	static QString defaultDescription;
-	return defaultDescription;
 }
 
 //------------------------------------------------------------------------------
@@ -178,6 +178,10 @@ void BudgetingPeriodForm::displayWidgets(const BudgetingPeriod::Type& type)
 			monthField->hide();
 			customRangeForm->show();
 			break;
+		default:
+			yearField->hide();
+			monthField->hide();
+			customRangeForm->hide();
 	}
 }
 
@@ -208,6 +212,9 @@ void BudgetingPeriodForm::updateWidgets(const BudgetingPeriod::Parameters& param
 	case BudgetingPeriod::CustomDateRange:
 		startDateField->setDate(params.param1.toDate());
 		endDateField->setDate(params.param2.toDate());
+		break;
+	default:
+		// Do nothing
 		break;
 	}
 
@@ -245,6 +252,9 @@ void BudgetingPeriodForm::updateParams()
 		case BudgetingPeriod::CustomDateRange:
 			params.param1 = startDateField->date();
 			params.param2 = endDateField->date();
+			break;
+		default:
+			// Do nothing
 			break;
 		}
 

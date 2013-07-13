@@ -41,6 +41,8 @@ public:
 	 */
 	enum Type
 	{
+		/** Undefined/invalid */
+		Undefined,
 		/** Calendar month (e.g., 4/1-4/30) */
 		CalendarMonth,
 		/** Calendar year (e.g., 1/1/2012-12/31/2012) */
