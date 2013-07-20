@@ -118,6 +118,11 @@ private slots:
 	void editAssignmentRules();
 
 	/**
+	 * Displays the preferences dialog
+	 */
+	void editPreferences();
+
+	/**
 	 * Re-imports transactions into the current session
 	 */
 	void importTransactions();

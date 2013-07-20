@@ -106,7 +106,7 @@ void MainWindow::createActions()
 	editPrefsAction = new QAction(QIcon(":/icons/editPrefs"), tr("&Preferences"), this);
 	editPrefsAction->setShortcuts(QKeySequence::Preferences);
 	editPrefsAction->setStatusTip(tr("Edit application preferences"));
-	connect(editPrefsAction, SIGNAL(triggered()), this, SLOT(notImpl()));
+	connect(editPrefsAction, SIGNAL(triggered()), this, SLOT(editPreferences()));
 
 	// Analyze menu actions
 	importAction = new QAction(QIcon(":/icons/import"), tr("&Import transactions..."), this);

@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
 #include "ui/Session.hpp"
+#include "ui/prefs/PrefsDialog.hpp"
 #include "ui/wizard/BudgetSourceWizard.hpp"
 
 namespace ub
@@ -55,6 +56,13 @@ void MainWindow::about()
 		.arg(qApp->organizationDomain());
 
 	QMessageBox::about(this, title, about);
+}
+
+//------------------------------------------------------------------------------
+void MainWindow::editPreferences()
+{
+	static PrefsDialog* prefs = new PrefsDialog(this);
+	prefs->show();
 }
 
 //------------------------------------------------------------------------------

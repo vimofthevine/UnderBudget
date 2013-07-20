@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 	<file alias="logo">icons/logo.png</file>
+	<!-- menu icons -->
 	<file alias="icons/new">icons/oxygen/document-new.png</file>
 	<file alias="icons/open">icons/oxygen/document-open.png</file>
 	<file alias="icons/save">icons/oxygen/document-save.png</file>
@@ -24,5 +25,8 @@
 	<file alias="icons/transactions">icons/oxygen/wallet-open.png</file>
 	<file alias="icons/about">icons/oxygen/help-about.png</file>
 	<file alias="icons/aboutQt">icons/Qt.png</file>
+	<!-- setting icons -->
+	<file alias="icons/general">icons/oxygen/applications-system.png</file>
+	<file alias="icons/appearance">icons/oxygen/preferences-desktop.png</file>
 </qresource>
 </RCC>
