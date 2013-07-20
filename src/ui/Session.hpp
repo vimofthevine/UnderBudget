@@ -44,7 +44,7 @@ class Session : public QStackedWidget
 
 public:
 	/**
-	 * Constructs a new
+	 * Constructs a new session.
 	 */
 	Session(QWidget* parent = 0);
 
@@ -218,6 +218,20 @@ signals:
 	 * @param available `true` if there are redo-able actions
 	 */
 	void redoAvailable(bool available);
+
+	/**
+	 * Emitted when the session title changes.
+	 *
+	 * @param title new session title
+	 */
+	void titleChanged(const QString& title);
+
+	/**
+	 * Emitted when the session has been modified.
+	 *
+	 * @param modified `true` if the budget has been modified
+	 */
+	void budgetModified(bool modified);
 
 private slots:
 	/**

@@ -40,27 +40,17 @@ const QString MainWindow::MAIN_WINDOW_STATE = "MainWindowState";
 MainWindow::MainWindow()
 {
 	// Set up window widgets
-	mdiArea = new QMdiArea;
-	mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-	mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-	setCentralWidget(mdiArea);
-	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-		this, SLOT(updateMenus()));
-	windowMapper = new QSignalMapper(this);
-	connect(windowMapper, SIGNAL(mapped(QWidget*)),
-		this, SLOT(setActiveSubWindow(QWidget*)));
-
 	createActions();
 	createMenus();
 	createToolBars();
 	createStatusBar();
-	updateMenus();
 
 	readSettings();
 
 	setWindowTitle(qApp->applicationName());
 	setWindowIcon(QIcon(":/logo"));
 	setUnifiedTitleAndToolBarOnMac(true);
+	setAttribute(Qt::WA_DeleteOnClose, true);
 }
 
 //------------------------------------------------------------------------------
@@ -115,65 +105,8 @@ void MainWindow::showProgress(int value, int max)
 //--------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-	mdiArea->closeAllSubWindows();
-	if (mdiArea->currentSubWindow())
-	{
-		event->ignore();
-	}
-	else
-	{
-		writeSettings();
-		event->accept();
-	}
-}
-
-//------------------------------------------------------------------------------
-Session* MainWindow::activeSession() const
-{
-	if (QMdiSubWindow* activeSubWindow = mdiArea->activeSubWindow())
-		return qobject_cast<Session*>(activeSubWindow->widget());
-	return 0;
-}
-
-//------------------------------------------------------------------------------
-Session* MainWindow::createSession()
-{
-	Session* session = new Session;
-	QMdiSubWindow* window = mdiArea->addSubWindow(session);
-	connect(session, SIGNAL(undoAvailable(bool)),
-		undoAction, SLOT(setEnabled(bool)));
-	connect(session, SIGNAL(redoAvailable(bool)),
-		redoAction, SLOT(setEnabled(bool)));
-	connect(session, SIGNAL(showMessage(QString)),
-		this, SLOT(showStatusMessage(QString)));
-	connect(session, SIGNAL(showProgress(int, int)),
-		this, SLOT(showProgress(int, int)));
-	window->showMaximized();
-	return session;
-}
-
-//------------------------------------------------------------------------------
-QMdiSubWindow* MainWindow::findSession(const QSharedPointer<BudgetSource>& source) const
-{
-	QString location = source->location();
-
-	foreach (QMdiSubWindow* window, mdiArea->subWindowList())
-	{
-		Session* session = qobject_cast<Session*>(window->widget());
-		QSharedPointer<BudgetSource> src = session->currentBudgetSource();
-		if ( ! src.isNull() && src->location() == location)
-			return window;
-	}
-
-	return 0;
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::setActiveSubWindow(QWidget* window)
-{
-	if ( ! window)
-		return;
-	mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(window));
+	writeSettings();
+	QMainWindow::closeEvent(event);
 }
 
 //--------------------------------------------------------------------------

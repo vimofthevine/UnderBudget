@@ -12,6 +12,8 @@ set(ui_srcs
 	MainWindow.cpp
 	MainWindow_actions.cpp
 	MainWindow_menus.cpp
+	MdiWindow.cpp
+	SdiWindow.cpp
 	Session.cpp
 )
 

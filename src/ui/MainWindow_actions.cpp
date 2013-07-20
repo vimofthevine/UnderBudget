@@ -66,14 +66,6 @@ void MainWindow::editPreferences()
 }
 
 //------------------------------------------------------------------------------
-void MainWindow::newBudget()
-{
-	Session* session = createSession();
-	session->newBudget();
-	session->show();
-}
-
-//------------------------------------------------------------------------------
 void MainWindow::openBudget()
 {
 	openBudget(BudgetSourceWizard::promptForBudgetToOpen(this));
@@ -88,39 +80,6 @@ void MainWindow::openRecentBudget()
 	{
 		openBudget(BudgetSourceWizard::promptToReOpen(this,
 			action->data().toString()));
-	}
-}
-
-//------------------------------------------------------------------------------
-void MainWindow::openBudget(QSharedPointer<BudgetSource> source)
-{
-	if ( ! source.isNull())
-	{
-		// If this budget source is already open, don't re-open, just bring
-		// that window to the front
-		QMdiSubWindow* existing = findSession(source);
-		if (existing)
-		{
-			mdiArea->setActiveSubWindow(existing);
-			return;
-		}
-
-		Session* session = createSession();
-		if (session->openBudget(source))
-		{
-			recordRecentBudget(source->location());
-			showStatusMessage(tr("%1 opened")
-				.arg(session->currentBudgetSource()->location()));
-			session->show();
-		}
-		else
-		{
-			QMdiSubWindow* sub = findSession(source);
-			if (sub)
-			{
-				sub->close();
-			}
-		}
 	}
 }
 

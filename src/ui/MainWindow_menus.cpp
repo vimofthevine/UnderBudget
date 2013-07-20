@@ -66,11 +66,9 @@ void MainWindow::createActions()
 	closeAction->setShortcuts(QKeySequence::Close);
 	closeAction->setShortcutContext(Qt::WidgetShortcut);
 	closeAction->setStatusTip(tr("Close the budget"));
-	connect(closeAction, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
 
 	closeAllAction = new QAction(QIcon(":/icons/closeAll"), tr("Close A&ll"), this);
 	closeAllAction->setStatusTip(tr("Close all budgets"));
-	connect(closeAllAction, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
 
 	exitAction = new QAction(QIcon(":/icons/exit"), tr("E&xit"), this);
 	exitAction->setShortcuts(QKeySequence::Quit);
@@ -151,11 +149,9 @@ void MainWindow::createActions()
 	// Window menu actions
 	tileAction = new QAction(QIcon(":/icons/tile"), tr("&Tile"), this);
 	tileAction->setStatusTip(tr("Tile all open budgets"));
-	connect(tileAction, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
 
 	cascadeAction = new QAction(QIcon(":/icons/cascade"), tr("&Cascade"), this);
 	cascadeAction->setStatusTip("Cascade all open budgets");
-	connect(cascadeAction, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
 
 	// Help menu actions
 	aboutAction = new QAction(QIcon(":/icons/about"),
@@ -178,7 +174,7 @@ void MainWindow::createMenus()
 	recentFilesMenu = fileMenu->addMenu(tr("&Recent..."));
 	updateRecentFilesMenu();
 	connect(recentFilesMenu, SIGNAL(aboutToShow()),
-	this, SLOT(updateRecentFilesMenu()));
+		this, SLOT(updateRecentFilesMenu()));
 
 	fileMenu->addSeparator();
 	fileMenu->addAction(saveAction);
@@ -213,8 +209,8 @@ void MainWindow::createMenus()
 	analyzeMenu->addAction(transactionsAction);
 
 	windowMenu = menuBar()->addMenu(tr("&Window"));
-	updateWindowMenu();
-	connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
+	connect(windowMenu, SIGNAL(aboutToShow()),
+		this, SLOT(updateWindowMenu()));
 
 	menuBar()->addSeparator();
 
@@ -256,46 +252,6 @@ void MainWindow::createToolBars()
 }
 
 //------------------------------------------------------------------------------
-void MainWindow::updateWindowMenu()
-{
-	windowMenu->clear();
-	windowMenu->addAction(closeAction);
-	windowMenu->addAction(closeAllAction);
-	windowMenu->addSeparator();
-	windowMenu->addAction(tileAction);
-	windowMenu->addAction(cascadeAction);
-
-	QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
-	if ( ! windows.isEmpty())
-	{
-		windowMenu->addSeparator();
-	}
-
-	for (int i=0; i<windows.size(); ++i)
-	{
-		Session* session = qobject_cast<Session*>(windows.at(i)->widget());
-
-		QString text;
-		if (i < 9)
-		{
-			text = tr("&%1 %2").arg(i+1)
-				.arg(session->sessionName());
-		}
-		else
-		{
-			text = tr("%1 %2").arg(i+1)
-				.arg(session->sessionName());
-		}
-
-		QAction* action = windowMenu->addAction(text);
-		action->setCheckable(true);
-		action->setChecked(session == activeSession());
-		connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
-		windowMapper->setMapping(action, windows.at(i));
-	}
-}
-
-//------------------------------------------------------------------------------
 void MainWindow::updateRecentFilesMenu()
 {
 	recentFilesMenu->clear();
@@ -327,33 +283,33 @@ void MainWindow::updateRecentFilesMenu()
 void MainWindow::updateMenus()
 {
 	Session* session = activeSession();
-	bool hasMdiChild = (session != 0);
+	bool hasActiveSession = (session != 0);
 
 	// File menu actions
-	saveAction->setEnabled(hasMdiChild);
-	saveAsAction->setEnabled(hasMdiChild);
-	saveAsTemplateAction->setEnabled(hasMdiChild);
-	exportAction->setEnabled(hasMdiChild);
-	closeAction->setEnabled(hasMdiChild);
-	closeAllAction->setEnabled(hasMdiChild);
+	saveAction->setEnabled(hasActiveSession);
+	saveAsAction->setEnabled(hasActiveSession);
+	saveAsTemplateAction->setEnabled(hasActiveSession);
+	exportAction->setEnabled(hasActiveSession);
+	closeAction->setEnabled(hasActiveSession);
+	closeAllAction->setEnabled(hasActiveSession);
 	// Edit menu actions
-	undoAction->setEnabled(hasMdiChild && session->hasUndoableActions());
-	redoAction->setEnabled(hasMdiChild && session->hasRedoableActions());
-	editBudgetAction->setEnabled(hasMdiChild);
-	editEstimatesAction->setEnabled(hasMdiChild);
-	editRulesAction->setEnabled(hasMdiChild);
+	undoAction->setEnabled(hasActiveSession && session->hasUndoableActions());
+	redoAction->setEnabled(hasActiveSession && session->hasRedoableActions());
+	editBudgetAction->setEnabled(hasActiveSession);
+	editEstimatesAction->setEnabled(hasActiveSession);
+	editRulesAction->setEnabled(hasActiveSession);
 	// Analyze menu actions
-	importAction->setEnabled(hasMdiChild);
-	importFromAction->setEnabled(hasMdiChild);
-	assignAction->setEnabled(hasMdiChild);
-	calculateAction->setEnabled(hasMdiChild);
-	summaryAction->setEnabled(hasMdiChild);
-	progressAction->setEnabled(hasMdiChild);
-	impactAction->setEnabled(hasMdiChild);
-	transactionsAction->setEnabled(hasMdiChild);
+	importAction->setEnabled(hasActiveSession);
+	importFromAction->setEnabled(hasActiveSession);
+	assignAction->setEnabled(hasActiveSession);
+	calculateAction->setEnabled(hasActiveSession);
+	summaryAction->setEnabled(hasActiveSession);
+	progressAction->setEnabled(hasActiveSession);
+	impactAction->setEnabled(hasActiveSession);
+	transactionsAction->setEnabled(hasActiveSession);
 	// Window menu actions
-	tileAction->setEnabled(hasMdiChild);
-	cascadeAction->setEnabled(hasMdiChild);
+	tileAction->setEnabled(hasActiveSession);
+	cascadeAction->setEnabled(hasActiveSession);
 }
 
 }

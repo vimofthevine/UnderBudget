@@ -25,8 +25,6 @@
 #include "budget/storage/BudgetSource.hpp"
 
 // Forward declaration(s)
-class QMdiArea;
-class QMdiSubWindow;
 class QProgressBar;
 class QSignalMapper;
 
@@ -37,7 +35,9 @@ namespace ub
 class Session;
 
 /**
- * The main, primary application window.
+ * Main window for the application, defining the menus, toolsbars, and
+ * the status bar. The actual content of the window must be defined and
+ * handled by a concrete subclass (either an MDI or SDI implementation).
  */
 class MainWindow : public QMainWindow
 {
@@ -45,19 +45,41 @@ class MainWindow : public QMainWindow
 
 public:
 	/**
-	 * Initializes the main window.
+	 * Initializes the main window's menus, toolbars, and status bar.
 	 */
 	MainWindow();
 
-protected:
+protected slots:
 	/**
-	 * Intercepts the window closing event to prompt the
-	 * user to finalize any pending operations before closing
-	 * the application.
+	 * Displays the given message temporarily in the status bar
 	 *
-	 * @param[in] event window closing event
+	 * @param[in] message temporary status message
 	 */
-	void closeEvent(QCloseEvent* event);
+	void showStatusMessage(const QString& message);
+
+	/**
+	 * Displays the specified progress in the status bar.
+	 *
+	 * If both value and max are 0, then an indefinite, or busy, progress
+	 * will be displayed.
+	 *
+	 * If both value and max are the same, the progress bar will be
+	 * hidden.
+	 *
+	 * @param[in] value percent-complete value
+	 * @param[in] max   maximum value
+	 */
+	void showProgress(int value, int max);
+
+	/**
+	 * Updates the menu actions according to whether a budget session
+	 * is currently open or active.
+	 *
+	 * This slot is protected so that subclasses can execute it in their
+	 * constructor, since it cannot be called from our constructor due
+	 * to the use of a pure virtual method.
+	 */
+	void updateMenus();
 
 private slots:
 	void notImpl();
@@ -65,7 +87,7 @@ private slots:
 	/**
 	 * Creates a new budget session not yet associated with any file.
 	 */
-	void newBudget();
+	virtual void newBudget() = 0;
 
 	/**
 	 * Creates a new budget session for the user-specified file.
@@ -163,33 +185,6 @@ private slots:
 	void showImportedTransactions();
 
 	/**
-	 * Displays the given message temporarily in the status bar
-	 *
-	 * @param[in] message temporary status message
-	 */
-	void showStatusMessage(const QString& message);
-
-	/**
-	 * Displays the specified progress in the status bar.
-	 *
-	 * If both value and max are 0, then an indefinite, or busy, progress
-	 * will be displayed.
-	 *
-	 * If both value and max are the same, the progress bar will be
-	 * hidden.
-	 *
-	 * @param[in] value percent-complete value
-	 * @param[in] max   maximum value
-	 */
-	void showProgress(int value, int max);
-
-	/**
-	 * Updates the menu actions according to whether a budget session
-	 * is currently open or active.
-	 */
-	void updateMenus();
-
-	/**
 	 * Updates the recent-files menu with a list of recently-opened files
 	 */
 	void updateRecentFilesMenu();
@@ -198,30 +193,14 @@ private slots:
 	 * Updates the window menu as needed according to the currently
 	 * open budget sessions
 	 */
-	void updateWindowMenu();
-
-	/**
-	 * Sets the active sub-window.
-	 *
-	 * @param[in] window new active sub-window
-	 */
-	void setActiveSubWindow(QWidget* window);
+	virtual void updateWindowMenu() = 0;
 
 	/**
 	 * Displays information about the application.
 	 */
 	void about();
 
-private:
-	// Maximum number of recent budget files to remember
-	static const int MAX_RECENT_BUDGET_FILES;
-	// Recent budget files settings key
-	static const QString RECENT_BUDGET_FILES;
-	// Main window size settings key
-	static const QString MAIN_WINDOW_SIZE;
-	// Main window state settings key
-	static const QString MAIN_WINDOW_STATE;
-
+protected:
 	// File menu actions
 	QAction* newAction;
 	QAction* openAction;
@@ -272,9 +251,48 @@ private:
 	QToolBar* editToolBar;
 	QToolBar* analyzeToolBar;
 
+	/**
+	 * Opens the budget defined in the given budget source. If the given
+	 * source is invalid, of the budget could not be retreived from the source,
+	 * no action is taken (no new sub-windows).
+	 *
+	 * @param[in] source budget source
+	 */
+	virtual void openBudget(QSharedPointer<BudgetSource> source) = 0;
+
+	/**
+	 * Returns the active session, or 0 if no active session.
+	 *
+	 * @return active session, or 0 if no active session
+	 */
+	virtual Session* activeSession() const = 0;
+
+	/**
+	 * Records the given file as a recent budget file, so it can
+	 * be displayed in the recent-files menu.
+	 *
+	 * @param[in] file budget file name to be recorded
+	 */
+	void recordRecentBudget(const QString& file);
+
+	/**
+	 * Intercepts the window closing event to save window state.
+	 *
+	 * @param[in] event window closing event
+	 */
+	void closeEvent(QCloseEvent* event);
+
+private:
+	// Maximum number of recent budget files to remember
+	static const int MAX_RECENT_BUDGET_FILES;
+	// Recent budget files settings key
+	static const QString RECENT_BUDGET_FILES;
+	// Main window size settings key
+	static const QString MAIN_WINDOW_SIZE;
+	// Main window state settings key
+	static const QString MAIN_WINDOW_STATE;
+
 	// Content widgets
-	QMdiArea* mdiArea;
-	QSignalMapper* windowMapper;
 	QProgressBar* progressBar;
 
 	/** Creates all actions */
@@ -294,46 +312,6 @@ private:
 
 	/** Restore saved window settings.  */
 	void readSettings();
-
-	/**
-	 * Opens the budget defined in the given budget source. If the given
-	 * source is invalid, of the budget could not be retreived from the source,
-	 * no action is taken (no new sub-windows).
-	 *
-	 * @param[in] source budget source
-	 */
-	void openBudget(QSharedPointer<BudgetSource> source);
-
-	/**
-	 * Returns the active session, or 0 if no active session.
-	 *
-	 * @return active session, or 0 if no active session
-	 */
-	Session* activeSession() const;
-
-	/**
-	 * Create a new session as a sub-window.
-	 *
-	 * @return newly created session
-	 */
-	Session* createSession();
-
-	/**
-	 * Searches for an existing session for the given budget source.
-	 *
-	 * @param[in] source budget source to be searched
-	 * @return sub-window whose session is associated with the given
-	 *         budget source, or 0 if no session exists
-	 */
-	QMdiSubWindow* findSession(const QSharedPointer<BudgetSource>& source) const;
-
-	/**
-	 * Records the given file as a recent budget file, so it can
-	 * be displayed in the recent-files menu.
-	 *
-	 * @param[in] file budget file name to be recorded
-	 */
-	void recordRecentBudget(const QString& file);
 };
 
 }

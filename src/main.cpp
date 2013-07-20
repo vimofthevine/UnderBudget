@@ -16,18 +16,33 @@
 
 // Qt include(s)
 #include <QApplication>
+#include <QSettings>
 
 // UnderBudget include(s)
 #include "info.hpp"
+#include "settings.hpp"
 #include "ui/MainWindow.hpp"
+#include "ui/MdiWindow.hpp"
+#include "ui/SdiWindow.hpp"
 
 int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
 	setupApp(app);
 
-	ub::MainWindow* mainWindow = new ub::MainWindow();
-	mainWindow->show();
+	QSettings settings;
+	bool useMdi = settings.value(ub::appearance::UseMDI, false).toBool();
+
+	if (useMdi)
+	{
+		ub::MdiWindow* mainWindow = new ub::MdiWindow();
+		mainWindow->show();
+	}
+	else
+	{
+		ub::SdiWindow* mainWindow = new ub::SdiWindow();
+		mainWindow->show();
+	}
 
 	return app.exec();
 }

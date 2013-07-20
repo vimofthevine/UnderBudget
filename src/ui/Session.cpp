@@ -66,12 +66,14 @@ void Session::createWidgets()
 void Session::updateWindowTitle()
 {
 	setWindowTitle(sessionName() + "[*]");
+	emit titleChanged(windowTitle());
 }
 
 //------------------------------------------------------------------------------
 void Session::setWindowModified(bool isClean)
 {
 	QStackedWidget::setWindowModified( ! isClean);
+	emit budgetModified( ! isClean);
 }
 
 //------------------------------------------------------------------------------
@@ -131,6 +133,8 @@ bool Session::openBudget(QSharedPointer<BudgetSource> source)
 	else
 	{
 		isUntitled = false;
+		connect(budget.data(), SIGNAL(nameChanged(QString)),
+			this, SLOT(updateWindowTitle()));
 		updateWindowTitle();
 		createWidgets();
 		return true;
