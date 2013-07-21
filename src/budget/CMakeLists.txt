@@ -21,7 +21,6 @@ set(budget_srcs
 	ChangeEstimateFinishedCommand.cpp
 	ChangeEstimateNameCommand.cpp
 	ChangeEstimateTypeCommand.cpp
-	ChangeInitialBalanceCommand.cpp
 	ChangePeriodParamsCommand.cpp
 	DeleteEstimateCommand.cpp
 	Estimate.cpp

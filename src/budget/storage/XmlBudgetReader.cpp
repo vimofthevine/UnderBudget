@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "budget/AssignmentRules.hpp"
+#include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/storage/XmlBudgetReader.hpp"
 
@@ -83,7 +84,7 @@ void XmlBudgetReader::readVersion4()
 	// Budget parameters (defaults)
 	QString name("Budget");
 	QSharedPointer<BudgetingPeriod> period(new BudgetingPeriod);
-	Money initial;
+	QSharedPointer<Balance> initial = Balance::create();
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	QSharedPointer<AssignmentRules> rules = AssignmentRules::create();
 
@@ -102,7 +103,7 @@ void XmlBudgetReader::readVersion4()
 		{
 			QString currency = xml.attributes().value("currency").toString();
 			QVariant amount = xml.readElementText();
-			initial = Money(amount.toDouble(), currency);
+			initial = Balance::create(Money(amount.toDouble(), currency));
 		}
 		else if (xml.name() == "estimate")
 		{
@@ -155,7 +156,7 @@ void XmlBudgetReader::readVersion5()
 	// Budget parameters (defaults)
 	QString name("Budget");
 	QSharedPointer<BudgetingPeriod> period(new BudgetingPeriod);
-	Money initial;
+	QSharedPointer<Balance> initial = Balance::create();
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	QSharedPointer<AssignmentRules> rules = AssignmentRules::create();
 
@@ -172,9 +173,7 @@ void XmlBudgetReader::readVersion5()
 		}
 		else if (xml.name() == "initial-balance")
 		{
-			QString currency = xml.attributes().value("currency").toString();
-			QVariant amount = xml.readElementText();
-			initial = Money(amount.toDouble(), currency);
+			readVersion5Balance(initial);
 		}
 		else if (xml.name() == "estimate")
 		{
@@ -341,6 +340,46 @@ void XmlBudgetReader::readVersion5Period(QSharedPointer<BudgetingPeriod>& period
 	}
 
 	period = QSharedPointer<BudgetingPeriod>(new BudgetingPeriod(parameters));
+}
+
+//------------------------------------------------------------------------------
+void XmlBudgetReader::readVersion5Balance(QSharedPointer<Balance>& balance)
+{
+	Q_ASSERT(xml.isStartElement());
+
+	QList<Balance::Contributor> contributors;
+
+	// Go through all elements under a balance
+	while (xml.readNextStartElement())
+	{
+		if (xml.name() == "contributor")
+		{
+			Balance::Contributor contributor;
+
+			// Go through all elements under a contributor
+			while (xml.readNextStartElement())
+			{
+				if (xml.name() == "name")
+					contributor.name = xml.readElementText();
+				else if (xml.name() == "amount")
+				{
+					QString currency = xml.attributes().value("currency").toString();
+					QVariant amount = xml.readElementText();
+					contributor.amount = Money(amount.toDouble(), currency);
+				}
+				else if (xml.name() == "increase")
+					contributor.increase = QVariant(xml.readElementText()).toBool();
+				else
+					xml.skipCurrentElement();
+			}
+
+			contributors << contributor;
+		}
+		else
+			xml.skipCurrentElement();
+	}
+
+	balance = Balance::create(contributors);
 }
 
 //------------------------------------------------------------------------------

@@ -21,6 +21,7 @@
 #include "budget_comparisons.hpp"
 #include "XmlBudgetReaderV5Test.hpp"
 #include "budget/AssignmentRules.hpp"
+#include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/storage/XmlBudgetReader.hpp"
 
@@ -35,14 +36,27 @@ void XmlBudgetReaderV5Test::readFullBudget()
 	QBuffer buffer;
 	buffer.open(QBuffer::ReadWrite);
 	buffer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-		"<ub:budget xmlns:ub=\"http://underbudget/vimofthevine.com/ub\""
-		"  xmlns:period=\"http://underbudget/vimofthevine.com/budgeting-period\""
-		"  xmlns:estimate=\"http://underbudget/vimofthevine.com/estimate\""
-		"  xmlns:rule=\"http://underbudget/vimofthevine.com/rule\""
-		"  xmlns:condition=\"http://underbudget/vimofthevine.com/condition\""
+		"<ub:budget xmlns:ub=\"http://underbudget.vimofthevine.com/ub\""
+		"  xmlns:balance=\"http://underbudget.vimofthevine.com/balance\""
+		"  xmlns:contributor=\"http://underbudget.vimofthevine.com/contributor\""
+		"  xmlns:period=\"http://underbudget.vimofthevine.com/budgeting-period\""
+		"  xmlns:estimate=\"http://underbudget.vimofthevine.com/estimate\""
+		"  xmlns:rule=\"http://underbudget.vimofthevine.com/rule\""
+		"  xmlns:condition=\"http://underbudget.vimofthevine.com/condition\""
 		"  version=\"5.0\">\n"
 		" <ub:name>Version 5 Budget</ub:name>\n"
-		" <ub:initial-balance currency=\"USD\">14500</ub:initial-balance>\n"
+		" <ub:initial-balance>\n"
+		"  <balance:contributor>\n"
+		"   <contributor:name>Asset</contributor:name>\n"
+		"   <contributor:amount currency=\"USD\">16500</contributor:amount>\n"
+		"   <contributor:increase>true</contributor:increase>\n"
+		"  </balance:contributor>\n"
+		"  <balance:contributor>\n"
+		"   <contributor:name>Liability</contributor:name>\n"
+		"   <contributor:amount currency=\"USD\">2000</contributor:amount>\n"
+		"   <contributor:increase>false</contributor:increase>\n"
+		"  </balance:contributor>\n"
+		" </ub:initial-balance>\n"
 		" <ub:period type=\"custom\">\n"
 		"  <period:param1>2013-07-01</period:param1>\n"
 		"  <period:param2>2013-08-01</period:param2>\n"
@@ -121,7 +135,16 @@ void XmlBudgetReaderV5Test::readFullBudget()
 	// Make sure budget was read correctly
 	QSharedPointer<Budget> budget = reader.lastReadBudget();
 	QCOMPARE(budget->name(), QString("Version 5 Budget"));
-	QCOMPARE(budget->initialBalance(), Money(14500, "USD"));
+
+	QSharedPointer<Balance> balance = budget->initialBalance();
+	QCOMPARE(balance->contributorCount(), 2);
+	QCOMPARE(balance->contributorAt(0).name, QString("Asset"));
+	QCOMPARE(balance->contributorAt(0).amount, Money(16500, "USD"));
+	QCOMPARE(balance->contributorAt(0).increase, true);
+	QCOMPARE(balance->contributorAt(1).name, QString("Liability"));
+	QCOMPARE(balance->contributorAt(1).amount, Money(2000, "USD"));
+	QCOMPARE(balance->contributorAt(1).increase, false);
+	QCOMPARE(balance->value(), Money(14500, "USD"));
 
 	BudgetingPeriod::Parameters period = budget->budgetingPeriod()->parameters();
 	QCOMPARE(period.type, BudgetingPeriod::CustomDateRange);
@@ -204,7 +227,7 @@ void XmlBudgetReaderV5Test::readIncompleteBudget()
 	QCOMPARE(budget->name(), QString("Budget"));
 	QCOMPARE(budget->budgetingPeriod()->parameters().type,
 		BudgetingPeriod::CalendarMonth);
-	QCOMPARE(budget->initialBalance(), Money());
+	QCOMPARE(budget->initialBalance()->value(), Money());
 	QCOMPARE(budget->estimates()->childCount(), 0);
 	QCOMPARE(budget->rules()->size(), 0);
 }

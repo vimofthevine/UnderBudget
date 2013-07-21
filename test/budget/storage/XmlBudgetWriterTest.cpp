@@ -21,6 +21,7 @@
 #include "XmlBudgetWriterTest.hpp"
 #include "budget/AssignmentRule.hpp"
 #include "budget/AssignmentRules.hpp"
+#include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/Estimate.hpp"
 #include "budget/storage/XmlBudgetWriter.hpp"
@@ -111,6 +112,12 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 		AssignmentRule::StringEquals, false, "withdrawal equals"));
 	rules->createRule(112, 11000, conditions);
 
+	// Create initial balance
+	QList<Balance::Contributor> contributors;
+	contributors << Balance::Contributor("Have", Money(10000, "USD"), true);
+	contributors << Balance::Contributor("Owe", Money(200, "USD"), false);
+	QSharedPointer<Balance> initial = Balance::create(contributors);
+
 	// Create budgeting period
 	BudgetingPeriod::Parameters params;
 	params.type = BudgetingPeriod::CalendarMonth;
@@ -120,7 +127,7 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 
 	// Create budget
 	QSharedPointer<Budget> budget(new Budget("Serialized Budget", period,
-		Money(13983.29, "USD"), root, rules));
+		initial, root, rules));
 
 	// Serialize budget
 	QBuffer buffer;
@@ -138,7 +145,18 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 
 	int i = 1;
 	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:name>Serialized Budget</ub:name>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:initial-balance currency=\"USD\">13983.29</ub:initial-balance>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:initial-balance>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<balance:contributor>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<contributor:name>Have</contributor:name>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<contributor:amount currency=\"USD\">10000</contributor:amount>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<contributor:increase>true</contributor:increase>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</balance:contributor>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<balance:contributor>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<contributor:name>Owe</contributor:name>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<contributor:amount currency=\"USD\">200</contributor:amount>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<contributor:increase>false</contributor:increase>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</balance:contributor>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:initial-balance>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:period type=\"calendar-month\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<period:param1>2013</period:param1>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<period:param2>8</period:param2>"));
@@ -360,7 +378,7 @@ void XmlBudgetWriterTest::writeBudgetingPeriods()
 
 	// Create budget
 	QSharedPointer<Budget> budget(new Budget("Periods", period,
-		Money(), Estimate::createRoot(), AssignmentRules::create()));
+		Balance::create(), Estimate::createRoot(), AssignmentRules::create()));
 
 	// Serialize budget
 	QBuffer buffer;
@@ -372,9 +390,9 @@ void XmlBudgetWriterTest::writeBudgetingPeriods()
 	QStringList lines = serialized.split("\n");
 
 	// Verify generated XML
-	QCOMPARE(lines.at(4).trimmed(), period_line);
-	QCOMPARE(lines.at(5).trimmed(), param1_line);
-	QCOMPARE(lines.at(6).trimmed(), param2_line);
+	QCOMPARE(lines.at(10).trimmed(), period_line);
+	QCOMPARE(lines.at(11).trimmed(), param1_line);
+	QCOMPARE(lines.at(12).trimmed(), param2_line);
 }
 
 }

@@ -65,7 +65,7 @@ public:
 	 * @param[in] value single money value representing the balance
 	 * @return new balance object instance
 	 */
-	static QSharedPointer<Balance> create(const Money& value);
+	static QSharedPointer<Balance> create(const Money& value = Money());
 
 	/**
 	 * Creates a new balance from the given set of contributors.
