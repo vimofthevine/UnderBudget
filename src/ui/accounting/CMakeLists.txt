@@ -2,6 +2,7 @@
 
 # Specify UI accounting source files
 set(ui_accounting_srcs
+	MoneyDelegate.cpp
 	MoneyEdit.cpp
 	MoneyValidator.cpp
 )

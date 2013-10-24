@@ -18,9 +18,9 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
-#include "ui/accounting/MoneyEdit.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
 #include "ui/budget/BudgetingPeriodForm.hpp"
+#include "ui/budget/InitialBalanceForm.hpp"
 #include "ui/widgets/LineEdit.hpp"
 
 namespace ub {
@@ -38,11 +38,7 @@ BudgetDetailsForm::BudgetDetailsForm(QSharedPointer<Budget> budget,
 		nameField, SLOT(setText(QString)));
 
 	// Setup initial balance field
-	initialBalanceField = new MoneyEdit(budget->initialBalance(), this);
-	connect(initialBalanceField, SIGNAL(valueEdited(Money)),
-		this, SLOT(updateInitialBalance(Money)));
-	connect(budget.data(), SIGNAL(initialBalanceChanged(Money)),
-		initialBalanceField, SLOT(setValue(Money)));
+	initialBalanceField = new InitialBalanceForm(budget->initialBalance(), stack, this);
 
 	// Setup budgeting period field
 	periodField = new BudgetingPeriodForm(budget->budgetingPeriod(), stack, this);
@@ -67,12 +63,6 @@ BudgetDetailsForm::BudgetDetailsForm(QSharedPointer<Budget> budget,
 void BudgetDetailsForm::updateName(const QString& name)
 {
 	undoStack->push(budget->changeName(name));
-}
-
-//------------------------------------------------------------------------------
-void BudgetDetailsForm::updateInitialBalance(const Money& amount)
-{
-	undoStack->push(budget->changeInitialBalance(amount));
 }
 
 }
