@@ -42,7 +42,16 @@ public:
 	ContributorsListWidget(BalanceContributorsModel* model,
 		QWidget* parent = 0);
 
-private slots:
+signals:
+	/**
+	 * Indicates whether a valid contributor is selected that
+	 * can be deleted.
+	 *
+	 * @param able `true` if a deleteable contributor is selected
+	 */
+	void canDelete(bool able);
+
+public slots:
 	/**
 	 * Creates a new balance contributor.
 	 */
@@ -52,6 +61,16 @@ private slots:
 	 * Deletes the currently selected balance contributor.
 	 */
 	void deleteSelectedContributor();
+
+private slots:
+	/**
+	 * Emits the contributorSelected signal according to
+	 * the current contributor selection.
+	 *
+	 * @param[in] current  currently selected contributor
+	 * @param[in] previous previously selected contributor
+	 */
+	void selectionChanged(const QModelIndex& current, const QModelIndex& previous);
 
 protected:
 	/**

@@ -32,6 +32,7 @@ namespace ub {
 
 // Forward declaration(s)
 class ContributorsListWidget;
+class Money;
 class MoneyEdit;
 
 /**
@@ -54,9 +55,16 @@ public:
 
 private slots:
 	/**
+	 * Updates the initial balance based on the user-entered value.
+	 *
+	 * @param[in] value new initial balance value
+	 */
+	void updateValue(const Money& value);
+
+	/**
 	 * Updates the net value field.
 	 */
-	void updateValue();
+	void updateDisplayedValue();
 
 	/**
 	 * Toggles the display of advanced input fields.
@@ -73,6 +81,10 @@ private:
 	MoneyEdit* valueField;
 	/** Show-advanced button */
 	QPushButton* toggleButton;
+	/** Add-contributor button */
+	QPushButton* addButton;
+	/** Delete-contributor button */
+	QPushButton* deleteButton;
 	/** Expand icon */
 	QIcon expand;
 	/** Collapse icon */

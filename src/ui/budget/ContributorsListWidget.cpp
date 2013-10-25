@@ -32,6 +32,10 @@ ContributorsListWidget::ContributorsListWidget(
 	setModel(model);
 	setAlternatingRowColors(true);
 	setItemDelegateForColumn(1, new MoneyDelegate(this));
+	setSelectionBehavior(QTableView::SelectRows);
+	setSelectionMode(QTableView::SingleSelection);
+	connect(selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+		this, SLOT(selectionChanged(QModelIndex, QModelIndex)));
 
 	// Give the contributor name column the most weight
 	horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -57,7 +61,7 @@ void ContributorsListWidget::contextMenuEvent(QContextMenuEvent* event)
 
 	QAction* delAction = new QAction(tr("Delete"), this);
 	delAction->setShortcut(QKeySequence::Delete);
-	delAction->setEnabled(currentIndex().isValid());
+	delAction->setEnabled(currentIndex().isValid() && model->rowCount() > 1);
 	connect(delAction, SIGNAL(triggered()),
 		this, SLOT(deleteSelectedContributor()));
 
@@ -68,15 +72,24 @@ void ContributorsListWidget::contextMenuEvent(QContextMenuEvent* event)
 }
 
 //------------------------------------------------------------------------------
+void ContributorsListWidget::selectionChanged(const QModelIndex& current,
+	const QModelIndex& previous)
+{
+	emit canDelete(current.isValid() && model->rowCount() > 1);
+}
+
+//------------------------------------------------------------------------------
 void ContributorsListWidget::createContributor()
 {
 	model->add();
+	emit canDelete(currentIndex().isValid() && model->rowCount() > 1);
 }
 
 //------------------------------------------------------------------------------
 void ContributorsListWidget::deleteSelectedContributor()
 {
 	model->remove(currentIndex());
+	emit canDelete(currentIndex().isValid() && model->rowCount() > 1);
 }
 
 }
