@@ -14,39 +14,37 @@
  * limitations under the License.
  */
 
-#ifndef CHANGEINITIALBALANCECOMMAND_HPP
-#define CHANGEINITIALBALANCECOMMAND_HPP
+#ifndef REMOVECONTRIBUTORCOMMAND_HPP
+#define REMOVECONTRIBUTORCOMMAND_HPP
 
 // Qt include(s)
 #include <QUndoCommand>
 
 // UnderBudget include(s)
 #include "accounting/Money.hpp"
-#include "budget/Budget.hpp"
+#include "budget/Balance.hpp"
 
 namespace ub {
 
 /**
- * An undoable command to change a budget's initial balance.
+ * An undoable command to remove an existing contributor from a balance.
  */
-class ChangeInitialBalanceCommand : public QUndoCommand
+class RemoveContributorCommand : public QUndoCommand
 {
 public:
 	/**
-	 * Constructs a new change initial balance command. It is critical to note that
-	 * the budget pointer being given is not owned by this object, and it may
+	 * Constructs a new remove-contributor command. It is critical to note that
+	 * the balance pointer being given is not owned by this object, and it may
 	 * be deleted externally at any time. Since the `QUndoStack` that will take
 	 * ownership of this command is tied to the `Session` that also holds a
-	 * `QSharedPointer` to the budget, it should be impossible for the budget
+	 * `QSharedPointer` to the budget, it should be impossible for the balance
 	 * to be deleted while this command is still relevant.
 	 *
-	 * @param[in] budget     budget being modified
-	 * @param[in] oldBalance old initial balance
-	 * @param[in] newBalance new initial balance
+	 * @param[in] balance    balance being modified
+	 * @param[in] index      index of the contributor to be removed
 	 * @param[in] parent     parent undoable command for grouping
 	 */
-	ChangeInitialBalanceCommand(Budget* budget, const Money& oldBalance,
-		const Money& newBalance, QUndoCommand* parent = 0);
+	RemoveContributorCommand(Balance* balance, int index, QUndoCommand* parent = 0);
 
 	// Overriding methods
 
@@ -56,16 +54,16 @@ public:
 	void undo();
 
 private:
-	/** Change budget initial balance command ID */
+	/** Remove contributor command ID */
 	static const int ID;
-	/** The budget being modified */
-	Budget* budget;
-	/** The previous initial balance */
-	Money oldBalance;
-	/** The new initial balance */
-	Money newBalance;
+	/** The balance being modified */
+	Balance* balance;
+	/** The index at which a new contributor will be appended */
+	int index;
+	/** Original contributor parameters */
+	Balance::Contributor contributor;
 };
 
 }
 
-#endif //CHANGEINITIALBALANCECOMMAND_HPP
+#endif //REMOVECONTRIBUTORCOMMAND_HPP

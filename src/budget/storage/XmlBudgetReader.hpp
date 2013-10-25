@@ -29,6 +29,7 @@ class QIODevice;
 namespace ub {
 
 // Forward declaration(s)
+class Balance;
 class Budget;
 class BudgetingPeriod;
 class Estimate;
@@ -100,6 +101,13 @@ private:
 	 * @param[in,out] budgeting period
 	 */
 	void readVersion5Period(QSharedPointer<BudgetingPeriod>& period);
+
+	/**
+	 * Reads a balance defined by the version 5.0 schema.
+	 *
+	 * @param[in,out] balance
+	 */
+	void readVersion5Balance(QSharedPointer<Balance>& balance);
 
 	/**
 	 * Reads a date defined by three elements for the day, month,

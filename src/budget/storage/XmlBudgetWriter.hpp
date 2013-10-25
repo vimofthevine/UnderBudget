@@ -30,6 +30,7 @@ namespace ub {
 
 // Forward declaration(s)
 class AssignmentRules;
+class Balance;
 class Budget;
 class BudgetingPeriod;
 class Estimate;
@@ -84,6 +85,16 @@ private:
 	 * @param[in] value money value to be written
 	 */
 	void write(const QString& ns, const QString& tag, const Money& value);
+
+	/**
+	 * Writes the given balance to the XML stream.
+	 *
+	 * @param[in] ns      namespace for the balance element
+	 * @param[in] tag     name of the element to contain the balance
+	 * @param[in] balance balance to be serialized
+	 */
+	void write(const QString& ns, const QString& tag,
+		const QSharedPointer<Balance> balance);
 
 	/**
 	 * Writes the given budgeting period to the XML stream.

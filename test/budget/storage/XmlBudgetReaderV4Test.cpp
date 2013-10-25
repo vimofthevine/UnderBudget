@@ -21,6 +21,7 @@
 #include "budget_comparisons.hpp"
 #include "XmlBudgetReaderV4Test.hpp"
 #include "budget/AssignmentRules.hpp"
+#include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/storage/XmlBudgetReader.hpp"
 
@@ -169,7 +170,7 @@ void XmlBudgetReaderV4Test::readFullBudget()
 	// Make sure budget was read correctly
 	QSharedPointer<Budget> budget = reader.lastReadBudget();
 	QCOMPARE(budget->name(), QString("Version 4 Budget"));
-	QCOMPARE(budget->initialBalance(), Money(14500, "USD"));
+	QCOMPARE(budget->initialBalance()->value(), Money(14500, "USD"));
 
 	BudgetingPeriod::Parameters period = budget->budgetingPeriod()->parameters();
 	QCOMPARE(period.type, BudgetingPeriod::CustomDateRange);
@@ -236,7 +237,7 @@ void XmlBudgetReaderV4Test::readIncompleteBudget()
 	QCOMPARE(budget->name(), QString("Budget"));
 	QCOMPARE(budget->budgetingPeriod()->parameters().type,
 		BudgetingPeriod::CalendarMonth);
-	QCOMPARE(budget->initialBalance(), Money());
+	QCOMPARE(budget->initialBalance()->value(), Money());
 	QCOMPARE(budget->estimates()->childCount(), 0);
 	QCOMPARE(budget->rules()->size(), 0);
 }

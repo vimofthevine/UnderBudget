@@ -22,7 +22,6 @@
 #include <QSharedPointer>
 
 // UnderBudget include(s)
-#include "accounting/Money.hpp"
 #include "budget/BudgetingPeriod.hpp"
 #include "budget/Estimate.hpp"
 
@@ -33,6 +32,7 @@ namespace ub {
 
 // Forward declaration(s)
 class AssignmentRules;
+class Balance;
 
 class Budget : public QObject {
 	Q_OBJECT
@@ -53,7 +53,7 @@ public:
 	 * @param[in] rules   assignment rules list
 	 */
 	Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
-		const Money& initial, QSharedPointer<Estimate> root,
+		QSharedPointer<Balance> initial, QSharedPointer<Estimate> root,
 		QSharedPointer<AssignmentRules> rules);
 
 	/**
@@ -75,7 +75,7 @@ public:
 	 *
 	 * @return initial balance
 	 */
-	Money initialBalance() const;
+	QSharedPointer<Balance> initialBalance() const;
 
 	/**
 	 * Returns the root to the estimate tree.
@@ -102,18 +102,6 @@ public:
 	 */
 	QUndoCommand* changeName(const QString& newName, QUndoCommand* parent = 0);
 
-	/**
-	 * Creates an undoable command to change the initial balance.
-	 * Ownership of the returned pointer is transfered to the
-	 * caller of this function.
-	 *
-	 * @param[in] newBalance new initial balance
-	 * @param[in] parent     parent undoable command for grouping
-	 * @return undoable command to apply the initial balance change
-	 */
-	QUndoCommand* changeInitialBalance(const Money& newBalance,
-		QUndoCommand* parent = 0);
-
 signals:
 	/**
 	 * Emitted when the name of the budget is changed.
@@ -122,20 +110,13 @@ signals:
 	 */
 	void nameChanged(const QString& name);
 
-	/**
-	 * Emitted when the initial balance of the budget is changed.
-	 *
-	 * @param balance new initial balance
-	 */
-	void initialBalanceChanged(const Money& balance);
-
 private:
 	/** User-defined name */
 	QString budgetName;
 	/** Budgeting period */
 	QSharedPointer<BudgetingPeriod> period;
 	/** Initial balance */
-	Money initial;
+	QSharedPointer<Balance> initial;
 	/** Estimate tree (root) */
 	QSharedPointer<Estimate> rootEstimate;
 	/** Assignment rules */
@@ -149,17 +130,8 @@ private:
 	 */
 	void setName(const QString& name);
 
-	/**
-	 * Sets the budget's initial balance to the given value,
-	 * emitting the `initialBalanceChanged` signal.
-	 *
-	 * @param[in] balance new initial balance
-	 */
-	void setInitialBalance(const Money& balance);
-
 	// Allow undoable commands direct field access
 	friend class ChangeBudgetNameCommand;
-	friend class ChangeInitialBalanceCommand;
 };
 
 }

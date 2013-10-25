@@ -21,6 +21,7 @@
 #include "accounting/Money.hpp"
 #include "budget/AssignmentRule.hpp"
 #include "budget/AssignmentRules.hpp"
+#include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/BudgetingPeriod.hpp"
 #include "budget/storage/XmlBudgetWriter.hpp"
@@ -28,11 +29,13 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
-static const QString ub_ns = "http://underbudget.com/vimofthevine.com/ub";
-static const QString period_ns = "http://underbudget.com/vimofthevine.com/budgeting-period";
-static const QString estimate_ns = "http://underbudget.com/vimofthevine.com/estimate";
-static const QString rule_ns = "http://underbudget.com/vimofthevine.com/rule";
-static const QString condition_ns = "http://underbudget.com/vimofthevine.com/condition";
+static const QString ub_ns = "http://underbudget.vimofthevine.com/ub";
+static const QString balance_ns = "http://underbudget.vimofthevine.com/balance";
+static const QString contributor_ns = "http://underbudget.vimofthevine.com/contributor";
+static const QString period_ns = "http://underbudget.vimofthevine.com/budgeting-period";
+static const QString estimate_ns = "http://underbudget.vimofthevine.com/estimate";
+static const QString rule_ns = "http://underbudget.vimofthevine.com/rule";
+static const QString condition_ns = "http://underbudget.vimofthevine.com/condition";
 
 //------------------------------------------------------------------------------
 bool XmlBudgetWriter::write(QIODevice* device, const QSharedPointer<Budget> budget)
@@ -52,6 +55,8 @@ bool XmlBudgetWriter::write(const QSharedPointer<Budget> budget)
 	xml.setAutoFormatting(true);
 
 	xml.writeNamespace(ub_ns, "ub");
+	xml.writeNamespace(balance_ns, "balance");
+	xml.writeNamespace(contributor_ns, "contributor");
 	xml.writeNamespace(period_ns, "period");
 	xml.writeNamespace(estimate_ns, "estimate");
 	xml.writeNamespace(rule_ns, "rule");
@@ -84,6 +89,27 @@ void XmlBudgetWriter::write(const QString& ns, const QString& tag,
 	xml.writeStartElement(ns, tag);
 	xml.writeAttribute("currency", value.currency().code());
 	xml.writeCharacters(QVariant(value.amount()).toString());
+	xml.writeEndElement();
+}
+
+//------------------------------------------------------------------------------
+void XmlBudgetWriter::write(const QString&ns, const QString& tag,
+	const QSharedPointer<Balance> balance)
+{
+	xml.writeStartElement(ns, tag);
+
+	for (int i=0; i<balance->contributorCount(); ++i)
+	{
+		Balance::Contributor contributor = balance->contributorAt(i);
+
+		xml.writeStartElement(balance_ns, "contributor");
+		xml.writeTextElement(contributor_ns, "name", contributor.name);
+		write(contributor_ns, "amount", contributor.amount);
+		xml.writeTextElement(contributor_ns, "increase",
+			QVariant(contributor.increase).toString());
+		xml.writeEndElement();
+	}
+
 	xml.writeEndElement();
 }
 

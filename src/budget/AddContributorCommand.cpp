@@ -18,47 +18,43 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "budget/ChangeInitialBalanceCommand.hpp"
+#include "budget/AddContributorCommand.hpp"
+#include "budget/Balance.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-const int ChangeInitialBalanceCommand::ID = 1256325346;
+const int AddContributorCommand::ID = 8723462;
 
 //------------------------------------------------------------------------------
-ChangeInitialBalanceCommand::ChangeInitialBalanceCommand(Budget* budget,
-		const Money& oldBalance, const Money& newBalance, QUndoCommand* parent)
-	: QUndoCommand(parent),
-	budget(budget), oldBalance(oldBalance), newBalance(newBalance)
+AddContributorCommand::AddContributorCommand(Balance* balance,
+		QUndoCommand* parent)
+	: QUndoCommand(parent), balance(balance), index(balance->contributorCount())
 { }
 
 //------------------------------------------------------------------------------
-int ChangeInitialBalanceCommand::id() const
+int AddContributorCommand::id() const
 {
 	return ID;
 }
 
 //------------------------------------------------------------------------------
-bool ChangeInitialBalanceCommand::mergeWith(const QUndoCommand* command)
+bool AddContributorCommand::mergeWith(const QUndoCommand* command)
 {
-	if (command->id() != id())
-		return false;
-
-	// Use new Balance from the merged command
-	newBalance = static_cast<const ChangeInitialBalanceCommand*>(command)->newBalance;
-	return true;
+	// This command can never be merged
+	return false;
 }
 
 //------------------------------------------------------------------------------
-void ChangeInitialBalanceCommand::redo()
+void AddContributorCommand::redo()
 {
-	budget->setInitialBalance(newBalance);
+	balance->addContributor(Balance::Contributor(), index);
 }
 
 //------------------------------------------------------------------------------
-void ChangeInitialBalanceCommand::undo()
+void AddContributorCommand::undo()
 {
-	budget->setInitialBalance(oldBalance);
+	balance->deleteContributor(index);
 }
 
 }

@@ -28,5 +28,10 @@
 	<!-- setting icons -->
 	<file alias="icons/general">icons/oxygen/applications-system.png</file>
 	<file alias="icons/appearance">icons/oxygen/preferences-desktop.png</file>
+	<!-- action icons -->
+	<file alias="icons/expand">icons/oxygen/arrow-down.png</file>
+	<file alias="icons/collapse">icons/oxygen/arrow-up.png</file>
+	<file alias="icons/add">icons/oxygen/add.png</file>
+	<file alias="icons/delete">icons/oxygen/delete.png</file>
 </qresource>
 </RCC>

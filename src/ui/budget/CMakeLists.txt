@@ -3,14 +3,20 @@
 # Specify UI budget source files
 set(ui_budget_srcs
 	AssignmentRulesModel.cpp
+	BalanceContributorsModel.cpp
 	BudgetDetailsForm.cpp
 	BudgetingPeriodForm.cpp
 	ConditionFieldDelegate.cpp
 	ConditionOperatorDelegate.cpp
+	ContributorAddProxyCommand.cpp
+	ContributorChangeProxyCommand.cpp
+	ContributorRemoveProxyCommand.cpp
+	ContributorsListWidget.cpp
 	EstimateDetailsForm.cpp
 	EstimateDisplayWidget.cpp
 	EstimateModel.cpp
 	EstimateTreeWidget.cpp
+	InitialBalanceForm.cpp
 	RuleAddProxyCommand.cpp
 	RuleChangeProxyCommand.cpp
 	RuleMoveProxyCommand.cpp

@@ -18,16 +18,18 @@
 #include <QtCore>
 
 // UnderBudget include(s)
+#include "accounting/Money.hpp"
 #include "budget/AssignmentRules.hpp"
+#include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/ChangeBudgetNameCommand.hpp"
-#include "budget/ChangeInitialBalanceCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
 Budget::Budget()
-	: budgetName(tr("New Budget")), period(new BudgetingPeriod)
+	: budgetName(tr("New Budget")), period(new BudgetingPeriod),
+	  initial(Balance::create())
 {
 	rootEstimate = Estimate::createRoot();
 	Estimate* root = rootEstimate.data();
@@ -62,7 +64,7 @@ Budget::Budget()
 
 //------------------------------------------------------------------------------
 Budget::Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
-		const Money& initial, QSharedPointer<Estimate> root,
+		QSharedPointer<Balance> initial, QSharedPointer<Estimate> root,
 		QSharedPointer<AssignmentRules> rules)
 	: budgetName(name), period(period), initial(initial), rootEstimate(root),
 	  assignmentRules(rules)
@@ -75,7 +77,7 @@ QString Budget::name() const
 }
 
 //------------------------------------------------------------------------------
-Money Budget::initialBalance() const
+QSharedPointer<Balance> Budget::initialBalance() const
 {
 	return initial;
 }
@@ -105,24 +107,10 @@ QUndoCommand* Budget::changeName(const QString& newName, QUndoCommand* parent)
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Budget::changeInitialBalance(const Money& newBalance,
-	QUndoCommand* parent)
-{
-	return new ChangeInitialBalanceCommand(this, initial, newBalance, parent);
-}
-
-//------------------------------------------------------------------------------
 void Budget::setName(const QString& name)
 {
 	budgetName = name;
 	emit nameChanged(budgetName);
-}
-
-//------------------------------------------------------------------------------
-void Budget::setInitialBalance(const Money& balance)
-{
-	initial = balance;
-	emit initialBalanceChanged(initial);
 }
 
 }
