@@ -480,7 +480,7 @@ void XmlBudgetReader::readVersion5Estimate(Estimate* parent)
 	Estimate::Type type = parent->estimateType();
 	Money amount;
 	QDate dueDate;
-	bool finished;
+	bool finished(false);
 	Estimate* estimate = 0;
 
 	// Go through all elements under an estimate
