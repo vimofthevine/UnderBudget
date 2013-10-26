@@ -300,6 +300,24 @@ QString toString(AssignmentRule::Field field);
  */
 QString toString(AssignmentRule::Operator oper);
 
+/**
+ * Returns a condition operator enumeration for the
+ * given string representation.
+ *
+ * @param[in] str string representation of the condition operator
+ * @return condition operator enumeration
+ */
+AssignmentRule::Operator toOperatorEnum(const QString& str);
+
+/**
+ * Returns the list of condition operator string representations
+ * that are valid for the given condition field.
+ *
+ * @param[in] field condition field enumeration
+ * @return string list of the applicable condition operators
+ */
+QStringList operatorsFor(AssignmentRule::Field field);
+
 }
 
 // Make types known to Qt meta object system

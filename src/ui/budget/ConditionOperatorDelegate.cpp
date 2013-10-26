@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "budget/AssignmentRule.hpp"
+#include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/ConditionOperatorDelegate.hpp"
 
 namespace ub {
@@ -33,19 +34,19 @@ QWidget* ConditionOperatorDelegate::createEditor(QWidget* parent,
 	const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
 	QComboBox* combo = new QComboBox(parent);
-	combo->addItem(toString(AssignmentRule::OperatorNotDefined));
-	combo->addItem(toString(AssignmentRule::BeginsWith));
-	combo->addItem(toString(AssignmentRule::EndsWith));
-	combo->addItem(toString(AssignmentRule::StringEquals));
-	combo->addItem(toString(AssignmentRule::Contains));
-	combo->addItem(toString(AssignmentRule::Before));
-	combo->addItem(toString(AssignmentRule::After));
-	combo->addItem(toString(AssignmentRule::DateEquals));
-	combo->addItem(toString(AssignmentRule::LessThan));
-	combo->addItem(toString(AssignmentRule::LessThanOrEqual));
-	combo->addItem(toString(AssignmentRule::GreaterThan));
-	combo->addItem(toString(AssignmentRule::GreaterThanOrEqual));
-	combo->addItem(toString(AssignmentRule::AmountEquals));
+//	combo->addItem(toString(AssignmentRule::OperatorNotDefined));
+//	combo->addItem(toString(AssignmentRule::BeginsWith));
+//	combo->addItem(toString(AssignmentRule::EndsWith));
+//	combo->addItem(toString(AssignmentRule::StringEquals));
+//	combo->addItem(toString(AssignmentRule::Contains));
+//	combo->addItem(toString(AssignmentRule::Before));
+//	combo->addItem(toString(AssignmentRule::After));
+//	combo->addItem(toString(AssignmentRule::DateEquals));
+//	combo->addItem(toString(AssignmentRule::LessThan));
+//	combo->addItem(toString(AssignmentRule::LessThanOrEqual));
+//	combo->addItem(toString(AssignmentRule::GreaterThan));
+//	combo->addItem(toString(AssignmentRule::GreaterThanOrEqual));
+//	combo->addItem(toString(AssignmentRule::AmountEquals));
 	return combo;
 }
 
@@ -53,9 +54,20 @@ QWidget* ConditionOperatorDelegate::createEditor(QWidget* parent,
 void ConditionOperatorDelegate::setEditorData(QWidget* editor,
 	const QModelIndex& index) const
 {
-	int value = index.model()->data(index, Qt::EditRole).toInt();
+	AssignmentRule::Operator oper
+		= index.model()->data(index, Qt::EditRole).value<AssignmentRule::Operator>();
+
+	// The field is displayed in the column to the left of the operator
+	QModelIndex fieldIndex = index.model()->index(index.row(),
+		index.column() - 1, index.parent());
+	// Get the field for the condition being edited
+	AssignmentRule::Field field
+		= index.model()->data(fieldIndex, Qt::EditRole).value<AssignmentRule::Field>();
+
 	QComboBox* combo = static_cast<QComboBox*>(editor);
-	combo->setCurrentIndex(value);
+	combo->clear();
+	combo->addItems(operatorsFor(field));
+	combo->setCurrentIndex(combo->findText(toString(oper)));
 }
 
 //------------------------------------------------------------------------------
@@ -63,8 +75,7 @@ void ConditionOperatorDelegate::setModelData(QWidget* editor,
 	QAbstractItemModel* model, const QModelIndex& index) const
 {
 	QComboBox* combo = static_cast<QComboBox*>(editor);
-	AssignmentRule::Operator value
-		= static_cast<AssignmentRule::Operator>(combo->currentIndex());
+	AssignmentRule::Operator value = toOperatorEnum(combo->currentText());
 	model->setData(index, value, Qt::EditRole);
 }
 

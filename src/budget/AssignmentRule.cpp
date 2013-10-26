@@ -168,5 +168,71 @@ QString toString(AssignmentRule::Operator oper)
 	}
 }
 
+//------------------------------------------------------------------------------
+AssignmentRule::Operator toOperatorEnum(const QString& str)
+{
+	if (str == "Begins With")
+		return AssignmentRule::BeginsWith;
+	else if (str == "Ends With")
+		return AssignmentRule::EndsWith;
+	else if (str == "Equals (String)")
+		return AssignmentRule::StringEquals;
+	else if (str == "Contains")
+		return AssignmentRule::Contains;
+	else if (str == "Before")
+		return AssignmentRule::Before;
+	else if (str == "After")
+		return AssignmentRule::After;
+	else if (str == "Equals (Date)")
+		return AssignmentRule::DateEquals;
+	else if (str == "Less Than")
+		return AssignmentRule::LessThan;
+	else if (str == "Less Than Or Equal")
+		return AssignmentRule::LessThanOrEqual;
+	else if (str == "Greater Than")
+		return AssignmentRule::GreaterThan;
+	else if (str == "Greater Than Or Equal")
+		return AssignmentRule::GreaterThanOrEqual;
+	else if (str == "Equals (Money)")
+		return AssignmentRule::AmountEquals;
+	else
+		return AssignmentRule::OperatorNotDefined;
+}
+
+//------------------------------------------------------------------------------
+QStringList operatorsFor(AssignmentRule::Field field)
+{
+	QStringList list;
+
+	switch (field)
+	{
+	case ub::AssignmentRule::Date:
+		list << toString(AssignmentRule::DateEquals);
+		list << toString(AssignmentRule::Before);
+		list << toString(AssignmentRule::After);
+		break;
+	case ub::AssignmentRule::Amount:
+		list << toString(AssignmentRule::AmountEquals);
+		list << toString(AssignmentRule::LessThan);
+		list << toString(AssignmentRule::LessThanOrEqual);
+		list << toString(AssignmentRule::GreaterThan);
+		list << toString(AssignmentRule::GreaterThanOrEqual);
+		break;
+	case ub::AssignmentRule::Payee:
+	case ub::AssignmentRule::Memo:
+	case ub::AssignmentRule::DepositAccount:
+	case ub::AssignmentRule::WithdrawalAccount:
+		list << toString(AssignmentRule::StringEquals);
+		list << toString(AssignmentRule::Contains);
+		list << toString(AssignmentRule::BeginsWith);
+		list << toString(AssignmentRule::EndsWith);
+		break;
+	default:
+		list << toString(AssignmentRule::OperatorNotDefined);
+	}
+
+	return list;
+}
+
 }
 

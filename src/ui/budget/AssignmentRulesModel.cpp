@@ -29,6 +29,22 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
+const int EST_COL = 0;
+const int ID_COL = 1;
+const int FIELD_COL = 2;
+const int OPER_COL = 3;
+const int CASE_COL = 4;
+const int VAL_COL = 5;
+
+//------------------------------------------------------------------------------
+bool fieldIsStringType(AssignmentRule::Field field)
+{
+	return (field != AssignmentRule::FieldNotDefined)
+		&& (field != AssignmentRule::Date)
+		&& (field != AssignmentRule::Amount);
+}
+
+//------------------------------------------------------------------------------
 AssignmentRulesModel::AssignmentRulesModel(QSharedPointer<AssignmentRules> rules,
 		QSharedPointer<Estimate> estimates, QUndoStack* stack, QObject* parent)
 	: QAbstractItemModel(parent), rules(rules),
@@ -99,17 +115,17 @@ QVariant AssignmentRulesModel::headerData(int section, Qt::Orientation orientati
 	{
 		switch (section)
 		{
-		case 0:
+		case EST_COL:
 			return tr("Estimate");
-		case 1:
+		case ID_COL:
 			return tr("Estimate ID");
-		case 2:
+		case FIELD_COL:
 			return tr("Field");
-		case 3:
+		case OPER_COL:
 			return tr("Operator");
-		case 4:
+		case CASE_COL:
 			return tr("Case-Sensitive?");
-		case 5:
+		case VAL_COL:
 			return tr("Value");
 		default:
 			return QVariant();
@@ -195,14 +211,15 @@ QVariant AssignmentRulesModel::data(const QModelIndex& index, int role) const
 //------------------------------------------------------------------------------
 QVariant AssignmentRulesModel::checkStateData(const QModelIndex& index) const
 {
-	// Only column 4 (case-sensitivity) is checkable
-	if (index.column() != 4)
+	// Only case-sensitivity is checkable
+	if (index.column() != CASE_COL)
 		return QVariant();
 
 	if (isCondition(index))
 	{
 		AssignmentRule::Condition condition = castToCondition(index);
-		return condition.sensitive ? Qt::Checked : Qt::Unchecked;
+		if (fieldIsStringType(condition.field))
+			return condition.sensitive ? Qt::Checked : Qt::Unchecked;
 	}
 	else if (isRule(index))
 	{
@@ -211,7 +228,8 @@ QVariant AssignmentRulesModel::checkStateData(const QModelIndex& index) const
 		if (rule->conditionCount() == 1)
 		{
 			AssignmentRule::Condition condition = rule->conditionAt(0);
-			return condition.sensitive ? Qt::Checked : Qt::Unchecked;
+			if (fieldIsStringType(condition.field))
+				return condition.sensitive ? Qt::Checked : Qt::Unchecked;
 		}
 	}
 
@@ -228,21 +246,21 @@ QVariant AssignmentRulesModel::displayData(const QModelIndex& index) const
 
 		switch (index.column())
 		{
-		case 0: // Estimate name
+		case EST_COL: // Estimate name
 		{
 			uint estimateId = rule->estimateId();
 			Estimate* estimate = estimates->find(estimateId);
 			return estimate ? estimate->estimateName() : QVariant(estimateId);
 		}
-		case 1:
+		case ID_COL:
 			return rule->estimateId();
-		case 2:
+		case FIELD_COL:
 			return (count == 1) ? toString(rule->conditionAt(0).field)
 				: tr("%1 fields").arg(count);
-		case 3:
+		case OPER_COL:
 			return (count == 1) ? toString(rule->conditionAt(0).op)
 				: tr("%1 conditions").arg(count);
-		case 5:
+		case VAL_COL:
 			return (count == 1) ? rule->conditionAt(0).value
 				: tr("%1 values").arg(count);
 		default:
@@ -254,16 +272,16 @@ QVariant AssignmentRulesModel::displayData(const QModelIndex& index) const
 		AssignmentRule::Condition condition = castToCondition(index);
 		switch (index.column())
 		{
-		case 1:
+		case ID_COL:
 		{
 			AssignmentRule* rule = rules->find(index.internalId());
 			return rule->estimateId();
 		}
-		case 2:
+		case FIELD_COL:
 			return toString(condition.field);
-		case 3:
+		case OPER_COL:
 			return toString(condition.op);
-		case 5:
+		case VAL_COL:
 			return condition.value;
 		default:
 			return QVariant();
@@ -279,6 +297,8 @@ QVariant AssignmentRulesModel::editData(const QModelIndex& index) const
 	if ( ! index.isValid())
 		return QVariant();
 
+	QVariant value;
+
 	if (isRule(index))
 	{
 		AssignmentRule* rule = castToRule(index);
@@ -286,13 +306,15 @@ QVariant AssignmentRulesModel::editData(const QModelIndex& index) const
 		{
 			switch (index.column())
 			{
-			case 2:
-				return rule->conditionAt(0).field;
-			case 3:
-				return rule->conditionAt(0).op;
-			case 4:
+			case FIELD_COL:
+				value.setValue<AssignmentRule::Field>(rule->conditionAt(0).field);
+				break;
+			case OPER_COL:
+				value.setValue<AssignmentRule::Operator>(rule->conditionAt(0).op);
+				break;
+			case CASE_COL:
 				return rule->conditionAt(0).sensitive;
-			case 5:
+			case VAL_COL:
 				return rule->conditionAt(0).value;
 			default:
 				return QVariant();
@@ -304,20 +326,22 @@ QVariant AssignmentRulesModel::editData(const QModelIndex& index) const
 		AssignmentRule::Condition condition = castToCondition(index);
 		switch (index.column())
 		{
-		case 2:
-			return condition.field;
-		case 3:
-			return condition.op;
-		case 4:
+		case FIELD_COL:
+			value.setValue<AssignmentRule::Field>(condition.field);
+			break;
+		case OPER_COL:
+			value.setValue<AssignmentRule::Operator>(condition.op);
+			break;
+		case CASE_COL:
 			return condition.sensitive;
-		case 5:
+		case VAL_COL:
 			return condition.value;
 		default:
 			return QVariant();
 		}
 	}
 
-	return QVariant();
+	return value;
 }
 
 //------------------------------------------------------------------------------
@@ -326,28 +350,54 @@ Qt::ItemFlags AssignmentRulesModel::flags(const QModelIndex& index) const
 	Qt::ItemFlags flags = QAbstractItemModel::flags(index);
 
 	// If the case-sensitivity column
-	if (index.column() == 4)
+	if (index.column() == CASE_COL)
 	{
 		flags |= Qt::ItemIsUserCheckable;
 	}
 
-	// If a condition and one of the condition columns (not 0 or 1)
-	if (isCondition(index) && index.column() > 1)
+	// If a condition and one of the condition columns (not estimate name or id)
+	if (isCondition(index) && index.column() > ID_COL)
 	{
-		flags |= Qt::ItemIsEditable;
+		// Case-sensitivity is only editable when field is a string type
+		if (index.column() == CASE_COL)
+		{
+			AssignmentRule::Condition condition = castToCondition(index);
+			if (fieldIsStringType(condition.field))
+			{
+				flags |= Qt::ItemIsEditable;
+			}
+		}
+		// All others are always editable
+		else
+		{
+			flags |= Qt::ItemIsEditable;
+		}
 	}
 	// If a rule and the estimate name column
-	else if (isRule(index) && index.column() == 0)
+	else if (isRule(index) && index.column() == EST_COL)
 	{
 		flags |= Qt::ItemIsDragEnabled;
 	}
-	// If a rule and one of the condition columns (not 0 or 1)
-	else if (isRule(index) && index.column() > 1)
+	// If a rule and one of the condition columns (not estimate name or id)
+	else if (isRule(index) && index.column() > ID_COL)
 	{
 		// Only editable if only one condition for the rule
 		if (castToRule(index)->conditionCount() == 1)
 		{
-			flags |= Qt::ItemIsEditable;
+			// Case-sensitivity is only editable when field is a string type
+			if (index.column() == CASE_COL)
+			{
+				AssignmentRule::Condition condition = castToRule(index)->conditionAt(0);
+				if (fieldIsStringType(condition.field))
+				{
+					flags |= Qt::ItemIsEditable;
+				}
+			}
+			// All others are always editable
+			else
+			{
+				flags |= Qt::ItemIsEditable;
+			}
 		}
 	}
 	// Allows moving of rules to indices between other rules
@@ -387,16 +437,21 @@ bool AssignmentRulesModel::setData(const QModelIndex& index,
 	{
 		switch (index.column())
 		{
-		case 2:
+		case FIELD_COL:
 			condition.field = static_cast<AssignmentRule::Field>(value.toInt());
+			// Make sure operator selection is applicable to newly selected field
+			if ( ! operatorsFor(condition.field).contains(toString(condition.op)))
+			{
+				condition.op = toOperatorEnum(operatorsFor(condition.field).at(0));
+			}
 			break;
-		case 3:
+		case OPER_COL:
 			condition.op = static_cast<AssignmentRule::Operator>(value.toInt());
 			break;
-		case 4:
+		case CASE_COL:
 			condition.sensitive = value.toBool();
 			break;
-		case 5:
+		case VAL_COL:
 			condition.value = value.toString();
 			break;
 		default:

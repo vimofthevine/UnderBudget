@@ -47,9 +47,10 @@ QWidget* ConditionFieldDelegate::createEditor(QWidget* parent,
 void ConditionFieldDelegate::setEditorData(QWidget* editor,
 	const QModelIndex& index) const
 {
-	int value = index.model()->data(index, Qt::EditRole).toInt();
+	AssignmentRule::Field field
+		= index.model()->data(index, Qt::EditRole).value<AssignmentRule::Field>();
 	QComboBox* combo = static_cast<QComboBox*>(editor);
-	combo->setCurrentIndex(value);
+	combo->setCurrentIndex(combo->findText(toString(field)));
 }
 
 //------------------------------------------------------------------------------
