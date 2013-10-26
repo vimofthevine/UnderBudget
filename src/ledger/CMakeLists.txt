@@ -6,7 +6,7 @@
 # Specify ledger source files
 set(ledger_srcs
 	Account.cpp
-	#ImmutableTransaction.cpp
+	ImportedTransaction.cpp
 	#transactions.cpp
 )
 
