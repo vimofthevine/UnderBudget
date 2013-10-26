@@ -22,7 +22,7 @@ endif (WIN32)
 add_subdirectory(accounting)
 add_subdirectory(budget)
 #add_subdirectory(engine)
-#add_subdirectory(ledger)
+add_subdirectory(ledger)
 add_subdirectory(ui)
 
 # Instruct CMake to place executable in the bin folder
