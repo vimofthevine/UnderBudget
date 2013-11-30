@@ -104,19 +104,19 @@ public:
 
 private:
 	/** Transaction ID */
-	const uint id;
+	uint id;
 	/** Transaction date */
-	const QDate postedDate;
+	QDate postedDate;
 	/** Transferred amount */
-	const Money transferredAmount;
+	Money transferredAmount;
 	/** Payee */
-	const QString payeeDesc;
+	QString payeeDesc;
 	/** Memo */
-	const QString memoDesc;
+	QString memoDesc;
 	/** Withdrawal account */
-	const QSharedPointer<Account> withdrawal;
+	QSharedPointer<Account> withdrawal;
 	/** Deposit account */
-	const QSharedPointer<Account> deposit;
+	QSharedPointer<Account> deposit;
 };
 
 }

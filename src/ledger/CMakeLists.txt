@@ -1,13 +1,12 @@
 # Ledger source CMake configuration
 
 # Add ledger source sub-directories
-#add_subdirectory(storage)
+add_subdirectory(storage)
 
 # Specify ledger source files
 set(ledger_srcs
 	Account.cpp
 	ImportedTransaction.cpp
-	#transactions.cpp
 )
 
 # Build ledger library
