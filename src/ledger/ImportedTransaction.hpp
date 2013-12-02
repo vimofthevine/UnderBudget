@@ -102,6 +102,23 @@ public:
 	 */
 	QString depositAccount() const;
 
+	/**
+	 * Checks if the first transaction occurs before the second given
+	 * transaction.
+	 *
+	 * In order to be as deterministic as possible, this function will also
+	 * sort via the remaining fields of the transaction in the following order:
+	 * - payee
+	 * - memo
+	 * - deposit account
+	 * - amount
+	 *
+	 * @param[in] lhs first transaction to be compared
+	 * @param[in] rhs second transaction to be compared
+	 * @return `true` if the first transaction occurs before the second transaction
+	 */
+	friend bool operator<(const ImportedTransaction& lhs, const ImportedTransaction& rhs);
+
 private:
 	/** Transaction ID */
 	uint id;

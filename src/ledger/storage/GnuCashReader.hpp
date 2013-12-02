@@ -39,7 +39,12 @@ class GnuCashReader : public QObject
 
 public:
 	/**
-	 * Creates a new  reader for the given file.
+	 * Creates a new reader not associated with any particular file.
+	 */
+	GnuCashReader();
+
+	/**
+	 * Creates a new reader for the given file.
 	 *
 	 * @param[in] fileName GnuCash file location
 	 */
@@ -56,12 +61,28 @@ public:
 	 * will be imported. Otherwise only transactions that have occurred
 	 * between the start and end dates will be imported.
 	 *
-	 * @param[in] device IO device from which to parse as XML
-	 * @param[in] start    start date of import range
-	 * @param[in] end      end date of import range
+	 * For use of this reading in a multi-threaded environment, it is recommended
+	 * that the `import` slot be used instead, relying on the `started`, `finished`,
+	 * `progress`, and `imported` signals for monitoring progress and retrieving
+	 * results. This public method exists for callers that execute in the same
+	 * thread.
+	 *
+	 * @param[in]  device IO device from which to parse as XML
+	 * @param[out] trns   imported transaction list
+	 * @param[in]  start  start date of import range
+	 * @param[in]  end    end date of import range
+	 * @return `true` if successful in parsing the XML stream
 	 */
-	void read(QIODevice* device, const QDate& start = QDate(),
-		const QDate& end = QDate());
+	bool read(QIODevice* device, QList<ImportedTransaction>& trns,
+		const QDate& start = QDate(), const QDate& end = QDate());
+
+	/**
+	 * Returns a description of the last error to occur while reading
+	 * the transactions from the GnuCash file.
+	 *
+	 * @return last error
+	 */
+	QString errorString() const;
 
 public slots:
 	/**
@@ -170,14 +191,6 @@ private:
 		/** Split account */
 		QUuid account;
 	};
-
-	/**
-	 * Returns a description of the last error to occur while reading
-	 * the transactions from the GnuCash file.
-	 *
-	 * @return last error
-	 */
-	QString errorString() const;
 
 	/**
 	 * Parses the current XML stream as a GnuCash file.

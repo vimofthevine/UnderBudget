@@ -51,7 +51,7 @@ public:
 	};
 
 	/** Virtual destructor */
-	virtual ~ImportedTransactionSource() { }
+	virtual ~ImportedTransactionSource();
 
 public slots:
 	/**

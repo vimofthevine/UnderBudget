@@ -26,6 +26,10 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
+GnuCashReader::GnuCashReader()
+{ }
+
+//------------------------------------------------------------------------------
 GnuCashReader::GnuCashReader(const QString& fileName)
 	: fileName(fileName)
 { }
@@ -33,10 +37,18 @@ GnuCashReader::GnuCashReader(const QString& fileName)
 //------------------------------------------------------------------------------
 void GnuCashReader::import(const QDate& start, const QDate& end)
 {
+	if (fileName.isEmpty())
+	{
+		emit finished(ImportedTransactionSource::FailedWithError,
+			tr("No file name specified."));
+		return;
+	}
+
 	GZipFile gzipFile(fileName);
 	if (gzipFile.open(QIODevice::ReadOnly))
 	{
-		read(&gzipFile, start, end);
+		QList<ImportedTransaction> trns;
+		read(&gzipFile, trns, start, end);
 	}
 	else
 	{
@@ -62,7 +74,7 @@ QString GnuCashReader::errorString() const
 }
 
 //------------------------------------------------------------------------------
-void GnuCashReader::read(QIODevice* device,
+bool GnuCashReader::read(QIODevice* device, QList<ImportedTransaction>& trns,
 	const QDate& start, const QDate& end)
 {
 	emit started();
@@ -87,14 +99,22 @@ void GnuCashReader::read(QIODevice* device,
 			xml.raiseError(tr("The given XML is not a valid GnuCash file."));
 	}
 
-	if (xml.error())
+	if (xml.hasError())
 	{
 		emit finished(ImportedTransactionSource::FailedWithError, errorString());
 	}
 	else
 	{
+		// sort the transactions
+		qSort(transactions);
+
 		emit finished(ImportedTransactionSource::Complete, "");
+		emit imported(transactions);
+
+		trns = transactions;
 	}
+
+	return ( ! xml.hasError());
 }
 
 //------------------------------------------------------------------------------
@@ -182,21 +202,27 @@ void GnuCashReader::readVersion2Account()
 			xml.skipCurrentElement();
 	}
 
+	//qDebug() << "Read account" << name << typeStr;
+
 	AccountType type = toType(typeStr);
 
 	if (type == UnknownAccountType)
 	{
 		xml.raiseError(tr("Unknown account type, %1.").arg(typeStr));
 	}
-	else if (uid.isNull() || parentUid.isNull())
+	else if (uid.isNull())
 	{
-		xml.raiseError(tr("Missing account or parent account UID for %1.").arg(name));
+		xml.raiseError(tr("Missing account UID for %1.").arg(name));
 	}
 	else if (type == Root)
 	{
 		QSharedPointer<Account> root(new Account());
 		accounts.insert(uid, root);
 		accountTypes.insert(uid, type);
+	}
+	else if (parentUid.isNull())
+	{
+		xml.raiseError(tr("Missing parent UID for %1.").arg(name));
 	}
 	else
 	{
@@ -258,6 +284,7 @@ void GnuCashReader::readVersion2Transaction()
 	{
 		if (xml.qualifiedName() == "trn:id")
 		{
+			uid = QUuid::createUuidV5(QUuid(), xml.readElementText());
 		}
 		else if (xml.qualifiedName() == "trn:date-posted")
 		{
@@ -278,6 +305,8 @@ void GnuCashReader::readVersion2Transaction()
 		else
 			xml.skipCurrentElement();
 	}
+
+	//qDebug() << "Read transaction" << datePosted << currency << payee;
 
 	// Only filter by date if both start and end are valid dates
 	if (startDateFilter.isValid() && endDateFilter.isValid())
@@ -339,6 +368,8 @@ GnuCashReader::TransactionSplit GnuCashReader::readSplit()
 		else
 			xml.skipCurrentElement();
 	}
+
+	//qDebug() << "Read split" << split.memo << split.value;
 
 	return split;
 }
@@ -433,11 +464,15 @@ void GnuCashReader::createTransactionsFromSplits(const QDate& datePosted,
 	const QString& currency, const QString& payee,
 	const QHash<QUuid, TransactionSplit>& splits)
 {
+	// Don't bother if an error exists
+	if (xml.hasError())
+		return;
+
 	QUuid primaryUid = findPrimary(splits);
 	if (primaryUid.isNull())
 	{
 		xml.raiseError(tr("Cannot determine primary split for transaction, %1, "
-			"posted on %1.").arg(payee).arg(datePosted.toString()));
+			"posted on %2.").arg(payee).arg(datePosted.toString()));
 	}
 	else
 	{
@@ -452,8 +487,10 @@ void GnuCashReader::createTransactionsFromSplits(const QDate& datePosted,
 		// Make sure account exists
 		if (primaryAccount.isNull())
 		{
-			xml.raiseError(tr("Account does not exist for split, %1, posted on %1.")
-				.arg(payee + "/" + primarySplit.memo)
+			xml.raiseError(tr("Account does not exist for %1 split%2 for %3 posted on %4.")
+				.arg(payee)
+				.arg(primarySplit.memo.isEmpty() ? "" : " (" + primarySplit.memo + ")")
+				.arg(primarySplit.value)
 				.arg(datePosted.toString()));
 			return;
 		}
@@ -472,8 +509,11 @@ void GnuCashReader::createTransactionsFromSplits(const QDate& datePosted,
 				// Make sure account exists
 				if (splitAccount.isNull())
 				{
-					xml.raiseError(tr("Account does not exist for split, %1, posted on %1.")
-						.arg(payee + "/" + split.memo).arg(datePosted.toString()));
+					xml.raiseError(tr("Account does not exist for %1 split%2 for %3 posted on %4.")
+						.arg(payee)
+						.arg(split.memo.isEmpty() ? "" : " (" + split.memo + ")")
+						.arg(split.value)
+						.arg(datePosted.toString()));
 					return;
 				}
 

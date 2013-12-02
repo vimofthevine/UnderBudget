@@ -4,6 +4,7 @@
 set(ledger_storage_srcs
 	GnuCashFile.cpp
 	GnuCashReader.cpp
+	ImportedTransactionSource.cpp
 )
 
 # Build ledger storage library

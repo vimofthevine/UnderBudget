@@ -75,5 +75,21 @@ QString ImportedTransaction::depositAccount() const
 	return deposit->fullName();
 }
 
+//------------------------------------------------------------------------------
+bool operator<(const ImportedTransaction& lhs, const ImportedTransaction& rhs)
+{
+	if (lhs.postedDate != rhs.postedDate)
+		return (lhs.postedDate < rhs.postedDate);
+	if (lhs.payeeDesc != rhs.payeeDesc)
+		return (lhs.payeeDesc < rhs.payeeDesc);
+	if (lhs.memoDesc != rhs.memoDesc)
+		return (lhs.memoDesc < rhs.memoDesc);
+	if (lhs.depositAccount() != rhs.depositAccount())
+		return (lhs.depositAccount() < rhs.depositAccount());
+	else
+		return (lhs.transferredAmount < rhs.transferredAmount);
+}
+
+
 }
 
