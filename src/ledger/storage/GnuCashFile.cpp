@@ -25,8 +25,12 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 GnuCashFile::GnuCashFile(const QString& fileName)
-	: isImporting(false)
+	: fileName(fileName), isImporting(false)
 {
+	// Make sure we can pass these between threads via signals/slots
+	qRegisterMetaType<ImportedTransactionSource::Result>("ImportedTransactionSource::Result");
+	qRegisterMetaType<QList<ImportedTransaction> >("QList<ImportedTransaction>");
+
 	reader = new GnuCashReader(fileName);
 	reader->moveToThread(&thread);
 
@@ -56,6 +60,12 @@ GnuCashFile::~GnuCashFile()
 	cancel();
 	thread.quit();
 	thread.wait();
+}
+
+//------------------------------------------------------------------------------
+QString GnuCashFile::name() const
+{
+	return fileName;
 }
 
 //------------------------------------------------------------------------------

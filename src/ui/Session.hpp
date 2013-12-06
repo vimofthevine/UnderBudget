@@ -24,6 +24,7 @@
 // UnderBudget include(s)
 #include "budget/Budget.hpp"
 #include "budget/storage/BudgetSource.hpp"
+#include "ledger/storage/ImportedTransactionSource.hpp"
 
 // Forward declaration(s)
 class QUndoStack;
@@ -258,6 +259,37 @@ protected:
 	 */
 	void closeEvent(QCloseEvent* event);
 
+private slots:
+	/**
+	 * Emits an indefinite progress signal, to indicate that
+	 * importing has begun.
+	 */
+	void importStarted();
+
+	/**
+	 * Emits a progress-finished signal, as well as an error dialog
+	 * if the import failed.
+	 *
+	 * @param[in] result  import result
+	 * @param[in] message import message
+	 */
+	void importFinished(ImportedTransactionSource::Result result,
+		const QString& message);
+
+	/**
+	 * Emits a progress update signal.
+	 *
+	 * @param[in] percent import percent complete
+	 */
+	void importProgress(int percent);
+
+	/**
+	 * Stores the imported transactions and initiates an assignment operation.
+	 *
+	 * @param[in] transactions imported transactions
+	 */
+	void transactionsImported(QList<ImportedTransaction> transactions);
+
 private:
 	/** Budget modification undo stack */
 	QUndoStack* undoStack;
@@ -267,6 +299,11 @@ private:
 	QSharedPointer<Budget> budget;
 	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
+
+	/** Current imported transaction source */
+	QSharedPointer<ImportedTransactionSource> transactionSource;
+	/** Current list of imported transactions */
+	QList<ImportedTransaction> importedTransactions;
 
 	/** Budget details form */
 	BudgetDetailsForm* budgetDetails;
@@ -299,6 +336,11 @@ private:
 	 * @return `true` if the budget was saved successfully
 	 */
 	bool save(const QSharedPointer<BudgetSource>& source);
+
+	/**
+	 * Imports transactions from the current imported transaction source.
+	 */
+	void importFromCurrentSource();
 };
 
 }

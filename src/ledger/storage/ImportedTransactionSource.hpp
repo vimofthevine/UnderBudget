@@ -53,6 +53,14 @@ public:
 	/** Virtual destructor */
 	virtual ~ImportedTransactionSource();
 
+	/**
+	 * Returns the name or a description of this imported
+	 * transaction source.
+	 *
+	 * @return imported transaction source name or description
+	 */
+	virtual QString name() const = 0;
+
 public slots:
 	/**
 	 * Initiates an import of transactions.
@@ -131,5 +139,8 @@ signals:
 };
 
 }
+
+// Make Result known to QMetaType
+Q_DECLARE_METATYPE(ub::ImportedTransactionSource::Result);
 
 #endif //IMPORTEDTRANSACTIONSOURCE_HPP

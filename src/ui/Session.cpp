@@ -24,6 +24,7 @@
 #include "ui/budget/EstimateDisplayWidget.hpp"
 #include "ui/budget/RulesListWidget.hpp"
 #include "ui/wizard/BudgetSourceWizard.hpp"
+#include "ui/wizard/TransactionSourceWizard.hpp"
 
 namespace ub {
 
@@ -215,16 +216,102 @@ void Session::editAssignmentRules()
 //------------------------------------------------------------------------------
 void Session::importTransactions()
 {
-	emit showProgress(0, 0);
+	if (transactionSource)
+	{
+		importFromCurrentSource();
+	}
+	else
+	{
+		importTransactionsFrom();
+	}
 }
 
 //------------------------------------------------------------------------------
 void Session::importTransactionsFrom()
-{ }
+{
+	QSharedPointer<ImportedTransactionSource> newSource =
+		TransactionSourceWizard::promptForTransactionImport(this);
+
+	if (newSource)
+	{
+		connect(newSource.data(), SIGNAL(started()),
+			this, SLOT(importStarted()));
+		connect(newSource.data(), SIGNAL(finished(ImportedTransactionSource::Result, QString)),
+			this, SLOT(importFinished(ImportedTransactionSource::Result, QString)));
+		connect(newSource.data(), SIGNAL(progress(int)),
+			this, SLOT(importProgress(int)));
+		connect(newSource.data(), SIGNAL(imported(QList<ImportedTransaction>)),
+			this, SLOT(transactionsImported(QList<ImportedTransaction>)));
+
+		transactionSource = newSource;
+		importFromCurrentSource();
+	}
+}
+
+//------------------------------------------------------------------------------
+void Session::importFromCurrentSource()
+{
+	if (budget)
+	{
+		QDate start(budget->budgetingPeriod()->startDate());
+		QDate end(budget->budgetingPeriod()->endDate());
+		transactionSource->import(start, end);
+	}
+}
+
+//------------------------------------------------------------------------------
+void Session::importStarted()
+{
+	emit showMessage(tr("Importing transactions from %1")
+		.arg(transactionSource->name()));
+
+	// Start indefinite progress indicator
+	emit showProgress(0, 0);
+}
+
+//------------------------------------------------------------------------------
+void Session::importFinished(ImportedTransactionSource::Result result,
+	const QString& message)
+{
+	// Clear progress indicator
+	emit showProgress(100, 100);
+
+	if (result == ImportedTransactionSource::Cancelled)
+	{
+		emit showMessage(tr("Import cancelled."));
+	}
+	else if (result == ImportedTransactionSource::FailedWithError)
+	{
+		QMessageBox::warning(this, tr("Error"), message);
+	}
+	else if ( ! message.isEmpty())
+	{
+		emit showMessage(message);
+	}
+}
+
+//------------------------------------------------------------------------------
+void Session::importProgress(int percent)
+{
+	emit showProgress(percent, 100);
+}
+
+//------------------------------------------------------------------------------
+void Session::transactionsImported(QList<ImportedTransaction> transactions)
+{
+	importedTransactions = transactions;
+	assignTransactions();
+}
 
 //------------------------------------------------------------------------------
 void Session::assignTransactions()
 {
+	for (int i=0; i<importedTransactions.size(); ++i)
+	{
+		ImportedTransaction trn = importedTransactions.at(i);
+		qDebug() << trn.date() << trn.amount().toString() << trn.payee() << trn.memo()
+			<< trn.withdrawalAccount() << trn.depositAccount();
+	}
 	emit showMessage("Transactions assigned");
 	emit showProgress(66, 100);
 }
@@ -232,6 +319,7 @@ void Session::assignTransactions()
 //------------------------------------------------------------------------------
 void Session::calculateBalances()
 {
+	emit showProgress(0, 0);
 	emit showProgress(100, 100);
 }
 

@@ -48,6 +48,13 @@ public:
 	 */
 	~GnuCashFile();
 
+	/**
+	 * Returns the name of the GnuCash file.
+	 *
+	 * @return GnuCash file name
+	 */
+	QString name() const;
+
 public slots:
 	// Implemented virtual methods
 	bool import();
@@ -66,6 +73,8 @@ private slots:
 	void importingFinished();
 
 private:
+	/** GnuCash file name */
+	QString fileName;
 	/** Thread in which to perform read/import operations */
 	QThread thread;
 	/** GnuCash file reader */
