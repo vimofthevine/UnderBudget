@@ -24,6 +24,7 @@
 // UnderBudget include(s)
 #include "budget/Budget.hpp"
 #include "budget/storage/BudgetSource.hpp"
+#include "ledger/storage/ImportedTransactionSource.hpp"
 
 // Forward declaration(s)
 class QUndoStack;
@@ -33,6 +34,8 @@ namespace ub {
 // Forward declaration(s)
 class BudgetDetailsForm;
 class EstimateDisplayWidget;
+class ImportedTransactionsListWidget;
+class ImportedTransactionsModel;
 class RulesListWidget;
 
 /**
@@ -248,6 +251,41 @@ private slots:
 	 */
 	void setWindowModified(bool isClean);
 
+	/**
+	 * Emits an indefinite progress signal, to indicate that
+	 * importing has begun.
+	 */
+	void importStarted();
+
+	/**
+	 * Emits a progress-finished signal, as well as an error dialog
+	 * if the import failed.
+	 *
+	 * @param[in] result  import result
+	 * @param[in] message import message
+	 */
+	void importFinished(ImportedTransactionSource::Result result,
+		const QString& message);
+
+	/**
+	 * Emits a progress update signal.
+	 *
+	 * @param[in] percent import percent complete
+	 */
+	void importProgress(int percent);
+
+	/**
+	 * Stores the imported transactions and initiates an assignment operation.
+	 *
+	 * @param[in] transactions imported transactions
+	 */
+	void transactionsImported(QList<ImportedTransaction> transactions);
+
+	/**
+	 * Imports transactions from the current imported transaction source.
+	 */
+	void importFromCurrentSource();
+
 protected:
 	/**
 	 * Intercepts the window closing event to prompt the
@@ -268,12 +306,21 @@ private:
 	/** Whether the current budget is a new, unsaved budget */
 	bool isUntitled;
 
+	/** Current imported transaction source */
+	QSharedPointer<ImportedTransactionSource> transactionSource;
+	/** Current list of imported transactions */
+	QList<ImportedTransaction> importedTransactions;
+	/** Imported transactions model */
+	ImportedTransactionsModel* transactionsModel;
+
 	/** Budget details form */
 	BudgetDetailsForm* budgetDetails;
 	/** Estimate display widget */
 	EstimateDisplayWidget* estimateDisplay;
 	/** Assignment rules list widget */
 	RulesListWidget* assignmentRules;
+	/** Imported transactions list widget */
+	ImportedTransactionsListWidget* transactionsList;
 
 	/**
 	 * Creates all display widgets for this session. A budget must have
@@ -299,6 +346,20 @@ private:
 	 * @return `true` if the budget was saved successfully
 	 */
 	bool save(const QSharedPointer<BudgetSource>& source);
+
+	/**
+	 * Re-selects the last-used transaction source for importing.
+	 *
+	 * @return `true` if successful in re-selecting
+	 */
+	bool reImportTransactions();
+
+	/**
+	 * Saves the given transaction source and begins an import.
+	 *
+	 * @param[in] newSource new transaction source
+	 */
+	void importFrom(QSharedPointer<ImportedTransactionSource> newSource);
 };
 
 }

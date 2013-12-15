@@ -43,7 +43,7 @@ public:
 	 * @return budget source from which to retrieve an existing budget
 	 */
 	static QSharedPointer<BudgetSource> promptToReOpen(QWidget* parent,
-		const QString location);
+		const QString& location);
 
 	/**
 	 * Prompts the user for all information necessary to open a budget

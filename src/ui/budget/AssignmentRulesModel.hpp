@@ -42,7 +42,7 @@ class AssignmentRulesModel : public QAbstractItemModel
 
 public:
 	/**
-	 * Constructs a new estimate tree model.
+	 * Constructs a new assignment rules model.
 	 *
 	 * @param[in] rules     assignment rules list
 	 * @param[in] estimates root of the estimate tree
