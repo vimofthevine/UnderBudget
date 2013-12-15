@@ -34,6 +34,8 @@ namespace ub {
 // Forward declaration(s)
 class BudgetDetailsForm;
 class EstimateDisplayWidget;
+class ImportedTransactionsListWidget;
+class ImportedTransactionsModel;
 class RulesListWidget;
 
 /**
@@ -304,6 +306,8 @@ private:
 	QSharedPointer<ImportedTransactionSource> transactionSource;
 	/** Current list of imported transactions */
 	QList<ImportedTransaction> importedTransactions;
+	/** Imported transactions model */
+	ImportedTransactionsModel* transactionsModel;
 
 	/** Budget details form */
 	BudgetDetailsForm* budgetDetails;
@@ -311,6 +315,8 @@ private:
 	EstimateDisplayWidget* estimateDisplay;
 	/** Assignment rules list widget */
 	RulesListWidget* assignmentRules;
+	/** Imported transactions list widget */
+	ImportedTransactionsListWidget* transactionsList;
 
 	/**
 	 * Creates all display widgets for this session. A budget must have

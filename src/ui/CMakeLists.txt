@@ -3,6 +3,7 @@
 # Add UI source sub-directories
 add_subdirectory(accounting)
 add_subdirectory(budget)
+add_subdirectory(ledger)
 add_subdirectory(prefs)
 add_subdirectory(widgets)
 add_subdirectory(wizard)
@@ -20,6 +21,7 @@ set(ui_srcs
 # Specify UI dependent libraries
 set(ui_libs
 	ui_budget
+	ui_ledger
 	ui_prefs
 	ui_wizard
 	budget

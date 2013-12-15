@@ -23,6 +23,8 @@
 #include "ui/budget/BudgetDetailsForm.hpp"
 #include "ui/budget/EstimateDisplayWidget.hpp"
 #include "ui/budget/RulesListWidget.hpp"
+#include "ui/ledger/ImportedTransactionsListWidget.hpp"
+#include "ui/ledger/ImportedTransactionsModel.hpp"
 #include "ui/wizard/BudgetSourceWizard.hpp"
 #include "ui/wizard/TransactionSourceWizard.hpp"
 
@@ -48,18 +50,23 @@ void Session::createWidgets()
 {
 	AssignmentRulesModel* rulesModel = new AssignmentRulesModel(budget->rules(),
 		budget->estimates(), undoStack, this);
+	transactionsModel = new ImportedTransactionsModel(this);
 
 	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
 	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
 		rulesModel, undoStack, this);
 	assignmentRules = new RulesListWidget(rulesModel, this);
+	transactionsList = new ImportedTransactionsListWidget(transactionsModel, this);
 
 	addWidget(budgetDetails);
 	addWidget(estimateDisplay);
 	addWidget(assignmentRules);
+	addWidget(transactionsList);
 
 	// Connect the selection of estimates and rules
 	connect(assignmentRules, SIGNAL(estimateSelected(uint)),
+		estimateDisplay, SLOT(selectEstimate(uint)));
+	connect(transactionsList, SIGNAL(estimateSelected(uint)),
 		estimateDisplay, SLOT(selectEstimate(uint)));
 }
 
@@ -300,18 +307,21 @@ void Session::importProgress(int percent)
 void Session::transactionsImported(QList<ImportedTransaction> transactions)
 {
 	importedTransactions = transactions;
+	transactionsModel->setTransactions(transactions);
 	assignTransactions();
 }
 
 //------------------------------------------------------------------------------
 void Session::assignTransactions()
 {
+	/*
 	for (int i=0; i<importedTransactions.size(); ++i)
 	{
 		ImportedTransaction trn = importedTransactions.at(i);
 		qDebug() << trn.date() << trn.amount().toString() << trn.payee() << trn.memo()
 			<< trn.withdrawalAccount() << trn.depositAccount();
 	}
+	*/
 	emit showMessage("Transactions assigned");
 	emit showProgress(66, 100);
 }
@@ -349,7 +359,12 @@ void Session::showEstimateImpact()
 
 //------------------------------------------------------------------------------
 void Session::showImportedTransactions()
-{ }
+{
+	if (budget && transactionsList)
+	{
+		setCurrentWidget(transactionsList);
+	}
+}
 
 //------------------------------------------------------------------------------
 QString Session::sessionName() const
