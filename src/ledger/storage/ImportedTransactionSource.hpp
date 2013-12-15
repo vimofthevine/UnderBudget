@@ -144,6 +144,11 @@ signals:
 	 * @param transactions imported transactions
 	 */
 	void imported(QList<ImportedTransaction> transactions);
+
+	/**
+	 * Emitted when new data is available for import.
+	 */
+	void newDataAvailable();
 };
 
 }

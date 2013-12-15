@@ -18,6 +18,7 @@
 #include <QtCore>
 
 // UnderBudget include(s)
+#include "settings.hpp"
 #include "ledger/storage/GnuCashFile.hpp"
 #include "ledger/storage/GnuCashReader.hpp"
 
@@ -52,6 +53,15 @@ GnuCashFile::GnuCashFile(const QString& fileName)
 
 	// Start event loop in reader thread
 	thread.start();
+
+	// Watch file for changes, if auto-re-import enabled
+	QSettings settings;
+	if (settings.value(import::AutoReImport).toBool())
+	{
+		watcher.addPath(fileName);
+		connect(&watcher, SIGNAL(fileChanged(QString)),
+			this, SIGNAL(newDataAvailable()));
+	}
 }
 
 //------------------------------------------------------------------------------

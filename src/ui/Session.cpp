@@ -288,6 +288,8 @@ void Session::importFrom(QSharedPointer<ImportedTransactionSource> newSource)
 		this, SLOT(importProgress(int)));
 	connect(newSource.data(), SIGNAL(imported(QList<ImportedTransaction>)),
 		this, SLOT(transactionsImported(QList<ImportedTransaction>)));
+	connect(newSource.data(), SIGNAL(newDataAvailable()),
+		this, SLOT(importFromCurrentSource()));
 
 	transactionSource = newSource;
 	importFromCurrentSource();

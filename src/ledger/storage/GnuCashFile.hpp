@@ -18,6 +18,7 @@
 #define GNUCASHFILE_HPP
 
 // Qt include(s)
+#include <QFileSystemWatcher>
 #include <QThread>
 
 // UnderBudget include(s)
@@ -88,6 +89,8 @@ private:
 	GnuCashReader* reader;
 	/** Whether the reader is currently importing/reading */
 	bool isImporting;
+	/** File system watcher */
+	QFileSystemWatcher watcher;
 };
 
 }

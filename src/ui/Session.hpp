@@ -251,17 +251,6 @@ private slots:
 	 */
 	void setWindowModified(bool isClean);
 
-protected:
-	/**
-	 * Intercepts the window closing event to prompt the
-	 * user to finalize any pending operations before closing
-	 * the session.
-	 *
-	 * @param[in] event window closing event
-	 */
-	void closeEvent(QCloseEvent* event);
-
-private slots:
 	/**
 	 * Emits an indefinite progress signal, to indicate that
 	 * importing has begun.
@@ -291,6 +280,21 @@ private slots:
 	 * @param[in] transactions imported transactions
 	 */
 	void transactionsImported(QList<ImportedTransaction> transactions);
+
+	/**
+	 * Imports transactions from the current imported transaction source.
+	 */
+	void importFromCurrentSource();
+
+protected:
+	/**
+	 * Intercepts the window closing event to prompt the
+	 * user to finalize any pending operations before closing
+	 * the session.
+	 *
+	 * @param[in] event window closing event
+	 */
+	void closeEvent(QCloseEvent* event);
 
 private:
 	/** Budget modification undo stack */
@@ -356,11 +360,6 @@ private:
 	 * @param[in] newSource new transaction source
 	 */
 	void importFrom(QSharedPointer<ImportedTransactionSource> newSource);
-
-	/**
-	 * Imports transactions from the current imported transaction source.
-	 */
-	void importFromCurrentSource();
 };
 
 }
