@@ -28,7 +28,7 @@ const QString BudgetSourceWizard::LAST_USED_BUDGET_DIR = "LastUsedBudgetDir";
 
 //------------------------------------------------------------------------------
 QSharedPointer<BudgetSource> BudgetSourceWizard::promptToReOpen(QWidget* parent,
-	const QString location)
+	const QString& location)
 {
 	// Right now only file-based budget sources are supported
 
