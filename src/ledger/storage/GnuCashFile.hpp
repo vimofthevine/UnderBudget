@@ -18,6 +18,7 @@
 #define GNUCASHFILE_HPP
 
 // Qt include(s)
+#include <QFile>
 #include <QFileSystemWatcher>
 #include <QThread>
 
@@ -62,6 +63,16 @@ public:
 	 * @return GnuCash file location
 	 */
 	QString location() const;
+
+	/**
+	 * Checks if the specified file is a valid GnuCash file.
+	 *
+	 * The given file must already be opened for reading.
+	 *
+	 * @param[in] file file to be checked
+	 * @return `true` if the file is a GnuCash file
+	 */
+	static bool isGnuCashFile(QFile& file);
 
 public slots:
 	// Implemented virtual methods

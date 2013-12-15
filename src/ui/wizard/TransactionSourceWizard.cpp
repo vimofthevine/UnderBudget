@@ -93,7 +93,13 @@ void TransactionSourceWizard::recordLastUsedPath(const QString& fileName)
 ImportedTransactionSource*
 TransactionSourceWizard::createForImportFile(const QString& fileName)
 {
-	if (fileName.endsWith("gnucash"))
+	QFile file(fileName);
+	if ( ! file.exists())
+		return 0;
+	if ( ! file.open(QIODevice::ReadOnly))
+		return 0;
+
+	if (GnuCashFile::isGnuCashFile(file))
 		return new GnuCashFile(fileName);
 	else
 		return 0;

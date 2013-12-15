@@ -121,5 +121,35 @@ void GnuCashFile::cancel()
 	QMetaObject::invokeMethod(reader, "cancel");
 }
 
+//------------------------------------------------------------------------------
+bool GnuCashFile::isGnuCashFile(QFile& file)
+{
+	// Try simple file extension check
+	if (file.fileName().endsWith("gnucash"))
+		return true;
+
+	// Check if a gzip file
+	char twoBytes[2];
+	if (file.peek(twoBytes, sizeof(twoBytes)) == sizeof(twoBytes))
+	{
+		char byte1 = 0x1f;
+		char byte2 = 0x8b;
+
+		// GZip files contain 0x1f8b as first two bytes
+		if ((twoBytes[0] == byte1) && (twoBytes[1] == byte2))
+			return true;
+	}
+
+	// Check if an XML file
+	char twoLines[50];
+	if (file.peek(twoLines, sizeof(twoLines)) == sizeof(twoLines))
+	{
+		if (QString(twoLines).contains("gnc"))
+			return true;
+	}
+
+	return false;
+}
+
 }
 
