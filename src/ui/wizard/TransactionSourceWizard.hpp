@@ -34,6 +34,19 @@ namespace ub {
 class TransactionSourceWizard {
 public:
 	/**
+	 * Prompts the user for all information necessary to re-open a
+	 * transaction source from the specified location. If the described
+	 * transaction source could not be determined, the returned pointer
+	 * will be null.
+	 *
+	 * @param[in] parent   parent widget
+	 * @param[in] location transaction source location description
+	 * @return transaction source from which to import transactions
+	 */
+	static QSharedPointer<ImportedTransactionSource>
+		promptToReImport(QWidget* parent, const QString& location);
+
+	/**
 	 * Prompts the user for all information necessary to open a transaction
 	 * source. If the user cancels the operation or the selected
 	 * source is invalid, the returned pointer will be null.

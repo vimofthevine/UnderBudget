@@ -28,6 +28,29 @@ const QString TransactionSourceWizard::LAST_USED_TRANSACTION_DIR = "LastUsedTrnD
 
 //------------------------------------------------------------------------------
 QSharedPointer<ImportedTransactionSource>
+	TransactionSourceWizard::promptToReImport(QWidget* parent, const QString& location)
+{
+	// Right now only file-based transaction sources are supported
+
+	QSharedPointer<ImportedTransactionSource> source;
+
+	if ( ! location.isEmpty())
+	{
+		recordLastUsedPath(location);
+		source.reset(createForImportFile(location));
+
+		if (source.isNull())
+		{
+			QMessageBox::warning(parent, QObject::tr("Unknown File Type"),
+				QObject::tr("The file, %1, is an unsupported file type").arg(location));
+		}
+	}
+
+	return source;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<ImportedTransactionSource>
 	TransactionSourceWizard::promptForTransactionImport(QWidget* parent)
 {
 	// Right now only file-based transaction sources are supported

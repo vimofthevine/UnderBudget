@@ -344,6 +344,20 @@ private:
 	bool save(const QSharedPointer<BudgetSource>& source);
 
 	/**
+	 * Re-selects the last-used transaction source for importing.
+	 *
+	 * @return `true` if successful in re-selecting
+	 */
+	bool reImportTransactions();
+
+	/**
+	 * Saves the given transaction source and begins an import.
+	 *
+	 * @param[in] newSource new transaction source
+	 */
+	void importFrom(QSharedPointer<ImportedTransactionSource> newSource);
+
+	/**
 	 * Imports transactions from the current imported transaction source.
 	 */
 	void importFromCurrentSource();

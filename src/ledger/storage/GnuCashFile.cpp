@@ -69,6 +69,12 @@ QString GnuCashFile::name() const
 }
 
 //------------------------------------------------------------------------------
+QString GnuCashFile::location() const
+{
+	return fileName;
+}
+
+//------------------------------------------------------------------------------
 void GnuCashFile::importingStarted()
 {
 	isImporting = true;

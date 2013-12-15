@@ -31,6 +31,9 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
+static const QString LAST_USED_TRANSACTION_SRC = "LastUsedTrnSrc";
+
+//------------------------------------------------------------------------------
 Session::Session(QWidget* parent)
 	: QStackedWidget(parent),
 	  isUntitled(true)
@@ -229,7 +232,33 @@ void Session::importTransactions()
 	}
 	else
 	{
-		importTransactionsFrom();
+		if ( ! reImportTransactions())
+		{
+			importTransactionsFrom();
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+bool Session::reImportTransactions()
+{
+	QSettings settings;
+	QString lastTrnSrc = settings.value(LAST_USED_TRANSACTION_SRC).toString();
+
+	if (lastTrnSrc.isEmpty())
+		return false;
+
+	QSharedPointer<ImportedTransactionSource> lastSource =
+		TransactionSourceWizard::promptToReImport(this, lastTrnSrc);
+
+	if (lastSource)
+	{
+		importFrom(lastSource);
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -241,18 +270,27 @@ void Session::importTransactionsFrom()
 
 	if (newSource)
 	{
-		connect(newSource.data(), SIGNAL(started()),
-			this, SLOT(importStarted()));
-		connect(newSource.data(), SIGNAL(finished(ImportedTransactionSource::Result, QString)),
-			this, SLOT(importFinished(ImportedTransactionSource::Result, QString)));
-		connect(newSource.data(), SIGNAL(progress(int)),
-			this, SLOT(importProgress(int)));
-		connect(newSource.data(), SIGNAL(imported(QList<ImportedTransaction>)),
-			this, SLOT(transactionsImported(QList<ImportedTransaction>)));
-
-		transactionSource = newSource;
-		importFromCurrentSource();
+		importFrom(newSource);
 	}
+}
+
+//------------------------------------------------------------------------------
+void Session::importFrom(QSharedPointer<ImportedTransactionSource> newSource)
+{
+	QSettings settings;
+	settings.setValue(LAST_USED_TRANSACTION_SRC, newSource->location());
+
+	connect(newSource.data(), SIGNAL(started()),
+		this, SLOT(importStarted()));
+	connect(newSource.data(), SIGNAL(finished(ImportedTransactionSource::Result, QString)),
+		this, SLOT(importFinished(ImportedTransactionSource::Result, QString)));
+	connect(newSource.data(), SIGNAL(progress(int)),
+		this, SLOT(importProgress(int)));
+	connect(newSource.data(), SIGNAL(imported(QList<ImportedTransaction>)),
+		this, SLOT(transactionsImported(QList<ImportedTransaction>)));
+
+	transactionSource = newSource;
+	importFromCurrentSource();
 }
 
 //------------------------------------------------------------------------------

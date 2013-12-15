@@ -55,6 +55,13 @@ public:
 	 */
 	QString name() const;
 
+	/**
+	 * Returns the location of the GnuCash file.
+	 *
+	 * @return GnuCash file location
+	 */
+	QString location() const;
+
 public slots:
 	// Implemented virtual methods
 	bool import();

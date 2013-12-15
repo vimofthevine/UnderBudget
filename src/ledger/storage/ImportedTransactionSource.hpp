@@ -61,6 +61,14 @@ public:
 	 */
 	virtual QString name() const = 0;
 
+	/**
+	 * Returns a description of this source's location. It could be a file name,
+	 * a database name, a remote network location, etc.
+	 *
+	 * @return source location
+	 */
+	virtual QString location() const = 0;
+
 public slots:
 	/**
 	 * Initiates an import of transactions.
