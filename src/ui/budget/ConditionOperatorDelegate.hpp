@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#ifndef CONDITIONOPERATORDELEGATE_HPP
+#define CONDITIONOPERATORDELEGATE_HPP
+
 // Qt include(s)
 #include <QStyledItemDelegate>
 
@@ -60,3 +63,4 @@ public:
 
 }
 
+#endif //CONDITIONOPERATORDELEGATE_HPP
