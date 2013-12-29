@@ -40,5 +40,23 @@ void Assignments::record(uint trnId, uint estId, uint ruleId)
 	emit assignmentsChanged();
 }
 
+//------------------------------------------------------------------------------
+int Assignments::numberOfAssignments() const
+{
+	return transactionToEstimate.size();
+}
+
+//------------------------------------------------------------------------------
+uint Assignments::estimate(uint trnId) const
+{
+	return transactionToEstimate.value(trnId, 0);
+}
+
+//------------------------------------------------------------------------------
+uint Assignments::rule(uint trnId) const
+{
+	return transactionToRule.value(trnId, 0);
+}
+
 }
 

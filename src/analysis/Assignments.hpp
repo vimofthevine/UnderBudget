@@ -63,6 +63,26 @@ public:
 	 */
 	int numberOfAssignments() const;
 
+	/**
+	 * Returns the unique ID of the estimate to which the given transaction
+	 * has been assigned.
+	 *
+	 * @param[in] trnId unique ID of the transaction
+	 * @return unique ID of the estimate to which the transaction was assigned,
+	 *         or 0 if it was not assigned
+	 */
+	uint estimate(uint trnId) const;
+
+	/**
+	 * Returns the unique ID of the assignment rule for which the given transaction
+	 * qualified.
+	 *
+	 * @param[in] trnId unique ID of the transaction
+	 * @return unique ID of the assignment rule for which the transaction qualified,
+	 *         or 0 if it was not assigned
+	 */
+	uint rule(uint trnId) const;
+
 signals:
 	/**
 	 * Emitted whenever the assignments have changed. The change
