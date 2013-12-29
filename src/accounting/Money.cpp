@@ -16,7 +16,6 @@
 
 // std include(s)
 #include <cmath>
-#include <limits>
 
 // UnderBudget include(s)
 #include "Money.hpp"
@@ -78,13 +77,13 @@ Money Money::toLocal() const
 //------------------------------------------------------------------------------
 bool Money::isZero() const
 {
-	return (scaledAmount == 0.0);
+	return (scaledAmount == 0);
 }
 
 //------------------------------------------------------------------------------
 bool Money::isNegative() const
 {
-	return (scaledAmount < 0.0);
+	return (scaledAmount < 0);
 }
 
 //------------------------------------------------------------------------------
@@ -122,38 +121,35 @@ const Money Money::operator*(double factor) const
 //------------------------------------------------------------------------------
 const double Money::operator/(const Money& divisor) const
 {
-	return (scaledAmount / convert(divisor));
+	return ((double) scaledAmount / (double) convert(divisor));
 }
 
 //------------------------------------------------------------------------------
 const Money Money::operator/(double divisor) const
 {
 	Money quotient;
-	quotient.scaledAmount = scaledAmount / divisor;
+	quotient.scaledAmount = (double) scaledAmount / divisor;
 	quotient.currencyUnit = currencyUnit;
 	return quotient;
 }
 
 //------------------------------------------------------------------------------
-double Money::convert(const Money& other) const
+int Money::convert(const Money& other) const
 {
 	double rate = other.currencyUnit.conversionRate(currencyUnit);
 	return other.scaledAmount * rate;
 }
 
 //------------------------------------------------------------------------------
-double Money::scale(double value)
+int Money::scale(double value)
 {
-	double scaled = value * 10000;
-	return (scaled > 0.0)
-		? floor(scaled)
-		: ceil(scaled);
+	return round(value * 10000);
 }
 
 //------------------------------------------------------------------------------
-double Money::humanize(double value)
+double Money::humanize(int value)
 {
-	return value / 10000;
+	return (double) value / 10000;
 }
 
 //------------------------------------------------------------------------------
@@ -187,11 +183,8 @@ bool operator!=(const Money& lhs, const Money& rhs)
 //------------------------------------------------------------------------------
 bool operator==(const Money& lhs, const Money& rhs)
 {
-	double epsilon = std::numeric_limits<double>::epsilon();
-	double diff = lhs.scaledAmount - rhs.scaledAmount;
-	double rel = std::fabs(std::min(lhs.scaledAmount, rhs.scaledAmount))/1.e15;
-	bool amtsEqual = (std::fabs(diff) < epsilon) || (std::fabs(diff) < rel);
-	return amtsEqual && (lhs.currencyUnit == rhs.currencyUnit);
+	return (lhs.scaledAmount == rhs.scaledAmount)
+		&& (lhs.currencyUnit == rhs.currencyUnit);
 }
 
 //------------------------------------------------------------------------------

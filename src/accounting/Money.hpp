@@ -267,7 +267,7 @@ public:
 
 private:
 	/** Scaled amount of money represented by this value */
-	double scaledAmount;
+	int scaledAmount;
 	/** Currency of this money value */
 	Currency currencyUnit;
 
@@ -278,7 +278,7 @@ private:
 	 * @param[in] other other money value to be converted
 	 * @return scaled amount of other money value in this value's currency
 	 */
-	double convert(const Money& other) const;
+	int convert(const Money& other) const;
 
 	/**
 	 * Scales the given value by a constant factor to ensure that
@@ -289,7 +289,7 @@ private:
 	 * @param[in] value original, unscaled monetary amount
 	 * @return scaled monetary amount
 	 */
-	static double scale(double value);
+	static int scale(double value);
 
 	/**
 	 * De-scales the given value by a constant factor back to
@@ -298,7 +298,7 @@ private:
 	 * @param[in] value scaled monetary amount
 	 * @return unscaled monetary amount
 	 */
-	static double humanize(double value);
+	static double humanize(int value);
 };
 
 /**
