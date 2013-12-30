@@ -18,6 +18,8 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "analysis/Assignments.hpp"
+#include "budget/Estimate.hpp"
 #include "ui/ledger/ImportedTransactionsModel.hpp"
 
 namespace ub {
@@ -37,8 +39,9 @@ const int ASSIGNED_COL = 9;
 const int ESTIMATE_COL = 10;
 
 //------------------------------------------------------------------------------
-ImportedTransactionsModel::ImportedTransactionsModel(QObject* parent)
-	: QAbstractTableModel(parent)
+ImportedTransactionsModel::ImportedTransactionsModel(QSharedPointer<Estimate> estimates,
+		Assignments* assignments, QObject* parent)
+	: QAbstractTableModel(parent), estimates(estimates), assignments(assignments)
 { }
 
 //------------------------------------------------------------------------------
@@ -130,8 +133,13 @@ QVariant ImportedTransactionsModel::checkStateData(const QModelIndex& index) con
 	if (index.column() != ASSIGNED_COL)
 		return QVariant();
 
-	// TODO check assignments model
-	return Qt::Unchecked;
+	int row = index.row();
+	if (row < 0 || row >= transactions.size())
+		return QVariant();
+
+	ImportedTransaction transaction = transactions.at(row);
+	return (assignments->estimate(transaction.transactionId()) != 0)
+		? Qt::Checked : Qt::Unchecked;
 }
 
 //------------------------------------------------------------------------------
@@ -142,16 +150,15 @@ QVariant ImportedTransactionsModel::displayData(const QModelIndex& index) const
 		return QVariant();
 
 	ImportedTransaction transaction = transactions.at(row);
+	uint id = transaction.transactionId();
 	switch (index.column())
 	{
 	case TRN_ID_COL:
-		return transaction.transactionId();
+		return id;
 	case EST_ID_COL:
-		// TODO get from assignments model
-		return QVariant();
+		return assignments->estimate(id);
 	case RULE_ID_COL:
-		// TODO get from assignments model
-		return QVariant();
+		return assignments->rule(id);
 	case DATE_COL:
 		return transaction.date();
 	case PAYEE_COL:
@@ -165,8 +172,21 @@ QVariant ImportedTransactionsModel::displayData(const QModelIndex& index) const
 	case DEPOSIT_COL:
 		return transaction.depositAccount();
 	case ESTIMATE_COL:
-		// TODO get from assignments model
+	{
+		uint eid = assignments->estimate(id);
+
+		// If transaction was assigned
+		if (eid != 0)
+		{
+			Estimate* estimate = estimates->find(eid);
+			if (estimate)
+			{
+				return estimate->estimateName();
+			}
+		}
+
 		return QVariant();
+	}
 	default:
 		return QVariant();
 	}

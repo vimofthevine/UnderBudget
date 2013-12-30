@@ -5,6 +5,7 @@ add_subdirectory(storage)
 
 # Specify budget source files
 set(budget_srcs
+	conditions.cpp
 	AddChildEstimateCommand.cpp
 	AddConditionCommand.cpp
 	AddContributorCommand.cpp

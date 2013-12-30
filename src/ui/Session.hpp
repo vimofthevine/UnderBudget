@@ -32,11 +32,14 @@ class QUndoStack;
 namespace ub {
 
 // Forward declaration(s)
+class Actuals;
+class Assignments;
 class BudgetDetailsForm;
 class EstimateDisplayWidget;
 class ImportedTransactionsListWidget;
 class ImportedTransactionsModel;
 class RulesListWidget;
+class TransactionAssigner;
 
 /**
  * Widget for an open budget session.
@@ -252,6 +255,13 @@ private slots:
 	void setWindowModified(bool isClean);
 
 	/**
+	 * Emits a progress update signal.
+	 *
+	 * @param[in] percent import percent complete
+	 */
+	void updateProgress(int percent);
+
+	/**
 	 * Emits an indefinite progress signal, to indicate that
 	 * importing has begun.
 	 */
@@ -268,18 +278,23 @@ private slots:
 		const QString& message);
 
 	/**
-	 * Emits a progress update signal.
-	 *
-	 * @param[in] percent import percent complete
-	 */
-	void importProgress(int percent);
-
-	/**
 	 * Stores the imported transactions and initiates an assignment operation.
 	 *
 	 * @param[in] transactions imported transactions
 	 */
 	void transactionsImported(QList<ImportedTransaction> transactions);
+
+	/**
+	 * Emits an indefinite progress signal, to indicate that
+	 * assignment has begun.
+	 */
+	void assignmentStarted();
+
+	/**
+	 * Emits a progress-finished signal, and begins an ending balance
+	 * calculation operation.
+	 */
+	void assignmentFinished();
 
 	/**
 	 * Imports transactions from the current imported transaction source.
@@ -313,6 +328,13 @@ private:
 	/** Imported transactions model */
 	ImportedTransactionsModel* transactionsModel;
 
+	/** Actuals */
+	Actuals* actuals;
+	/** Transaction Assignments */
+	Assignments* assignments;
+	/** Transaction Assigner */
+	TransactionAssigner* assigner;
+
 	/** Budget details form */
 	BudgetDetailsForm* budgetDetails;
 	/** Estimate display widget */
@@ -328,6 +350,13 @@ private:
 	 * operation, as the budget is provided to the child views.
 	 */
 	void createWidgets();
+
+	/**
+	 * Creates the analysis (assignment, calculation, etc.) engine components.
+	 * A budget must have been created or provided to this session before
+	 * performing this operation, as the budget is provided to the components.
+	 */
+	void createAnalysisComponents();
 
 	/**
 	 * Prompts the user to save any unsaved changes. The user can

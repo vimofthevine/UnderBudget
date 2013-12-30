@@ -26,6 +26,7 @@
 namespace ub {
 
 // Forward declaration(s)
+class Actuals;
 class AssignmentRulesModel;
 
 /**
@@ -40,13 +41,14 @@ public:
 	/**
 	 * Constructs a new estimate tree model.
 	 *
-	 * @param[in] root   root of the estimate tree
-	 * @param[in] rules  assignment rules list model
-	 * @param[in] stack  undo stack
-	 * @param[in] parent parent object
+	 * @param[in] root    root of the estimate tree
+	 * @param[in] rules   assignment rules list model
+	 * @param[in] actuals actual values
+	 * @param[in] stack   undo stack
+	 * @param[in] parent  parent object
 	 */
 	EstimateModel(QSharedPointer<Estimate> root, AssignmentRulesModel* rules,
-		QUndoStack* stack, QObject* parent = 0);
+		Actuals* actuals, QUndoStack* stack, QObject* parent = 0);
 
 	// Overridden methods
 
@@ -227,6 +229,12 @@ public slots:
 	 */
 	void addChild(const QModelIndex& index);
 
+private slots:
+	/**
+	 * Updates the cached actuals.
+	 */
+	void cacheActuals();
+
 private:
 	/** Root estimate */
 	QSharedPointer<Estimate> root;
@@ -244,7 +252,9 @@ private:
 	/** Impact columns */
 	QList<int> impactColumns;
 
-	/** Activity actuals */
+	/** Activity actuals model */
+	Actuals* actualsModel;
+	/** Cached actuals */
 	QHash<uint,Money> actuals;
 
 	/**

@@ -8,6 +8,7 @@ set(ui_budget_srcs
 	BudgetingPeriodForm.cpp
 	ConditionFieldDelegate.cpp
 	ConditionOperatorDelegate.cpp
+	ConditionValueDelegate.cpp
 	ContributorAddProxyCommand.cpp
 	ContributorChangeProxyCommand.cpp
 	ContributorRemoveProxyCommand.cpp

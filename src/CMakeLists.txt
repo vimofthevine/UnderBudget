@@ -20,8 +20,8 @@ endif (WIN32)
 
 # Add source sub-directories
 add_subdirectory(accounting)
+add_subdirectory(analysis)
 add_subdirectory(budget)
-#add_subdirectory(engine)
 add_subdirectory(gzip)
 add_subdirectory(ledger)
 add_subdirectory(ui)

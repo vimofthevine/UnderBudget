@@ -21,6 +21,7 @@
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/ConditionFieldDelegate.hpp"
 #include "ui/budget/ConditionOperatorDelegate.hpp"
+#include "ui/budget/ConditionValueDelegate.hpp"
 #include "ui/budget/RulesListWidget.hpp"
 
 namespace ub {
@@ -38,6 +39,7 @@ RulesListWidget::RulesListWidget(AssignmentRulesModel* model,
 	setAlternatingRowColors(true);
 	setItemDelegateForColumn(2, new ConditionFieldDelegate(this));
 	setItemDelegateForColumn(3, new ConditionOperatorDelegate(this));
+	setItemDelegateForColumn(5, new ConditionValueDelegate(this));
 
 	// Give the estimate name column the most weight
 	header()->setSectionResizeMode(QHeaderView::ResizeToContents);

@@ -29,10 +29,13 @@ class QTabWidget;
 namespace ub {
 
 // Forward declaration(s)
+class Actuals;
 class AssignmentRulesModel;
 class Estimate;
 class EstimateModel;
 class EstimateTreeWidget;
+class ImportedTransactionsListWidget;
+class ImportedTransactionsModel;
 class RulesListWidget;
 
 /**
@@ -50,12 +53,16 @@ public:
 	/**
 	 * Constructs a new estimate display widget.
 	 *
-	 * @param[in] root   root of the estimate tree
-	 * @param[in] stack  undoable command stack
-	 * @param[in] parent parent widget
+	 * @param[in] root    root of the estimate tree
+	 * @param[in] rules   assignment rules model
+	 * @param[in] trns    imported transactions model
+	 * @param[in] actuals actual activity values
+	 * @param[in] stack   undoable command stack
+	 * @param[in] parent  parent widget
 	 */
 	EstimateDisplayWidget(QSharedPointer<Estimate> root,
-		AssignmentRulesModel* rules, QUndoStack* stack, QWidget* parent = 0);
+		AssignmentRulesModel* rules, ImportedTransactionsModel* trns,
+		Actuals* actuals, QUndoStack* stack, QWidget* parent = 0);
 
 public slots:
 	/**
@@ -91,6 +98,15 @@ private slots:
 	 */
 	void updateRuleFilter(const QModelIndex& current, const QModelIndex& previous);
 
+	/**
+	 * Updates the filtered transactions list according to the currently
+	 * selected estimate.
+	 *
+	 * @param[in] current  currently selected estimate index
+	 * @param[in] previous previously selected estimate index
+	 */
+	void updateTransactionFilter(const QModelIndex& current, const QModelIndex& previous);
+
 private:
 	/** Root estimate */
 	QSharedPointer<Estimate> root;
@@ -105,6 +121,8 @@ private:
 	QTabWidget* tabs;
 	/** Associated rules list */
 	RulesListWidget* ruleList;
+	/** Assigned transactions list */
+	ImportedTransactionsListWidget* transactionList;
 
 	/** Undo stack for all commands */
 	QUndoStack* undoStack;

@@ -18,6 +18,9 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "analysis/Actuals.hpp"
+#include "analysis/Assignments.hpp"
+#include "analysis/TransactionAssigner.hpp"
 #include "ui/Session.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
@@ -53,11 +56,12 @@ void Session::createWidgets()
 {
 	AssignmentRulesModel* rulesModel = new AssignmentRulesModel(budget->rules(),
 		budget->estimates(), undoStack, this);
-	transactionsModel = new ImportedTransactionsModel(this);
+	transactionsModel = new ImportedTransactionsModel(
+		budget->estimates(), assignments, this);
 
 	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
 	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
-		rulesModel, undoStack, this);
+		rulesModel, transactionsModel, actuals, undoStack, this);
 	assignmentRules = new RulesListWidget(rulesModel, this);
 	transactionsList = new ImportedTransactionsListWidget(transactionsModel, this);
 
@@ -71,6 +75,23 @@ void Session::createWidgets()
 		estimateDisplay, SLOT(selectEstimate(uint)));
 	connect(transactionsList, SIGNAL(estimateSelected(uint)),
 		estimateDisplay, SLOT(selectEstimate(uint)));
+}
+
+//------------------------------------------------------------------------------
+void Session::createAnalysisComponents()
+{
+	// Setup components
+	actuals = new Actuals(this);
+	assignments = new Assignments(this);
+	assigner = new TransactionAssigner(budget->rules(), assignments, actuals);
+
+	// Connect progress slots
+	connect(assigner, SIGNAL(started()),
+		this, SLOT(assignmentStarted()));
+	connect(assigner, SIGNAL(progress(int)),
+		this, SLOT(updateProgress(int)));
+	connect(assigner, SIGNAL(finished()),
+		this, SLOT(assignmentFinished()));
 }
 
 //------------------------------------------------------------------------------
@@ -128,6 +149,7 @@ void Session::newBudget()
 	connect(budget.data(), SIGNAL(nameChanged(QString)),
 		this, SLOT(updateWindowTitle()));
 	updateWindowTitle();
+	createAnalysisComponents();
 	createWidgets();
 }
 
@@ -147,6 +169,7 @@ bool Session::openBudget(QSharedPointer<BudgetSource> source)
 		connect(budget.data(), SIGNAL(nameChanged(QString)),
 			this, SLOT(updateWindowTitle()));
 		updateWindowTitle();
+		createAnalysisComponents();
 		createWidgets();
 		return true;
 	}
@@ -285,7 +308,7 @@ void Session::importFrom(QSharedPointer<ImportedTransactionSource> newSource)
 	connect(newSource.data(), SIGNAL(finished(ImportedTransactionSource::Result, QString)),
 		this, SLOT(importFinished(ImportedTransactionSource::Result, QString)));
 	connect(newSource.data(), SIGNAL(progress(int)),
-		this, SLOT(importProgress(int)));
+		this, SLOT(updateProgress(int)));
 	connect(newSource.data(), SIGNAL(imported(QList<ImportedTransaction>)),
 		this, SLOT(transactionsImported(QList<ImportedTransaction>)));
 	connect(newSource.data(), SIGNAL(newDataAvailable()),
@@ -338,7 +361,7 @@ void Session::importFinished(ImportedTransactionSource::Result result,
 }
 
 //------------------------------------------------------------------------------
-void Session::importProgress(int percent)
+void Session::updateProgress(int percent)
 {
 	emit showProgress(percent, 100);
 }
@@ -354,16 +377,26 @@ void Session::transactionsImported(QList<ImportedTransaction> transactions)
 //------------------------------------------------------------------------------
 void Session::assignTransactions()
 {
-	/*
-	for (int i=0; i<importedTransactions.size(); ++i)
-	{
-		ImportedTransaction trn = importedTransactions.at(i);
-		qDebug() << trn.date() << trn.amount().toString() << trn.payee() << trn.memo()
-			<< trn.withdrawalAccount() << trn.depositAccount();
-	}
-	*/
-	emit showMessage("Transactions assigned");
-	emit showProgress(66, 100);
+	assigner->assign(importedTransactions);
+}
+
+//------------------------------------------------------------------------------
+void Session::assignmentStarted()
+{
+	emit showMessage(tr("Assigning transactions..."));
+
+	// Start indefinite progress indicator
+	emit showProgress(0, 0);
+}
+
+//------------------------------------------------------------------------------
+void Session::assignmentFinished()
+{
+	// Clear progress indicator
+	emit showProgress(100, 100);
+
+	qDebug() << "num of assignments =" << assignments->numberOfAssignments();
+	calculateBalances();
 }
 
 //------------------------------------------------------------------------------

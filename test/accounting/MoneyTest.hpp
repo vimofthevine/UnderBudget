@@ -49,6 +49,16 @@ private slots:
 	void constructionFromScalar_data();
 
 	/**
+	 * Tests the precision of money values.
+	 */
+	void precision();
+
+	/**
+	 * Test data for testing precision.
+	 */
+	void precision_data();
+
+	/**
 	 * Tests the string representation of a money value.
 	 */
 	void toString();

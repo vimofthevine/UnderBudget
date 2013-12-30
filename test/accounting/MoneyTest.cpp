@@ -53,6 +53,8 @@ void MoneyTest::constructionFromScalar_data()
 	QTest::newRow("zero") << 0.0 << Money();
 	QTest::newRow("positive") << 12.34 << Money(12.34);
 	QTest::newRow("negative") << -46.30 << Money(-46.30);
+	QTest::newRow("pos-precision") << 1.234567 << Money(1.23457);
+	QTest::newRow("neg-precision") << -1.234567 << Money(-1.23456);
 }
 
 //------------------------------------------------------------------------------
@@ -62,6 +64,46 @@ void MoneyTest::constructionFromScalar()
 	QFETCH(Money, result);
 
 	QCOMPARE(Money(value), result);
+}
+
+//------------------------------------------------------------------------------
+void MoneyTest::precision_data()
+{
+	QTest::addColumn<double>("constructValue");
+	QTest::addColumn<double>("storedValue");
+
+	QTest::newRow("pos-0-dec")  << (double) 12 << (double) 12;
+	QTest::newRow("pos-1-dec")  << 12.3     << 12.3;
+	QTest::newRow("pos-2-dec")  << 12.34    << 12.34;
+	QTest::newRow("pos-3-dec")  << 12.345   << 12.345;
+	QTest::newRow("pos-4-dec")  << 12.3456  << 12.3456;
+	QTest::newRow("pos-5-up")   << 12.34567 << 12.3457;
+	QTest::newRow("pos-5-down") << 12.34564 << 12.3456;
+	QTest::newRow("pos-5-even") << 12.34565 << 12.3456;
+	QTest::newRow("pos-5-odd")  << 12.34575 << 12.3458;
+
+	QTest::newRow("neg-0-dec")  << (double) -12 << (double) -12;
+	QTest::newRow("neg-1-dec")  << -12.3     << -12.3;
+	QTest::newRow("neg-2-dec")  << -12.34    << -12.34;
+	QTest::newRow("neg-3-dec")  << -12.345   << -12.345;
+	QTest::newRow("neg-4-dec")  << -12.3456  << -12.3456;
+	QTest::newRow("neg-5-up")   << -12.34567 << -12.3457;
+	QTest::newRow("neg-5-down") << -12.34564 << -12.3456;
+	QTest::newRow("neg-5-even") << -12.34565 << -12.3456;
+	QTest::newRow("neg-5-odd")  << -12.34575 << -12.3458;
+}
+
+//------------------------------------------------------------------------------
+void MoneyTest::precision()
+{
+	QFETCH(double, constructValue);
+	QFETCH(double, storedValue);
+
+	Money money(constructValue);
+	QCOMPARE(money.amount(), storedValue);
+
+	Money another(storedValue);
+	QCOMPARE(money, another);
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +120,8 @@ void MoneyTest::toString_data()
 	QTest::newRow("thousands") << Money(1322.04, "USD") << "$1,322.04";
 	QTest::newRow("negative") << Money(-3.92, "USD") << "($3.92)";
 	QTest::newRow("foreign") << Money(1322.04, "UAH") << QChar(8372) + QString("1,322.04");
+	QTest::newRow("pos-precision") << Money(1.234567, "USD") << "$1.23";
+	QTest::newRow("neg-precision") << Money(-1.234567, "USD") << "($1.23)";
 }
 
 //------------------------------------------------------------------------------
@@ -316,6 +360,9 @@ void MoneyTest::inequality_data()
 	QTest::newRow("negatives") << Money(-23.53) << Money(-23.53) << false;
 	QTest::newRow("large_exact") << Money(1234567.89) << Money(1234567.89) << false;
 	QTest::newRow("diff_curr") << Money(1.1, "USD") << Money(1.1, "UAH") << true;
+	QTest::newRow("precision-eq") << Money(1.2345678) << Money(1.2345678) << false;
+	QTest::newRow("precision-round") << Money(1.2345687) << Money(1.2345678) << false;
+	QTest::newRow("precision-ne") << Money(1.2345478) << Money(1.2345513) << true;
 }
 
 //------------------------------------------------------------------------------
@@ -350,6 +397,9 @@ void MoneyTest::equality_data()
 	QTest::newRow("negatives") << Money(-23.53) << Money(-23.53) << true;
 	QTest::newRow("large_exact") << Money(1234567.89) << Money(1234567.89) << true;
 	QTest::newRow("diff_curr") << Money(1.1, "USD") << Money(1.1, "UAH") << false;
+	QTest::newRow("precision-eq") << Money(1.2345678) << Money(1.2345678) << true;
+	QTest::newRow("precision-round") << Money(1.2345687) << Money(1.2345678) << true;
+	QTest::newRow("precision-ne") << Money(1.2345478) << Money(1.2345513) << false;
 }
 
 //------------------------------------------------------------------------------
