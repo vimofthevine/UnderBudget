@@ -4,6 +4,7 @@
 set(analysis_srcs
 	Actuals.cpp
 	Assignments.cpp
+	ProjectedBalance.cpp
 	TransactionAssigner.cpp
 )
 
