@@ -18,21 +18,25 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "analysis/Actuals.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateDetailsForm.hpp"
 #include "ui/budget/EstimateDisplayWidget.hpp"
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/EstimateTreeWidget.hpp"
 #include "ui/budget/RulesListWidget.hpp"
+#include "ui/ledger/ImportedTransactionsListWidget.hpp"
+#include "ui/ledger/ImportedTransactionsModel.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
 EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
-		AssignmentRulesModel* rules, QUndoStack* stack, QWidget* parent)
+		AssignmentRulesModel* rules, ImportedTransactionsModel* trns,
+		Actuals* actuals, QUndoStack* stack, QWidget* parent)
 	: QSplitter(Qt::Vertical, parent), root(root), undoStack(stack)
 {
-	model = new EstimateModel(root, rules, undoStack, this);
+	model = new EstimateModel(root, rules, actuals, undoStack, this);
 
 	tree = new EstimateTreeWidget(model, rules, this);
 	selectionModel = tree->selectionModel();
@@ -48,9 +52,16 @@ EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
 	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(updateRuleFilter(QModelIndex,QModelIndex)));
 
+	// Assigned transactions
+	transactionList = new ImportedTransactionsListWidget(trns);
+	transactionList->filterByEstimate(999999999); // Show nothing initially
+	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+		this, SLOT(updateTransactionFilter(QModelIndex,QModelIndex)));
+
 	tabs = new QTabWidget(this);
 	tabs->addTab(details, tr("Estimate Details"));
 	tabs->addTab(ruleList, tr("Associated Rules"));
+	tabs->addTab(transactionList, tr("Assigned Transactions"));
 
 	addWidget(tree);
 	addWidget(tabs);
@@ -97,6 +108,21 @@ void EstimateDisplayWidget::updateRuleFilter(const QModelIndex& current,
 	else
 	{
 		ruleList->filter(0); // Show nothing
+	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateDisplayWidget::updateTransactionFilter(const QModelIndex& current,
+	const QModelIndex& previous)
+{
+	if (current.isValid())
+	{
+		Estimate* estimate = static_cast<Estimate*>(current.internalPointer());
+		transactionList->filterByEstimate(estimate->estimateId());
+	}
+	else
+	{
+		transactionList->filterByEstimate(999999999); // Show nothing
 	}
 }
 

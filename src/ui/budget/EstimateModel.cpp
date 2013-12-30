@@ -18,6 +18,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "analysis/Actuals.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/ProxyModelAddCommand.hpp"
@@ -29,8 +30,9 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
-		AssignmentRulesModel* rules, QUndoStack* stack, QObject* parent)
-	: QAbstractItemModel(parent), root(root), rules(rules), undoStack(stack)
+		AssignmentRulesModel* rules, Actuals* actuals, QUndoStack* stack, QObject* parent)
+	: QAbstractItemModel(parent), root(root), rules(rules),
+	  actualsModel(actuals), undoStack(stack)
 {
 	headers << tr("Name")
 		// Definition columns
@@ -44,6 +46,15 @@ EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
 	definitionColumns << 0 << 1 << 2 << 3 << 4 << 5 << 6;
 	progressColumns << 0 << 7 << 8 << 9 << 10 << 11;
 	impactColumns << 0 << 12 << 13 << 14 << 15;
+
+	connect(actualsModel, SIGNAL(actualsChanged()),
+		this, SLOT(cacheActuals()));
+}
+
+//------------------------------------------------------------------------------
+void EstimateModel::cacheActuals()
+{
+	actuals = actualsModel->map();
 }
 
 //------------------------------------------------------------------------------

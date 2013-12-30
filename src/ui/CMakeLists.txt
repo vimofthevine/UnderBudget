@@ -24,6 +24,7 @@ set(ui_libs
 	ui_ledger
 	ui_prefs
 	ui_wizard
+	analysis
 	budget
 )
 

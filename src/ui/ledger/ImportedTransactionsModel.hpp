@@ -20,11 +20,16 @@
 // Qt include(s)
 #include <QAbstractTableModel>
 #include <QList>
+#include <QSharedPointer>
 
 // UnderBudget include(s)
 #include "ledger/ImportedTransaction.hpp"
 
 namespace ub {
+
+// Forward declaration(s)
+class Assignments;
+class Estimate;
 
 /**
  * Imported transaction list model to serve as a proxy
@@ -42,9 +47,12 @@ public:
 	/**
 	 * Constructs a new imported transactions model.
 	 *
-	 * @param[in] parent parent object
+	 * @param[in] estimates   root estimate
+	 * @param[in] assignments transaction assignments list
+	 * @param[in] parent      parent object
 	 */
-	ImportedTransactionsModel(QObject* parent = 0);
+	ImportedTransactionsModel(QSharedPointer<Estimate> estimates,
+		Assignments* assignments, QObject* parent = 0);
 
 	// Overridden methods
 
@@ -82,6 +90,10 @@ public slots:
 	void setTransactions(const QList<ImportedTransaction>& trns);
 
 private:
+	/** Estimates */
+	QSharedPointer<Estimate> estimates;
+	/** Assignments list */
+	Assignments* assignments;
 	/** Imported transactions list */
 	QList<ImportedTransaction> transactions;
 

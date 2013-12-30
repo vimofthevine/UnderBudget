@@ -63,6 +63,13 @@ public:
 	 */
 	Money forEstimate(uint estId) const;
 
+	/**
+	 * Returns a copy of the actuals as a simple map.
+	 *
+	 * @return actuals map copy
+	 */
+	QHash<uint, Money> map() const;
+
 signals:
 	/**
 	 * Emitted whenever the actuals have changed. The change

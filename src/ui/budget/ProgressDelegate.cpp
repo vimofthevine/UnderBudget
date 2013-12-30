@@ -35,7 +35,7 @@ void ProgressDelegate::paint(QPainter* painter,
 	// (first byte is health, remainder is percentage)
 	const QByteArray progressData = index.data().toByteArray();
 	bool healthy = progressData.left(1).toInt();
-	int progress = progressData.right(progressData.length() - 1).toInt();
+	double progress = progressData.right(progressData.length() - 1).toDouble() * 100;
 	progress = (progress > 100) ? 100 : progress;
 
 	// Leave a little bit above/below progress bar

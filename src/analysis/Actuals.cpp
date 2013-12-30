@@ -55,5 +55,11 @@ Money Actuals::forEstimate(uint estId) const
 	return actuals[estId];
 }
 
+//------------------------------------------------------------------------------
+QHash<uint,Money> Actuals::map() const
+{
+	return actuals;
+}
+
 }
 
