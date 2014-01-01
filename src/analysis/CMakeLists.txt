@@ -5,6 +5,7 @@ set(analysis_srcs
 	Actuals.cpp
 	Assignments.cpp
 	ProjectedBalance.cpp
+	SortedDifferences.cpp
 	TransactionAssigner.cpp
 )
 
