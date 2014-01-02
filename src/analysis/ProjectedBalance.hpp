@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#ifndef PROJECTEDBALANCE_HPP
+#define PROJECTEDBALANCE_HPP
+
 // Qt include(s)
 #include <QObject>
 #include <QSharedPointer>
@@ -98,3 +101,4 @@ private:
 
 }
 
+#endif //PROJECTEDBALANCE_HPP
