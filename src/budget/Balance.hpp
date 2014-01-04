@@ -144,6 +144,12 @@ public:
 
 signals:
 	/**
+	 * Emitted when the balance value changes. This could be from adding,
+	 * removing, or modifying a contributor.
+	 */
+	void valueChanged();
+
+	/**
 	 * Emitted when a new contributor is added to this balance as a result
 	 * of the commands created by either `addContributor()` or
 	 * `removeContributor()`.

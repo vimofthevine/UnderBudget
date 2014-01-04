@@ -107,6 +107,7 @@ void Balance::addContributor(const Contributor& contributor, int index)
 		index = contributors.size();
 	contributors.insert(index, contributor);
 	emit contributorAdded(contributor, index);
+	emit valueChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -121,6 +122,7 @@ void Balance::deleteContributor(int index)
 		index = contributors.size() - 1;
 	Contributor contributor = contributors.takeAt(index);
 	emit contributorRemoved(contributor, index);
+	emit valueChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -132,6 +134,7 @@ void Balance::updateContributor(const Contributor& contributor, int index)
 		index = contributors.size() - 1;
 	contributors.replace(index, contributor);
 	emit contributorUpdated(contributor, index);
+	emit valueChanged();
 }
 
 }

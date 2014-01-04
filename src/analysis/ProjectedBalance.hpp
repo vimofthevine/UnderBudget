@@ -31,7 +31,9 @@ namespace ub {
  * A projection of an ending balance, consisting of an initial balance
  * and a set of adjustments.
  */
-class ProjectedBalance : public QObject {
+class ProjectedBalance : public QObject
+{
+	Q_OBJECT
 
 public:
 	/**
@@ -89,6 +91,13 @@ public:
 	 * @return projected balance value.
 	 */
 	Money value() const;
+
+signals:
+	/**
+	 * Emitted whenever the projected balance changes. This will also
+	 * get emitted if the initial balance changes.
+	 */
+	void balanceChanged();
 
 private:
 	/** Initial balance */

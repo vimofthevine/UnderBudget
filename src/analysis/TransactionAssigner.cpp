@@ -30,8 +30,8 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 TransactionAssigner::TransactionAssigner(QSharedPointer<AssignmentRules> rules,
-		Assignments* assignments, Actuals* actuals)
-	: rules(rules), assignments(assignments),
+		Assignments* assignments, Actuals* actuals, QObject* parent)
+	: QObject(parent), rules(rules), assignments(assignments),
 	  actuals(actuals), isAssigning(false)
 { }
 

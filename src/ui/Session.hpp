@@ -33,12 +33,16 @@ namespace ub {
 
 // Forward declaration(s)
 class Actuals;
+class AnalysisSummaryWidget;
 class Assignments;
+class BalanceCalculator;
 class BudgetDetailsForm;
 class EstimateDisplayWidget;
 class ImportedTransactionsListWidget;
 class ImportedTransactionsModel;
+class ProjectedBalance;
 class RulesListWidget;
+class SortedDifferences;
 class TransactionAssigner;
 
 /**
@@ -297,6 +301,17 @@ private slots:
 	void assignmentFinished();
 
 	/**
+	 * Emits an indefinite progress signal, to indicate that
+	 * calculation has begun.
+	 */
+	void calculationStarted();
+
+	/**
+	 * Emits a progress-finished signal.
+	 */
+	void calculationFinished();
+
+	/**
 	 * Imports transactions from the current imported transaction source.
 	 */
 	void importFromCurrentSource();
@@ -335,6 +350,19 @@ private:
 	/** Transaction Assigner */
 	TransactionAssigner* assigner;
 
+	/** Estimated projected balance */
+	ProjectedBalance* estimatedBalance;
+	/** Actual projected balance */
+	ProjectedBalance* actualBalance;
+	/** Expected projected balance */
+	ProjectedBalance* expectedBalance;
+	/** Over-budget estimate differences */
+	SortedDifferences* overBudgetEstimates;
+	/** Under-budget estimate differences */
+	SortedDifferences* underBudgetEstimates;
+	/** Projected balance calculator */
+	BalanceCalculator* calculator;
+
 	/** Budget details form */
 	BudgetDetailsForm* budgetDetails;
 	/** Estimate display widget */
@@ -343,6 +371,8 @@ private:
 	RulesListWidget* assignmentRules;
 	/** Imported transactions list widget */
 	ImportedTransactionsListWidget* transactionsList;
+	/** Analysis summary widget */
+	AnalysisSummaryWidget* analysisSummary;
 
 	/**
 	 * Creates all display widgets for this session. A budget must have

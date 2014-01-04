@@ -26,13 +26,17 @@ namespace ub {
 ProjectedBalance::ProjectedBalance(QSharedPointer<Balance> initial,
 		QObject* parent)
 	: QObject(parent), initialBalance(initial)
-{ }
+{
+	connect(initial.data(), SIGNAL(valueChanged()),
+		this, SIGNAL(balanceChanged()));
+}
 
 //------------------------------------------------------------------------------
 void ProjectedBalance::clear()
 {
 	increase = Money();
 	decrease = Money();
+	emit balanceChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -48,6 +52,8 @@ void ProjectedBalance::add(const Money& amount)
 		increase = increase.isZero() ? amount
 			: increase + amount;
 	}
+
+	emit balanceChanged();
 }
 
 //------------------------------------------------------------------------------

@@ -39,7 +39,8 @@ BalanceCalculator::BalanceCalculator(QSharedPointer<Estimate> estimates,
 	  actual(actual),
 	  expected(expected),
 	  overBudget(overDiffs),
-	  underBudget(underDiffs)
+	  underBudget(underDiffs),
+	  isCalculating(false)
 {}
 
 //------------------------------------------------------------------------------
