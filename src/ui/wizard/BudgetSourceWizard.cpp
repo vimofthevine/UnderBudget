@@ -60,7 +60,7 @@ QSharedPointer<BudgetSource> BudgetSourceWizard::promptForBudgetToOpen(
 	QString fileName = QFileDialog::getOpenFileName(parent,
 		QObject::tr("Open Budget File"),
 		settings.value(LAST_USED_BUDGET_DIR).toString(),
-		QObject::tr("Budgets (*.ubb *.xml);;All (*)"));
+		QObject::tr("Budgets (*.budget *.xml);;All (*)"));
 
 	QSharedPointer<BudgetSource> source;
 
@@ -97,7 +97,7 @@ QSharedPointer<BudgetSource> BudgetSourceWizard::promptForBudgetToSave(
 
 	QString fileName = QFileDialog::getSaveFileName(parent,
 		QObject::tr("Save Budget File"),
-		dir, QObject::tr("Budgets (*.ubb *.xml);;All (*)"));
+		dir, QObject::tr("Budgets (*.budget *.xml);;All (*)"));
 
 	QSharedPointer<BudgetSource> source;
 
@@ -130,7 +130,7 @@ void BudgetSourceWizard::recordLastUsedPath(const QString& fileName)
 //------------------------------------------------------------------------------
 BudgetSource* BudgetSourceWizard::createForFile(const QString& fileName)
 {
-	if (fileName.endsWith("ubb") || fileName.endsWith("xml"))
+	if (fileName.endsWith("budget") || fileName.endsWith("xml"))
 		return new XmlBudgetFile(fileName);
 	else
 		return 0;
