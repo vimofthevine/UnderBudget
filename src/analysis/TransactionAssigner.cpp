@@ -43,6 +43,10 @@ void TransactionAssigner::assign(const QList<ImportedTransaction>& transactions)
 		isAssigning = true;
 		emit started();
 
+		// Clear previous results
+		assignments->clear();
+		actuals->clear();
+
 		// Iterate over all transactions
 		for (int i=0; i<transactions.size(); ++i)
 		{
