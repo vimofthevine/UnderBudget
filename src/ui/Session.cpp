@@ -20,8 +20,14 @@
 // UnderBudget include(s)
 #include "analysis/Actuals.hpp"
 #include "analysis/Assignments.hpp"
+#include "analysis/BalanceCalculator.hpp"
+#include "analysis/ProjectedBalance.hpp"
+#include "analysis/SortedDifferences.hpp"
 #include "analysis/TransactionAssigner.hpp"
 #include "ui/Session.hpp"
+#include "ui/analysis/AnalysisSummaryWidget.hpp"
+#include "ui/analysis/EstimateDiffsModel.hpp"
+#include "ui/analysis/ProjectedBalanceModel.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/BudgetDetailsForm.hpp"
 #include "ui/budget/EstimateDisplayWidget.hpp"
@@ -54,21 +60,33 @@ Session::Session(QWidget* parent)
 //------------------------------------------------------------------------------
 void Session::createWidgets()
 {
+	// Create view models
 	AssignmentRulesModel* rulesModel = new AssignmentRulesModel(budget->rules(),
 		budget->estimates(), undoStack, this);
 	transactionsModel = new ImportedTransactionsModel(
 		budget->estimates(), assignments, this);
+	ProjectedBalanceModel* balanceModel = new ProjectedBalanceModel(estimatedBalance,
+		actualBalance, expectedBalance, this);
+	EstimateDiffsModel* overBudgetModel = new EstimateDiffsModel(budget->estimates(),
+		overBudgetEstimates, this);
+	EstimateDiffsModel* underBudgetModel = new EstimateDiffsModel(budget->estimates(),
+		underBudgetEstimates, this);
 
+	// Create view widgets
 	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
 	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
 		rulesModel, transactionsModel, actuals, undoStack, this);
 	assignmentRules = new RulesListWidget(rulesModel, this);
 	transactionsList = new ImportedTransactionsListWidget(transactionsModel, this);
+	analysisSummary = new AnalysisSummaryWidget(budget->budgetingPeriod(), balanceModel,
+		overBudgetModel, underBudgetModel, this);
 
+	// Add them to session's stacked widget
 	addWidget(budgetDetails);
 	addWidget(estimateDisplay);
 	addWidget(assignmentRules);
 	addWidget(transactionsList);
+	addWidget(analysisSummary);
 
 	// Connect the selection of estimates and rules
 	connect(assignmentRules, SIGNAL(estimateSelected(uint)),
@@ -80,10 +98,20 @@ void Session::createWidgets()
 //------------------------------------------------------------------------------
 void Session::createAnalysisComponents()
 {
-	// Setup components
+	// Setup assignment components
 	actuals = new Actuals(this);
 	assignments = new Assignments(this);
-	assigner = new TransactionAssigner(budget->rules(), assignments, actuals);
+	assigner = new TransactionAssigner(budget->rules(), assignments, actuals, this);
+
+	// Setup calculation components
+	estimatedBalance = new ProjectedBalance(budget->initialBalance(), this);
+	actualBalance = new ProjectedBalance(budget->initialBalance(), this);
+	expectedBalance = new ProjectedBalance(budget->initialBalance(), this);
+	overBudgetEstimates = new SortedDifferences(this);
+	underBudgetEstimates = new SortedDifferences(this);
+	calculator = new BalanceCalculator(budget->estimates(), actuals,
+		estimatedBalance, actualBalance, expectedBalance,
+		overBudgetEstimates, underBudgetEstimates, this);
 
 	// Connect progress slots
 	connect(assigner, SIGNAL(started()),
@@ -92,6 +120,12 @@ void Session::createAnalysisComponents()
 		this, SLOT(updateProgress(int)));
 	connect(assigner, SIGNAL(finished()),
 		this, SLOT(assignmentFinished()));
+	connect(calculator, SIGNAL(started()),
+		this, SLOT(calculationStarted()));
+	connect(calculator, SIGNAL(progress(int)),
+		this, SLOT(updateProgress(int)));
+	connect(calculator, SIGNAL(finished()),
+		this, SLOT(calculationFinished()));
 }
 
 //------------------------------------------------------------------------------
@@ -371,6 +405,8 @@ void Session::transactionsImported(QList<ImportedTransaction> transactions)
 {
 	importedTransactions = transactions;
 	transactionsModel->setTransactions(transactions);
+	analysisSummary->setImportedTransactionSource(transactionSource->name());
+	analysisSummary->setNumberOfImportedTransactions(transactions.size());
 	assignTransactions();
 }
 
@@ -395,20 +431,45 @@ void Session::assignmentFinished()
 	// Clear progress indicator
 	emit showProgress(100, 100);
 
-	qDebug() << "num of assignments =" << assignments->numberOfAssignments();
+	analysisSummary->setNumberOfAssignedTransactions(assignments->numberOfAssignments());
+
 	calculateBalances();
 }
 
 //------------------------------------------------------------------------------
 void Session::calculateBalances()
 {
+	calculator->calculateBalances();
+}
+
+//------------------------------------------------------------------------------
+void Session::calculationStarted()
+{
+	emit showMessage(tr("Calculating projected balances..."));
+
+	// Start indefinite progress indicator
 	emit showProgress(0, 0);
+}
+
+//------------------------------------------------------------------------------
+void Session::calculationFinished()
+{
+	// Clear progress indicator
 	emit showProgress(100, 100);
+	emit showMessage(tr("Analysis complete"));
+
+	analysisSummary->setNumberOfOverBudgetEstimates(overBudgetEstimates->size());
+	analysisSummary->setNumberOfUnderBudgetEstimates(underBudgetEstimates->size());
 }
 
 //------------------------------------------------------------------------------
 void Session::showAnalysisSummary()
-{ }
+{
+	if (analysisSummary)
+	{
+		setCurrentWidget(analysisSummary);
+	}
+}
 
 //------------------------------------------------------------------------------
 void Session::showEstimateProgress()

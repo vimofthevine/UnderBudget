@@ -48,9 +48,10 @@ public:
 	 * @param[in] rules       assignment rules
 	 * @param[in] assignments transaction assignments
 	 * @param[in] actuals     estimate actuals
+	 * @param[in] parent      parent object
 	 */
 	TransactionAssigner(QSharedPointer<AssignmentRules> rules,
-		Assignments* assignments, Actuals* actuals);
+		Assignments* assignments, Actuals* actuals, QObject* parent = 0);
 
 public slots:
 	/**
