@@ -91,6 +91,14 @@ private slots:
 	 */
 	void importingFinished();
 
+	/**
+	 * Receives notification that the GnuCash file has been changed
+	 * externally.
+	 *
+	 * @param[in] fileName path to the GnuCash file
+	 */
+	void fileChanged(const QString& fileName);
+
 private:
 	/** GnuCash file name */
 	QString fileName;
@@ -102,6 +110,8 @@ private:
 	bool isImporting;
 	/** File system watcher */
 	QFileSystemWatcher watcher;
+	/** File changes counter */
+	int fileChanges;
 };
 
 }

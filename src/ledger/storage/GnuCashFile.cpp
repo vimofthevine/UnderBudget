@@ -26,7 +26,7 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 GnuCashFile::GnuCashFile(const QString& fileName)
-	: fileName(fileName), isImporting(false)
+	: fileName(fileName), isImporting(false), fileChanges(0)
 {
 	// Make sure we can pass these between threads via signals/slots
 	qRegisterMetaType<ImportedTransactionSource::Result>("ImportedTransactionSource::Result");
@@ -60,7 +60,27 @@ GnuCashFile::GnuCashFile(const QString& fileName)
 	{
 		watcher.addPath(fileName);
 		connect(&watcher, SIGNAL(fileChanged(QString)),
-			this, SIGNAL(newDataAvailable()));
+			this, SLOT(fileChanged(QString)));
+	}
+}
+
+//------------------------------------------------------------------------------
+void GnuCashFile::fileChanged(const QString& fileName)
+{
+	// Need to re-submit the file to the watcher so we can continue to
+	// receive on-change signals
+	watcher.removePath(fileName);
+	watcher.addPath(fileName);
+
+	// We receive this signal twice--but the first time, the file does not have
+	// updated data yet. So when the second signal comes through, it does not
+	// trigger an import since the first import is still in progress. Thus, we
+	// ignore the first signal, and every other after that.
+	if (++fileChanges % 2 == 0)
+	{
+		qDebug() << "GnuCash file" << fileName
+			<< "has changed externally, signalling new data available...";
+		emit newDataAvailable();
 	}
 }
 
