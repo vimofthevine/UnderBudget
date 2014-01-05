@@ -89,6 +89,12 @@ public slots:
 	 */
 	void setTransactions(const QList<ImportedTransaction>& trns);
 
+private slots:
+	/**
+	 * Emits a data-changed signal in response to new assignment info.
+	 */
+	void assignmentsChanged();
+
 private:
 	/** Estimates */
 	QSharedPointer<Estimate> estimates;

@@ -55,6 +55,7 @@ EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
 void EstimateModel::cacheActuals()
 {
 	actuals = actualsModel->map();
+	emit dataChanged(createIndex(0, 7), createIndex(0, 15));
 }
 
 //------------------------------------------------------------------------------
@@ -236,10 +237,12 @@ QModelIndex EstimateModel::parent(const QModelIndex& index) const
 		return QModelIndex();
 
 	Estimate* child = cast(index);
+	if ( ! child)
+		return QModelIndex();
 	Estimate* parent = child->parentEstimate();
 
 	// If root
-	if ( ! parent->parentEstimate())
+	if ( ! parent || ! parent->parentEstimate())
 		return QModelIndex();
 	return createIndex(parent->parentEstimate()->indexOf(parent), 0, parent);
 }

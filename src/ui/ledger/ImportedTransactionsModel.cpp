@@ -42,7 +42,10 @@ const int ESTIMATE_COL = 10;
 ImportedTransactionsModel::ImportedTransactionsModel(QSharedPointer<Estimate> estimates,
 		Assignments* assignments, QObject* parent)
 	: QAbstractTableModel(parent), estimates(estimates), assignments(assignments)
-{ }
+{
+	connect(assignments, SIGNAL(assignmentsChanged()),
+		this, SLOT(assignmentsChanged()));
+}
 
 //------------------------------------------------------------------------------
 int ImportedTransactionsModel::columnCount(const QModelIndex& parent) const
@@ -232,6 +235,23 @@ void ImportedTransactionsModel::setTransactions(const QList<ImportedTransaction>
 	beginInsertRows(QModelIndex(), 0, trns.size()-1);
 	transactions = trns;
 	endInsertRows();
+}
+
+//------------------------------------------------------------------------------
+void ImportedTransactionsModel::assignmentsChanged()
+{
+	emit dataChanged(
+		index(0, EST_ID_COL),
+		index(rowCount() - 1, EST_ID_COL));
+	emit dataChanged(
+		index(0, RULE_ID_COL),
+		index(rowCount() - 1, RULE_ID_COL));
+	emit dataChanged(
+		index(0, ASSIGNED_COL),
+		index(rowCount() - 1, ASSIGNED_COL));
+	emit dataChanged(
+		index(0, ESTIMATE_COL),
+		index(rowCount() - 1, ESTIMATE_COL));
 }
 
 }
