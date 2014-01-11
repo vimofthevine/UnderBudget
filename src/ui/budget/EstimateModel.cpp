@@ -317,11 +317,21 @@ void EstimateModel::deleteEstimate(const QModelIndex& index)
 	{
 		Estimate* estimate = cast(index);
 		Estimate* parent = estimate->parentEstimate();
-		undoStack->push(new ProxyModelDeleteCommand(this,
+
+		// Create estimate-delete command
+		QUndoCommand* estDel = new ProxyModelDeleteCommand(this,
 			(parent ? parent->estimateId() : 0),
 			estimate->estimateId(),
 			index.row(),
-			estimate->deleteEstimate()));
+			estimate->deleteEstimate());
+		// Create associated rules-delete command
+		QUndoCommand* ruleDel = rules->remove(estimate->estimateId());
+
+		// Run both commands as a single undoable action
+		undoStack->beginMacro(tr("Delete %1").arg(estimate->estimateName()));
+		undoStack->push(estDel);
+		undoStack->push(ruleDel);
+		undoStack->endMacro();
 	}
 }
 

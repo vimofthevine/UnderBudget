@@ -22,6 +22,7 @@ set(ui_budget_srcs
 	RuleChangeProxyCommand.cpp
 	RuleMoveProxyCommand.cpp
 	RuleRemoveProxyCommand.cpp
+	RulesRemoveProxyCommand.cpp
 	ProgressDelegate.cpp
 	ProxyModelAddCommand.cpp
 	ProxyModelChangeCommand.cpp

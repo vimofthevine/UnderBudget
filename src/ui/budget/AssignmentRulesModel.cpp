@@ -25,6 +25,7 @@
 #include "ui/budget/RuleChangeProxyCommand.hpp"
 #include "ui/budget/RuleMoveProxyCommand.hpp"
 #include "ui/budget/RuleRemoveProxyCommand.hpp"
+#include "ui/budget/RulesRemoveProxyCommand.hpp"
 
 namespace ub {
 
@@ -620,6 +621,13 @@ void AssignmentRulesModel::remove(const QModelIndex& index)
 		undoStack->push(new RuleRemoveProxyCommand(this, row,
 			rules->removeRule(rule->ruleId())));
 	}
+}
+
+//------------------------------------------------------------------------------
+QUndoCommand* AssignmentRulesModel::remove(uint estimate, QUndoCommand* cmd)
+{
+	return new RulesRemoveProxyCommand(this,
+		rules->removeAll(estimate, cmd));
 }
 
 //------------------------------------------------------------------------------

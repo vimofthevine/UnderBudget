@@ -25,6 +25,7 @@
 #include "budget/AssignmentRules.hpp"
 
 // Forward declaration(s)
+class QUndoCommand;
 class QUndoStack;
 
 namespace ub {
@@ -115,6 +116,17 @@ public:
 	 * @param[in] index index of the rule to be removed
 	 */
 	void remove(const QModelIndex& index);
+
+	/**
+	 * Creates an undoable command to remove all rows associated with
+	 * a given estimate.
+	 *
+	 * @param[in] estimate unique ID of the estimate whose associated
+	 *                     rules are to be removed
+	 * @param[in] cmd      parent command to be used for grouping
+	 * @return command to remove rules associated with a given estimate
+	 */
+	QUndoCommand* remove(uint estimate, QUndoCommand* cmd = 0);
 
 	/**
 	 * Moves the rule from the given origin row to the specified
@@ -286,6 +298,7 @@ private:
 	friend class RuleChangeProxyCommand;
 	friend class RuleMoveProxyCommand;
 	friend class RuleRemoveProxyCommand;
+	friend class RulesRemoveProxyCommand;
 };
 
 }
