@@ -282,6 +282,15 @@ private:
 	void emitDataChanged(const QModelIndex& topLeft,
 		const QModelIndex& bottomRight);
 
+	/**
+	 * Recursively adds the unique IDs of this estimate and its children
+	 * to the given list.
+	 *
+	 * @param[in] estimate  estimate whose ID is to be added to the list
+	 * @param[in] estimates list of unique estimate IDs
+	 */
+	void populate(Estimate* estimate, QList<uint>& estimates);
+
 	// Allow command classes access to private data
 	friend class ProxyModelChangeCommand;
 	friend class ProxyModelAddCommand;

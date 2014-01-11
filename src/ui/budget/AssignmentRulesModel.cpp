@@ -624,10 +624,16 @@ void AssignmentRulesModel::remove(const QModelIndex& index)
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* AssignmentRulesModel::remove(uint estimate, QUndoCommand* cmd)
+void AssignmentRulesModel::remove(const QList<uint>& estimates)
 {
-	return new RulesRemoveProxyCommand(this,
-		rules->removeAll(estimate, cmd));
+	QUndoCommand* cmd = new QUndoCommand;
+
+	foreach(uint estimate, estimates)
+	{
+		rules->removeAll(estimate, cmd);
+	}
+
+	undoStack->push(new RulesRemoveProxyCommand(this, cmd));
 }
 
 //------------------------------------------------------------------------------

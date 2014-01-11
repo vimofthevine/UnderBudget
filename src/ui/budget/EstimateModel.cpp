@@ -319,20 +319,34 @@ void EstimateModel::deleteEstimate(const QModelIndex& index)
 		Estimate* parent = estimate->parentEstimate();
 
 		// Create estimate-delete command
-		QUndoCommand* estDel = new ProxyModelDeleteCommand(this,
+
+		// Run both estimate and rule deletion as a single undoable action
+		undoStack->beginMacro(tr("Delete %1").arg(estimate->estimateName()));
+		QList<uint> estimates;
+		populate(estimate, estimates);
+
+		undoStack->push(new ProxyModelDeleteCommand(this,
 			(parent ? parent->estimateId() : 0),
 			estimate->estimateId(),
 			index.row(),
-			estimate->deleteEstimate());
-		// Create associated rules-delete command
-		QUndoCommand* ruleDel = rules->remove(estimate->estimateId());
+			estimate->deleteEstimate()));
+		rules->remove(estimates);
 
-		// Run both commands as a single undoable action
-		undoStack->beginMacro(tr("Delete %1").arg(estimate->estimateName()));
-		undoStack->push(estDel);
-		undoStack->push(ruleDel);
 		undoStack->endMacro();
 	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateModel::populate(Estimate* estimate, QList<uint>& estimates)
+{
+	// Propagate down estimate sub-tree first
+	for (int i=(estimate->childCount()-1); i>=0; --i)
+	{
+		populate(estimate->childAt(i), estimates);
+	}
+
+	// Add this estimate
+	estimates.append(estimate->estimateId());
 }
 
 //------------------------------------------------------------------------------

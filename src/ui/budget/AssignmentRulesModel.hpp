@@ -118,15 +118,12 @@ public:
 	void remove(const QModelIndex& index);
 
 	/**
-	 * Creates an undoable command to remove all rows associated with
-	 * a given estimate.
+	 * Removes the rules associated with the given estimates.
 	 *
-	 * @param[in] estimate unique ID of the estimate whose associated
-	 *                     rules are to be removed
-	 * @param[in] cmd      parent command to be used for grouping
-	 * @return command to remove rules associated with a given estimate
+	 * @param[in] estimates unique ID of the estimates whose associated
+	 *                      rules are to be removed
 	 */
-	QUndoCommand* remove(uint estimate, QUndoCommand* cmd = 0);
+	void remove(const QList<uint>& estimates);
 
 	/**
 	 * Moves the rule from the given origin row to the specified
