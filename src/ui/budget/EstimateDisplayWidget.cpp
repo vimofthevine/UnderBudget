@@ -107,7 +107,7 @@ void EstimateDisplayWidget::updateRuleFilter(const QModelIndex& current,
 	}
 	else
 	{
-		ruleList->filter(0); // Show nothing
+		ruleList->filter(999999999); // Show nothing
 	}
 }
 
