@@ -20,6 +20,7 @@
 // UnderBudget include(s)
 #include "ui/MainWindow.hpp"
 #include "ui/Session.hpp"
+#include "ui/icons.hpp"
 
 namespace ub
 {
@@ -33,128 +34,128 @@ namespace ub
 void MainWindow::createActions()
 {
 	// File menu actions
-	newAction = new QAction(QIcon(":/icons/new"), tr("&New"), this);
+	newAction = new QAction(Icon::newDocument(), tr("&New"), this);
 	newAction->setShortcuts(QKeySequence::New);
 	newAction->setStatusTip(tr("Create a new budget"));
 	connect(newAction, SIGNAL(triggered()), this, SLOT(newBudget()));
 
-	openAction = new QAction(QIcon(":/icons/open"), tr("&Open..."), this);
+	openAction = new QAction(Icon::openDocument(), tr("&Open..."), this);
 	openAction->setShortcuts(QKeySequence::Open);
 	openAction->setStatusTip(tr("Open an existing budget"));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openBudget()));
 
-	saveAction = new QAction(QIcon(":/icons/save"), tr("&Save"), this);
+	saveAction = new QAction(Icon::saveDocument(), tr("&Save"), this);
 	saveAction->setShortcuts(QKeySequence::Save);
 	saveAction->setStatusTip(tr("Save changes to the budget"));
 	connect(saveAction, SIGNAL(triggered()), this, SLOT(saveBudget()));
 
-	saveAsAction = new QAction(QIcon(":/icons/saveAs"), tr("Save &As..."), this);
+	saveAsAction = new QAction(Icon::saveAs(), tr("Save &As..."), this);
 	saveAsAction->setShortcuts(QKeySequence::SaveAs);
 	saveAsAction->setStatusTip(tr("Save as a new budget"));
 	connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveBudgetAs()));
 
-	saveAsTemplateAction = new QAction(QIcon(":/icons/saveAsTemplate"), tr("Save As &Template..."), this);
+	saveAsTemplateAction = new QAction(Icon::saveAsTemplate(), tr("Save As &Template..."), this);
 	saveAsTemplateAction->setStatusTip(tr("Save as template for new budgets"));
 	connect(saveAsTemplateAction, SIGNAL(triggered()), this, SLOT(saveBudgetAsTemplate()));
 
-	exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
+	exportAction = new QAction(Icon::exportFile(), tr("&Export..."), this);
 	exportAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
 	exportAction->setStatusTip(tr("Export analysis results"));
 	connect(exportAction, SIGNAL(triggered()), this, SLOT(notImpl()));
 
-	closeAction = new QAction(QIcon(":/icons/close"), tr("&Close"), this);
+	closeAction = new QAction(Icon::close(), tr("&Close"), this);
 	closeAction->setShortcuts(QKeySequence::Close);
 	closeAction->setShortcutContext(Qt::WidgetShortcut);
 	closeAction->setStatusTip(tr("Close the budget"));
 
-	closeAllAction = new QAction(QIcon(":/icons/closeAll"), tr("Close A&ll"), this);
+	closeAllAction = new QAction(Icon::closeAll(), tr("Close A&ll"), this);
 	closeAllAction->setStatusTip(tr("Close all budgets"));
 
-	exitAction = new QAction(QIcon(":/icons/exit"), tr("E&xit"), this);
+	exitAction = new QAction(Icon::exit(), tr("E&xit"), this);
 	exitAction->setShortcuts(QKeySequence::Quit);
 	exitAction->setStatusTip(tr("Quit the application"));
 	connect(exitAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
 	// Edit menu actions
-	undoAction = new QAction(QIcon(":/icons/undo"), tr("&Undo"), this);
+	undoAction = new QAction(Icon::undo(), tr("&Undo"), this);
 	undoAction->setShortcut(QKeySequence::Undo);
 	undoAction->setStatusTip(tr("Undo the last edit"));
 	connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
 
-	redoAction = new QAction(QIcon(":/icons/redo"), tr("Re&do"), this);
+	redoAction = new QAction(Icon::redo(), tr("Re&do"), this);
 	redoAction->setShortcut(QKeySequence::Redo);
 	redoAction->setStatusTip(tr("Re-apply the last undone edit"));
 	connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
 
-	editBudgetAction = new QAction(QIcon(":/icons/editBudget"), tr("&Budget"), this);
+	editBudgetAction = new QAction(Icon::editBudget(), tr("&Budget"), this);
 	editBudgetAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
 	editBudgetAction->setStatusTip(tr("Edit budget"));
 	connect(editBudgetAction, SIGNAL(triggered()), this, SLOT(editBudget()));
 
-	editEstimatesAction = new QAction(QIcon(":/icons/editEstimates"), tr("&Estimates"), this);
+	editEstimatesAction = new QAction(Icon::editEstimates(), tr("&Estimates"), this);
 	editEstimatesAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_E));
 	editEstimatesAction->setStatusTip(tr("Edit estimates"));
 	connect(editEstimatesAction, SIGNAL(triggered()), this, SLOT(editEstimates()));
 
-	editRulesAction = new QAction(QIcon(":/icons/editRules"), tr("Assignment &Rules"), this);
+	editRulesAction = new QAction(Icon::editRules(), tr("Assignment &Rules"), this);
 	editRulesAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
 	editRulesAction->setStatusTip(tr("Edit assignment rules"));
 	connect(editRulesAction, SIGNAL(triggered()), this, SLOT(editAssignmentRules()));
 
-	editPrefsAction = new QAction(QIcon(":/icons/editPrefs"), tr("&Preferences"), this);
+	editPrefsAction = new QAction(Icon::editPreferences(), tr("&Preferences"), this);
 	editPrefsAction->setShortcuts(QKeySequence::Preferences);
 	editPrefsAction->setStatusTip(tr("Edit application preferences"));
 	connect(editPrefsAction, SIGNAL(triggered()), this, SLOT(editPreferences()));
 
 	// Analyze menu actions
-	importAction = new QAction(QIcon(":/icons/import"), tr("&Import transactions..."), this);
+	importAction = new QAction(Icon::importTransactions(), tr("&Import transactions..."), this);
 	importAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_I));
 	importAction->setStatusTip(tr("Import transactions from last-used file"));
 	connect(importAction, SIGNAL(triggered()), this, SLOT(importTransactions()));
 
-	importFromAction = new QAction(QIcon(":/icons/importFrom"), tr("Import transactions &from..."), this);
+	importFromAction = new QAction(Icon::importTransactionsFrom(), tr("Import transactions &from..."), this);
 	importFromAction->setStatusTip(tr("Import transactions from file"));
 	connect(importFromAction, SIGNAL(triggered()), this, SLOT(importTransactionsFrom()));
 
-	assignAction = new QAction(QIcon(":/icons/assign"), tr("&Assign transactions"), this);
+	assignAction = new QAction(Icon::assign(), tr("&Assign transactions"), this);
 	assignAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
 	assignAction->setStatusTip(tr("Assign imported transactions"));
 	connect(assignAction, SIGNAL(triggered()), this, SLOT(assignTransactions()));
 
-	calculateAction = new QAction(QIcon(":/icons/calculate"), tr("&Calculate balances"), this);
+	calculateAction = new QAction(Icon::calculate(), tr("&Calculate balances"), this);
 	calculateAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_C));
 	calculateAction->setStatusTip(tr("Calculate ending balances"));
 	connect(calculateAction, SIGNAL(triggered()), this, SLOT(calculateBalances()));
 
-	summaryAction = new QAction(QIcon(":/icons/summary"), tr("Anal&ysis summary"), this);
+	summaryAction = new QAction(Icon::analysisSummary(), tr("Anal&ysis summary"), this);
 	summaryAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Y));
 	summaryAction->setStatusTip(tr("Analysis summary"));
 	connect(summaryAction, SIGNAL(triggered()), this, SLOT(showAnalysisSummary()));
 
-	progressAction = new QAction(QIcon(":/icons/progress"), tr("Estimate &progress"), this);
+	progressAction = new QAction(Icon::estimateProgress(), tr("Estimate &progress"), this);
 	progressAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_P));
 	progressAction->setStatusTip(tr("Estimate progress"));
 	connect(progressAction, SIGNAL(triggered()), this, SLOT(showEstimateProgress()));
 
-	impactAction = new QAction(QIcon(":/icons/impact"), tr("&Balance impact"), this);
+	impactAction = new QAction(Icon::estimateImpact(), tr("&Balance impact"), this);
 	impactAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
 	impactAction->setStatusTip(tr("Balance impact"));
 	connect(impactAction, SIGNAL(triggered()), this, SLOT(showEstimateImpact()));
 
-	transactionsAction = new QAction(QIcon(":/icons/transactions"), tr("Impor&ted transactions"), this);
+	transactionsAction = new QAction(Icon::importedTransactions(), tr("Impor&ted transactions"), this);
 	transactionsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
 	transactionsAction->setStatusTip(tr("View imported transactions"));
 	connect(transactionsAction, SIGNAL(triggered()), this, SLOT(showImportedTransactions()));
 
 	// Window menu actions
-	tileAction = new QAction(QIcon(":/icons/tile"), tr("&Tile"), this);
+	tileAction = new QAction(Icon::windowTile(), tr("&Tile"), this);
 	tileAction->setStatusTip(tr("Tile all open budgets"));
 
-	cascadeAction = new QAction(QIcon(":/icons/cascade"), tr("&Cascade"), this);
+	cascadeAction = new QAction(Icon::windowCascade(), tr("&Cascade"), this);
 	cascadeAction->setStatusTip("Cascade all open budgets");
 
 	// Help menu actions
-	aboutAction = new QAction(QIcon(":/icons/about"),
+	aboutAction = new QAction(Icon::about(),
 		tr("&About %1").arg(qApp->applicationName()), this);
 	aboutAction->setStatusTip(tr("About the application"));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
@@ -222,33 +223,26 @@ void MainWindow::createMenus()
 //------------------------------------------------------------------------------
 void MainWindow::createToolBars()
 {
-	fileToolBar = addToolBar(tr("File"));
-	fileToolBar->setObjectName("FileToolBar");
-	fileToolBar->setFloatable(false);
-	fileToolBar->setMovable(false);
-	fileToolBar->addAction(newAction);
-	fileToolBar->addAction(openAction);
-	fileToolBar->addAction(saveAction);
-
-	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->setObjectName("EditToolBar");
-	editToolBar->setFloatable(false);
-	editToolBar->setMovable(false);
-	editToolBar->addAction(editBudgetAction);
-	editToolBar->addAction(editEstimatesAction);
-	editToolBar->addAction(editRulesAction);
-
-	analyzeToolBar = addToolBar(tr("Analyze"));
-	analyzeToolBar->setObjectName("AnalyzeToolBar");
-	analyzeToolBar->setFloatable(false);
-	analyzeToolBar->setMovable(false);
-	analyzeToolBar->addAction(importAction);
-	analyzeToolBar->addAction(assignAction);
-	analyzeToolBar->addAction(calculateAction);
-	analyzeToolBar->addAction(summaryAction);
-	analyzeToolBar->addAction(progressAction);
-	analyzeToolBar->addAction(impactAction);
-	analyzeToolBar->addAction(transactionsAction);
+	mainToolBar = addToolBar(tr("Quick Actions"));
+	mainToolBar->setObjectName("MainToolBar");
+	mainToolBar->setFloatable(false);
+	mainToolBar->setMovable(false);
+	mainToolBar->addAction(newAction);
+	mainToolBar->addAction(openAction);
+	mainToolBar->addAction(saveAction);
+	mainToolBar->addSeparator();
+	mainToolBar->addAction(editBudgetAction);
+	mainToolBar->addAction(editEstimatesAction);
+	mainToolBar->addAction(editRulesAction);
+	mainToolBar->addSeparator();
+	mainToolBar->addAction(importAction);
+	mainToolBar->addAction(assignAction);
+	mainToolBar->addAction(calculateAction);
+	mainToolBar->addSeparator();
+	mainToolBar->addAction(summaryAction);
+	mainToolBar->addAction(progressAction);
+	mainToolBar->addAction(impactAction);
+	mainToolBar->addAction(transactionsAction);
 }
 
 //------------------------------------------------------------------------------

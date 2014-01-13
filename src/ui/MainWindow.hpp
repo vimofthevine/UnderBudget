@@ -247,9 +247,7 @@ protected:
 	QMenu* helpMenu;
 
 	// Toolbars
-	QToolBar* fileToolBar;
-	QToolBar* editToolBar;
-	QToolBar* analyzeToolBar;
+	QToolBar* mainToolBar;
 
 	/**
 	 * Opens the budget defined in the given budget source. If the given
