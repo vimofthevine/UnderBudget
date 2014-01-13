@@ -30,12 +30,11 @@ set(ui_libs
 	budget
 )
 
-# Specify UI resource file
-if(ICON_SET MATCHES V2Style)
-	set(ui_rcs ui/ui.qrc PARENT_SCOPE)
-else()
+# Platform-specific look-and-feel
+if(${CMAKE_SYSTEM_NAME} MATCHES Linux)
+	list(APPEND ui_srcs icons_x11.cpp)
 	set(ui_rcs ui/oxygen.qrc PARENT_SCOPE)
-endif (ICON_SET MATCHES V2Style)
+endif(${CMAKE_SYSTEM_NAME} MATCHES Linux)
 
 # Build UI library
 add_library(ui ${ui_srcs})
