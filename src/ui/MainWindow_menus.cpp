@@ -223,33 +223,26 @@ void MainWindow::createMenus()
 //------------------------------------------------------------------------------
 void MainWindow::createToolBars()
 {
-	fileToolBar = addToolBar(tr("File"));
-	fileToolBar->setObjectName("FileToolBar");
-	fileToolBar->setFloatable(false);
-	fileToolBar->setMovable(false);
-	fileToolBar->addAction(newAction);
-	fileToolBar->addAction(openAction);
-	fileToolBar->addAction(saveAction);
-
-	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->setObjectName("EditToolBar");
-	editToolBar->setFloatable(false);
-	editToolBar->setMovable(false);
-	editToolBar->addAction(editBudgetAction);
-	editToolBar->addAction(editEstimatesAction);
-	editToolBar->addAction(editRulesAction);
-
-	analyzeToolBar = addToolBar(tr("Analyze"));
-	analyzeToolBar->setObjectName("AnalyzeToolBar");
-	analyzeToolBar->setFloatable(false);
-	analyzeToolBar->setMovable(false);
-	analyzeToolBar->addAction(importAction);
-	analyzeToolBar->addAction(assignAction);
-	analyzeToolBar->addAction(calculateAction);
-	analyzeToolBar->addAction(summaryAction);
-	analyzeToolBar->addAction(progressAction);
-	analyzeToolBar->addAction(impactAction);
-	analyzeToolBar->addAction(transactionsAction);
+	mainToolBar = addToolBar(tr("Quick Actions"));
+	mainToolBar->setObjectName("MainToolBar");
+	mainToolBar->setFloatable(false);
+	mainToolBar->setMovable(false);
+	mainToolBar->addAction(newAction);
+	mainToolBar->addAction(openAction);
+	mainToolBar->addAction(saveAction);
+	mainToolBar->addSeparator();
+	mainToolBar->addAction(editBudgetAction);
+	mainToolBar->addAction(editEstimatesAction);
+	mainToolBar->addAction(editRulesAction);
+	mainToolBar->addSeparator();
+	mainToolBar->addAction(importAction);
+	mainToolBar->addAction(assignAction);
+	mainToolBar->addAction(calculateAction);
+	mainToolBar->addSeparator();
+	mainToolBar->addAction(summaryAction);
+	mainToolBar->addAction(progressAction);
+	mainToolBar->addAction(impactAction);
+	mainToolBar->addAction(transactionsAction);
 }
 
 //------------------------------------------------------------------------------
