@@ -35,16 +35,19 @@ void MainWindow::createActions()
 {
 	// File menu actions
 	newAction = new QAction(Icon::newDocument(), tr("&New"), this);
+	newAction->setPriority(QAction::LowPriority);
 	newAction->setShortcuts(QKeySequence::New);
 	newAction->setStatusTip(tr("Create a new budget"));
 	connect(newAction, SIGNAL(triggered()), this, SLOT(newBudget()));
 
 	openAction = new QAction(Icon::openDocument(), tr("&Open..."), this);
+	openAction->setPriority(QAction::LowPriority);
 	openAction->setShortcuts(QKeySequence::Open);
 	openAction->setStatusTip(tr("Open an existing budget"));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openBudget()));
 
 	saveAction = new QAction(Icon::saveDocument(), tr("&Save"), this);
+	saveAction->setPriority(QAction::LowPriority);
 	saveAction->setShortcuts(QKeySequence::Save);
 	saveAction->setStatusTip(tr("Save changes to the budget"));
 	connect(saveAction, SIGNAL(triggered()), this, SLOT(saveBudget()));
@@ -99,6 +102,7 @@ void MainWindow::createActions()
 
 	editRulesAction = new QAction(Icon::editRules(), tr("Assignment &Rules"), this);
 	editRulesAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+	editRulesAction->setIconText(tr("Rules"));
 	editRulesAction->setStatusTip(tr("Edit assignment rules"));
 	connect(editRulesAction, SIGNAL(triggered()), this, SLOT(editAssignmentRules()));
 
@@ -110,6 +114,7 @@ void MainWindow::createActions()
 	// Analyze menu actions
 	importAction = new QAction(Icon::importTransactions(), tr("&Import transactions..."), this);
 	importAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_I));
+	importAction->setIconText(tr("Import"));
 	importAction->setStatusTip(tr("Import transactions from last-used file"));
 	connect(importAction, SIGNAL(triggered()), this, SLOT(importTransactions()));
 
@@ -119,31 +124,37 @@ void MainWindow::createActions()
 
 	assignAction = new QAction(Icon::assign(), tr("&Assign transactions"), this);
 	assignAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
+	assignAction->setIconText(tr("Assign"));
 	assignAction->setStatusTip(tr("Assign imported transactions"));
 	connect(assignAction, SIGNAL(triggered()), this, SLOT(assignTransactions()));
 
 	calculateAction = new QAction(Icon::calculate(), tr("&Calculate balances"), this);
 	calculateAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_C));
+	calculateAction->setIconText(tr("Calculate"));
 	calculateAction->setStatusTip(tr("Calculate ending balances"));
 	connect(calculateAction, SIGNAL(triggered()), this, SLOT(calculateBalances()));
 
 	summaryAction = new QAction(Icon::analysisSummary(), tr("Anal&ysis summary"), this);
 	summaryAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Y));
+	summaryAction->setIconText(tr("Summary"));
 	summaryAction->setStatusTip(tr("Analysis summary"));
 	connect(summaryAction, SIGNAL(triggered()), this, SLOT(showAnalysisSummary()));
 
 	progressAction = new QAction(Icon::estimateProgress(), tr("Estimate &progress"), this);
 	progressAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_P));
+	progressAction->setIconText(tr("Progress"));
 	progressAction->setStatusTip(tr("Estimate progress"));
 	connect(progressAction, SIGNAL(triggered()), this, SLOT(showEstimateProgress()));
 
 	impactAction = new QAction(Icon::estimateImpact(), tr("&Balance impact"), this);
 	impactAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
+	impactAction->setIconText(tr("Impact"));
 	impactAction->setStatusTip(tr("Balance impact"));
 	connect(impactAction, SIGNAL(triggered()), this, SLOT(showEstimateImpact()));
 
 	transactionsAction = new QAction(Icon::importedTransactions(), tr("Impor&ted transactions"), this);
 	transactionsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
+	transactionsAction->setIconText(tr("Transactions"));
 	transactionsAction->setStatusTip(tr("View imported transactions"));
 	connect(transactionsAction, SIGNAL(triggered()), this, SLOT(showImportedTransactions()));
 
@@ -224,9 +235,11 @@ void MainWindow::createMenus()
 void MainWindow::createToolBars()
 {
 	mainToolBar = addToolBar(tr("Quick Actions"));
+	mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 	mainToolBar->setObjectName("MainToolBar");
 	mainToolBar->setFloatable(false);
 	mainToolBar->setMovable(false);
+
 	mainToolBar->addAction(newAction);
 	mainToolBar->addAction(openAction);
 	mainToolBar->addAction(saveAction);
@@ -241,7 +254,6 @@ void MainWindow::createToolBars()
 	mainToolBar->addSeparator();
 	mainToolBar->addAction(summaryAction);
 	mainToolBar->addAction(progressAction);
-	mainToolBar->addAction(impactAction);
 	mainToolBar->addAction(transactionsAction);
 }
 
