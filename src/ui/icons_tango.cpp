@@ -26,8 +26,8 @@ namespace Icon {
 
 /**
  * Retrieves a theme icon of the given name. If no icon exists for the
- * given theme, then the appropriate icon from the Oxygen icon theme is
- * used.
+ * given theme, then the appropriate icon from the built-in, tango-style
+ * icon theme is used.
  *
  * @param[in] name standard icon name
  * @return requested icon from the current theme
@@ -37,8 +37,8 @@ QIcon get(const QString& name)
 	QIcon icon = QIcon::fromTheme(name);
 	if (icon.isNull())
 	{
-		icon.addFile(QString(":/icons/oxygen/22x22/%1").arg(name), QSize(22,22));
-		icon.addFile(QString(":/icons/oxygen/48x48/%1").arg(name), QSize(48,48));
+		icon.addFile(QString(":/icons/tango/22x22/%1").arg(name), QSize(22,22));
+		icon.addFile(QString(":/icons/tango/48x48/%1").arg(name), QSize(48,48));
 	}
 	return icon;
 }
@@ -52,13 +52,13 @@ QIcon about()
 //------------------------------------------------------------------------------
 QIcon analysisSummary()
 {
-	return get("view-statistics.png");
+	return get("x-office-presentation");
 }
 
 //------------------------------------------------------------------------------
 QIcon assign()
 {
-	return get("go-next-use");
+	return get("assign-transactions");
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ QIcon calculate()
 //------------------------------------------------------------------------------
 QIcon close()
 {
-	return get("document-close");
+	return get("window-close");
 }
 
 //------------------------------------------------------------------------------
@@ -82,25 +82,25 @@ QIcon closeAll()
 //------------------------------------------------------------------------------
 QIcon editBudget()
 {
-	return get("view-bank");
+	return get("edit-budget");
 }
 
 //------------------------------------------------------------------------------
 QIcon editEstimates()
 {
-	return get("view-list-tree");
+	return get("edit-estimates");
 }
 
 //------------------------------------------------------------------------------
 QIcon editRules()
 {
-	return get("format-list-ordered");
+	return get("edit-rules");
 }
 
 //------------------------------------------------------------------------------
 QIcon editPreferences()
 {
-	return get("preferences-other");
+	return get("preferences-system");
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ QIcon estimateImpact()
 //------------------------------------------------------------------------------
 QIcon estimateProgress()
 {
-	return get("office-chart-bar-percentage");
+	return get("x-office-spreadsheet");
 }
 
 //------------------------------------------------------------------------------
@@ -130,13 +130,13 @@ QIcon exportFile()
 //------------------------------------------------------------------------------
 QIcon importedTransactions()
 {
-	return get("wallet-open");
+	return get("view-transactions");
 }
 
 //------------------------------------------------------------------------------
 QIcon importTransactions()
 {
-	return get("document-import");
+	return get("import-transactions");
 }
 
 //------------------------------------------------------------------------------
