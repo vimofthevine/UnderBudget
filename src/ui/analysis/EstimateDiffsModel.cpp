@@ -74,8 +74,6 @@ QVariant EstimateDiffsModel::headerData(int section,
 //------------------------------------------------------------------------------
 int EstimateDiffsModel::rowCount(const QModelIndex& parent) const
 {
-	if (diffs->size() > 5)
-		return 5;
 	return diffs->size();
 }
 
