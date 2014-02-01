@@ -52,16 +52,19 @@ AnalysisSummaryWidget::AnalysisSummaryWidget(QSharedPointer<BudgetingPeriod> per
 	QTableView* balanceTable = new QTableView(this);
 	balanceTable->setModel(balances);
 	balanceTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	balanceTable->setSelectionBehavior(QTableView::SelectRows);
 
 	QTableView* overBudgetTable = new QTableView(this);
 	overBudgetTable->setModel(over);
 	overBudgetTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	overBudgetTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	overBudgetTable->setSelectionBehavior(QTableView::SelectRows);
 
 	QTableView* underBudgetTable = new QTableView(this);
 	underBudgetTable->setModel(under);
 	underBudgetTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	underBudgetTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	underBudgetTable->setSelectionBehavior(QTableView::SelectRows);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addLayout(formLayout);
