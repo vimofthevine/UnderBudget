@@ -25,9 +25,10 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
-static const int NUM_COLS = 2;
-static const int NAME_COL = 0;
-static const int DIFF_COL = 1;
+static const int NUM_COLS = 3;
+static const int TYPE_COL = 0;
+static const int NAME_COL = 1;
+static const int DIFF_COL = 2;
 
 //------------------------------------------------------------------------------
 EstimateDiffsModel::EstimateDiffsModel(QSharedPointer<Estimate> estimates,
@@ -59,6 +60,8 @@ QVariant EstimateDiffsModel::headerData(int section,
 	{
 		switch (section)
 		{
+		case TYPE_COL:
+			return tr("Type");
 		case NAME_COL:
 			return tr("Estimate");
 		case DIFF_COL:
@@ -74,8 +77,6 @@ QVariant EstimateDiffsModel::headerData(int section,
 //------------------------------------------------------------------------------
 int EstimateDiffsModel::rowCount(const QModelIndex& parent) const
 {
-	if (diffs->size() > 5)
-		return 5;
 	return diffs->size();
 }
 
@@ -94,6 +95,14 @@ QVariant EstimateDiffsModel::data(const QModelIndex& index, int role) const
 
 	switch (index.column())
 	{
+	case TYPE_COL:
+	{
+		Estimate* estimate = estimates->find(diffs->estimate(row));
+		if (estimate)
+			return estimate->estimateType();
+		else
+			return QVariant();
+	}
 	case NAME_COL:
 	{
 		Estimate* estimate = estimates->find(diffs->estimate(row));

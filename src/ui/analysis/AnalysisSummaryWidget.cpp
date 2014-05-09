@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "budget/BudgetingPeriod.hpp"
+#include "budget/Estimate.hpp"
 #include "ui/analysis/AnalysisSummaryWidget.hpp"
 #include "ui/analysis/EstimateDiffsModel.hpp"
 #include "ui/analysis/ProjectedBalanceModel.hpp"
@@ -52,16 +53,31 @@ AnalysisSummaryWidget::AnalysisSummaryWidget(QSharedPointer<BudgetingPeriod> per
 	QTableView* balanceTable = new QTableView(this);
 	balanceTable->setModel(balances);
 	balanceTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	balanceTable->setSelectionBehavior(QTableView::SelectRows);
 
 	QTableView* overBudgetTable = new QTableView(this);
-	overBudgetTable->setModel(over);
+	QSortFilterProxyModel* overModel = new QSortFilterProxyModel(this);
+	overModel->setSourceModel(over);
+	overBudgetTable->setModel(overModel);
 	overBudgetTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	overBudgetTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	overBudgetTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	overBudgetTable->setSelectionBehavior(QTableView::SelectRows);
+	overBudgetTable->hideColumn(0);
+	// Only show expense estimates
+	overModel->setFilterKeyColumn(0);
+	overModel->setFilterRegExp(QRegExp(QString("%1").arg(Estimate::Expense)));
 
 	QTableView* underBudgetTable = new QTableView(this);
-	underBudgetTable->setModel(under);
+	QSortFilterProxyModel* underModel = new QSortFilterProxyModel(this);
+	underModel->setSourceModel(under);
+	underBudgetTable->setModel(underModel);
 	underBudgetTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	underBudgetTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	underBudgetTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	underBudgetTable->setSelectionBehavior(QTableView::SelectRows);
+	underBudgetTable->hideColumn(0);
+	// Only show expense estimates
+	underModel->setFilterKeyColumn(0);
+	underModel->setFilterRegExp(QRegExp(QString("%1").arg(Estimate::Expense)));
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addLayout(formLayout);
