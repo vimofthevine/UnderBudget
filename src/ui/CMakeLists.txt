@@ -32,8 +32,8 @@ set(ui_libs
 
 # Platform-specific look-and-feel
 if(${CMAKE_SYSTEM_NAME} MATCHES Linux)
-	list(APPEND ui_srcs icons_x11.cpp)
-	set(ui_rcs ui/oxygen.qrc PARENT_SCOPE)
+	list(APPEND ui_srcs icons_tango.cpp)
+	set(ui_rcs ui/tango.qrc PARENT_SCOPE)
 endif(${CMAKE_SYSTEM_NAME} MATCHES Linux)
 
 # Build UI library

@@ -16,7 +16,9 @@
 
 // Qt include(s)
 #include <QApplication>
+#include <QIcon>
 #include <QSettings>
+#include <QDebug>
 
 // UnderBudget include(s)
 #include "info.hpp"
@@ -29,6 +31,13 @@ int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
 	setupApp(app);
+
+	QString iconTheme = getenv("UB_ICON_THEME_OVERRIDE");
+	if ( ! iconTheme.isEmpty())
+	{
+		QIcon::setThemeName(iconTheme);
+	}
+	qDebug() << "Using icon theme" << QIcon::themeName();
 
 	QSettings settings;
 	bool useMdi = settings.value(ub::appearance::UseMDI, false).toBool();
