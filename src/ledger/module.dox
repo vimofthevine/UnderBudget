@@ -1,0 +1,5 @@
+/**
+ * @defgroup ledger Ledger
+ * @brief Data types and functions to support the definition
+ * of transactions.
+ */

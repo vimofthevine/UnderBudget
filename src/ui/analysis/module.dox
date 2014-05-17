@@ -1,0 +1,4 @@
+/**
+ * @defgroup ui_analysis Analysis Widgets
+ * @brief Qt widgets to support display of budget analysis results.
+ */
