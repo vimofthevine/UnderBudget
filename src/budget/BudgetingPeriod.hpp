@@ -30,6 +30,8 @@ namespace ub
 
 /**
  * Date range over which a budget is applied.
+ *
+ * @ingroup period
  */
 class BudgetingPeriod : public QObject
 {

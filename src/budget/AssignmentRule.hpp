@@ -36,6 +36,8 @@ class AssignmentRules;
  * Each rule may be comprised of one or more conditions, all of which
  * must be satisfied for a transaction to qualify for assignment to the
  * rule's associated estimate.
+ *
+ * @ingroup rule
  */
 class AssignmentRule : public QObject
 {

@@ -28,6 +28,7 @@ namespace ub {
  * is a list of the supported currencies' ISO 4217 codes.
  *
  * @return supported currency ISO 4217 codes
+ * @ingroup accounting
  */
 const QStringList& supportedCurrencies();
 
@@ -36,6 +37,7 @@ const QStringList& supportedCurrencies();
  *
  * @param[in] iso4217 ISO 4217 code for the desired currency
  * @return UTF symbol for the specified currency
+ * @ingroup accounting
  */
 QString currencySymbol(const QString& iso4217);
 

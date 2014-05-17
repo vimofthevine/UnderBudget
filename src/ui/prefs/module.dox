@@ -1,0 +1,4 @@
+/**
+ * @defgroup ui_prefs Preferences Widgets
+ * @brief Qt widgets to support the display and editing of user preferences.
+ */

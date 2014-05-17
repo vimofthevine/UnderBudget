@@ -28,6 +28,8 @@ namespace ub {
 
 /**
  * An undoable command to add a new contributor to a balance.
+ *
+ * @ingroup balance_commands
  */
 class AddContributorCommand : public QUndoCommand
 {

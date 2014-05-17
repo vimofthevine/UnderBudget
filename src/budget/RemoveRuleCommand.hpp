@@ -31,6 +31,8 @@ namespace ub {
 
 /**
  * An undoable command to remove an existing rule from the rules list.
+ *
+ * @ingroup rule_commands
  */
 class RemoveRuleCommand : public QUndoCommand
 {

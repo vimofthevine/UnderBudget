@@ -47,6 +47,8 @@ class TransactionAssigner;
 
 /**
  * Widget for an open budget session.
+ *
+ * @ingroup ui
  */
 class Session : public QStackedWidget
 {

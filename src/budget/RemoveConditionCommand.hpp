@@ -27,6 +27,8 @@ class AssignmentRules;
 
 /**
  * An undoable command to remove an existing condition from an assignment rule.
+ *
+ * @ingroup rule_commands
  */
 class RemoveConditionCommand : public QUndoCommand
 {

@@ -1,0 +1,43 @@
+/**
+ * @defgroup accounting Accounting
+ * @brief Data types and functions to support financial data representation
+ * and operations.
+ *
+ * The accounting module contains all data types and functions to support
+ * financial data representation and operations.
+ *
+ * The primary data type provided by this module is the ub::Money type,
+ * which represents a monetary amount and currency. The ub::Money type
+ * supports arithmetic operations between other ub::Money instances,
+ * including conversion between currencies.
+ *
+ * @code{.cpp}
+ * // arithmetic operations
+ * ub::Money sum = ub::Money(12.50) + ub::Money(3.20);
+ * ub::Money difference = ub::Money(12.50) - ub::Money(2.50);
+ * ub::Money product = ub::Money(12.50) * 1.08; // e.g., sales tax
+ * ub::Money quotient = ub::Money(12.50) / 1.08;
+ * double ration = ub::Money(9.80) / ub::Money(10.00);
+ *
+ * // implicit currency conversion
+ * ub::Money domestic(23.4); // uses current locale's currency
+ * ub::Money foreign(23.4, "RUB");
+ * ub::Money sum = domestic + foreign; // converts foreign value to local currency
+ *
+ * // explicit currency conversion
+ * ub::Money foreign(8.14, "UAH");
+ * ub::Money converted = foreign.to("USD");
+ * ub::Money domestic = foreign.toLocal();
+ * @endcode
+ *
+ * Currency conversion rates are retrieved from the active ub::ConversionRates
+ * instance, acquired from the ub::ConversionRatesSource.
+ *
+ * The following conversion rate sources are currently supported:
+ * - ub::UserConversionRates - Allows the user to manually specify conversion rates
+ *   between specific currencies. This source is useful for defining static
+ *   conversion rates for historical purposes. Rates are stored and retrieved
+ *   from an SQLite3 database file.
+ * - ub::OpenExchangeRates - Retrieves up-to-date exchange rates from
+ *   http://openexchangerates.org.
+ */

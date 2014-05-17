@@ -33,6 +33,8 @@ class MoneyValidator;
 
 /**
  * A text editor for entering monetary values.
+ *
+ * @ingroup ui_accounting
  */
 class MoneyEdit : public LineEdit
 {

@@ -120,6 +120,8 @@ namespace ub {
  * pattern. Requesting an operation, such as a name change or adding a new
  * child estimate, will return a `QUndoCommand` that is capable of applying
  * the operation and backing out the resulting changes.
+ *
+ * @ingroup estimate
  */
 class Estimate : public QObject
 {

@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a estimate's finished state.
+ *
+ * @ingroup estimate_commands
  */
 class ChangeEstimateFinishedCommand : public QUndoCommand
 {

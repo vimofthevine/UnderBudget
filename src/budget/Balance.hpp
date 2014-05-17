@@ -28,6 +28,8 @@ namespace ub {
 /**
  * Generic monetary balance representation. A balance is the mathematical
  * sum of a set of defined contributing monetary values.
+ *
+ * @ingroup balance
  */
 class Balance : public QObject
 {

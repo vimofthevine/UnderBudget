@@ -31,6 +31,8 @@ namespace ub {
 
 /**
  * An undoable command to insert a new rule into the rules list.
+ *
+ * @ingroup rule_commands
  */
 class InsertRuleCommand : public QUndoCommand
 {

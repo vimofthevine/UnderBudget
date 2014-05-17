@@ -29,6 +29,8 @@ namespace ub {
 
 /**
  * A user-defined list of assignment rules.
+ *
+ * @ingroup rule
  */
 class AssignmentRules : public QObject
 {

@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a estimate's description.
+ *
+ * @ingroup estimate_commands
  */
 class ChangeEstimateDescriptionCommand : public QUndoCommand
 {

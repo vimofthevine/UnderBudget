@@ -28,6 +28,8 @@ namespace ub {
 
 /**
  * An undoable command to remove an existing contributor from a balance.
+ *
+ * @ingroup balance_commands
  */
 class RemoveContributorCommand : public QUndoCommand
 {

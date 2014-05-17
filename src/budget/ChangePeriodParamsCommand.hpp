@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * And undoable command to change a budgeting period's definition.
+ *
+ * @ingroup period_commands
  */
 class ChangePeriodParamsCommand : public QUndoCommand
 {
