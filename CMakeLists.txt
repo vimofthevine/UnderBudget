@@ -44,3 +44,5 @@ add_subdirectory(src)
 add_subdirectory(test)
 # Documentation
 add_subdirectory(doc)
+# Packaging
+add_subdirectory(packaging)
