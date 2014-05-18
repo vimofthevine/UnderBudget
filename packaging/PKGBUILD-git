@@ -1,0 +1,40 @@
+# UnderBudget: Installer: Arch
+# Maintainer: Kyle Treubig <kyle [at] vimofthevine [dot] com>
+
+pkgname=underbudget-git
+pkgver=3.0
+pkgrel=1
+pkgdesc="Advanced personal budget analysis"
+arch=('any')
+url=('http://underbudget.vimofthevine.com')
+license=('Apache')
+depends=('qt5-base qt5-imageformats zlib')
+makedepends=('git' 'cmake' 'make')
+
+_gitroot="git://github.com/vimofthevine/UnderBudget.git"
+_gitname="underbudget"
+
+build() {
+	cd $srcdir
+	msg "Connecting to git server..."
+
+	if [ -d $_gitname ]; then
+		cd $_gitname && git pull origin
+		msg "The local files have been updated"
+	else
+		git clone --depth 1 $_gitroot $_gitname
+	fi
+
+	msg "Git checkout done or server timeout"
+	msg "Building UnderBudget"
+
+	cd $_gitname
+	cmake -DCMAKE_BUILD_TYPE=Release -DSKIP_TESTS=true .
+	make
+}
+
+package() {
+	cd $srcdir/$_gitname
+	make DESTDIR="$pkgdir" install
+}
+

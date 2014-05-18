@@ -11,6 +11,7 @@ bin/
 build/
 target/
 pkg/
+packaging/src/
 _site/
 underbudget-*.pkg.tar.xz
 doc/html/
