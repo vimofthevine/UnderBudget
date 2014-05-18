@@ -26,6 +26,8 @@ namespace ub {
 /**
  * Records assignments of transactions to estimates, including the
  * assignment rule that governed the assignment.
+ *
+ * @ingroup analysis
  */
 class Assignments : public QObject
 {

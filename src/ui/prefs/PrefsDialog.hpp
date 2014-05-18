@@ -28,6 +28,8 @@ namespace ub {
 
 /**
  * Application preferences dialog
+ *
+ * @ingroup ui_prefs
  */
 class PrefsDialog : public QDialog
 {

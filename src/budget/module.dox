@@ -35,5 +35,7 @@
  *         @defgroup period_commands Budgeting Period Modification
  *         @brief QUndoCommand implementations to modify a ub::BudgetingPeriod instance.
  *     @}
+ *
+ *     @addtogroup budget_storage
  * @}
  */

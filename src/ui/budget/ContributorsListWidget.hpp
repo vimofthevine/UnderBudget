@@ -27,6 +27,8 @@ class BalanceContributorsModel;
 
 /**
  * Customized QTableView for displaying balance contributors.
+ *
+ * @ingroup ui_budget
  */
 class ContributorsListWidget : public QTableView
 {

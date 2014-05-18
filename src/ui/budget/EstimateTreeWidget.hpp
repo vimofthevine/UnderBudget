@@ -28,6 +28,8 @@ class EstimateModel;
 
 /**
  * Customized QTreeView for displaying estimates.
+ *
+ * @ingroup ui_budget
  */
 class EstimateTreeWidget : public QTreeView
 {

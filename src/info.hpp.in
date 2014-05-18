@@ -25,6 +25,7 @@
  * information.
  *
  * @param[in] app Qt application
+ * @ingroup main
  */
 void setupApp(const QApplication& app)
 {

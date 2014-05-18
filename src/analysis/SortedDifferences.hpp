@@ -29,6 +29,8 @@ namespace ub {
 /**
  * A list of estimated vs actual differences, sorted in descending
  * order.
+ *
+ * @ingroup analysis
  */
 class SortedDifferences : public QObject
 {

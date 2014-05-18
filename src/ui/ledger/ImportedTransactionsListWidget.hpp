@@ -30,6 +30,8 @@ class ImportedTransactionsModel;
 
 /**
  * Customized QTableView for displaying imported transactions.
+ *
+ * @ingroup ui_ledger
  */
 class ImportedTransactionsListWidget : public QTableView
 {

@@ -4,7 +4,9 @@
  *
  * @{
  *     @addtogroup ui_accounting
+ *     @addtogroup ui_analysis
  *     @addtogroup ui_budget
+ *     @addtogroup ui_ledger
  *     @addtogroup ui_prefs
  *     @addtogroup ui_widgets
  *     @addtogroup ui_wizard

@@ -32,6 +32,8 @@ class GnuCashReader;
 
 /**
  * GnuCash file model.
+ *
+ * @ingroup ledger_storage
  */
 class GnuCashFile : public ImportedTransactionSource
 {

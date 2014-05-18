@@ -24,6 +24,8 @@ namespace ub {
 
 /**
  * Delegate to draw a progress bar for estimate progress.
+ *
+ * @ingroup ui_budget
  */
 class ProgressDelegate : public QStyledItemDelegate
 {

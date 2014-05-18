@@ -31,6 +31,8 @@ class SortedDifferences;
 
 /**
  * Calculates projected balances from estimated and actual values.
+ *
+ * @ingroup analysis
  */
 class BalanceCalculator : public QObject
 {

@@ -28,6 +28,8 @@ namespace ub {
 /**
  * Custom delegate to allow editing of a condition value according to the current
  * field selection.
+ *
+ * @ingroup ui_budget
  */
 class ConditionValueDelegate : public QStyledItemDelegate
 {

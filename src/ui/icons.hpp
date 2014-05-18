@@ -31,6 +31,8 @@ namespace ub {
  *
  * The implementations for these functions are platform-specific,
  * to provide native look-and-feel.
+ *
+ * @ingroup ui
  */
 namespace Icon {
 

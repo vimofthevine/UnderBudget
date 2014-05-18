@@ -38,6 +38,8 @@ class Estimate;
  *
  * This model is a read-only model. Views cannot modify
  * transactions via this model.
+ *
+ * @ingroup ui_ledger
  */
 class ImportedTransactionsModel : public QAbstractTableModel
 {

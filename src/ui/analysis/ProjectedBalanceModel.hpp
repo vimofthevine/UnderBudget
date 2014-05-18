@@ -27,6 +27,8 @@ class ProjectedBalance;
 
 /**
  * Projected balance model.
+ *
+ * @ingroup ui_analysis
  */
 class ProjectedBalanceModel : public QAbstractTableModel
 {
