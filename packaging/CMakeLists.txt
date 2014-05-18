@@ -21,6 +21,13 @@ if (UNIX)
 	if (CREATE_DEB)
 		list(APPEND CPACK_GENERATOR DEB)
 	endif (CREATE_DEB)
+
+	# Create ArchLinux source tarball for the AUR
+	add_custom_target(pkgbuild
+		makepkg --source -p ${CMAKE_CURRENT_SOURCE_DIR}/PKGBUILD-git
+		WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+		COMMENT "Generate ArchLinux PKGBUILD source tarball(s)" VERBATIM
+	)
 endif (UNIX)
 
 # Setup CPack
