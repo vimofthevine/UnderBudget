@@ -13,7 +13,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Set -fPIC if needed
 if (Qt5_POSITION_INDEPENDENT_CODE)
   set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-endif()
+endif (Qt5_POSITION_INDEPENDENT_CODE)
+
+# Enable gcov code coverage in debug mode (only gcc)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+	if (CMAKE_COMPILER_IS_GNUCXX)
+		message("Enabling gcov code coverage")
+		set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+	endif (CMAKE_COMPILER_IS_GNUCXX)
+endif (CMAKE_BUILD_TYPE MATCHES Debug)
 
 # So all includes will be relative to the src folder
 include_directories(src)
