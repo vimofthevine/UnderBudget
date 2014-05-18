@@ -14,6 +14,7 @@ pkg/
 _site/
 underbudget-*.pkg.tar.xz
 doc/html/
+tags
 
 # Personal files
 data/template.xml
