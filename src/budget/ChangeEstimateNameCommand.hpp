@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a estimate's name.
+ *
+ * @ingroup estimate_commands
  */
 class ChangeEstimateNameCommand : public QUndoCommand
 {

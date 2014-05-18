@@ -32,6 +32,8 @@ class AssignmentRulesModel;
 /**
  * Estimate tree model to serve as a proxy between various UI
  * views and the backing estimate tree structure.
+ *
+ * @ingroup ui_budget
  */
 class EstimateModel : public QAbstractItemModel
 {

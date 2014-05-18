@@ -22,6 +22,12 @@
 
 namespace ub {
 
+/**
+ * Event filter that ignores undo and redo keyboard shortcut events,
+ * forwarding them to a given recipient object.
+ *
+ * @ingroup ui_widgets
+ */
 class IgnoreUndoRedo : public QObject
 {
 public:

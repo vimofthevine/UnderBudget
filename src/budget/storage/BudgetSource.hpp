@@ -29,6 +29,8 @@ namespace ub {
 /**
  * Abstract budget source class. Concrete implementations may read or write
  * budgets to and from files, databases, network locations, etc.
+ *
+ * @ingroup budget_storage
  */
 class BudgetSource {
 public:

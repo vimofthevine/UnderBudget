@@ -29,6 +29,8 @@ class SortedDifferences;
 
 /**
  * Estimate differences model.
+ *
+ * @ingroup ui_analysis
  */
 class EstimateDiffsModel : public QAbstractTableModel
 {

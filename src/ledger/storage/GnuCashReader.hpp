@@ -33,6 +33,11 @@ class QIODevice;
 
 namespace ub {
 
+/**
+ * GnuCash file reader.
+ *
+ * @ingroup ledger_storage
+ */
 class GnuCashReader : public QObject
 {
 	Q_OBJECT

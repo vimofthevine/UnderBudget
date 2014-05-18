@@ -21,6 +21,8 @@ namespace ub {
 
 /**
  * Custom delegate to allow editing of a money value via a money editor.
+ *
+ * @ingroup ui_accounting
  */
 class MoneyDelegate : public QStyledItemDelegate
 {

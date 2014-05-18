@@ -24,6 +24,8 @@ namespace ub {
 
 /**
  * Custom input validator for money editor text input fields.
+ *
+ * @ingroup ui_accounting
  */
 class MoneyValidator : public QRegExpValidator
 {

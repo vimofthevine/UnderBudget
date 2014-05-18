@@ -30,6 +30,8 @@ namespace ub {
 
 /**
  * Transaction source selection wizard.
+ *
+ * @ingroup ui_wizard
  */
 class TransactionSourceWizard {
 public:

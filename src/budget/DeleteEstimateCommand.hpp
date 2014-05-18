@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to delete an estimate.
+ *
+ * @ingroup estimate_commands
  */
 class DeleteEstimateCommand : public QUndoCommand
 {

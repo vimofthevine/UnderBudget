@@ -30,6 +30,8 @@ class AssignmentRulesModel;
 
 /**
  * Customized QTreeView for displaying assignment rules.
+ *
+ * @ingroup ui_budget
  */
 class RulesListWidget : public QTreeView
 {

@@ -45,6 +45,8 @@ class Money;
  * really make sense for anyone to actually have an instantiation of
  * this class. Therefore, a single static function is provided to perform
  * the write operation.
+ *
+ * @ingroup budget_storage
  */
 class XmlBudgetWriter
 {

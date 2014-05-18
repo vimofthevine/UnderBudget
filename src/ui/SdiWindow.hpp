@@ -26,6 +26,8 @@ namespace ub
 /**
  * A main window for the application in which each budget is displayed in its
  * own window.
+ *
+ * @ingroup ui
  */
 class SdiWindow : public MainWindow
 {

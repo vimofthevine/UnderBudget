@@ -36,6 +36,8 @@ namespace ub {
 
 /**
  * Budgeting period input form widget.
+ *
+ * @ingroup ui_budget
  */
 class BudgetingPeriodForm : public QWidget
 {

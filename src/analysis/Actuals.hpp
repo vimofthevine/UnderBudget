@@ -28,6 +28,8 @@ namespace ub {
 
 /**
  * Records actual transactions made against estimates.
+ *
+ * @ingroup analysis
  */
 class Actuals : public QObject
 {

@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a estimate's due date.
+ *
+ * @ingroup estimate_commands
  */
 class ChangeEstimateDueDateCommand : public QUndoCommand
 {

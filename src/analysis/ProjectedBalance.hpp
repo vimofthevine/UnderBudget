@@ -30,6 +30,8 @@ namespace ub {
 /**
  * A projection of an ending balance, consisting of an initial balance
  * and a set of adjustments.
+ *
+ * @ingroup analysis
  */
 class ProjectedBalance : public QObject
 {

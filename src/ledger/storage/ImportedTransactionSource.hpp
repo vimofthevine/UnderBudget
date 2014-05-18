@@ -35,6 +35,8 @@ namespace ub {
  * separate thread. Thus, to acquire the imported transactions or check
  * the status of the import, use the appropriate signals emitted by an
  * instance of this class.
+ *
+ * @ingroup ledger_storage
  */
 class ImportedTransactionSource : public QObject
 {

@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a estimate's amount.
+ *
+ * @ingroup estimate_commands
  */
 class ChangeEstimateAmountCommand : public QUndoCommand
 {

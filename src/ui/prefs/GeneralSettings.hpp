@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * General settings page.
+ *
+ * @ingroup ui_prefs
  */
 class GeneralSettings : public QGroupBox
 {

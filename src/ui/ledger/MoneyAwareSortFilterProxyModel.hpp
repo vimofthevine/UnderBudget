@@ -25,6 +25,8 @@ namespace ub {
 /**
  * A custom QSortFilterProxyModel that is aware of
  * and can properly sort Money values.
+ *
+ * @ingroup ui_ledger
  */
 class MoneyAwareSortFilterProxyModel : public QSortFilterProxyModel
 {

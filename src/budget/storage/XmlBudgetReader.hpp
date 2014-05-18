@@ -36,6 +36,8 @@ class Estimate;
 
 /**
  * XML stream reader for unserializing a budget from an XML document.
+ *
+ * @ingroup budget_storage
  */
 class XmlBudgetReader
 {

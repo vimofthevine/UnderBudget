@@ -39,6 +39,8 @@ class MoneyEdit;
 
 /**
  * Estimate detail input form widget.
+ *
+ * @ingroup ui_budget
  */
 class EstimateDetailsForm : public QWidget
 {

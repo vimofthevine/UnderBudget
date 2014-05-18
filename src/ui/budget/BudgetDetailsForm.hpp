@@ -36,6 +36,8 @@ class InitialBalanceForm;
 
 /**
  * Budget detail form widget.
+ *
+ * @ingroup ui_budget
  */
 class BudgetDetailsForm : public QWidget
 {

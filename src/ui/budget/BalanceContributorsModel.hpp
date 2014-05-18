@@ -32,6 +32,8 @@ namespace ub {
 /**
  * Balance contributors list model to serve as a proxy between various
  * UI views and the backing balance and contributors.
+ *
+ * @ingroup ui_budget
  */
 class BalanceContributorsModel : public QAbstractItemModel
 {

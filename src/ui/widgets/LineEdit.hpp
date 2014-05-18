@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * Customized QLineEdit that removes the built-in undo/redo functionality.
+ *
+ * @ingroup ui_widgets
  */
 class LineEdit : public QLineEdit
 {

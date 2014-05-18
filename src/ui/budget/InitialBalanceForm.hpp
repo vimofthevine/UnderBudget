@@ -37,6 +37,8 @@ class MoneyEdit;
 
 /**
  * Initial balance input form widget.
+ *
+ * @ingroup ui_budget
  */
 class InitialBalanceForm : public QWidget
 {

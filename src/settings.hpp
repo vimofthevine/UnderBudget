@@ -19,6 +19,11 @@
 
 namespace ub {
 
+/**
+ * Appearance settings keys.
+ *
+ * @ingroup main
+ */
 namespace appearance {
 
 //------------------------------------------------------------------------------
@@ -26,6 +31,11 @@ const QString UseMDI = "UseMDI";
 
 }
 
+/**
+ * Import settings keys.
+ *
+ * @ingroup main
+ */
 namespace import {
 
 //------------------------------------------------------------------------------

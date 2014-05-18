@@ -34,6 +34,11 @@ namespace ub {
 class AssignmentRules;
 class Balance;
 
+/**
+ * Budget definition.
+ *
+ * @ingroup budget
+ */
 class Budget : public QObject {
 	Q_OBJECT
 

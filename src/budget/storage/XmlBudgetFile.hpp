@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * A budget source for budgets stored in an XML file.
+ *
+ * @ingroup budget_storage
  */
 class XmlBudgetFile : public BudgetSource {
 public:

@@ -24,6 +24,8 @@ namespace ub {
 
 /**
  * A budget source for budgets stored in an Sqlite database file.
+ *
+ * @ingroup budget_storage
  */
 class SqlBudgetFile : public BudgetSource {
 public:

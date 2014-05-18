@@ -43,4 +43,4 @@ add_subdirectory(src)
 # Unit tests
 add_subdirectory(test)
 # Documentation
-#add_subdirectory(doc)
+add_subdirectory(doc)

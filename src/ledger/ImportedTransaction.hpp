@@ -32,6 +32,8 @@ class Account;
 
 /**
  * An immutable representation of a transfer of funds.
+ *
+ * @ingroup ledger
  */
 class ImportedTransaction
 {

@@ -32,6 +32,8 @@ class AssignmentRulesModel;
 /**
  * Undoable command proxy for a change command on the underlying model,
  * that will trigger the correct signals on the original view model.
+ *
+ * @ingroup ui_budget
  */
 class RuleChangeProxyCommand : public QUndoCommand
 {

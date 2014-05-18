@@ -31,6 +31,8 @@ namespace ub {
  *
  * This is a wrapper around the zlib library's
  * functions.
+ *
+ * @ingroup gzip
  */
 class GZipFile : public QIODevice
 {

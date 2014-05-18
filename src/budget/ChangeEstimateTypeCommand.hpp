@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a estimate's type.
+ *
+ * @ingroup estimate_commands
  */
 class ChangeEstimateTypeCommand : public QUndoCommand
 {

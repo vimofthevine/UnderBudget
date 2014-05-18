@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to change a budget's name.
+ *
+ * @ingroup budget
  */
 class ChangeBudgetNameCommand : public QUndoCommand
 {

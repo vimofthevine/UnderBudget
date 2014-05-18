@@ -33,6 +33,8 @@ class ProjectedBalanceModel;
 
 /**
  * Analysis summary display widget.
+ *
+ * @ingroup ui_analysis
  */
 class AnalysisSummaryWidget : public QWidget
 {

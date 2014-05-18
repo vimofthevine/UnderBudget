@@ -27,6 +27,8 @@ class AssignmentRules;
 
 /**
  * An undoable command to update an existing condition for an assignment rule.
+ *
+ * @ingroup rule_commands
  */
 class UpdateConditionCommand : public QUndoCommand
 {

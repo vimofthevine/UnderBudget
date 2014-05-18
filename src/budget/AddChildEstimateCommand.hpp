@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to add a new child to an estimate.
+ *
+ * @ingroup estimate_commands
  */
 class AddChildEstimateCommand : public QUndoCommand
 {

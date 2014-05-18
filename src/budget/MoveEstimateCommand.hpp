@@ -27,6 +27,8 @@ namespace ub {
 
 /**
  * An undoable command to move an estimate.
+ *
+ * @ingroup estimate_commands
  */
 class MoveEstimateCommand : public QUndoCommand
 {

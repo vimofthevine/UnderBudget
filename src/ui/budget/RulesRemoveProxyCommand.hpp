@@ -28,6 +28,8 @@ class AssignmentRulesModel;
 /**
  * Undoable command proxy for a remove-rules command on the underlying model,
  * that will trigger the correct signals on the original view model.
+ *
+ * @ingroup ui_budget
  */
 class RulesRemoveProxyCommand : public QUndoCommand
 {

@@ -28,6 +28,8 @@ class BalanceContributorsModel;
 /**
  * Undoable command proxy for a remove-contributor command on the underlying model,
  * that will trigger the correct signals on the original view model.
+ *
+ * @ingroup ui_budget
  */
 class ContributorRemoveProxyCommand : public QUndoCommand
 {

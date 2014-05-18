@@ -36,6 +36,8 @@ class ImportedTransaction;
 /**
  * Assigns transactions to estimates according to the ordered
  * list of assignment rules.
+ *
+ * @ingroup analysis
  */
 class TransactionAssigner : public QObject
 {

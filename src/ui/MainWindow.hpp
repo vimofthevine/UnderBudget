@@ -38,6 +38,8 @@ class Session;
  * Main window for the application, defining the menus, toolsbars, and
  * the status bar. The actual content of the window must be defined and
  * handled by a concrete subclass (either an MDI or SDI implementation).
+ *
+ * @ingroup ui
  */
 class MainWindow : public QMainWindow
 {

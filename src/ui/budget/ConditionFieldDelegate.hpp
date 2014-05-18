@@ -24,6 +24,8 @@ namespace ub {
 
 /**
  * Custom delegate to allow editing of a condition field via a combo box.
+ *
+ * @ingroup ui_budget
  */
 class ConditionFieldDelegate : public QStyledItemDelegate
 {

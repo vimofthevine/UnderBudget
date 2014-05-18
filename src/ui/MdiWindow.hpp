@@ -31,6 +31,8 @@ namespace ub
 /**
  * A main window for the application in which each opened budget is displayed
  * as a sub-window of the primary window.
+ *
+ * @ingroup ui
  */
 class MdiWindow : public MainWindow
 {

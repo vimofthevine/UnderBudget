@@ -31,6 +31,8 @@ namespace ub {
 
 /**
  * An undoable command to move an existing rule within the rules list.
+ *
+ * @ingroup rule_commands
  */
 class MoveRuleCommand : public QUndoCommand
 {

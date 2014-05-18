@@ -32,6 +32,8 @@ class EstimateModel;
 /**
  * Undoable command proxy for a move command on the underlying model,
  * that will trigger the correct signals on the original view model.
+ *
+ * @ingroup ui_budget
  */
 class ProxyModelMoveCommand : public QUndoCommand
 {

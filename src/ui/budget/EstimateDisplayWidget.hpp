@@ -44,6 +44,8 @@ class RulesListWidget;
  * The widget includes a tree view for viewing all estimates in their
  * hierarchical form, as well as views for modifying estimates and their
  * associated assignment rules.
+ *
+ * @ingroup ui_budget
  */
 class EstimateDisplayWidget : public QSplitter
 {

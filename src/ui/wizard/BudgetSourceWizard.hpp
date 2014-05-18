@@ -30,6 +30,8 @@ namespace ub {
 
 /**
  * Budget source selection wizard.
+ *
+ * @ingroup ui_wizard
  */
 class BudgetSourceWizard {
 public:
