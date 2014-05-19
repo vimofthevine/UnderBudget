@@ -161,51 +161,51 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<period:param1>2013</period:param1>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<period:param2>8</period:param2>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:period>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"0\">")); // root
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"10000\">")); // incomes
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"0\">")); // root
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"10000\">")); // incomes
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Income Estimates</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:description>estimates for incomes</estimate:description>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:type>income</estimate:type>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"11000\">")); // salary
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"11000\">")); // salary
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Someone's Salary</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"USD\">5623</estimate:amount>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // salary
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // incomes
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"20000\">")); // expenses
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // salary
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // incomes
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"20000\">")); // expenses
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Expense Estimates</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:type>expense</estimate:type>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"21000\">")); // bills
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"21000\">")); // bills
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Bills</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:description>recurring expenses</estimate:description>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"21100\">")); // rent
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"21100\">")); // rent
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Rent</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:description>for the apt.</estimate:description>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"USD\">452.23</estimate:amount>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:due-date>2013-06-28</estimate:due-date>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // rent
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"21200\">")); // utilities
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // rent
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"21200\">")); // utilities
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Utilities</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:description>elec, gas, etc.</estimate:description>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"USD\">500</estimate:amount>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:finished/>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // utilities
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // bills
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"22000\">")); // foreign expenses
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // utilities
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // bills
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"22000\">")); // foreign expenses
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Foreign Expenses</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:description>while in Europe</estimate:description>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"EUR\">2000</estimate:amount>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // foreign expenses
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // expenses
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:estimate id=\"30000\">")); // credit card
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // foreign expenses
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // expenses
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"30000\">")); // credit card
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Credit Card</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:type>transfer</estimate:type>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"USD\">1400</estimate:amount>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:due-date>2013-06-21</estimate:due-date>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:finished/>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // credit card
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:estimate>")); // root
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // credit card
+	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // root
 	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rules>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"100\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"100\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>30000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>payee</condition:field>"));
@@ -213,8 +213,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>payee begins with</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"101\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"101\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>21200</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>memo</condition:field>"));
@@ -222,11 +222,11 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>true</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>memo Ends With</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"102\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"102\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>21100</rule:estimate>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"103\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"103\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>22000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>date</condition:field>"));
@@ -240,8 +240,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>2013-05-10</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"104\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"104\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>30000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>date</condition:field>"));
@@ -249,8 +249,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>2013-05-11</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"105\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"105\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>21100</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>amount</condition:field>"));
@@ -258,8 +258,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>3400</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"106\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"106\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>211000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>amount</condition:field>"));
@@ -267,8 +267,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>3500.50</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"107\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"107\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>11000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>amount</condition:field>"));
@@ -276,8 +276,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>10000</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"109\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"109\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>21200</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>amount</condition:field>"));
@@ -285,8 +285,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>12030</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"110\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"110\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>22000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>amount</condition:field>"));
@@ -294,8 +294,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>502.99</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"111\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"111\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>30000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>deposit</condition:field>"));
@@ -303,8 +303,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>deposit contains</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"113\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"113\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>21200</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>withdrawal</condition:field>"));
@@ -312,8 +312,8 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>true</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>Withdrawal Equals</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<ub:rule id=\"112\">"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:rule id=\"112\">"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:estimate>11000</rule:estimate>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<rule:condition>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:field>withdrawal</condition:field>"));
@@ -321,7 +321,7 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:case-sensitive>false</condition:case-sensitive>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<condition:value>withdrawal equals</condition:value>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:condition>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rule>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("</rule:rule>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:rules>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</ub:budget>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString(""));

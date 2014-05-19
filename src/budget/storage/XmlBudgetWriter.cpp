@@ -145,7 +145,7 @@ void XmlBudgetWriter::write(const QSharedPointer<BudgetingPeriod> period)
 //------------------------------------------------------------------------------
 void XmlBudgetWriter::write(const Estimate* estimate)
 {
-	xml.writeStartElement(ub_ns, "estimate");
+	xml.writeStartElement(estimate_ns, "estimate");
 	xml.writeAttribute("id", QVariant(estimate->estimateId()).toString());
 
 	// If not root, write estimate parameters
@@ -211,7 +211,7 @@ void XmlBudgetWriter::write(const QSharedPointer<AssignmentRules> rules)
 //------------------------------------------------------------------------------
 void XmlBudgetWriter::write(const AssignmentRule* rule)
 {
-	xml.writeStartElement(ub_ns, "rule");
+	xml.writeStartElement(rule_ns, "rule");
 	xml.writeAttribute("id", QVariant(rule->ruleId()).toString());
 	xml.writeTextElement(rule_ns, "estimate",
 		QVariant(rule->estimateId()).toString());
