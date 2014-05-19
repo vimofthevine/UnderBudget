@@ -25,4 +25,7 @@
         <xs:attribute name="id" type="xs:integer" />
     </xs:complexType>
 
+<!-- Estimate element for reference -->
+    <xs:element name="estimate" type="estimate:estimate" />
+
 </xs:schema>

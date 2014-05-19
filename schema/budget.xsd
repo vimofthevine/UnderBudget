@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema targetNamespace="http://underbudget.vimofthevine.com/ub"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:ub="http://underbudget.vimofthevine.com/ub"
     xmlns:balance="http://underbudget.vimofthevine.com/balance"
     xmlns:period="http://underbudget.vimofthevine.com/budgeting-period"
     xmlns:estimate="http://underbudget.vimofthevine.com/estimate"
-    xmlns:rule="http://underbudget.vimofthevine.com/rule">
+    xmlns:rule="http://underbudget.vimofthevine.com/rule"
+    elementFormDefault="qualified">
 
 <!-- Schema import(s) -->
     <xs:import namespace="http://underbudget.vimofthevine.com/balance"
@@ -24,19 +24,11 @@
                 <xs:element name="name" type="xs:string" />
                 <xs:element name="initial-balance" type="balance:balance" />
                 <xs:element name="period" type="period:period" />
-                <xs:element name="estimate" type="estimate:estimate" />
+                <xs:element ref="estimate:estimate" />
+                <xs:element name="rules" type="rule:rules" />
             </xs:sequence>
             <xs:attribute name="version" type="xs:string" />
         </xs:complexType>
     </xs:element>
-
-<!-- Money element type -->
-    <xs:complexType name="money">
-        <xs:simpleContent>
-            <xs:extension base="xs:decimal">
-                <xs:attribute name="currency" type="xs:string" />
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
 
 </xs:schema>
