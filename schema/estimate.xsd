@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://underbudget.vimofthevine.com/estimate"
+    xmlns:estimate="http://underbudget.vimofthevine.com/estimate"
+    xmlns:money="http://underbudget.vimofthevine.com/money"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+<!-- Schema import(s) -->
+    <xs:import namespace="http://underbudget.vimofthevine.com/money"
+        schemaLocation="money.xsd" />
+
+<!-- Estimate element type -->
+    <xs:complexType name="estimate">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="0" />
+            <xs:element name="description" type="xs:string" minOccurs="0" />
+            <xs:element name="type" type="xs:string" minOccurs="0" />
+            <xs:element name="amount" type="money:money" minOccurs="0" />
+            <xs:element name="due-date" type="xs:string" minOccurs="0" />
+            <xs:element name="finished" minOccurs="0">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="estimate" type="estimate:estimate" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:integer" />
+    </xs:complexType>
+
+</xs:schema>
