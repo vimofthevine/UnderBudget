@@ -27,7 +27,13 @@
                 <xs:element ref="estimate:estimate" />
                 <xs:element name="rules" type="rule:rules" />
             </xs:sequence>
-            <xs:attribute name="version" type="xs:string" />
+            <xs:attribute name="version">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal">
+                        <xs:minInclusive value="5.0" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 
