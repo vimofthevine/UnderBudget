@@ -61,41 +61,41 @@ void XmlBudgetReaderV5Test::readFullBudget()
 		"  <period:param1>2013-07-01</period:param1>\n"
 		"  <period:param2>2013-08-01</period:param2>\n"
 		" </ub:period>\n"
-		" <ub:estimate id=\"0\">\n" // { root
-		"  <ub:estimate id=\"1\">\n" // { incomes
+		" <estimate:estimate id=\"0\">\n" // { root
+		"  <estimate:estimate id=\"1\">\n" // { incomes
 		"   <estimate:name>Income Estimates</estimate:name>\n"
 		"   <estimate:type>income</estimate:type>\n"
-		"   <ub:estimate id=\"2\">\n" // { salary
+		"   <estimate:estimate id=\"2\">\n" // { salary
 		"    <estimate:name>Salary</estimate:name>\n"
 		"    <estimate:description>paychecks</estimate:description>\n"
 		"    <estimate:amount currency=\"USD\">2400</estimate:amount>\n"
-		"   </ub:estimate>\n" // } salary
-		"  </ub:estimate>\n" // } incomes
-		"  <ub:estimate id=\"3\">\n" // { expenses
+		"   </estimate:estimate>\n" // } salary
+		"  </estimate:estimate>\n" // } incomes
+		"  <estimate:estimate id=\"3\">\n" // { expenses
 		"   <estimate:name>Expense Estimates</estimate:name>\n"
 		"   <estimate:type>expense</estimate:type>\n"
-		"   <ub:estimate id=\"4\">\n" // { utilities
+		"   <estimate:estimate id=\"4\">\n" // { utilities
 		"    <estimate:name>Utilities</estimate:name>\n"
-		"    <ub:estimate id=\"5\">\n" // { water
+		"    <estimate:estimate id=\"5\">\n" // { water
 		"     <estimate:name>Water</estimate:name>\n"
 		"     <estimate:amount currency=\"USD\">45</estimate:amount>\n"
 		"     <estimate:due-date>2013-07-18</estimate:due-date>\n"
-		"    </ub:estimate>\n" // } water
-		"    <ub:estimate id=\"6\">\n" // { gas
+		"    </estimate:estimate>\n" // } water
+		"    <estimate:estimate id=\"6\">\n" // { gas
 		"     <estimate:name>Gas</estimate:name>\n"
 		"     <estimate:amount currency=\"USD\">114.23</estimate:amount>\n"
 		"     <estimate:finished/>\n"
-		"    </ub:estimate>\n" // } gas
-		"   </ub:estimate>\n" // } utilities
-		"  </ub:estimate>\n" // } expenses
-		"  <ub:estimate id=\"7\">\n" // { credit card
+		"    </estimate:estimate>\n" // } gas
+		"   </estimate:estimate>\n" // } utilities
+		"  </estimate:estimate>\n" // } expenses
+		"  <estimate:estimate id=\"7\">\n" // { credit card
 		"   <estimate:name>Credit Card</estimate:name>\n"
 		"   <estimate:type>transfer</estimate:type>\n"
 		"   <estimate:amount currency=\"USD\">146</estimate:amount>\n"
-		"  </ub:estimate>\n" // } credit card
-		" </ub:estimate>\n" // } root
+		"  </estimate:estimate>\n" // } credit card
+		" </estimate:estimate>\n" // } root
 		" <ub:rules>\n"
-		"  <ub:rule id=\"20\">\n"
+		"  <rule:rule id=\"20\">\n"
 		"   <rule:estimate>5</rule:estimate>\n"
 		"   <rule:condition>\n"
 		"    <condition:field>deposit</condition:field>\n"
@@ -103,8 +103,8 @@ void XmlBudgetReaderV5Test::readFullBudget()
 		"    <condition:case-sensitive>false</condition:case-sensitive>\n"
 		"    <condition:value>expense_acct</condition:value>\n"
 		"   </rule:condition>\n"
-		"  </ub:rule>\n"
-		"  <ub:rule id=\"21\">\n"
+		"  </rule:rule>\n"
+		"  <rule:rule id=\"21\">\n"
 		"   <rule:estimate>2</rule:estimate>\n"
 		"   <rule:condition>\n"
 		"    <condition:field>withdrawal</condition:field>\n"
@@ -118,7 +118,7 @@ void XmlBudgetReaderV5Test::readFullBudget()
 		"    <condition:case-sensitive>true</condition:case-sensitive>\n"
 		"    <condition:value>vAluE</condition:value>\n"
 		"   </rule:condition>\n"
-		"  </ub:rule>\n"
+		"  </rule:rule>\n"
 		" </ub:rules>\n"
 		"</ub:budget>\n");
 	buffer.seek(0);
@@ -365,14 +365,14 @@ void XmlBudgetReaderV5Test::readRuleConditions_data()
 		"  xmlns:condition=\"http://underbudget/vimofthevine.com/condition\""
 		"  version=\"5.0\">"
 		" <ub:rules>\n"
-		"  <ub:rule>\n"
+		"  <rule:rule>\n"
 		"   <rule:condition>\n"
 		"    <condition:field>%1</condition:field>\n"
 		"    <condition:operator>%2</condition:operator>\n"
 		"    <condition:case-sensitive>%3</condition:case-sensitive>\n"
 		"    <condition:value>%4</condition:value>\n"
 		"   </rule:condition>\n"
-		"  </ub:rule>\n"
+		"  </rule:rule>\n"
 		" </ub:rules>\n"
 		"</ub:budget>\n";
 
