@@ -11,9 +11,9 @@
 <!-- Contributor element type -->
     <xs:complexType name="contributor">
         <xs:sequence>
-            <xs:element name="name" type="xs:string" minOccurs="0" />
-            <xs:element name="amount" type="money:money" minOccurs="0" />
-            <xs:element name="increase" type="xs:string" minOccurs="0" />
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="amount" type="money:money" />
+            <xs:element name="increase" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
 
