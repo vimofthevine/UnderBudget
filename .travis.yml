@@ -22,7 +22,7 @@ install:
   - wget http://www.cmake.org/files/v2.8/cmake-2.8.10.2-Linux-i386.tar.gz
   - tar -xzvf cmake-2.8.10.2-Linux-i386.tar.gz
 before_script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then ./cmake-2.8.10.2-Linux-i386/bin/cmake -DSKIP_TESTS=true . ; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then ./cmake-2.8.10.2-Linux-i386/bin/cmake . ; fi
 script:
   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make VERBOSE=1 ; fi
   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then xvfb-run make test; fi
