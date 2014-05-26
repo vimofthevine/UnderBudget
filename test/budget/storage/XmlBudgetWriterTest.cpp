@@ -16,6 +16,7 @@
 
 // Qt include(s)
 #include <QtCore>
+#include <QtXmlPatterns>
 
 // UnderBudget include(s)
 #include "XmlBudgetWriterTest.hpp"
@@ -32,13 +33,13 @@ QTEST_MAIN(ub::XmlBudgetWriterTest)
 namespace ub {
 
 //------------------------------------------------------------------------------
-void XmlBudgetWriterTest::writeCompleteBudget()
+QSharedPointer<Budget> XmlBudgetWriterTest::createBudget()
 {
 	// Create estimate tree
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	Estimate* income = Estimate::create(root.data(), 10000, "Income Estimates",
 		"estimates for incomes", Estimate::Income, Money(), QDate(), false);
-	Estimate* salary = Estimate::create(income, 11000, "Someone's Salary",
+	Estimate::create(income, 11000, "Someone's Salary",
 		"", Estimate::Income, Money(5623, "USD"), QDate(), false);
 	Estimate* expense = Estimate::create(root.data(), 20000, "Expense Estimates",
 		"", Estimate::Expense, Money(), QDate(), false);
@@ -126,8 +127,14 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QSharedPointer<BudgetingPeriod> period(new BudgetingPeriod(params));
 
 	// Create budget
-	QSharedPointer<Budget> budget(new Budget("Serialized Budget", period,
+	return QSharedPointer<Budget>(new Budget("Serialized Budget", period,
 		initial, root, rules));
+}
+
+//------------------------------------------------------------------------------
+void XmlBudgetWriterTest::writeCompleteBudget()
+{
+	QSharedPointer<Budget> budget = createBudget();
 
 	// Serialize budget
 	QBuffer buffer;
@@ -393,6 +400,28 @@ void XmlBudgetWriterTest::writeBudgetingPeriods()
 	QCOMPARE(lines.at(10).trimmed(), period_line);
 	QCOMPARE(lines.at(11).trimmed(), param1_line);
 	QCOMPARE(lines.at(12).trimmed(), param2_line);
+}
+
+//------------------------------------------------------------------------------
+void XmlBudgetWriterTest::schemaValidation()
+{
+	QSharedPointer<Budget> budget = createBudget();
+
+	// Serialize budget
+	QBuffer buffer;
+	buffer.open(QIODevice::ReadWrite);
+	QCOMPARE(XmlBudgetWriter::write(&buffer, budget), true);
+
+	// Prepare schema
+	QFile budgetXsd(":/budget.xsd");
+	QCOMPARE(budgetXsd.open(QIODevice::ReadOnly), true);
+
+	QXmlSchema schema;
+	QCOMPARE(schema.load(&budgetXsd, QUrl::fromLocalFile(budgetXsd.fileName())), true);
+
+	// Validate XML against schema
+	QXmlSchemaValidator validator(schema);
+	QCOMPARE(validator.validate(buffer.data()), true);
 }
 
 }
