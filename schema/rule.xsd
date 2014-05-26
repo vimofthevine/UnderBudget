@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://underbudget.vimofthevine.com/rule"
+    xmlns:rule="http://underbudget.vimofthevine.com/rule"
+    xmlns:condition="http://underbudget.vimofthevine.com/condition"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+<!-- Schema import(s) -->
+    <xs:import namespace="http://underbudget.vimofthevine.com/condition"
+        schemaLocation="condition.xsd" />
+
+<!-- Rules element type -->
+    <xs:complexType name="rules">
+        <xs:sequence>
+            <xs:element name="rule" type="rule:rule" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+<!-- Rule element type -->
+    <xs:complexType name="rule">
+        <xs:sequence>
+            <xs:element name="estimate" type="xs:integer" />
+            <xs:element name="condition" type="condition:condition" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:integer" />
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://underbudget.vimofthevine.com/ub"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:balance="http://underbudget.vimofthevine.com/balance"
+    xmlns:period="http://underbudget.vimofthevine.com/budgeting-period"
+    xmlns:estimate="http://underbudget.vimofthevine.com/estimate"
+    xmlns:rule="http://underbudget.vimofthevine.com/rule"
+    elementFormDefault="qualified">
+
+<!-- Schema import(s) -->
+    <xs:import namespace="http://underbudget.vimofthevine.com/balance"
+        schemaLocation="balance.xsd" />
+    <xs:import namespace="http://underbudget.vimofthevine.com/budgeting-period"
+        schemaLocation="period.xsd" />
+    <xs:import namespace="http://underbudget.vimofthevine.com/estimate"
+        schemaLocation="estimate.xsd" />
+    <xs:import namespace="http://underbudget.vimofthevine.com/rule"
+        schemaLocation="rule.xsd" />
+
+<!-- Budget element -->
+    <xs:element name="budget">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string" />
+                <xs:element name="initial-balance" type="balance:balance" />
+                <xs:element name="period" type="period:period" />
+                <xs:element ref="estimate:estimate" />
+                <xs:element name="rules" type="rule:rules" />
+            </xs:sequence>
+            <xs:attribute name="version">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal">
+                        <xs:minInclusive value="5.0" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

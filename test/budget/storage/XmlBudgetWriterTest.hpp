@@ -18,9 +18,13 @@
 #define XMLBUDGETWRITERTEST_HPP
 
 // Qt include(s)
+#include <QSharedPointer>
 #include <QtTest/QtTest>
 
 namespace ub {
+
+// Forward declaration(s)
+class Budget;
 
 /**
  * Unit test for the XmlBudgetWriter class.
@@ -44,6 +48,19 @@ private slots:
 	 * Test data for writing of budgeting periods.
 	 */
 	void writeBudgetingPeriods_data();
+
+	/**
+	 * Tests schema validation of generated XML.
+	 */
+	void schemaValidation();
+
+private:
+	/**
+	 * Creates a full budget definition.
+	 *
+	 * @return budget definition
+	 */
+	QSharedPointer<Budget> createBudget();
 };
 
 }
