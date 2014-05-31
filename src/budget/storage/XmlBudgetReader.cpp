@@ -446,9 +446,13 @@ void XmlBudgetReader::readVersion4Estimate(Estimate* parent, const QDate& start)
 		}
 		else if (xml.name() == "due-date")
 		{
-			dueDateOffset = start.daysTo(readDate(true));
+			QDate dueDate = readDate(true);
+			dueDateOffset = start.daysTo(dueDate);
 			if (dueDateOffset < 0)
 			{
+				qDebug() << "Due date for " << name << " (" << dueDate
+					<< ") is before period start date (" << start
+					<< "), reverting to start date (0 offset)";
 				dueDateOffset = 0;
 			}
 		}

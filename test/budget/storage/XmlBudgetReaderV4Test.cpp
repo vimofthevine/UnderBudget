@@ -112,6 +112,11 @@ void XmlBudgetReaderV4Test::init()
 		"        <name>Gas</name>"
 		"        <amount currency=\"USD\">114.23</amount>"
 		"        <type>EXPENSE</type>"
+		"        <due-date>"
+		"         <day>18</day>"
+		"         <month>5</month>" // June, starts at 0
+		"         <year>2013</year>"
+		"        </due-date>"
 		"        <complete>true</complete>"
 		"        <estimates/>"
 		"       </estimate>" // gas
@@ -204,7 +209,7 @@ void XmlBudgetReaderV4Test::readFullBudget()
 
 	Estimate* gas = utilities->childAt(1);
 	COMPARE_ESTIMATE(gas, (uint) 6, QString("Gas"), QString(""),
-		Estimate::Expense, Money(114.23, "USD"), -1, true, 0);
+		Estimate::Expense, Money(114.23, "USD"), 0, true, 0);
 
 	// Make sure rules were read correctly
 	QSharedPointer<AssignmentRules> rules = budget->rules();
