@@ -66,8 +66,8 @@ private:
 	uint childId;
 	/** Original amount of the parent estimate */
 	Money parentAmount;
-	/** Original due date of the parent estimate */
-	QDate parentDueDate;
+	/** Original due date offset of the parent estimate */
+	int parentDueDateOffset;
 	/** Original finished state of the parent estimate */
 	bool parentFinished;
 };

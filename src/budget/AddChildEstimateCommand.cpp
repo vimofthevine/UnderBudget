@@ -36,7 +36,7 @@ AddChildEstimateCommand::AddChildEstimateCommand(
 	if (parentEstimate)
 	{
 		parentAmount = parentEstimate->amount;
-		parentDueDate = parentEstimate->dueDate;
+		parentDueDateOffset = parentEstimate->dueDateOffset;
 		parentFinished = parentEstimate->finished;
 	}
 }
@@ -80,7 +80,7 @@ void AddChildEstimateCommand::undo()
 	if (parent)
 	{
 		parent->setAmount(parentAmount);
-		parent->setDueDate(parentDueDate);
+		parent->setDueDateOffset(parentDueDateOffset);
 		parent->setFinishedState(parentFinished);
 	}
 }

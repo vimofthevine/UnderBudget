@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Kyle Treubig
+ * Copyright 2014 Kyle Treubig
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,72 +18,64 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "budget/DeleteEstimateCommand.hpp"
+#include "budget/ChangeEstimateDueDateOffsetCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-const int DeleteEstimateCommand::ID = 451266234;
+const int ChangeEstimateDueDateOffsetCommand::ID = 44523752;
 
 //------------------------------------------------------------------------------
-DeleteEstimateCommand::DeleteEstimateCommand(
+ChangeEstimateDueDateOffsetCommand::ChangeEstimateDueDateOffsetCommand(
 		Estimate* root, uint estimateId,
+		int oldDateOffset, int newDateOffset,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  root(root), estimateId(estimateId)
-{
-	index = -1;
-
-	Estimate* estimate = root->find(estimateId);
-	if (estimate)
-	{
-		parentId = estimate->parentEstimate()->estimateId();
-		name = estimate->name;
-		description = estimate->description;
-		type = estimate->type;
-		amount = estimate->amount;
-		dueDateOffset = estimate->dueDateOffset;
-		finished = estimate->finished;
-
-		Estimate* parentEstimate = root->find(parentId);
-		if (parentEstimate)
-		{
-			index = parentEstimate->indexOf(estimate);
-		}
-	}
-}
+	  root(root), estimateId(estimateId),
+	  oldDateOffset(oldDateOffset), newDateOffset(newDateOffset)
+{ }
 
 //------------------------------------------------------------------------------
-int DeleteEstimateCommand::id() const
+int ChangeEstimateDueDateOffsetCommand::id() const
 {
 	return ID;
 }
 
 //------------------------------------------------------------------------------
-bool DeleteEstimateCommand::mergeWith(const QUndoCommand* command)
+bool ChangeEstimateDueDateOffsetCommand::mergeWith(const QUndoCommand* command)
 {
-	// This command can never be merged
-	return false;
+	if (command->id() != id())
+		return false;
+
+	// Only merge if change is for the same estimate
+	uint otherId =
+		static_cast<const ChangeEstimateDueDateOffsetCommand*>(command)->estimateId;
+	if (otherId != estimateId)
+		return false;
+
+	// Use new due date from the merged command
+	newDateOffset = static_cast<const ChangeEstimateDueDateOffsetCommand*>(command)
+		->newDateOffset;
+	return true;
 }
 
 //------------------------------------------------------------------------------
-void DeleteEstimateCommand::redo()
+void ChangeEstimateDueDateOffsetCommand::redo()
 {
 	Estimate* estimate = root->find(estimateId);
 	if (estimate)
 	{
-		estimate->deleteSelf();
+		estimate->setDueDateOffset(newDateOffset);
 	}
 }
 
 //------------------------------------------------------------------------------
-void DeleteEstimateCommand::undo()
+void ChangeEstimateDueDateOffsetCommand::undo()
 {
-	Estimate* parent = root->find(parentId);
-	if (parent)
+	Estimate* estimate = root->find(estimateId);
+	if (estimate)
 	{
-		parent->createChild(estimateId,
-			name, description, type, amount, dueDateOffset, finished, index);
+		estimate->setDueDateOffset(oldDateOffset);
 	}
 }
 
