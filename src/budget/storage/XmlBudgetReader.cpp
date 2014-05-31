@@ -116,7 +116,7 @@ void XmlBudgetReader::readVersion4()
 					while (xml.readNextStartElement())
 					{
 						if (xml.name() == "estimate")
-							readVersion4Estimate(root.data());
+							readVersion4Estimate(root.data(), period->startDate());
 						else
 							xml.skipCurrentElement();
 					}
@@ -409,7 +409,7 @@ QDate XmlBudgetReader::readDate(bool januaryIsZero)
 }
 
 //------------------------------------------------------------------------------
-void XmlBudgetReader::readVersion4Estimate(Estimate* parent)
+void XmlBudgetReader::readVersion4Estimate(Estimate* parent, const QDate& start)
 {
 	Q_ASSERT(xml.isStartElement() && xml.name() == "estimate");
 
@@ -418,7 +418,7 @@ void XmlBudgetReader::readVersion4Estimate(Estimate* parent)
 	QString description;
 	Estimate::Type type;
 	Money amount;
-	QDate dueDate;
+	int dueDateOffset = -1;
 	bool finished;
 
 	// Go through all elements under an estimate
@@ -445,7 +445,13 @@ void XmlBudgetReader::readVersion4Estimate(Estimate* parent)
 				type = Estimate::Expense;
 		}
 		else if (xml.name() == "due-date")
-			dueDate = readDate(true);
+		{
+			dueDateOffset = start.daysTo(readDate(true));
+			if (dueDateOffset < 0)
+			{
+				dueDateOffset = 0;
+			}
+		}
 		else if (xml.name() == "complete")
 			finished = QVariant(xml.readElementText()).toBool();
 		else if (xml.name() == "estimates")
@@ -453,13 +459,13 @@ void XmlBudgetReader::readVersion4Estimate(Estimate* parent)
 			// According to the v4.0 spec, all estimate attributes have been
 			// defined by now, so we can create the estimate
 			Estimate* child = Estimate::create(parent, id, name, description,
-				type, amount, dueDate, finished);
+				type, amount, dueDateOffset, finished);
 
 			// Go through all estimate elements
 			while (xml.readNextStartElement())
 			{
 				if (xml.name() == "estimate")
-					readVersion4Estimate(child);
+					readVersion4Estimate(child, start);
 				else
 					xml.skipCurrentElement();
 			}

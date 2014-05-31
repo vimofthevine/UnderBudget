@@ -78,7 +78,7 @@ char* toString(const ub::AssignmentRule::Operator& oper)
 	QCOMPARE(actual->estimateDescription(), descrip); \
 	QCOMPARE(actual->estimateType(), type); \
 	QCOMPARE(actual->estimatedAmount(), amount); \
-	QCOMPARE(actual->activityDueDate(), due); \
+	QCOMPARE(actual->activityDueDateOffset(), due); \
 	QCOMPARE(actual->isActivityFinished(), finished); \
 	QCOMPARE(actual->childCount(), children);
 
