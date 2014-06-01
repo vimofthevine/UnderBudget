@@ -38,21 +38,21 @@ QSharedPointer<Budget> XmlBudgetWriterTest::createBudget()
 	// Create estimate tree
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	Estimate* income = Estimate::create(root.data(), 10000, "Income Estimates",
-		"estimates for incomes", Estimate::Income, Money(), QDate(), false);
+		"estimates for incomes", Estimate::Income, Money(), -1, false);
 	Estimate::create(income, 11000, "Someone's Salary",
-		"", Estimate::Income, Money(5623, "USD"), QDate(), false);
+		"", Estimate::Income, Money(5623, "USD"), -1, false);
 	Estimate* expense = Estimate::create(root.data(), 20000, "Expense Estimates",
-		"", Estimate::Expense, Money(), QDate(), false);
+		"", Estimate::Expense, Money(), -1, false);
 	Estimate* bills = Estimate::create(expense, 21000, "Bills",
-		"recurring expenses", Estimate::Expense, Money(), QDate(), false);
+		"recurring expenses", Estimate::Expense, Money(), -1, false);
 	Estimate::create(bills, 21100, "Rent",
-		"for the apt.", Estimate::Expense, Money(452.23, "USD"), QDate(2013,6,28), false);
+		"for the apt.", Estimate::Expense, Money(452.23, "USD"), 27, false);
 	Estimate::create(bills, 21200, "Utilities",
-		"elec, gas, etc.", Estimate::Expense, Money(500, "USD"), QDate(), true);
+		"elec, gas, etc.", Estimate::Expense, Money(500, "USD"), -1, true);
 	Estimate::create(expense, 22000, "Foreign Expenses",
-		"while in Europe", Estimate::Expense, Money(2000, "EUR"), QDate(), false);
+		"while in Europe", Estimate::Expense, Money(2000, "EUR"), -1, false);
 	Estimate::create(root.data(), 30000, "Credit Card",
-		"", Estimate::Transfer, Money(1400, "USD"), QDate(2013,6,21), true);
+		"", Estimate::Transfer, Money(1400, "USD"), 20, true);
 
 	// Create assignment rules
 	QSharedPointer<AssignmentRules> rules = AssignmentRules::create();
@@ -188,7 +188,7 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Rent</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:description>for the apt.</estimate:description>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"USD\">452.23</estimate:amount>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:due-date>2013-06-28</estimate:due-date>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:due-date-offset>27</estimate:due-date-offset>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // rent
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:estimate id=\"21200\">")); // utilities
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Utilities</estimate:name>"));
@@ -207,7 +207,7 @@ void XmlBudgetWriterTest::writeCompleteBudget()
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:name>Credit Card</estimate:name>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:type>transfer</estimate:type>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:amount currency=\"USD\">1400</estimate:amount>"));
-	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:due-date>2013-06-21</estimate:due-date>"));
+	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:due-date-offset>20</estimate:due-date-offset>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("<estimate:finished/>"));
 	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // credit card
 	QCOMPARE(lines.at(++i).trimmed(), QString("</estimate:estimate>")); // root
