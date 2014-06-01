@@ -18,6 +18,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "budget/BudgetingPeriod.hpp"
 #include "budget/Estimate.hpp"
 #include "ui/accounting/MoneyEdit.hpp"
 #include "ui/budget/EstimateDetailsForm.hpp"
@@ -29,8 +30,9 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 EstimateDetailsForm::EstimateDetailsForm(EstimateModel* model,
-		QUndoStack* stack, QWidget* parent)
-	: QWidget(parent), model(model), undoStack(stack)
+		QSharedPointer<BudgetingPeriod> period, QUndoStack* stack,
+		QWidget* parent)
+	: QWidget(parent), model(model), period(period), undoStack(stack)
 {
 	// Setup name field
 	nameField = new LineEdit("", this);
@@ -74,6 +76,12 @@ EstimateDetailsForm::EstimateDetailsForm(EstimateModel* model,
 	clearDueDateButton->setEnabled(false);
 	connect(clearDueDateButton, SIGNAL(clicked(bool)),
 		this, SLOT(clearDueDate()));
+
+	// Make sure we pick up changes to the budgeting period start date
+	// (have to use Qt5 style connect because of namespaced type)
+	connect(period.data(), &BudgetingPeriod::paramsChanged,
+		this, &EstimateDetailsForm::startDateChanged);
+	startDateChanged(); // initial populate
 
 	// Put due date entry and clear button side-by-side
 	QHBoxLayout* dueDateLayout = new QHBoxLayout;
@@ -147,7 +155,8 @@ void EstimateDetailsForm::populate(const QModelIndex& index)
 	amountField->setValue(estimate->estimatedAmount());
 	finishedField->setChecked(estimate->isActivityFinished());
 
-	QDate dueDate = estimate->activityDueDate();
+	int offset = estimate->activityDueDateOffset();
+	QDate dueDate = period->startDate().addDays(offset);
 	if (dueDate.isNull())
 	{
 		clearDueDate();
@@ -197,8 +206,46 @@ void EstimateDetailsForm::dataChanged(const QModelIndex& topLeft,
 	QItemSelectionRange range(topLeft, bottomRight);
 	if ( ! bottomRight.isValid() || range.contains(currentIndex))
 	{
-		populate(currentIndex);
+		// Reset our current index so we don't do anything when we modify the fields
+		QModelIndex current = currentIndex;
+		currentIndex = QModelIndex();
+
+		populate(current);
+
+		// (Re-)store the current index so we can use it to update the estimate
+		currentIndex = current;
 	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateDetailsForm::startDateChanged()
+{
+	// Reset our current index so we don't do anything when we modify the fields
+	QModelIndex current = currentIndex;
+	currentIndex = QModelIndex();
+
+	// Set the minimum to just before the start date (i.e., -1 offset)
+	dueDateField->setMinimumDate(period->startDate().addDays(-1));
+
+	// (Re-)store the current index so we can use it to update the estimate
+	currentIndex = current;
+
+	/*
+	if (currentIndex.isValid())
+	{
+		Estimate* estimate = static_cast<Estimate*>(currentIndex.internalPointer());
+		int offset = estimate->activityDueDateOffset();
+		QDate dueDate = period->startDate().addDays(offset);
+		if (dueDate.isNull())
+		{
+			clearDueDate();
+		}
+		else
+		{
+			dueDateField->setDate(dueDate);
+		}
+	}
+	*/
 }
 
 //------------------------------------------------------------------------------
@@ -250,10 +297,8 @@ void EstimateDetailsForm::updateDueDate(const QDate& date)
 {
 	if (currentIndex.isValid())
 	{
-		QDate newDate = (date == dueDateField->minimumDate())
-			? QDate() : date;
-
-		model->updateDueDate(currentIndex, newDate);
+		int offset = period->startDate().daysTo(date);
+		model->updateDueDateOffset(currentIndex, offset);
 	}
 }
 

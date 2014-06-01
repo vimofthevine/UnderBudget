@@ -31,6 +31,7 @@ namespace ub {
 // Forward declaration(s)
 class Actuals;
 class AssignmentRulesModel;
+class Budget;
 class Estimate;
 class EstimateModel;
 class EstimateTreeWidget;
@@ -55,14 +56,14 @@ public:
 	/**
 	 * Constructs a new estimate display widget.
 	 *
-	 * @param[in] root    root of the estimate tree
+	 * @param[in] budget  budget for which to display estimates
 	 * @param[in] rules   assignment rules model
 	 * @param[in] trns    imported transactions model
 	 * @param[in] actuals actual activity values
 	 * @param[in] stack   undoable command stack
 	 * @param[in] parent  parent widget
 	 */
-	EstimateDisplayWidget(QSharedPointer<Estimate> root,
+	EstimateDisplayWidget(QSharedPointer<Budget> budget,
 		AssignmentRulesModel* rules, ImportedTransactionsModel* trns,
 		Actuals* actuals, QUndoStack* stack, QWidget* parent = 0);
 

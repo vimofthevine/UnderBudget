@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "analysis/Actuals.hpp"
+#include "budget/Budget.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateDetailsForm.hpp"
 #include "ui/budget/EstimateDisplayWidget.hpp"
@@ -31,18 +32,20 @@
 namespace ub {
 
 //------------------------------------------------------------------------------
-EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Estimate> root,
+EstimateDisplayWidget::EstimateDisplayWidget(QSharedPointer<Budget> budget,
 		AssignmentRulesModel* rules, ImportedTransactionsModel* trns,
 		Actuals* actuals, QUndoStack* stack, QWidget* parent)
-	: QSplitter(Qt::Vertical, parent), root(root), undoStack(stack)
+	: QSplitter(Qt::Vertical, parent), root(budget->estimates()), undoStack(stack)
 {
-	model = new EstimateModel(root, rules, actuals, undoStack, this);
+	model = new EstimateModel(root, budget->budgetingPeriod(), rules,
+		actuals, undoStack, this);
 
 	tree = new EstimateTreeWidget(model, rules, this);
 	selectionModel = tree->selectionModel();
 
 	// Estimate details
-	EstimateDetailsForm* details = new EstimateDetailsForm(model, undoStack, this);
+	EstimateDetailsForm* details = new EstimateDetailsForm(model,
+		budget->budgetingPeriod(), undoStack, this);
 	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		details, SLOT(estimateSelected(QModelIndex,QModelIndex)));
 
