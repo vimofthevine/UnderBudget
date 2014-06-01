@@ -489,7 +489,7 @@ void XmlBudgetReader::readVersion5Estimate(Estimate* parent)
 	QString description;
 	Estimate::Type type = parent->estimateType();
 	Money amount;
-	QDate dueDate;
+	int dueDateOffset = -1;
 	bool finished(false);
 	Estimate* estimate = 0;
 
@@ -516,8 +516,10 @@ void XmlBudgetReader::readVersion5Estimate(Estimate* parent)
 			else
 				type = Estimate::Expense;
 		}
-		else if (xml.name() == "due-date")
-			dueDate = QVariant(xml.readElementText()).toDate();
+		else if (xml.name() == "due-date-offset")
+		{
+			dueDateOffset = QVariant(xml.readElementText()).toInt();
+		}
 		else if (xml.name() == "finished")
 		{
 			finished = true;
@@ -531,7 +533,7 @@ void XmlBudgetReader::readVersion5Estimate(Estimate* parent)
 				// have been defined by now, so we can create the estimate if
 				// it hasn't been created yet already
 				estimate = Estimate::create(parent, id, name, description,
-					type, amount, dueDate, finished);
+					type, amount, dueDateOffset, finished);
 			}
 
 			readVersion5Estimate(estimate);
@@ -545,7 +547,7 @@ void XmlBudgetReader::readVersion5Estimate(Estimate* parent)
 		// If this estimate hasn't been created yet (because we didn't encounter
 		// any child estimates--meaning this estimate is a leaf) create it
 		estimate = Estimate::create(parent, id, name, description,
-			type, amount, dueDate, finished);
+			type, amount, dueDateOffset, finished);
 	}
 }
 
