@@ -224,9 +224,6 @@ public:
 	 */
 	static Estimate* create(Estimate* parent,
 		uint id, const QString& name, const QString& description, Type type,
-		const Money& amount, const QDate& dueDate, bool finished, int index = -1);
-	static Estimate* create(Estimate* parent,
-		uint id, const QString& name, const QString& description, Type type,
 		const Money& amount, int offset, bool finished, int index = -1);
 
 	/**
@@ -336,22 +333,6 @@ public:
 	 * @param[in] cmd    parent command to be used for grouping
 	 */
 	QUndoCommand* changeDueDateOffset(int offset,
-		QUndoCommand* cmd = 0);
-
-	/**
-	 * Creates an undoable command to set the due date for this
-	 * estimate. A due date specifies a date by which all activity
-	 * should have occurred for an estimate. For example, a utility
-	 * bill or credit card payment that is due by a particular date.
-	 *
-	 * When this estimate's due date is changed as a result of
-	 * executing or undoing the created command, the
-	 * `dueDateChanged()` signal is emitted.
-	 *
-	 * @param[in] newDate new due date for this estimate
-	 * @param[in] cmd     parent command to be used for grouping
-	 */
-	QUndoCommand* changeDueDate(const QDate& newDate,
 		QUndoCommand* cmd = 0);
 
 	/**
@@ -484,16 +465,6 @@ public:
 	int activityDueDateOffset() const;
 
 	/**
-	 * Returns the due date for this estimate. The due date specifies
-	 * a date by which all activity should have occurred for an estimate.
-	 * For example, a utility bill or credit card payment that is due
-	 * by a particular date.
-	 *
-	 * @returns due date for this estimate
-	 */
-	QDate activityDueDate() const;
-
-	/**
 	 * Returns whether activity has finished for this estimate.
 	 * An estimate that is finished, or an estimate for which all activity
 	 * against the stimate has occurred, can use the actual activity
@@ -586,14 +557,6 @@ signals:
 	 * @param offset new due date offset for this estimate
 	 */
 	void dueDateOffsetChanged(int offset);
-
-	/**
-	 * Emitted when the due date for this estimate changes as a
-	 * result of a command created by `changeDueDate()`.
-	 *
-	 * @param date new due date for this estimate
-	 */
-	void dueDateChanged(const QDate& date);
 
 	/**
 	 * Emitted when the finished state of this estimate changes
@@ -833,14 +796,6 @@ private:
 	 * @param[in] newOffset new due date offset for this estimate
 	 */
 	void setDueDateOffset(int newOffset);
-
-	/**
-	 * Sets the due date for this estimate, emitting the
-	 * `dueDateChanged()` signal.
-	 *
-	 * @param[in] newDate new due date for this estimate
-	 */
-	void setDueDate(const QDate& newDate);
 
 	/**
 	 * Marks this estimate as finished or unfinished, emitting

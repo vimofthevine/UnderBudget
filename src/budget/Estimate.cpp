@@ -21,7 +21,6 @@
 #include "budget/AddChildEstimateCommand.hpp"
 #include "budget/ChangeEstimateAmountCommand.hpp"
 #include "budget/ChangeEstimateDescriptionCommand.hpp"
-#include "budget/ChangeEstimateDueDateCommand.hpp"
 #include "budget/ChangeEstimateDueDateOffsetCommand.hpp"
 #include "budget/ChangeEstimateFinishedCommand.hpp"
 #include "budget/ChangeEstimateNameCommand.hpp"
@@ -49,15 +48,6 @@ Estimate::Estimate()
 Estimate::~Estimate()
 {
 	qDeleteAll(children);
-}
-
-//------------------------------------------------------------------------------
-Estimate* Estimate::create(Estimate* parent,
-	uint id, const QString& name, const QString& description, Type type,
-	const Money& amount, const QDate& dueDate, bool finished, int index)
-{
-	return new Estimate(parent, id, name, description, type,
-		amount, -1, finished, index);
 }
 
 //------------------------------------------------------------------------------
@@ -348,16 +338,6 @@ void Estimate::setDueDateOffset(int newOffset)
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Estimate::changeDueDate(const QDate& newDate, QUndoCommand* cmd)
-{
-	return new ChangeEstimateDueDateCommand(root(), id, QDate(), newDate, cmd);
-}
-
-//------------------------------------------------------------------------------
-void Estimate::setDueDate(const QDate& newDate)
-{ }
-
-//------------------------------------------------------------------------------
 QUndoCommand* Estimate::changeFinishedState(bool newState, QUndoCommand* cmd)
 {
 	if (cmd == 0)
@@ -562,12 +542,6 @@ Money Estimate::totalActualAmount(const QHash<uint,Money>& actuals) const
 int Estimate::activityDueDateOffset() const
 {
 	return dueDateOffset;
-}
-
-//------------------------------------------------------------------------------
-QDate Estimate::activityDueDate() const
-{
-	return QDate();
 }
 
 //------------------------------------------------------------------------------
