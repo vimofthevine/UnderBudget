@@ -388,6 +388,28 @@ void EstimateModel::addChild(const QModelIndex& index)
 }
 
 //------------------------------------------------------------------------------
+void EstimateModel::recordExpanded(const QModelIndex& index)
+{
+	if (index.isValid())
+	{
+		Estimate* estimate = cast(index);
+		qDebug() << "Remembering that estimate" << estimate->estimateId()
+			<< "is expanded";
+	}
+}
+
+//------------------------------------------------------------------------------
+void EstimateModel::recordCollapsed(const QModelIndex& index)
+{
+	if (index.isValid())
+	{
+		Estimate* estimate = cast(index);
+		qDebug() << "Remembering that estimate" << estimate->estimateId()
+			<< "is collapsed";
+	}
+}
+
+//------------------------------------------------------------------------------
 QStringList EstimateModel::mimeTypes() const
 {
 	QStringList types;
