@@ -218,13 +218,13 @@ public:
 	 * @param[in] description estimate description
 	 * @param[in] type        estimate type
 	 * @param[in] amount      estimated amount
-	 * @param[in] dueDate     activity due date
+	 * @param[in] offset      activity due date offset
 	 * @param[in] finished    activity finished state
 	 * @param[in] index       child index
 	 */
 	static Estimate* create(Estimate* parent,
 		uint id, const QString& name, const QString& description, Type type,
-		const Money& amount, const QDate& dueDate, bool finished, int index = -1);
+		const Money& amount, int offset, bool finished, int index = -1);
 
 	/**
 	 * Destroys all children of this estimate.
@@ -240,9 +240,11 @@ public:
 	 * of funds from one financial account to another.
 	 *
 	 * @param[in] actuals map of actual activity amounts
+	 * @param[in] start   budgeting period start date
 	 * @return progress of this estimate
 	 */
-	Progress progress(const QHash<uint,Money>& actuals) const;
+	Progress progress(const QHash<uint,Money>& actuals,
+		const QDate& start = QDate()) const;
 
 	/**
 	 * Returns the impact of this estimate on the estimated, actual,
@@ -316,19 +318,21 @@ public:
 		QUndoCommand* cmd = 0);
 
 	/**
-	 * Creates an undoable command to set the due date for this
-	 * estimate. A due date specifies a date by which all activity
-	 * should have occurred for an estimate. For example, a utility
-	 * bill or credit card payment that is due by a particular date.
+	 * Creates an undoable command to set the due date offset for this
+	 * estimate. A due date offset specifies the number of days after
+	 * the budgeting period start date by which all activity should
+	 * have occurred for an estimate. For example, a utility bill or
+	 * credit card payment that is due by the 10th of every month.
+	 * An offset of -1 clears the due date for this estimate.
 	 *
 	 * When this estimate's due date is changed as a result of
 	 * executing or undoing the created command, the
-	 * `dueDateChanged()` signal is emitted.
+	 * `dueDateOffsetChanged()` signal is emitted.
 	 *
-	 * @param[in] newDate new due date for this estimate
-	 * @param[in] cmd     parent command to be used for grouping
+	 * @param[in] offset new due date offset for this estimate
+	 * @param[in] cmd    parent command to be used for grouping
 	 */
-	QUndoCommand* changeDueDate(const QDate& newDate,
+	QUndoCommand* changeDueDateOffset(int offset,
 		QUndoCommand* cmd = 0);
 
 	/**
@@ -448,14 +452,17 @@ public:
 	Money estimatedAmount() const;
 
 	/**
-	 * Returns the due date for this estimate. The due date specifies
-	 * a date by which all activity should have occurred for an estimate.
-	 * For example, a utility bill or credit card payment that is due
-	 * by a particular date.
+	 * Returns the due date offset for this estimate. The due date offset
+	 * specifies the number of days after the budgeting period start date
+	 * by which all activity should have occurred for an estimate. For
+	 * example, a utility bill or credit card payment that is due by the
+	 * 10th of every month.
 	 *
-	 * @returns due date for this estimate
+	 * An offset of -1 indicates that this estimate has no due date.
+	 *
+	 * @returns due date offset for this estimate
 	 */
-	QDate activityDueDate() const;
+	int activityDueDateOffset() const;
 
 	/**
 	 * Returns whether activity has finished for this estimate.
@@ -544,12 +551,12 @@ signals:
 	void amountChanged(const Money& amount);
 
 	/**
-	 * Emitted when the due date for this estimate changes as a
-	 * result of a command created by `changeDueDate()`.
+	 * Emitted when the due date offset for this estimate changes as a
+	 * result of a command created by `changeDueDateOffset()`.
 	 *
-	 * @param date new due date for this estimate
+	 * @param offset new due date offset for this estimate
 	 */
-	void dueDateChanged(const QDate& date);
+	void dueDateOffsetChanged(int offset);
 
 	/**
 	 * Emitted when the finished state of this estimate changes
@@ -633,8 +640,8 @@ private:
 	Type type;
 	/** Amount of this estimate */
 	Money amount;
-	/** Due date for this estimate */
-	QDate dueDate;
+	/** Due date offset for this estimate */
+	int dueDateOffset;
 	/** Finished state of this estimate */
 	bool finished;
 
@@ -661,13 +668,13 @@ private:
 	 * @param[in] description estimate description
 	 * @param[in] type        estimate type
 	 * @param[in] amount      estimated amount
-	 * @param[in] dueDate     activity due date
+	 * @param[in] offset      activity due date offset
 	 * @param[in] finished    activity finished state
 	 * @param[in] index       child index
 	 */
 	Estimate(Estimate* parent, uint id, const QString& name,
 		const QString& description, Type type, const Money& amount,
-		const QDate& dueDate, bool finished, int index);
+		int offset, bool finished, int index);
 
 	/**
 	 * Copy constructor is private to prevent copying. It is an invalid
@@ -783,12 +790,12 @@ private:
 	void setAmount(const Money& newAmt);
 
 	/**
-	 * Sets the due date for this estimate, emitting the
-	 * `dueDateChanged()` signal.
+	 * Sets the due date offset for this estimate, emitting the
+	 * `dueDateOffsetChanged()` signal.
 	 *
-	 * @param[in] newDate new due date for this estimate
+	 * @param[in] newOffset new due date offset for this estimate
 	 */
-	void setDueDate(const QDate& newDate);
+	void setDueDateOffset(int newOffset);
 
 	/**
 	 * Marks this estimate as finished or unfinished, emitting
@@ -820,14 +827,14 @@ private:
 	 * @param[in] description estimate description
 	 * @param[in] type        estimate type
 	 * @param[in] amount      estimated amount
-	 * @param[in] dueDate     activity due date
+	 * @param[in] offset      activity due date offset
 	 * @param[in] finished    activity finished state
 	 * @param[in] index       index at which to insert the new estimate into
 	 *                        the list of child estimates
 	 */
 	void createChild(uint id, const QString& name,
 		const QString& description, Type type, const Money& amount,
-		const QDate& dueDate, bool finished, int index = -1);
+		int offset, bool finished, int index = -1);
 
 	/**
 	 * Removes this estimate from the internal estimate pointer
@@ -888,6 +895,7 @@ private:
 	friend class AddChildEstimateCommand;
 	friend class ChangeEstimateAmountCommand;
 	friend class ChangeEstimateDescriptionCommand;
+	friend class ChangeEstimateDueDateOffsetCommand;
 	friend class ChangeEstimateDueDateCommand;
 	friend class ChangeEstimateFinishedCommand;
 	friend class ChangeEstimateNameCommand;

@@ -21,7 +21,7 @@
 #include "budget/AddChildEstimateCommand.hpp"
 #include "budget/ChangeEstimateAmountCommand.hpp"
 #include "budget/ChangeEstimateDescriptionCommand.hpp"
-#include "budget/ChangeEstimateDueDateCommand.hpp"
+#include "budget/ChangeEstimateDueDateOffsetCommand.hpp"
 #include "budget/ChangeEstimateFinishedCommand.hpp"
 #include "budget/ChangeEstimateNameCommand.hpp"
 #include "budget/ChangeEstimateTypeCommand.hpp"
@@ -40,7 +40,8 @@ QSharedPointer<Estimate> Estimate::createRoot()
 //------------------------------------------------------------------------------
 Estimate::Estimate()
 	: paths(new QHash<uint, QList<int> >),
-	  parent(0), id(0), name(tr("Root")), type(Root), finished(false)
+	  parent(0), id(0), name(tr("Root")), type(Root),
+	  dueDateOffset(-1), finished(false)
 { }
 
 //------------------------------------------------------------------------------
@@ -52,22 +53,22 @@ Estimate::~Estimate()
 //------------------------------------------------------------------------------
 Estimate* Estimate::create(Estimate* parent,
 	uint id, const QString& name, const QString& description, Type type,
-	const Money& amount, const QDate& dueDate, bool finished, int index)
+	const Money& amount, int offset, bool finished, int index)
 {
 	return new Estimate(parent, id, name, description, type,
-		amount, dueDate, finished, index);
+		amount, offset, finished, index);
 }
 
 //------------------------------------------------------------------------------
 Estimate::Estimate(Estimate* parent, uint id,
 		const QString& name, const QString& description, Type type,
-		const Money& amount, const QDate& dueDate, bool finished, int index)
+		const Money& amount, int offset, bool finished, int index)
 	: parent(parent), id(id), name(name), description(description),
-	  type(type), amount(amount), dueDate(dueDate), finished(finished)
+	  type(type), amount(amount), dueDateOffset(offset), finished(finished)
 {
 	// Make parent category-compatible (before making it a category)
 	parent->setAmount(Money());
-	parent->setDueDate(QDate());
+	parent->setDueDateOffset(-1);
 	parent->setFinishedState(false);
 
 	// Add self to parent's children
@@ -83,7 +84,8 @@ Estimate::Estimate(Estimate* parent, uint id,
 Estimate::Estimate(const Estimate& orig)
 	: paths(orig.paths), parent(orig.parent), id(orig.id),
 	  name(orig.name), description(orig.description), type(orig.type),
-	  amount(orig.amount), dueDate(orig.dueDate), finished(orig.finished)
+	  amount(orig.amount), dueDateOffset(orig.dueDateOffset),
+	  finished(orig.finished)
 { }
 
 //------------------------------------------------------------------------------
@@ -315,22 +317,23 @@ void Estimate::setAmount(const Money& newAmt)
 }
 
 //------------------------------------------------------------------------------
-QUndoCommand* Estimate::changeDueDate(const QDate& newDate, QUndoCommand* cmd)
+QUndoCommand* Estimate::changeDueDateOffset(int offset, QUndoCommand* cmd)
 {
-	return new ChangeEstimateDueDateCommand(root(), id, dueDate, newDate, cmd);
+	return new ChangeEstimateDueDateOffsetCommand(root(), id,
+		dueDateOffset, offset, cmd);
 }
 
 //------------------------------------------------------------------------------
-void Estimate::setDueDate(const QDate& newDate)
+void Estimate::setDueDateOffset(int newOffset)
 {
 	// Root and categories cannot have due dates
 	if (isRoot() || isCategory())
 		return;
 
-	if (dueDate != newDate)
+	if (dueDateOffset != newOffset)
 	{
-		dueDate = newDate;
-		emit dueDateChanged(dueDate);
+		dueDateOffset = newOffset;
+		emit dueDateOffsetChanged(newOffset);
 	}
 }
 
@@ -399,17 +402,17 @@ uint Estimate::createChild(uint newId)
 	uint id = (newId == 0) ? QDateTime::currentDateTime().toTime_t() : newId;
 	createChild(id, name, description,
 		(type == Root) ? Expense : type,
-		amount, dueDate, finished);
+		amount, dueDateOffset, finished);
 	return id;
 }
 
 //------------------------------------------------------------------------------
 void Estimate::createChild(uint id, const QString& name,
 	const QString& description, Type type, const Money& amount,
-	const QDate& dueDate, bool finished, int index)
+	int offset, bool finished, int index)
 {
 	new Estimate(this, id, name, description,
-		type, amount, dueDate, finished, index);
+		type, amount, offset, finished, index);
 }
 
 //------------------------------------------------------------------------------
@@ -435,7 +438,7 @@ QUndoCommand* Estimate::moveTo(Estimate* newParent, int newIndex,
 
 	// Make new parent parent-compatible (if it isn't already)
 	newParent->changeAmount(Money(), cmd);
-	newParent->changeDueDate(QDate(), cmd);
+	newParent->changeDueDateOffset(-1, cmd);
 	newParent->changeFinishedState(false, cmd);
 
 	// Change type to that of the new parent (if it differs)
@@ -536,9 +539,9 @@ Money Estimate::totalActualAmount(const QHash<uint,Money>& actuals) const
 }
 
 //------------------------------------------------------------------------------
-QDate Estimate::activityDueDate() const
+int Estimate::activityDueDateOffset() const
 {
-	return dueDate;
+	return dueDateOffset;
 }
 
 //------------------------------------------------------------------------------
@@ -584,7 +587,8 @@ Estimate* Estimate::find(uint estimateId) const
 }
 
 //------------------------------------------------------------------------------
-Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals) const
+Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals,
+	const QDate& start) const
 {
 	Estimate::Progress progress;
 	progress.isHealthy = true;
@@ -596,9 +600,10 @@ Estimate::Progress Estimate::progress(const QHash<uint,Money>& actuals) const
 		progress.estimated = totalEstimatedAmount();
 		progress.actual = totalActualAmount(actuals);
 
-		if (progress.actual.isZero() && dueDate.isValid())
+		if (progress.actual.isZero() && (dueDateOffset >= 0))
 		{
-			progress.note = tr("Due on %1").arg(dueDate.toString());
+			QDate dueOn = start.addDays(dueDateOffset);
+			progress.note = tr("Due on %1").arg(dueOn.toString());
 		}
 
 		switch (type)

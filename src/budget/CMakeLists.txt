@@ -18,7 +18,7 @@ set(budget_srcs
 	ChangeBudgetNameCommand.cpp
 	ChangeEstimateAmountCommand.cpp
 	ChangeEstimateDescriptionCommand.cpp
-	ChangeEstimateDueDateCommand.cpp
+	ChangeEstimateDueDateOffsetCommand.cpp
 	ChangeEstimateFinishedCommand.cpp
 	ChangeEstimateNameCommand.cpp
 	ChangeEstimateTypeCommand.cpp

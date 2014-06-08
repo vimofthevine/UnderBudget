@@ -19,6 +19,7 @@
 
 // UnderBudget include(s)
 #include "analysis/Actuals.hpp"
+#include "budget/BudgetingPeriod.hpp"
 #include "ui/budget/AssignmentRulesModel.hpp"
 #include "ui/budget/EstimateModel.hpp"
 #include "ui/budget/ProxyModelAddCommand.hpp"
@@ -30,8 +31,9 @@ namespace ub {
 
 //------------------------------------------------------------------------------
 EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
-		AssignmentRulesModel* rules, Actuals* actuals, QUndoStack* stack, QObject* parent)
-	: QAbstractItemModel(parent), root(root), rules(rules),
+		QSharedPointer<BudgetingPeriod> period, AssignmentRulesModel* rules,
+		Actuals* actuals, QUndoStack* stack, QObject* parent)
+	: QAbstractItemModel(parent), root(root), period(period), rules(rules),
 	  actualsModel(actuals), undoStack(stack)
 {
 	headers << tr("Name")
@@ -49,13 +51,25 @@ EstimateModel::EstimateModel(QSharedPointer<Estimate> root,
 
 	connect(actualsModel, SIGNAL(actualsChanged()),
 		this, SLOT(cacheActuals()));
+	// Make sure we pick up changes to the budgeting period start date
+	// (have to use Qt5 style connect because of namespaced type)
+	connect(period.data(), &BudgetingPeriod::paramsChanged,
+		this, &EstimateModel::startDateChanged);
 }
 
 //------------------------------------------------------------------------------
 void EstimateModel::cacheActuals()
 {
 	actuals = actualsModel->map();
+	// columns progress "estimated" to impact "notice"
 	emit dataChanged(createIndex(0, 7), createIndex(0, 15));
+}
+
+//------------------------------------------------------------------------------
+void EstimateModel::startDateChanged()
+{
+	// columns definition "due date" to progress "notice"
+	emit dataChanged(createIndex(0, 4), createIndex(0, 11));
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +159,8 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 
 	Estimate* estimate = cast(index);
 	int column = index.column();
-	Estimate::Progress progress = estimate->progress(actuals);
+	Estimate::Progress progress
+		= estimate->progress(actuals, period->startDate());
 	Estimate::Impact impact = estimate->impact(actuals);
 
 	switch (column)
@@ -159,7 +174,13 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 	case 3: // defined amount
 		return estimate->estimatedAmount().toString();
 	case 4: // defined due date
-		return estimate->activityDueDate();
+	{
+		int offset = estimate->activityDueDateOffset();
+		if (offset == -1)
+			return QDate();
+		else
+			return period->startDate().addDays(offset);
+	}
 	case 5: // defined finished state
 		return estimate->isActivityFinished();
 	case 6: // defined rules
@@ -291,12 +312,12 @@ void EstimateModel::updateAmount(const QModelIndex& index, const Money& amount)
 }
 
 //------------------------------------------------------------------------------
-void EstimateModel::updateDueDate(const QModelIndex& index, const QDate& date)
+void EstimateModel::updateDueDateOffset(const QModelIndex& index, int offset)
 {
 	if (index.isValid())
 	{
 		undoStack->push(new ProxyModelChangeCommand(this, index,
-			cast(index)->changeDueDate(date)));
+			cast(index)->changeDueDateOffset(offset)));
 	}
 }
 

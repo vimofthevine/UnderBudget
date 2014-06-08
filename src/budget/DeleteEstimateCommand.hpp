@@ -74,8 +74,8 @@ private:
 	Estimate::Type type;
 	/** Amount of the deleted estimate */
 	Money amount;
-	/** Due date of the deleted estimate */
-	QDate dueDate;
+	/** Due date offset of the deleted estimate */
+	int dueDateOffset;
 	/** Finished state of the deleted estimate */
 	bool finished;
 };

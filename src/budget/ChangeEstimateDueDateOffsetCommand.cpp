@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Kyle Treubig
+ * Copyright 2014 Kyle Treubig
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,62 +18,64 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "budget/ChangeEstimateDueDateCommand.hpp"
+#include "budget/ChangeEstimateDueDateOffsetCommand.hpp"
 
 namespace ub {
 
 //------------------------------------------------------------------------------
-const int ChangeEstimateDueDateCommand::ID = 44523352;
+const int ChangeEstimateDueDateOffsetCommand::ID = 44523752;
 
 //------------------------------------------------------------------------------
-ChangeEstimateDueDateCommand::ChangeEstimateDueDateCommand(
+ChangeEstimateDueDateOffsetCommand::ChangeEstimateDueDateOffsetCommand(
 		Estimate* root, uint estimateId,
-		const QDate& oldDate, const QDate& newDate,
+		int oldDateOffset, int newDateOffset,
 		QUndoCommand* parent)
 	: QUndoCommand(parent),
-	  root(root), estimateId(estimateId), oldDate(oldDate), newDate(newDate)
+	  root(root), estimateId(estimateId),
+	  oldDateOffset(oldDateOffset), newDateOffset(newDateOffset)
 { }
 
 //------------------------------------------------------------------------------
-int ChangeEstimateDueDateCommand::id() const
+int ChangeEstimateDueDateOffsetCommand::id() const
 {
 	return ID;
 }
 
 //------------------------------------------------------------------------------
-bool ChangeEstimateDueDateCommand::mergeWith(const QUndoCommand* command)
+bool ChangeEstimateDueDateOffsetCommand::mergeWith(const QUndoCommand* command)
 {
 	if (command->id() != id())
 		return false;
 
 	// Only merge if change is for the same estimate
 	uint otherId =
-		static_cast<const ChangeEstimateDueDateCommand*>(command)->estimateId;
+		static_cast<const ChangeEstimateDueDateOffsetCommand*>(command)->estimateId;
 	if (otherId != estimateId)
 		return false;
 
 	// Use new due date from the merged command
-	newDate = static_cast<const ChangeEstimateDueDateCommand*>(command)->newDate;
+	newDateOffset = static_cast<const ChangeEstimateDueDateOffsetCommand*>(command)
+		->newDateOffset;
 	return true;
 }
 
 //------------------------------------------------------------------------------
-void ChangeEstimateDueDateCommand::redo()
+void ChangeEstimateDueDateOffsetCommand::redo()
 {
 	Estimate* estimate = root->find(estimateId);
 	if (estimate)
 	{
-		estimate->setDueDate(newDate);
+		estimate->setDueDateOffset(newDateOffset);
 	}
 }
 
 //------------------------------------------------------------------------------
-void ChangeEstimateDueDateCommand::undo()
+void ChangeEstimateDueDateOffsetCommand::undo()
 {
 	Estimate* estimate = root->find(estimateId);
 	if (estimate)
 	{
-		estimate->setDueDate(oldDate);
+		estimate->setDueDateOffset(oldDateOffset);
 	}
 }
 

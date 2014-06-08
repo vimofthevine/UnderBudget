@@ -33,6 +33,7 @@ class QUndoStack;
 namespace ub {
 
 // Forward declaration(s)
+class BudgetingPeriod;
 class EstimateModel;
 class Money;
 class MoneyEdit;
@@ -51,10 +52,12 @@ public:
 	 * Constructs a new estimate detail entry form.
 	 *
 	 * @param[in] model  estimate tree model
+	 * @param[in] period budgeting period
 	 * @param[in] stack  undoable command stack
 	 * @param[in] parent parent widget
 	 */
-	EstimateDetailsForm(EstimateModel* model, QUndoStack* stack,
+	EstimateDetailsForm(EstimateModel* model,
+		QSharedPointer<BudgetingPeriod> period, QUndoStack* stack,
 		QWidget* parent = 0);
 
 public slots:
@@ -76,6 +79,12 @@ public slots:
 	void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 
 private slots:
+	/**
+	 * Updates the due date entry field to reflect the allowable
+	 * range of date values, according to the budgeting period.
+	 */
+	void startDateChanged();
+
 	/**
 	 * Clears the due date entry field.
 	 */
@@ -141,6 +150,8 @@ private:
 
 	/** Estimate tree model */
 	EstimateModel* model;
+	/** Budgeting period */
+	QSharedPointer<BudgetingPeriod> period;
 	/** Currently selected estimate index */
 	QPersistentModelIndex currentIndex;
 	/** Undo stack for all commands */

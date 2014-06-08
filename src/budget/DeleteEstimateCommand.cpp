@@ -42,7 +42,7 @@ DeleteEstimateCommand::DeleteEstimateCommand(
 		description = estimate->description;
 		type = estimate->type;
 		amount = estimate->amount;
-		dueDate = estimate->dueDate;
+		dueDateOffset = estimate->dueDateOffset;
 		finished = estimate->finished;
 
 		Estimate* parentEstimate = root->find(parentId);
@@ -83,7 +83,7 @@ void DeleteEstimateCommand::undo()
 	if (parent)
 	{
 		parent->createChild(estimateId,
-			name, description, type, amount, dueDate, finished, index);
+			name, description, type, amount, dueDateOffset, finished, index);
 	}
 }
 

@@ -57,33 +57,33 @@ void EstimateTest::init()
 	rootEstimate = Estimate::createRoot();
 	root = rootEstimate.data();
 	expenses = Estimate::create(root, EXPENSES,
-		"Expenses", "", Estimate::Expense, Money(12.0), QDate(2013,3,31), false);
+		"Expenses", "", Estimate::Expense, Money(12.0), 10, false);
 	incomes = Estimate::create(root, INCOMES,
-		"Incomes", "", Estimate::Income, Money(32.0), QDate(), true);
+		"Incomes", "", Estimate::Income, Money(32.0), -1, true);
 	salary = Estimate::create(incomes, SALARY,
-		"Salary", "", Estimate::Income, Money(100.0), QDate(), false);
+		"Salary", "", Estimate::Income, Money(100.0), -1, false);
 	utilities = Estimate::create(expenses, UTILITIES,
-		"Utilities", "", Estimate::Expense, Money(50.0), QDate(), true);
+		"Utilities", "", Estimate::Expense, Money(50.0), -1, true);
 	rent = Estimate::create(utilities, RENT,
-		"Rent", "Apt.", Estimate::Expense, Money(500.0), QDate(2013,3,28), false);
+		"Rent", "Apt.", Estimate::Expense, Money(500.0), 28, false);
 	water = Estimate::create(utilities, WATER,
-		"Water", "", Estimate::Expense, Money(25.34), QDate(2013,3,10), true);
+		"Water", "", Estimate::Expense, Money(25.34), 10, true);
 	food = Estimate::create(expenses, FOOD,
-		"Food", "", Estimate::Expense, Money(120.0), QDate(), false);
+		"Food", "", Estimate::Expense, Money(120.0), -1, false);
 	loan = Estimate::create(root, LOAN,
-		"Loan Payment", "", Estimate::Transfer, Money(50.0), QDate(2013,3,20), false);
+		"Loan Payment", "", Estimate::Transfer, Money(50.0), 20, false);
 }
 
 //------------------------------------------------------------------------------
 void EstimateTest::creatingChildResetsParentFields()
 {
 	// Make sure becoming a parent overwrote certain fields
-	QCOMPARE(expenses->activityDueDate().isNull(), true);
+	QCOMPARE(expenses->activityDueDateOffset(), -1);
 	QCOMPARE(incomes->isActivityFinished(), false);
 	QCOMPARE(utilities->estimatedAmount().isZero(), true);
 
 	// Make sure leaf nodes have leaf-only fields set
-	QCOMPARE(rent->activityDueDate().isNull(), false);
+	QCOMPARE(rent->activityDueDateOffset(), 28);
 	QCOMPARE(water->isActivityFinished(), true);
 	QCOMPARE(food->estimatedAmount().isZero(), false);
 }
@@ -347,33 +347,33 @@ void EstimateTest::changeAmount()
 void EstimateTest::changeDueDate_data()
 {
 	QTest::addColumn<uint>("estimateId");
-	QTest::addColumn<QDate>("newDate");
-	QTest::addColumn<QDate>("preDate");
-	QTest::addColumn<QDate>("postDate");
+	QTest::addColumn<int>("newOffset");
+	QTest::addColumn<int>("preOffset");
+	QTest::addColumn<int>("postOffset");
 
-	QTest::newRow("root") << ROOT << QDate(2013,4,1) << QDate() << QDate();
-	QTest::newRow("leaf-nodate") << FOOD << QDate(2013,4,1) << QDate() << QDate(2013,4,1);
-	QTest::newRow("leaf-hasdate") << WATER << QDate(2013,4,1) << QDate(2013,3,10) << QDate(2013,4,1);
-	QTest::newRow("leaf-cleardate") << WATER << QDate() << QDate(2013,3,10) << QDate();
-	QTest::newRow("parent") << UTILITIES << QDate(2013,4,1) << QDate() << QDate();
+	QTest::newRow("root") << ROOT << 4 << -1 << -1;
+	QTest::newRow("leaf-nodate") << FOOD << 4 << -1 << 4;
+	QTest::newRow("leaf-hasdate") << WATER << 4 << 10 << 4;
+	QTest::newRow("leaf-cleardate") << WATER << -1 << 10 << -1;
+	QTest::newRow("parent") << UTILITIES << 4 << -1 << -1;
 }
 
 //------------------------------------------------------------------------------
 void EstimateTest::changeDueDate()
 {
 	QFETCH(uint, estimateId);
-	QFETCH(QDate, newDate);
-	QFETCH(QDate, preDate);
-	QFETCH(QDate, postDate);
+	QFETCH(int, newOffset);
+	QFETCH(int, preOffset);
+	QFETCH(int, postOffset);
 
 	Estimate* estimate = (estimateId == 0) ? root : root->find(estimateId);
-	QUndoCommand* cmd = estimate->changeDueDate(newDate);
+	QUndoCommand* cmd = estimate->changeDueDateOffset(newOffset);
 
-	QCOMPARE(estimate->activityDueDate(), preDate);
+	QCOMPARE(estimate->activityDueDateOffset(), preOffset);
 	cmd->redo();
-	QCOMPARE(estimate->activityDueDate(), postDate);
+	QCOMPARE(estimate->activityDueDateOffset(), postOffset);
 	cmd->undo();
-	QCOMPARE(estimate->activityDueDate(), preDate);
+	QCOMPARE(estimate->activityDueDateOffset(), preOffset);
 }
 
 //------------------------------------------------------------------------------
@@ -477,7 +477,7 @@ void EstimateTest::addChildToLeaf()
 	QCOMPARE(water->childCount(), 1);
 	// Verify that the old leaf became parent-compatible
 	QCOMPARE(water->estimatedAmount(), Money());
-	QCOMPARE(water->activityDueDate(), QDate());
+	QCOMPARE(water->activityDueDateOffset(), -1);
 	// Make sure new child exists
 	Estimate* child = water->childAt(0);
 	QCOMPARE(child == 0, false);
@@ -485,13 +485,13 @@ void EstimateTest::addChildToLeaf()
 	QCOMPARE(child->estimateName(), water->estimateName());
 	QCOMPARE(child->estimateType(), Estimate::Expense);
 	QCOMPARE(child->estimatedAmount(), Money(25.34));
-	QCOMPARE(child->activityDueDate(), QDate(2013,3,10));
+	QCOMPARE(child->activityDueDateOffset(), 10);
 
 	cmd->undo();
 	QCOMPARE(water->childCount(), 0);
 	// Verify that the parent was restored to original condition
 	QCOMPARE(water->estimatedAmount(), Money(25.34));
-	QCOMPARE(water->activityDueDate(), QDate(2013,3,10));
+	QCOMPARE(water->activityDueDateOffset(), 10);
 }
 
 //------------------------------------------------------------------------------
@@ -504,7 +504,7 @@ void EstimateTest::addAnotherChildToParent()
 	QCOMPARE(utilities->childAt(0), rent);
 	QCOMPARE(utilities->childAt(1), water);
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 
 	cmd->redo();
 	QCOMPARE(utilities->childCount(), 3);
@@ -512,7 +512,7 @@ void EstimateTest::addAnotherChildToParent()
 	QCOMPARE(utilities->childAt(1), water);
 	// Verify that the parent remained parent-compatible
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 	// Make sure new child exists
 	Estimate* child = utilities->childAt(2);
 	QCOMPARE(child == 0, false);
@@ -520,7 +520,7 @@ void EstimateTest::addAnotherChildToParent()
 	QCOMPARE(child->estimateName(), utilities->estimateName());
 	QCOMPARE(child->estimateType(), Estimate::Expense);
 	QCOMPARE(child->estimatedAmount(), Money());
-	QCOMPARE(child->activityDueDate(), QDate());
+	QCOMPARE(child->activityDueDateOffset(), -1);
 
 	cmd->undo();
 	// Verify that original structure restored
@@ -529,7 +529,7 @@ void EstimateTest::addAnotherChildToParent()
 	QCOMPARE(utilities->childAt(1), water);
 	// Verify that the parent remained parent-compatible
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 }
 
 //------------------------------------------------------------------------------
@@ -542,14 +542,14 @@ void EstimateTest::deleteLastLeafFromParentOfMultiple()
 	QCOMPARE(utilities->childAt(0), rent);
 	QCOMPARE(utilities->childAt(1), water);
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 
 	cmd->redo();
 	QCOMPARE(utilities->childCount(), 1);
 	QCOMPARE(utilities->childAt(0), rent);
 	// Verify that nothing happened with the parent
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 
 	cmd->undo();
 	// Verify that original structure restored
@@ -557,7 +557,7 @@ void EstimateTest::deleteLastLeafFromParentOfMultiple()
 	QCOMPARE(utilities->childAt(0), rent);
 	// Verify that nothing happened with the parent
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 	// Verify child re-created correctly
 	Estimate* child = utilities->childAt(1);
 	QCOMPARE(child == 0, false);
@@ -566,7 +566,7 @@ void EstimateTest::deleteLastLeafFromParentOfMultiple()
 	QCOMPARE(child->estimateDescription(), QString(""));
 	QCOMPARE(child->estimateType(), Estimate::Expense);
 	QCOMPARE(child->estimatedAmount(), Money(25.34));
-	QCOMPARE(child->activityDueDate(), QDate(2013,3,10));
+	QCOMPARE(child->activityDueDateOffset(), 10);
 	QCOMPARE(child->isActivityFinished(), true);
 }
 
@@ -580,14 +580,14 @@ void EstimateTest::deleteFirstLeafFromParentOfMultiple()
 	QCOMPARE(utilities->childAt(0), rent);
 	QCOMPARE(utilities->childAt(1), water);
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 
 	cmd->redo();
 	QCOMPARE(utilities->childCount(), 1);
 	QCOMPARE(utilities->childAt(0), water);
 	// Verify that nothing happened with the parent
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 
 	cmd->undo();
 	// Verify that original structure restored
@@ -595,7 +595,7 @@ void EstimateTest::deleteFirstLeafFromParentOfMultiple()
 	QCOMPARE(utilities->childAt(1), water);
 	// Verify that nothing happened with the parent
 	QCOMPARE(utilities->estimatedAmount(), Money());
-	QCOMPARE(utilities->activityDueDate(), QDate());
+	QCOMPARE(utilities->activityDueDateOffset(), -1);
 	// Verify child re-created correctly
 	Estimate* child = utilities->childAt(0);
 	QCOMPARE(child == 0, false);
@@ -604,7 +604,7 @@ void EstimateTest::deleteFirstLeafFromParentOfMultiple()
 	QCOMPARE(child->estimateDescription(), QString("Apt."));
 	QCOMPARE(child->estimateType(), Estimate::Expense);
 	QCOMPARE(child->estimatedAmount(), Money(500.0));
-	QCOMPARE(child->activityDueDate(), QDate(2013,3,28));
+	QCOMPARE(child->activityDueDateOffset(), 28);
 	QCOMPARE(child->isActivityFinished(), false);
 }
 
@@ -617,20 +617,20 @@ void EstimateTest::deleteOnlyLeafFromParent()
 	QCOMPARE(incomes->childCount(), 1);
 	QCOMPARE(incomes->childAt(0), salary);
 	QCOMPARE(incomes->estimatedAmount(), Money());
-	QCOMPARE(incomes->activityDueDate(), QDate());
+	QCOMPARE(incomes->activityDueDateOffset(), -1);
 
 	cmd->redo();
 	QCOMPARE(incomes->childCount(), 0);
 	// Verify that nothing happened with the parent
 	QCOMPARE(incomes->estimatedAmount(), Money());
-	QCOMPARE(incomes->activityDueDate(), QDate());
+	QCOMPARE(incomes->activityDueDateOffset(), -1);
 
 	cmd->undo();
 	// Verify that original structure restored
 	QCOMPARE(incomes->childCount(), 1);
 	// Verify that nothing happened with the parent
 	QCOMPARE(incomes->estimatedAmount(), Money());
-	QCOMPARE(incomes->activityDueDate(), QDate());
+	QCOMPARE(incomes->activityDueDateOffset(), -1);
 	// Verify child re-created correctly
 	Estimate* child = incomes->childAt(0);
 	QCOMPARE(child == 0, false);
@@ -639,7 +639,7 @@ void EstimateTest::deleteOnlyLeafFromParent()
 	QCOMPARE(child->estimateDescription(), QString(""));
 	QCOMPARE(child->estimateType(), Estimate::Income);
 	QCOMPARE(child->estimatedAmount(), Money(100.0));
-	QCOMPARE(child->activityDueDate(), QDate());
+	QCOMPARE(child->activityDueDateOffset(), -1);
 	QCOMPARE(child->isActivityFinished(), false);
 }
 
@@ -675,7 +675,7 @@ void EstimateTest::deleteParentWithOneChild()
 	QCOMPARE(parent->estimateDescription(), QString(""));
 	QCOMPARE(parent->estimateType(), Estimate::Income);
 	QCOMPARE(parent->estimatedAmount(), Money());
-	QCOMPARE(parent->activityDueDate(), QDate());
+	QCOMPARE(parent->activityDueDateOffset(), -1);
 	QCOMPARE(parent->isActivityFinished(), false);
 	QCOMPARE(parent->childCount(), 1);
 	// Verify child re-created correctly
@@ -686,7 +686,7 @@ void EstimateTest::deleteParentWithOneChild()
 	QCOMPARE(child->estimateDescription(), QString(""));
 	QCOMPARE(child->estimateType(), Estimate::Income);
 	QCOMPARE(child->estimatedAmount(), Money(100.0));
-	QCOMPARE(child->activityDueDate(), QDate());
+	QCOMPARE(child->activityDueDateOffset(), -1);
 	QCOMPARE(child->isActivityFinished(), false);
 }
 
@@ -955,7 +955,7 @@ void EstimateTest::moveParentToAnotherParentOfDiffType()
 //------------------------------------------------------------------------------
 void EstimateTest::moveToLeaf()
 {
-	food->changeDueDate(QDate(2013,3,15))->redo();
+	food->changeDueDateOffset(15)->redo();
 	food->changeFinishedState(true)->redo();
 	QUndoCommand* cmd = water->moveTo(food, 0);
 
@@ -966,7 +966,7 @@ void EstimateTest::moveToLeaf()
 	QCOMPARE(utilities->childAt(1), water);
 	QCOMPARE(root->find(WATER), water);
 	QCOMPARE(food->estimatedAmount(), Money(120.0));
-	QCOMPARE(food->activityDueDate(), QDate(2013,3,15));
+	QCOMPARE(food->activityDueDateOffset(), 15);
 	QCOMPARE(food->isActivityFinished(), true);
 
 	cmd->redo();
@@ -978,7 +978,7 @@ void EstimateTest::moveToLeaf()
 	QCOMPARE(root->find(WATER), water);
 	// Verify new parent was made parent-compatible
 	QCOMPARE(food->estimatedAmount(), Money());
-	QCOMPARE(food->activityDueDate(), QDate());
+	QCOMPARE(food->activityDueDateOffset(), -1);
 	QCOMPARE(food->isActivityFinished(), false);
 
 	cmd->undo();
@@ -991,7 +991,7 @@ void EstimateTest::moveToLeaf()
 	// Verify parent returned to leaf
 	QCOMPARE(food->estimatedAmount(), Money(120.0));
 	QCOMPARE(food->isActivityFinished(), true);
-	QCOMPARE(food->activityDueDate(), QDate(2013,3,15));
+	QCOMPARE(food->activityDueDateOffset(), 15);
 }
 
 //------------------------------------------------------------------------------
@@ -1399,10 +1399,10 @@ void EstimateTest::progressDueDateNote_data()
 	QTest::newRow("salary") << SALARY << "";
 	QTest::newRow("expenses") << EXPENSES << "";
 	QTest::newRow("utilities") << UTILITIES << "";
-	QTest::newRow("rent") << RENT << tr("Due on %1").arg(QDate(2013,3,28).toString());
-	QTest::newRow("water") << WATER << tr("Due on %1").arg(QDate(2013,3,10).toString());
+	QTest::newRow("rent") << RENT << tr("Due on %1").arg(QDate(2013,3,29).toString());
+	QTest::newRow("water") << WATER << tr("Due on %1").arg(QDate(2013,3,11).toString());
 	QTest::newRow("food") << FOOD << "";
-	QTest::newRow("loan") << LOAN << tr("Due on %1").arg(QDate(2013,3,20).toString());
+	QTest::newRow("loan") << LOAN << tr("Due on %1").arg(QDate(2013,3,21).toString());
 }
 
 //------------------------------------------------------------------------------
@@ -1414,7 +1414,7 @@ void EstimateTest::progressDueDateNote()
 	QHash<uint, Money> actuals;
 
 	Estimate* estimate = root->find(estimateId);
-	Estimate::Progress progress = estimate->progress(actuals);
+	Estimate::Progress progress = estimate->progress(actuals, QDate(2013, 3, 1));
 	QCOMPARE(progress.note, note);
 }
 

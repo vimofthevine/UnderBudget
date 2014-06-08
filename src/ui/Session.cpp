@@ -74,7 +74,7 @@ void Session::createWidgets()
 
 	// Create view widgets
 	budgetDetails = new BudgetDetailsForm(budget, undoStack, this);
-	estimateDisplay = new EstimateDisplayWidget(budget->estimates(),
+	estimateDisplay = new EstimateDisplayWidget(budget,
 		rulesModel, transactionsModel, actuals, undoStack, this);
 	assignmentRules = new RulesListWidget(rulesModel, this);
 	transactionsList = new ImportedTransactionsListWidget(transactionsModel, this);
