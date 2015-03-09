@@ -33,6 +33,7 @@ set(budget_srcs
 	RemoveRuleCommand.cpp
 	UpdateConditionCommand.cpp
 	UpdateContributorCommand.cpp
+	UIPrefs.cpp
 )
 
 # Build budget library

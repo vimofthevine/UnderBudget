@@ -33,6 +33,7 @@ namespace ub {
 // Forward declaration(s)
 class AssignmentRules;
 class Balance;
+class UIPrefs;
 
 /**
  * Budget definition.
@@ -56,10 +57,12 @@ public:
 	 * @param[in] initial initial balance
 	 * @param[in] root    root of the estimate tree
 	 * @param[in] rules   assignment rules list
+	 * @param[in] uiPrefs budget-specific UI preferences
 	 */
 	Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
 		QSharedPointer<Balance> initial, QSharedPointer<Estimate> root,
-		QSharedPointer<AssignmentRules> rules);
+		QSharedPointer<AssignmentRules> rules,
+		QSharedPointer<UIPrefs> uiPrefs);
 
 	/**
 	 * Returns the user-defined name for this budget.
@@ -97,6 +100,13 @@ public:
 	QSharedPointer<AssignmentRules> rules() const;
 
 	/**
+	 * Returns the budget-specific UI preferences.
+	 *
+	 * @return budget-specific UI preferences.
+	 */
+	QSharedPointer<UIPrefs> uiPreferences() const;
+
+	/**
 	 * Creates an undoable command to change the budget's name.
 	 * Ownership of the returned pointer is transfered to the
 	 * caller of this function.
@@ -126,6 +136,8 @@ private:
 	QSharedPointer<Estimate> rootEstimate;
 	/** Assignment rules */
 	QSharedPointer<AssignmentRules> assignmentRules;
+	/** UI Preferences */
+	QSharedPointer<UIPrefs> uiPrefs;
 
 	/**
 	 * Sets the budget's name to the given name, emitting

@@ -25,6 +25,7 @@
 #include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/Estimate.hpp"
+#include "budget/UIPrefs.hpp"
 #include "budget/storage/XmlBudgetWriter.hpp"
 
 //------------------------------------------------------------------------------
@@ -126,9 +127,12 @@ QSharedPointer<Budget> XmlBudgetWriterTest::createBudget()
 	params.param2 = 8;
 	QSharedPointer<BudgetingPeriod> period(new BudgetingPeriod(params));
 
+	// Create UI preferences
+	QSharedPointer<UIPrefs> uiPrefs = UIPrefs::create();
+
 	// Create budget
 	return QSharedPointer<Budget>(new Budget("Serialized Budget", period,
-		initial, root, rules));
+		initial, root, rules, uiPrefs));
 }
 
 //------------------------------------------------------------------------------
@@ -385,7 +389,8 @@ void XmlBudgetWriterTest::writeBudgetingPeriods()
 
 	// Create budget
 	QSharedPointer<Budget> budget(new Budget("Periods", period,
-		Balance::create(), Estimate::createRoot(), AssignmentRules::create()));
+		Balance::create(), Estimate::createRoot(), AssignmentRules::create(),
+		UIPrefs::create()));
 
 	// Serialize budget
 	QBuffer buffer;

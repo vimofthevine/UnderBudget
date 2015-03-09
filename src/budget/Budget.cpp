@@ -23,6 +23,7 @@
 #include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/ChangeBudgetNameCommand.hpp"
+#include "budget/UIPrefs.hpp"
 
 namespace ub {
 
@@ -60,14 +61,17 @@ Budget::Budget()
 	assignmentRules->createRule(30020, 3002, conditions);
 	conditions.removeAt(0);
 	assignmentRules->createRule(10030, 1003, conditions);
+
+	uiPrefs = UIPrefs::create();
 }
 
 //------------------------------------------------------------------------------
 Budget::Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
 		QSharedPointer<Balance> initial, QSharedPointer<Estimate> root,
-		QSharedPointer<AssignmentRules> rules)
+		QSharedPointer<AssignmentRules> rules,
+		QSharedPointer<UIPrefs> uiPrefs)
 	: budgetName(name), period(period), initial(initial), rootEstimate(root),
-	  assignmentRules(rules)
+	  assignmentRules(rules), uiPrefs(uiPrefs)
 { }
 
 //------------------------------------------------------------------------------
@@ -98,6 +102,12 @@ QSharedPointer<Estimate> Budget::estimates() const
 QSharedPointer<AssignmentRules> Budget::rules() const
 {
 	return assignmentRules;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<UIPrefs> Budget::uiPreferences() const
+{
+	return uiPrefs;
 }
 
 //------------------------------------------------------------------------------
