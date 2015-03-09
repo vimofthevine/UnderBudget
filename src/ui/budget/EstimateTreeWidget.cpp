@@ -46,6 +46,12 @@ EstimateTreeWidget::EstimateTreeWidget(EstimateModel* model,
 
 	// Display progress bar for estimate progress
 	setItemDelegateForColumn(7, new ProgressDelegate(this));
+
+	// Record expanded/collapsed items
+	connect(this, SIGNAL(expanded(QModelIndex)),
+		model, SLOT(recordExpanded(QModelIndex)));
+	connect(this, SIGNAL(collapsed(QModelIndex)),
+		model, SLOT(recordCollapsed(QModelIndex)));
 }
 
 //------------------------------------------------------------------------------

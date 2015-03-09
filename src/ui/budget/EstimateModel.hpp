@@ -234,6 +234,20 @@ public slots:
 	 */
 	void addChild(const QModelIndex& index);
 
+	/**
+	 * Records the expanded state of an estimate.
+	 *
+	 * @param[in] index index of the expanded estimate
+	 */
+	void recordExpanded(const QModelIndex& index);
+
+	/**
+	 * Records the collapsed state of an estimate.
+	 *
+	 * @param[in] index index of the collapsed estimate
+	 */
+	void recordCollapsed(const QModelIndex& index);
+
 private slots:
 	/**
 	 * Updates the cached actuals.

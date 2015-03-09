@@ -21,6 +21,7 @@
 #include "budget/AssignmentRules.hpp"
 #include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
+#include "budget/UIPrefs.hpp"
 #include "budget/storage/XmlBudgetReader.hpp"
 
 namespace ub {
@@ -87,6 +88,7 @@ void XmlBudgetReader::readVersion4()
 	QSharedPointer<Balance> initial = Balance::create();
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	QSharedPointer<AssignmentRules> rules = AssignmentRules::create();
+	QSharedPointer<UIPrefs> uiPrefs = UIPrefs::create();
 
 	// Go through all elements under a budget element
 	while (xml.readNextStartElement())
@@ -143,7 +145,7 @@ void XmlBudgetReader::readVersion4()
 	if ( ! xml.error())
 	{
 		budget = QSharedPointer<Budget>(
-			new Budget(name, period, initial, root, rules));
+			new Budget(name, period, initial, root, rules, uiPrefs));
 	}
 }
 
@@ -159,6 +161,7 @@ void XmlBudgetReader::readVersion5()
 	QSharedPointer<Balance> initial = Balance::create();
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	QSharedPointer<AssignmentRules> rules = AssignmentRules::create();
+	QSharedPointer<UIPrefs> uiPrefs = UIPrefs::create();
 
 	// Go through all elements under a budget element
 	while (xml.readNextStartElement())
@@ -204,7 +207,7 @@ void XmlBudgetReader::readVersion5()
 	if ( ! xml.error())
 	{
 		budget = QSharedPointer<Budget>(
-			new Budget(name, period, initial, root, rules));
+			new Budget(name, period, initial, root, rules, uiPrefs));
 	}
 }
 
