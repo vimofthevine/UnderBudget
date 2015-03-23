@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-// CppMicroServices include(s)
-#include <usGetModuleContext.h>
-#include <usModuleContext.h>
+#pragma once
 
-// UnderBudget include(s)
-#include <UnderBudget/Application.hpp>
-#include "PluginLoader.hpp"
+// Qt include(s)
+#include <QString>
 
-US_USE_NAMESPACE
+namespace ub {
 
-int main(int argc, char* argv[])
-{
-	ub::loadEnabledPlugins(argv[0]);
-	ModuleContext* context = GetModuleContext();
-	auto ref = context->GetServiceReference<ub::Application>();
-	if ( ! ref)
-	{
-		std::cerr << "No application service found, exiting." << std::endl;
-		return 1;
-	}
-	else
-	{
-		auto app = context->GetService(ref);
-		return app->start(argc, argv);
-	}
+/**
+ * Loads all plugins discovered in the plugin directory that have not been
+ * specifically disabled.
+ *
+ * If a plugin directory has not previously been configured as
+ * @c ub::plugins::PluginDirectory, then the plugin directory will be
+ * determined to be the @c plugins directory adjacent to the directory
+ * containing the application executable (e.g., @c bin).
+ *
+ * @ingroup main
+ * @param[in] exe Location of the current application executable
+ */
+void loadEnabledPlugins(const QString& exe);
+
 }

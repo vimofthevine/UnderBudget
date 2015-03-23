@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-// CppMicroServices include(s)
-#include <usGetModuleContext.h>
-#include <usModuleContext.h>
+#pragma once
 
-// UnderBudget include(s)
-#include <UnderBudget/Application.hpp>
-#include "PluginLoader.hpp"
+// Qt include(s)
+#include <QApplication>
 
-US_USE_NAMESPACE
+namespace ub {
 
-int main(int argc, char* argv[])
+/**
+ * Sets up the application's name, version, and organization
+ * information.
+ *
+ * @param[in] app Qt application
+ * @ingroup main
+ */
+void setupApp(const QApplication& app)
 {
-	ub::loadEnabledPlugins(argv[0]);
-	ModuleContext* context = GetModuleContext();
-	auto ref = context->GetServiceReference<ub::Application>();
-	if ( ! ref)
-	{
-		std::cerr << "No application service found, exiting." << std::endl;
-		return 1;
-	}
-	else
-	{
-		auto app = context->GetService(ref);
-		return app->start(argc, argv);
-	}
+	app.setOrganizationName("vimofthevine");
+	app.setOrganizationDomain("underbudget.vimofthevine.com");
+	app.setApplicationName("UnderBudget");
+	app.setApplicationVersion("${APP_VERSION}");
+}
+
 }
