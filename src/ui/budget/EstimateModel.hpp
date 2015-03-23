@@ -28,6 +28,7 @@ namespace ub {
 // Forward declaration(s)
 class Actuals;
 class AssignmentRulesModel;
+class BudgetingPeriod;
 
 /**
  * Estimate tree model to serve as a proxy between various UI
@@ -44,12 +45,14 @@ public:
 	 * Constructs a new estimate tree model.
 	 *
 	 * @param[in] root    root of the estimate tree
+	 * @param[in] period  budgeting period
 	 * @param[in] rules   assignment rules list model
 	 * @param[in] actuals actual values
 	 * @param[in] stack   undo stack
 	 * @param[in] parent  parent object
 	 */
-	EstimateModel(QSharedPointer<Estimate> root, AssignmentRulesModel* rules,
+	EstimateModel(QSharedPointer<Estimate> root,
+		QSharedPointer<BudgetingPeriod> period, AssignmentRulesModel* rules,
 		Actuals* actuals, QUndoStack* stack, QObject* parent = 0);
 
 	// Overridden methods
@@ -202,12 +205,12 @@ public slots:
 	void updateAmount(const QModelIndex& index, const Money& amount);
 
 	/**
-	 * Updates the specified estimate's due date.
+	 * Updates the specified estimate's due date offset.
 	 *
-	 * @param[in] index index of the estimate to be updated
-	 * @param[in] date  new due date
+	 * @param[in] index  index of the estimate to be updated
+	 * @param[in] offset new due date offset
 	 */
-	void updateDueDate(const QModelIndex& index, const QDate& date);
+	void updateDueDateOffset(const QModelIndex& index, int offset);
 
 	/**
 	 * Updates the specified estimate's finished state.
@@ -231,15 +234,36 @@ public slots:
 	 */
 	void addChild(const QModelIndex& index);
 
+	/**
+	 * Records the expanded state of an estimate.
+	 *
+	 * @param[in] index index of the expanded estimate
+	 */
+	void recordExpanded(const QModelIndex& index);
+
+	/**
+	 * Records the collapsed state of an estimate.
+	 *
+	 * @param[in] index index of the collapsed estimate
+	 */
+	void recordCollapsed(const QModelIndex& index);
+
 private slots:
 	/**
 	 * Updates the cached actuals.
 	 */
 	void cacheActuals();
 
+	/**
+	 * Updates the due dates as a result of the start date changing.
+	 */
+	void startDateChanged();
+
 private:
 	/** Root estimate */
 	QSharedPointer<Estimate> root;
+	/** Budgeting period */
+	QSharedPointer<BudgetingPeriod> period;
 	/** Assignment rules list model */
 	AssignmentRulesModel* rules;
 	/** Undo stack for all commands */

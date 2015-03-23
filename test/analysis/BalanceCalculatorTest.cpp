@@ -57,19 +57,19 @@ QSharedPointer<Estimate> createEstimates()
 {
 	QSharedPointer<Estimate> root = Estimate::createRoot();
 	Estimate* expenses = Estimate::create(root.data(),
-		EXPENSES, "Expenses", "", Estimate::Expense, Money(), QDate(), false);
+		EXPENSES, "Expenses", "", Estimate::Expense, Money(), -1, false);
 	Estimate* living = Estimate::create(expenses,
-		LIVING, "Living", "", Estimate::Expense, Money(), QDate(), false);
+		LIVING, "Living", "", Estimate::Expense, Money(), -1, false);
 	Estimate::create(living, RENT, "Rent", "",
-		Estimate::Expense, Money(10, "USD"), QDate(), false);
+		Estimate::Expense, Money(10, "USD"), -1, false);
 	Estimate::create(living, UTILITIES, "Utilities", "",
-		Estimate::Expense, Money(5, "USD"), QDate(), false);
+		Estimate::Expense, Money(5, "USD"), -1, false);
 	Estimate::create(expenses, FOOD, "Food", "",
-		Estimate::Expense, Money(50, "USD"), QDate(), false);
+		Estimate::Expense, Money(50, "USD"), -1, false);
 	Estimate::create(root.data(), SALARY, "Salary", "",
-		Estimate::Income, Money(100, "USD"), QDate(), false);
+		Estimate::Income, Money(100, "USD"), -1, false);
 	Estimate::create(root.data(), BONUS, "Bonus", "",
-		Estimate::Income, Money(50, "USD"), QDate(), false);
+		Estimate::Income, Money(50, "USD"), -1, false);
 
 	return root;
 }

@@ -128,8 +128,9 @@ private:
 	 * estimate in the XML data.
 	 *
 	 * @param[in] parent parent estimate
+	 * @param[in] start  budgeting period start date
 	 */
-	void readVersion4Estimate(Estimate* parent);
+	void readVersion4Estimate(Estimate* parent, const QDate& start);
 
 	/**
 	 * Reads an estimate as defined by the version 5.0 schema,

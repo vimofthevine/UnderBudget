@@ -23,6 +23,7 @@
 #include "budget/Balance.hpp"
 #include "budget/Budget.hpp"
 #include "budget/ChangeBudgetNameCommand.hpp"
+#include "budget/UIPrefs.hpp"
 
 namespace ub {
 
@@ -34,21 +35,21 @@ Budget::Budget()
 	rootEstimate = Estimate::createRoot();
 	Estimate* root = rootEstimate.data();
 	Estimate* expenses = Estimate::create(root, 1001,
-		"Expenses", "", Estimate::Expense, Money(12.0), QDate(2013,3,31), false);
+		"Expenses", "", Estimate::Expense, Money(12.0), -1, false);
 	Estimate* incomes = Estimate::create(root, 1002,
-		"Incomes", "", Estimate::Income, Money(32.0), QDate(), true);
+		"Incomes", "", Estimate::Income, Money(32.0), -1, true);
 	Estimate* salary = Estimate::create(incomes, 2001,
-		"Salary", "", Estimate::Income, Money(100.0), QDate(), false);
+		"Salary", "", Estimate::Income, Money(100.0), -1, false);
 	Estimate* utilities = Estimate::create(expenses, 3001,
-		"Utilities", "", Estimate::Expense, Money(50.0), QDate(), true);
+		"Utilities", "", Estimate::Expense, Money(50.0), -1, true);
 	Estimate* rent = Estimate::create(utilities, 4001,
-		"Rent", "Apt.", Estimate::Expense, Money(500.0), QDate(2013,3,28), false);
+		"Rent", "Apt.", Estimate::Expense, Money(500.0), 27, false);
 	Estimate* water = Estimate::create(utilities, 4002,
-		"Water", "", Estimate::Expense, Money(25.34), QDate(2013,3,10), true);
+		"Water", "", Estimate::Expense, Money(25.34), 10, true);
 	Estimate* food = Estimate::create(expenses, 3002,
-		"Food", "", Estimate::Expense, Money(120.0), QDate(), false);
+		"Food", "", Estimate::Expense, Money(120.0), -1, false);
 	Estimate* loan = Estimate::create(root, 1003,
-		"Loan Payment", "", Estimate::Transfer, Money(50.0), QDate(2013,3,20), false);
+		"Loan Payment", "", Estimate::Transfer, Money(50.0), 20, false);
 
 	assignmentRules = AssignmentRules::create();
 	QList<AssignmentRule::Condition> conditions;
@@ -60,14 +61,17 @@ Budget::Budget()
 	assignmentRules->createRule(30020, 3002, conditions);
 	conditions.removeAt(0);
 	assignmentRules->createRule(10030, 1003, conditions);
+
+	uiPrefs = UIPrefs::create();
 }
 
 //------------------------------------------------------------------------------
 Budget::Budget(const QString& name, QSharedPointer<BudgetingPeriod> period,
 		QSharedPointer<Balance> initial, QSharedPointer<Estimate> root,
-		QSharedPointer<AssignmentRules> rules)
+		QSharedPointer<AssignmentRules> rules,
+		QSharedPointer<UIPrefs> uiPrefs)
 	: budgetName(name), period(period), initial(initial), rootEstimate(root),
-	  assignmentRules(rules)
+	  assignmentRules(rules), uiPrefs(uiPrefs)
 { }
 
 //------------------------------------------------------------------------------
@@ -98,6 +102,12 @@ QSharedPointer<Estimate> Budget::estimates() const
 QSharedPointer<AssignmentRules> Budget::rules() const
 {
 	return assignmentRules;
+}
+
+//------------------------------------------------------------------------------
+QSharedPointer<UIPrefs> Budget::uiPreferences() const
+{
+	return uiPrefs;
 }
 
 //------------------------------------------------------------------------------

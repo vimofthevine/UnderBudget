@@ -172,11 +172,11 @@ void XmlBudgetWriter::write(const Estimate* estimate)
 		{
 			write(estimate_ns, "amount", estimate->estimatedAmount());
 
-			// Only if due date is defined, write it
-			if (estimate->activityDueDate().isValid())
+			// Only if due date offset is defined, write it
+			if (estimate->activityDueDateOffset() >= 0)
 			{
-				xml.writeTextElement(estimate_ns, "due-date",
-					estimate->activityDueDate().toString(Qt::ISODate));
+				xml.writeTextElement(estimate_ns, "due-date-offset",
+					QVariant(estimate->activityDueDateOffset()).toString());
 			}
 
 			// Only if finished, write it (omission means it's not finished)

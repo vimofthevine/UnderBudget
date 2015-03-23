@@ -79,7 +79,7 @@ void XmlBudgetReaderV5Test::readFullBudget()
 		"    <estimate:estimate id=\"5\">\n" // { water
 		"     <estimate:name>Water</estimate:name>\n"
 		"     <estimate:amount currency=\"USD\">45</estimate:amount>\n"
-		"     <estimate:due-date>2013-07-18</estimate:due-date>\n"
+		"     <estimate:due-date-offset>18</estimate:due-date-offset>\n"
 		"    </estimate:estimate>\n" // } water
 		"    <estimate:estimate id=\"6\">\n" // { gas
 		"     <estimate:name>Gas</estimate:name>\n"
@@ -154,35 +154,35 @@ void XmlBudgetReaderV5Test::readFullBudget()
 	// Make sure estimates were read correctly
 	QSharedPointer<Estimate> rootEstimate = budget->estimates();
 	COMPARE_ESTIMATE(rootEstimate.data(), (uint) 0, QString("Root"), QString(""),
-		Estimate::Root, Money(), QDate(), false, 3);
+		Estimate::Root, Money(), -1, false, 3);
 
 	Estimate* income = rootEstimate->childAt(0);
 	COMPARE_ESTIMATE(income, (uint) 1, QString("Income Estimates"), QString(""),
-		Estimate::Income, Money(), QDate(), false, 1);
+		Estimate::Income, Money(), -1, false, 1);
 
 	Estimate* salary = income->childAt(0);
 	COMPARE_ESTIMATE(salary, (uint) 2, QString("Salary"), QString("paychecks"),
-		Estimate::Income, Money(2400, "USD"), QDate(), false, 0);
+		Estimate::Income, Money(2400, "USD"), -1, false, 0);
 
 	Estimate* expense = rootEstimate->childAt(1);
 	COMPARE_ESTIMATE(expense, (uint) 3, QString("Expense Estimates"), QString(""),
-		Estimate::Expense, Money(), QDate(), false, 1);
+		Estimate::Expense, Money(), -1, false, 1);
 
 	Estimate* utilities = expense->childAt(0);
 	COMPARE_ESTIMATE(utilities, (uint) 4, QString("Utilities"), QString(""),
-		Estimate::Expense, Money(), QDate(), false, 2);
+		Estimate::Expense, Money(), -1, false, 2);
 
 	Estimate* water = utilities->childAt(0);
 	COMPARE_ESTIMATE(water, (uint) 5, QString("Water"), QString(""),
-		Estimate::Expense, Money(45, "USD"), QDate(2013, 7, 18), false, 0);
+		Estimate::Expense, Money(45, "USD"), 18, false, 0);
 
 	Estimate* gas = utilities->childAt(1);
 	COMPARE_ESTIMATE(gas, (uint) 6, QString("Gas"), QString(""),
-		Estimate::Expense, Money(114.23, "USD"), QDate(), true, 0);
+		Estimate::Expense, Money(114.23, "USD"), -1, true, 0);
 
 	Estimate* credit = rootEstimate->childAt(2);
 	COMPARE_ESTIMATE(credit, (uint) 7, QString("Credit Card"), QString(""),
-		Estimate::Transfer, Money(146, "USD"), QDate(), false, 0);
+		Estimate::Transfer, Money(146, "USD"), -1, false, 0);
 
 	// Make sure rules were read correctly
 	QSharedPointer<AssignmentRules> rules = budget->rules();
