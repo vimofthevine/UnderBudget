@@ -1,0 +1,5 @@
+/**
+ * @defgroup analysis Analysis
+ * @brief Data types and functions to support budget analysis operations
+ * and results data representation
+ */

@@ -1,0 +1,13 @@
+/**
+ * @namespace ub
+ *
+ * All classes, functions, and definitions necessary to implement the
+ * UnderBudget application.
+ */
+
+/**
+ * @defgroup accounting Accounting
+ *
+ * Classes supporting financial operations.
+ */
+

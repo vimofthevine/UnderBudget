@@ -1,0 +1,4 @@
+/**
+ * @defgroup ui_widgets Common Widgets
+ * @brief Customized Qt widgets.
+ */

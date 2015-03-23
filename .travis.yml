@@ -1,0 +1,28 @@
+language: cpp
+compiler:
+  - gcc
+env:
+  global:
+    # Encrypted COVERITY_SCAN_TOKEN
+    - secure: "VgJE/OzDvDdxK+arumGwyx+rCh7eSoo9B4/ZVZ+jn0uI4wSteKCvJcPeyV86LXj8U/r6Jk5VTzhyKnv2Ac6RpgO3OL8M+rSFHdKlVLq/oNKwBWBcFzTryVnGjYDmHCbGsp99VqtG21go7vYSKaBIi5xyLyRxzSXU6X1lyyKtYtw="
+addons:
+  coverity_scan:
+    project:
+      name: "vimofthevine/UnderBudget"
+      description: "Advanced personal budget analysis"
+    notification_email: kyle@vimofthevine.com
+    build_command_prepend: "./cmake-2.8.10.2-Linux-i386/bin/cmake ."
+    build_command: "make"
+    branch_pattern: coverity_scan
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa # for Qt5
+  - sudo apt-get update
+install:
+  - sudo apt-get install -qq ubuntu-sdk libc6:i386 xvfb
+  - wget http://www.cmake.org/files/v2.8/cmake-2.8.10.2-Linux-i386.tar.gz
+  - tar -xzvf cmake-2.8.10.2-Linux-i386.tar.gz
+before_script:
+  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then ./cmake-2.8.10.2-Linux-i386/bin/cmake . ; fi
+script:
+  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then make VERBOSE=1 ; fi
+  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then xvfb-run make test; fi

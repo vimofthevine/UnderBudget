@@ -1,0 +1,41 @@
+/**
+ * @defgroup budget Budget
+ * @brief Data types and functions to support the definition of a budget.
+ *
+ * The budget module contains all data types and functions to support
+ * the definition of a budget, including estimates and assignment rules.
+ *
+ * @{
+ *     @defgroup estimate Estimates
+ *     @brief Data types and functions to support the definition of estimates.
+ *     @{
+ *         @defgroup estimate_commands Estimate Modification
+ *         @brief QUndoCommand implementations to create, modify, and delete
+ *         ub::Estimate instances.
+ *     @}
+ *
+ *     @defgroup rule Assignment Rules
+ *     @brief Data types and functions to support the definition of assignment rules.
+ *     @{
+ *         @defgroup rule_commands Assignment Rule Modification
+ *         @brief QUndoCommand implementations to create, modify, and delete
+ *         ub::AssignmentRule instances.
+ *     @}
+ *
+ *     @defgroup balance Balance
+ *     @brief Data types and functions to support the definition of a balance.
+ *     @{
+ *         @defgroup balance_commands Balance Modification
+ *         @brief QUndoCommand implementations to modify a ub::Balance instance.
+ *     @}
+ *
+ *     @defgroup period Budgeting Period
+ *     @brief Data types and functions to support the definition of a budgeting period.
+ *     @{
+ *         @defgroup period_commands Budgeting Period Modification
+ *         @brief QUndoCommand implementations to modify a ub::BudgetingPeriod instance.
+ *     @}
+ *
+ *     @addtogroup budget_storage
+ * @}
+ */

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://underbudget.vimofthevine.com/contributor"
+    xmlns:money="http://underbudget.vimofthevine.com/money"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+<!-- Schema import(s) -->
+    <xs:import namespace="http://underbudget.vimofthevine.com/money"
+        schemaLocation="money.xsd" />
+
+<!-- Contributor element type -->
+    <xs:complexType name="contributor">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="amount" type="money:money" />
+            <xs:element name="increase" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
