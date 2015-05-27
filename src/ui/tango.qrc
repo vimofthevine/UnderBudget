@@ -1,0 +1,47 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file>icons/tango/22x22/accessories-calculator.png</file>
+	<file>icons/tango/48x48/accessories-calculator.png</file>
+	<file>icons/tango/22x22/application-exit.png</file>
+	<file>icons/tango/48x48/application-exit.png</file>
+	<file>icons/tango/48x48/assign-transactions.png</file>
+	<file>icons/tango/22x22/document-new.png</file>
+	<file>icons/tango/48x48/document-new.png</file>
+	<file>icons/tango/22x22/document-open.png</file>
+	<file>icons/tango/48x48/document-open.png</file>
+	<file>icons/tango/22x22/document-save.png</file>
+	<file>icons/tango/48x48/document-save.png</file>
+	<file>icons/tango/22x22/document-save-as.png</file>
+	<file>icons/tango/48x48/document-save-as.png</file>
+	<file>icons/tango/48x48/edit-budget.png</file>
+	<file>icons/tango/48x48/edit-estimates.png</file>
+	<file>icons/tango/22x22/edit-redo.png</file>
+	<file>icons/tango/48x48/edit-redo.png</file>
+	<file>icons/tango/48x48/edit-rules.png</file>
+	<file>icons/tango/22x22/edit-undo.png</file>
+	<file>icons/tango/48x48/edit-undo.png</file>
+	<file>icons/tango/22x22/help-about.png</file>
+	<file>icons/tango/48x48/help-about.png</file>
+	<file>icons/tango/48x48/import-transactions.png</file>
+	<file>icons/tango/22x22/preferences-system.png</file>
+	<file>icons/tango/48x48/preferences-system.png</file>
+	<file>icons/tango/22x22/x-office-presentation.png</file>
+	<file>icons/tango/48x48/x-office-presentation.png</file>
+	<file>icons/tango/22x22/x-office-spreadsheet.png</file>
+	<file>icons/tango/48x48/x-office-spreadsheet.png</file>
+	<file>icons/tango/48x48/view-transactions.png</file>
+	<file>icons/tango/22x22/window-close.png</file>
+	<file>icons/tango/48x48/window-close.png</file>
+</qresource>
+<qresource>
+	<!-- Application icons -->
+	<file alias="logo">icons/logo.png</file>
+	<file alias="icons/aboutQt">icons/Qt.png</file>
+	<file alias="icons/general">icons/applications-system.png</file>
+	<file alias="icons/appearance">icons/preferences-desktop.png</file>
+	<file alias="icons/expand">icons/arrow-down.png</file>
+	<file alias="icons/collapse">icons/arrow-up.png</file>
+	<file alias="icons/add">icons/add.png</file>
+	<file alias="icons/delete">icons/delete.png</file>
+</qresource>
+</RCC>

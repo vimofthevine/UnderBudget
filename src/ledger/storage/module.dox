@@ -1,0 +1,5 @@
+/**
+ * @defgroup ledger_storage Ledger Storage
+ * @brief Data types and functions to support retrieval of transactions
+ * from external application sources.
+ */

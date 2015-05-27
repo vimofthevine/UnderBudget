@@ -1,0 +1,4 @@
+/**
+ * @defgroup ui_wizard Wizard Widgets
+ * @brief Qt widgets to support the selection of external data sources.
+ */

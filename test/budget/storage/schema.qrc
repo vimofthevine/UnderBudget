@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file alias="balance.xsd">../../../schema/balance.xsd</file>
+	<file alias="budget.xsd">../../../schema/budget.xsd</file>
+	<file alias="condition.xsd">../../../schema/condition.xsd</file>
+	<file alias="contributor.xsd">../../../schema/contributor.xsd</file>
+	<file alias="estimate.xsd">../../../schema/estimate.xsd</file>
+	<file alias="money.xsd">../../../schema/money.xsd</file>
+	<file alias="period.xsd">../../../schema/period.xsd</file>
+	<file alias="rule.xsd">../../../schema/rule.xsd</file>
+</qresource>
+</RCC>

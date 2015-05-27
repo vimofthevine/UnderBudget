@@ -1,0 +1,5 @@
+/**
+ * @defgroup gzip GZip
+ * @brief Data types and functions to support reading and writing of
+ * gzipped files.
+ */

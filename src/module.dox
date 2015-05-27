@@ -1,0 +1,4 @@
+/**
+ * @defgroup main Core Application
+ * @brief Application initialization and startup types and functions.
+ */

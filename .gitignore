@@ -2,13 +2,21 @@
 .classpath
 .project
 .settings
+
+# Temporary files
+*.swp
+
 # Build output
 bin/
 build/
 target/
 pkg/
+packaging/src/
 _site/
 underbudget-*.pkg.tar.xz
+doc/html/
+tags
+
 # Personal files
 data/template.xml
 build.properties
