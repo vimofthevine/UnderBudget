@@ -23,11 +23,19 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
 	endif (CMAKE_COMPILER_IS_GNUCXX)
 endif (CMAKE_BUILD_TYPE MATCHES Debug)
 
-# So all includes will be relative to the src folder
-include_directories(src)
+# Enable c++11
+if (CMAKE_COMPILER_IS_GNUCXX)
+	list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+endif (CMAKE_COMPILER_IS_GNUCXX)
 
-# Find the Qt libraries
+# Find the Qt and CppMicroServices libraries
+find_package(CppMicroServices NO_MODULE REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+
+# TODO remove this
+include_directories(src)
+include_directories(include)
+include_directories(${CppMicroServices_INCLUDE_DIRS})
 
 # Determine application version
 if (NOT DEFINED USE_GIT_VERSION)

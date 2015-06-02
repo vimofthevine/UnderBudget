@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-// CppMicroServices include(s)
-#include <usGetModuleContext.h>
-#include <usModuleContext.h>
+#pragma once
 
 // UnderBudget include(s)
 #include <UnderBudget/Application.hpp>
-#include "PluginLoader.hpp"
 
-US_USE_NAMESPACE
+namespace ub {
 
-int main(int argc, char* argv[])
+/**
+ * Qt GUI application.
+ */
+class QtApplication : public ub::Application
 {
-	ub::loadEnabledPlugins(argv[0]);
-	ModuleContext* context = GetModuleContext();
-	auto ref = context->GetServiceReference<ub::Application>();
-	if ( ! ref)
-	{
-		std::cerr << "No application service found, exiting." << std::endl;
-		return 1;
-	}
-	else
-	{
-		auto app = context->GetService(ref);
-		return app->start(argc, argv);
-	}
+public:
+	/**
+	 * Start the application with the given program arguments.
+	 *
+	 * @param[in] argc Number of arguments
+	 * @param[in] argv Array of arguments
+	 * @return Application exit status
+	 */
+	int start(int argc, char* argv[]) override;
+};
+
 }

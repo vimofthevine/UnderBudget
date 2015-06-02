@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 
-// CppMicroServices include(s)
-#include <usGetModuleContext.h>
-#include <usModuleContext.h>
+// Qt include(s)
+#include <QtCore>
 
 // UnderBudget include(s)
-#include <UnderBudget/Application.hpp>
-#include "PluginLoader.hpp"
+#include "info.hpp"
+#include "QtApplication.hpp"
+#include "ui/SdiWindow.hpp"
 
-US_USE_NAMESPACE
+namespace ub {
 
-int main(int argc, char* argv[])
+//------------------------------------------------------------------------------
+int QtApplication::start(int argc, char* argv[])
 {
-	ub::loadEnabledPlugins(argv[0]);
-	ModuleContext* context = GetModuleContext();
-	auto ref = context->GetServiceReference<ub::Application>();
-	if ( ! ref)
+	QApplication app(argc, argv);
+	setupApp(app);
+
+	QString iconTheme = getenv("UB_ICON_THEME_OVERRIDE");
+	if ( ! iconTheme.isEmpty())
 	{
-		std::cerr << "No application service found, exiting." << std::endl;
-		return 1;
+		QIcon::setThemeName(iconTheme);
+		qDebug() << "Using icon theme" << QIcon::themeName();
 	}
-	else
-	{
-		auto app = context->GetService(ref);
-		return app->start(argc, argv);
-	}
+
+	SdiWindow* mainWindow = new SdiWindow();
+	mainWindow->show();
+
+	return app.exec();
+}
+
 }

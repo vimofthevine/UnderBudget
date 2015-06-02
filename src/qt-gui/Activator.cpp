@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Kyle Treubig
+ * Copyright 2015 Kyle Treubig
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-#ifndef INFO_HPP
-#define INFO_HPP
+// CppMicroServices include(s)
+#include <usModuleActivator.h>
+#include <usModuleContext.h>
 
-// Qt include(s)
-#include <QApplication>
+// UnderBudget include(s)
+#include <UnderBudget/Application.hpp>
+#include "QtApplication.hpp"
 
-/**
- * Sets up the application's name, version, and organization
- * information.
- *
- * @param[in] app Qt application
- * @ingroup main
- */
-void setupApp(const QApplication& app)
+US_USE_NAMESPACE
+
+class US_ABI_LOCAL Activator : public ModuleActivator
 {
-	app.setOrganizationName("vimofthevine");
-	app.setOrganizationDomain("underbudget.vimofthevine.com");
-	app.setApplicationName("UnderBudget");
-	app.setApplicationVersion("${APP_VERSION}");
-}
+public:
+	void Load(ModuleContext* context)
+	{
+		context->RegisterService<ub::Application>(&app);
+	}
 
-#endif //INFO_HPP
+	void Unload(ModuleContext* context)
+	{
+	}
+
+private:
+	ub::QtApplication app;
+};
+
+US_EXPORT_MODULE_ACTIVATOR(Activator)
