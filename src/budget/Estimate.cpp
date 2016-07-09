@@ -671,7 +671,7 @@ Estimate::Impact Estimate::impact(const QHash<uint,Money>& actuals) const
 }
 
 //------------------------------------------------------------------------------
-QString toString(Estimate::Type type)
+QString toQString(Estimate::Type type)
 {
 	switch (type)
 	{

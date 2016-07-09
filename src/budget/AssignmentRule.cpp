@@ -113,7 +113,7 @@ void AssignmentRule::updateCondition(const Condition& condition, int index)
 }
 
 //------------------------------------------------------------------------------
-QString toString(AssignmentRule::Field field)
+QString toQString(AssignmentRule::Field field)
 {
 	switch (field)
 	{
@@ -135,7 +135,7 @@ QString toString(AssignmentRule::Field field)
 }
 
 //------------------------------------------------------------------------------
-QString toString(AssignmentRule::Operator oper)
+QString toQString(AssignmentRule::Operator oper)
 {
 	switch (oper)
 	{
@@ -207,28 +207,28 @@ QStringList operatorsFor(AssignmentRule::Field field)
 	switch (field)
 	{
 	case ub::AssignmentRule::Date:
-		list << toString(AssignmentRule::DateEquals);
-		list << toString(AssignmentRule::Before);
-		list << toString(AssignmentRule::After);
+		list << toQString(AssignmentRule::DateEquals);
+		list << toQString(AssignmentRule::Before);
+		list << toQString(AssignmentRule::After);
 		break;
 	case ub::AssignmentRule::Amount:
-		list << toString(AssignmentRule::AmountEquals);
-		list << toString(AssignmentRule::LessThan);
-		list << toString(AssignmentRule::LessThanOrEqual);
-		list << toString(AssignmentRule::GreaterThan);
-		list << toString(AssignmentRule::GreaterThanOrEqual);
+		list << toQString(AssignmentRule::AmountEquals);
+		list << toQString(AssignmentRule::LessThan);
+		list << toQString(AssignmentRule::LessThanOrEqual);
+		list << toQString(AssignmentRule::GreaterThan);
+		list << toQString(AssignmentRule::GreaterThanOrEqual);
 		break;
 	case ub::AssignmentRule::Payee:
 	case ub::AssignmentRule::Memo:
 	case ub::AssignmentRule::DepositAccount:
 	case ub::AssignmentRule::WithdrawalAccount:
-		list << toString(AssignmentRule::StringEquals);
-		list << toString(AssignmentRule::Contains);
-		list << toString(AssignmentRule::BeginsWith);
-		list << toString(AssignmentRule::EndsWith);
+		list << toQString(AssignmentRule::StringEquals);
+		list << toQString(AssignmentRule::Contains);
+		list << toQString(AssignmentRule::BeginsWith);
+		list << toQString(AssignmentRule::EndsWith);
 		break;
 	default:
-		list << toString(AssignmentRule::OperatorNotDefined);
+		list << toQString(AssignmentRule::OperatorNotDefined);
 	}
 
 	return list;

@@ -164,7 +164,7 @@ void XmlBudgetWriter::write(const Estimate* estimate)
 		if (estimate->parentEstimate()->parentEstimate() == 0)
 		{
 			xml.writeTextElement(estimate_ns, "type",
-				toString(estimate->estimateType()).toLower());
+				toQString(estimate->estimateType()).toLower());
 		}
 
 		// If not a parent of estimates, write leaf-only parameters

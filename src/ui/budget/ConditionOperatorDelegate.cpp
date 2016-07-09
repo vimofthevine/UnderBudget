@@ -67,7 +67,7 @@ void ConditionOperatorDelegate::setEditorData(QWidget* editor,
 	QComboBox* combo = static_cast<QComboBox*>(editor);
 	combo->clear();
 	combo->addItems(operatorsFor(field));
-	combo->setCurrentIndex(combo->findText(toString(oper)));
+	combo->setCurrentIndex(combo->findText(toQString(oper)));
 }
 
 //------------------------------------------------------------------------------

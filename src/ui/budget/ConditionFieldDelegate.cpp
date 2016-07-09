@@ -33,13 +33,13 @@ QWidget* ConditionFieldDelegate::createEditor(QWidget* parent,
 	const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
 	QComboBox* combo = new QComboBox(parent);
-	combo->addItem(toString(AssignmentRule::FieldNotDefined));
-	combo->addItem(toString(AssignmentRule::Date));
-	combo->addItem(toString(AssignmentRule::Amount));
-	combo->addItem(toString(AssignmentRule::Payee));
-	combo->addItem(toString(AssignmentRule::Memo));
-	combo->addItem(toString(AssignmentRule::DepositAccount));
-	combo->addItem(toString(AssignmentRule::WithdrawalAccount));
+	combo->addItem(toQString(AssignmentRule::FieldNotDefined));
+	combo->addItem(toQString(AssignmentRule::Date));
+	combo->addItem(toQString(AssignmentRule::Amount));
+	combo->addItem(toQString(AssignmentRule::Payee));
+	combo->addItem(toQString(AssignmentRule::Memo));
+	combo->addItem(toQString(AssignmentRule::DepositAccount));
+	combo->addItem(toQString(AssignmentRule::WithdrawalAccount));
 	return combo;
 }
 
@@ -50,7 +50,7 @@ void ConditionFieldDelegate::setEditorData(QWidget* editor,
 	AssignmentRule::Field field
 		= index.model()->data(index, Qt::EditRole).value<AssignmentRule::Field>();
 	QComboBox* combo = static_cast<QComboBox*>(editor);
-	combo->setCurrentIndex(combo->findText(toString(field)));
+	combo->setCurrentIndex(combo->findText(toQString(field)));
 }
 
 //------------------------------------------------------------------------------

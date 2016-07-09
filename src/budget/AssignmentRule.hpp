@@ -292,7 +292,7 @@ private:
  * @param[in] field condition field enumeration
  * @return string representation of the condition field
  */
-QString toString(AssignmentRule::Field field);
+QString toQString(AssignmentRule::Field field);
 
 /**
  * Returns a string representation of the given condition operator.
@@ -300,7 +300,7 @@ QString toString(AssignmentRule::Field field);
  * @param[in] oper condition operator enumeration
  * @return string representation of the condition operator
  */
-QString toString(AssignmentRule::Operator oper);
+QString toQString(AssignmentRule::Operator oper);
 
 /**
  * Returns a condition operator enumeration for the

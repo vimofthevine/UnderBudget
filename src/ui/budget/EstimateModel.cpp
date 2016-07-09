@@ -170,7 +170,7 @@ QVariant EstimateModel::data(const QModelIndex& index, int role) const
 	case 1: // defined description
 		return estimate->estimateDescription();
 	case 2: // defined type
-		return toString(estimate->estimateType());
+		return toQString(estimate->estimateType());
 	case 3: // defined amount
 		return estimate->estimatedAmount().toString();
 	case 4: // defined due date

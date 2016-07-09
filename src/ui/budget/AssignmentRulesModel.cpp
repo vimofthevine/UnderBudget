@@ -256,10 +256,10 @@ QVariant AssignmentRulesModel::displayData(const QModelIndex& index) const
 		case ID_COL:
 			return rule->estimateId();
 		case FIELD_COL:
-			return (count == 1) ? toString(rule->conditionAt(0).field)
+			return (count == 1) ? toQString(rule->conditionAt(0).field)
 				: tr("%1 fields").arg(count);
 		case OPER_COL:
-			return (count == 1) ? toString(rule->conditionAt(0).op)
+			return (count == 1) ? toQString(rule->conditionAt(0).op)
 				: tr("%1 conditions").arg(count);
 		case VAL_COL:
 			return (count == 1) ? rule->conditionAt(0).value
@@ -279,9 +279,9 @@ QVariant AssignmentRulesModel::displayData(const QModelIndex& index) const
 			return rule->estimateId();
 		}
 		case FIELD_COL:
-			return toString(condition.field);
+			return toQString(condition.field);
 		case OPER_COL:
-			return toString(condition.op);
+			return toQString(condition.op);
 		case VAL_COL:
 			return condition.value;
 		default:
@@ -441,7 +441,7 @@ bool AssignmentRulesModel::setData(const QModelIndex& index,
 		case FIELD_COL:
 			condition.field = static_cast<AssignmentRule::Field>(value.toInt());
 			// Make sure operator selection is applicable to newly selected field
-			if ( ! operatorsFor(condition.field).contains(toString(condition.op)))
+			if ( ! operatorsFor(condition.field).contains(toQString(condition.op)))
 			{
 				condition.op = toOperatorEnum(operatorsFor(condition.field).at(0));
 			}

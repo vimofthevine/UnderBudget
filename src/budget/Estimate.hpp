@@ -910,7 +910,7 @@ private:
  * @param[in] type estimate type enumeration
  * @return string representation of the estimate type
  */
-QString toString(Estimate::Type type);
+QString toQString(Estimate::Type type);
 
 }
 
