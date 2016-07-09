@@ -1,10 +1,6 @@
 # Packaging CMake configuration
 
 if (UNIX)
-	# Add plugins to install target
-	install(DIRECTORY ${PROJECT_BINARY_DIR}/plugins
-		DESTINATION share/underbudget)
-
 	# Add desktop file to install target
 	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/underbudget.desktop
 		DESTINATION share/applications)

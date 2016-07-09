@@ -18,28 +18,25 @@ if (WIN32)
 	endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif (WIN32)
 
-# Put libraries in the plugins folder
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/plugins)
-# Put executables in the bin folder
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-
 # Add source sub-directories
 add_subdirectory(accounting)
 add_subdirectory(analysis)
 add_subdirectory(budget)
 add_subdirectory(gzip)
 add_subdirectory(ledger)
-add_subdirectory(qt-gui)
 add_subdirectory(ui)
+
+# Instruct CMake to place executable in the bin folder
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
+# Configure the application info header
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/info.hpp.in
+	${CMAKE_CURRENT_BINARY_DIR}/info.hpp)
 
 # Specify underbudget source files
 set(underbudget_srcs
 	main.cpp
-	PluginLoader.cpp
 )
-
-# Generate module initialization code
-usFunctionGenerateModuleInit(underbudget_srcs)
 
 # Specify resource files
 # (this can't be done directly in a subdirectory,
@@ -48,10 +45,9 @@ qt5_add_resources(ui_rcs_srcs ${ui_rcs})
 
 # Build underbudget executable
 add_executable(underbudget ${underbudget_srcs} ${ui_rcs_srcs})
-target_link_libraries(underbudget ${CppMicroServices_LIBRARIES})
-qt5_use_modules(underbudget Core)
-set_property(TARGET underbudget APPEND PROPERTY COMPILE_DEFINITIONS
-	US_MODULE_NAME=main)
+target_link_libraries(underbudget ui)
+qt5_use_modules(underbudget Core Widgets)
 
 # Add executable to install target
-install(TARGETS underbudget DESTINATION bin)
+install(PROGRAMS ${PROJECT_BINARY_DIR}/bin/underbudget DESTINATION bin)
+
