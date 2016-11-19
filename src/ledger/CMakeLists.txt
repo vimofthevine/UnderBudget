@@ -1,6 +1,7 @@
 # Ledger source CMake configuration
 
 # Add ledger source sub-directories
+add_subdirectory(persistence)
 add_subdirectory(storage)
 
 # Specify ledger source files

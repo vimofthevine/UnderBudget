@@ -3,6 +3,9 @@
 .project
 .settings
 
+# Qt Creator project files
+CMakeLists.txt.user*
+
 # Temporary files
 *.swp
 
