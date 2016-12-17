@@ -3,6 +3,7 @@
 # Specify ledger model source files
 set(ledger_model_srcs
     Currency.cpp
+    Money.cpp
 )
 
 # Build ledger model library

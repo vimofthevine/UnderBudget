@@ -1,6 +1,7 @@
 #pragma once
 
 // Qt include(s)
+#include <QMetaType>
 #include <QString>
 
 namespace ub {

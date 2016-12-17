@@ -2,3 +2,4 @@
 
 # Build unit tests
 build_test(CurrencyTest ledger_model)
+build_test(MoneyTest ledger_model)
