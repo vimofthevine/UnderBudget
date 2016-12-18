@@ -7,7 +7,7 @@ namespace ub {
 namespace ledger {
 
 /** Unit test for the AssetAccount class. */
-class AssetAccountTest : public QObject {
+class AccountTest : public QObject {
     Q_OBJECT
 
 private slots:

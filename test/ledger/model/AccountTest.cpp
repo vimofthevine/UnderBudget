@@ -2,28 +2,28 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include <ledger/model/AssetAccount.hpp>
+#include <ledger/model/Account.hpp>
 #include <ledger/model/Currency.hpp>
 #include <ledger/model/Money.hpp>
-#include "AssetAccountTest.hpp"
+#include "AccountTest.hpp"
 
 //--------------------------------------------------------------------------------------------------
-QTEST_MAIN(ub::ledger::AssetAccountTest)
+QTEST_MAIN(ub::ledger::AccountTest)
 
 namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-void AssetAccountTest::setCurrentBalanceShouldThrowIfCurrencyDoesNotMatch() {
-    AssetAccount acct;
+void AccountTest::setCurrentBalanceShouldThrowIfCurrencyDoesNotMatch() {
+    Account acct;
     acct.setCurrency(Currency("USD"));
     Money balance(10.0, Currency("UAH"));
     QVERIFY_EXCEPTION_THROWN(acct.setCurrentBalance(balance), std::invalid_argument);
 }
 
 //--------------------------------------------------------------------------------------------------
-void AssetAccountTest::setReconciledBalanceShouldThrowIfCurrencyDoesNotMatch() {
-    AssetAccount acct;
+void AccountTest::setReconciledBalanceShouldThrowIfCurrencyDoesNotMatch() {
+    Account acct;
     acct.setCurrency(Currency("USD"));
     Money balance(10.0, Currency("UAH"));
     QVERIFY_EXCEPTION_THROWN(acct.setReconciledBalance(balance), std::invalid_argument);

@@ -2,64 +2,49 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "AssetAccount.hpp"
+#include "Account.hpp"
 
 namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AssetAccount::AssetAccount() :  id_(0) {}
+Account::Account() :  id_(0) {}
 
 //--------------------------------------------------------------------------------------------------
-AssetAccount::AssetAccount(int id) : id_(id) {}
+Account::Account(int id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
-QString AssetAccount::accountNumber() const {
-    return account_number_;
-}
-
-//--------------------------------------------------------------------------------------------------
-Currency AssetAccount::currency() const {
+Currency Account::currency() const {
     return currency_;
 }
 
 //--------------------------------------------------------------------------------------------------
-Money AssetAccount::currentBalance() const {
+Money Account::currentBalance() const {
     return current_balance_;
 }
 
 //------------------------------------------------------------------------------
-int AssetAccount::id() const {
+int Account::id() const {
     return id_;
 }
 
 //------------------------------------------------------------------------------
-QString AssetAccount::financialInstitution() const {
-    return institution_;
-}
-
-//------------------------------------------------------------------------------
-QString AssetAccount::name() const {
+QString Account::name() const {
     return account_name_;
 }
 
 //------------------------------------------------------------------------------
-Money AssetAccount::reconciledBalance() const {
+Money Account::reconciledBalance() const {
     return reconciled_balance_;
 }
 
 //------------------------------------------------------------------------------
-void AssetAccount::setAccountNumber(const QString & number) {
-    account_number_ = number;
-}
-
-//------------------------------------------------------------------------------
-void AssetAccount::setCurrency(const Currency & currency) {
+void Account::setCurrency(const Currency & currency) {
     currency_ = currency;
 }
 
 //------------------------------------------------------------------------------
-void AssetAccount::setCurrentBalance(const Money & balance) {
+void Account::setCurrentBalance(const Money & balance) {
     if (currency_ != balance.currency()) {
         throw std::invalid_argument("");
     }
@@ -67,17 +52,12 @@ void AssetAccount::setCurrentBalance(const Money & balance) {
 }
 
 //------------------------------------------------------------------------------
-void AssetAccount::setFinancialInstitution(const QString & institution) {
-    institution_ = institution;
-}
-
-//------------------------------------------------------------------------------
-void AssetAccount::setName(const QString & name) {
+void Account::setName(const QString & name) {
     account_name_ = name;
 }
 
 //------------------------------------------------------------------------------
-void AssetAccount::setReconciledBalance(const Money & balance) {
+void Account::setReconciledBalance(const Money & balance) {
     if (currency_ != balance.currency()) {
         throw std::invalid_argument("");
     }

@@ -11,34 +11,26 @@ namespace ub {
 namespace ledger {
 
 /**
- * An asset account corresponds to the real-world location of immediately available funds, such as
- * a bank account or cash on hand.
+ * An account corresponds to cash on hand or a real-world bank, credit card, or loan account.
  *
- * The current balance of any given asset account is fully known, and the sum of all asset accounts
+ * The current balance of any given account is fully known, and the sum of all accounts
  * represents the user's net worth.
  *
  * @ingroup ledger
  */
-class AssetAccount {
+class Account {
 public:
     /**
      * Initializes an account with default values.
      */
-    AssetAccount();
+    Account();
 
     /**
      * Initializes an account with the given ID.
      *
      * @param[in] id Account ID
      */
-    explicit AssetAccount(int id);
-
-    /**
-     * Returns the account number for this account.
-     *
-     * @return Account number
-     */
-    QString accountNumber() const;
+    explicit Account(int id);
 
     /**
      * Returns the currency type of this account.
@@ -62,13 +54,6 @@ public:
     int id() const;
 
     /**
-     * Returns the financial institution at which this account resides.
-     *
-     * @return Financial institution
-     */
-    QString financialInstitution() const;
-
-    /**
      * Returns the name of this account.
      *
      * @return Account name
@@ -81,14 +66,6 @@ public:
      * @return Reconciled balance
      */
     Money reconciledBalance() const;
-
-    /**
-     * Updates the account number for this account.
-     *
-     * @param[in] number New account number
-     * @return @c true if successful
-     */
-    void setAccountNumber(const QString & number);
 
     /**
      * Updates the currenty type of this account.
@@ -105,14 +82,6 @@ public:
      *        account currency
      */
     void setCurrentBalance(const Money & balance);
-
-    /**
-     * Updates the financial institution of this account.
-     *
-     * @param[in] institution New financial institution
-     * @return @c true if successful
-     */
-    void setFinancialInstitution(const QString & institution);
 
     /**
      * Updates the name of this account.
@@ -134,16 +103,12 @@ public:
 private:
     /** Name of this account */
     QString account_name_;
-    /** Account number */
-    QString account_number_;
     /** Currency type */
     Currency currency_;
     /** Current balance */
     Money current_balance_;
     /** Account ID */
     int id_;
-    /** Financial institution */
-    QString institution_;
     /** Reconciled balance */
     Money reconciled_balance_;
 };
