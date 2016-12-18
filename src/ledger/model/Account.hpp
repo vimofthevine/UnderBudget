@@ -33,6 +33,13 @@ public:
     explicit Account(int id);
 
     /**
+     * Returns the category of this account.
+     *
+     * @return Category of this account
+     */
+    QString category() const;
+
+    /**
      * Returns the currency type of this account.
      *
      * @return Currency type of this account
@@ -66,6 +73,13 @@ public:
      * @return Reconciled balance
      */
     Money reconciledBalance() const;
+
+    /**
+     * Updates the category of this account.
+     *
+     * @param[in] category New category
+     */
+    void setCategory(const QString & category);
 
     /**
      * Updates the currenty type of this account.
@@ -103,6 +117,8 @@ public:
 private:
     /** Name of this account */
     QString account_name_;
+    /** Category */
+    QString category_;
     /** Currency type */
     Currency currency_;
     /** Current balance */

@@ -14,6 +14,11 @@ Account::Account() :  id_(0) {}
 Account::Account(int id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
+QString Account::category() const {
+    return category_;
+}
+
+//--------------------------------------------------------------------------------------------------
 Currency Account::currency() const {
     return currency_;
 }
@@ -36,6 +41,11 @@ QString Account::name() const {
 //------------------------------------------------------------------------------
 Money Account::reconciledBalance() const {
     return reconciled_balance_;
+}
+
+//------------------------------------------------------------------------------
+void Account::setCategory(const QString & category) {
+    category_ = category;
 }
 
 //------------------------------------------------------------------------------
