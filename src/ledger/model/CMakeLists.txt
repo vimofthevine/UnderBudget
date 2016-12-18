@@ -2,6 +2,7 @@
 
 # Specify ledger model source files
 set(ledger_model_srcs
+    AssetAccount.cpp
     Currency.cpp
     Money.cpp
 )
