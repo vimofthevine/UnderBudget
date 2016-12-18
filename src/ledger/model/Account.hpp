@@ -40,9 +40,9 @@ public:
     QString category() const;
 
     /**
-     * Returns the currency type of this account.
+     * Returns the currency of this account.
      *
-     * @return Currency type of this account
+     * @return Currency of this account
      */
     Currency currency() const;
 
@@ -82,9 +82,9 @@ public:
     void setCategory(const QString & category);
 
     /**
-     * Updates the currenty type of this account.
+     * Updates the currency of this account.
      *
-     * @param[in] currency New currency type
+     * @param[in] currency New currency
      */
     void setCurrency(const Currency & currency);
 
@@ -101,7 +101,6 @@ public:
      * Updates the name of this account.
      *
      * @param[in] name New account name
-     * @return @c true if successful
      */
     void setName(const QString & name);
 
@@ -119,7 +118,7 @@ private:
     QString account_name_;
     /** Category */
     QString category_;
-    /** Currency type */
+    /** Currency */
     Currency currency_;
     /** Current balance */
     Money current_balance_;
