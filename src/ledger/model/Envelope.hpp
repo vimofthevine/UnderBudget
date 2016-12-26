@@ -28,6 +28,12 @@ public:
      */
      explicit Envelope(int id);
 
+    // Copy constructor
+    Envelope(const Envelope & orig) = default;
+
+    // Assignment operator
+    Envelope & operator=(const Envelope & orig) = default;
+
     /**
      * Returns the category of this envelope.
      *

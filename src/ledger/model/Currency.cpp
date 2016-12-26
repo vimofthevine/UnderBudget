@@ -160,10 +160,10 @@ const QMap<QString,QString>& symbols() {
 }
 
 //--------------------------------------------------------------------------------------------------
-Currency::Currency() : iso4217_(QLocale().currencySymbol(QLocale::CurrencyIsoCode)) {}
+Currency::Currency() : id_(0), iso4217_(QLocale().currencySymbol(QLocale::CurrencyIsoCode)) {}
 
 //--------------------------------------------------------------------------------------------------
-Currency::Currency(const QString & code) : iso4217_(code) {}
+Currency::Currency(int id, const QString & code) : id_(id), iso4217_(code) {}
 
 //--------------------------------------------------------------------------------------------------
 bool Currency::operator==(const Currency & that) const {
@@ -183,6 +183,11 @@ QString Currency::code() const {
 //--------------------------------------------------------------------------------------------------
 QString Currency::format(double value) const {
     return QLocale().toCurrencyString(value, symbol());
+}
+
+//--------------------------------------------------------------------------------------------------
+int Currency::id() const {
+    return id_;
 }
 
 //--------------------------------------------------------------------------------------------------

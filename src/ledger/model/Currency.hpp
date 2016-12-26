@@ -20,11 +20,12 @@ public:
     Currency();
 
     /**
-     * Initializes a currency with the given ISO 4217 code.
+     * Initializes a currency with the given ID and ISO 4217 code.
      *
+     * @param[in] id   Currency ID
      * @param[in] code ISO 4217 currency code
      */
-    Currency(const QString & code);
+    Currency(int id, const QString & code);
 
     /**
      * Initializes a currency with the given ISO 4217 code.
@@ -72,6 +73,13 @@ public:
     QString format(double value) const;
 
     /**
+     * Returns the ID of this currency.
+     *
+     * @return Currency ID
+     */
+    int id() const;
+
+    /**
      * Returns the UTF symbol for this currency.
      *
      * @return UTF symbol
@@ -79,6 +87,8 @@ public:
     QString symbol() const;
 
 private:
+    /** Currency ID */
+    int id_;
     /** ISO 4217 currency code */
     QString iso4217_;
 };

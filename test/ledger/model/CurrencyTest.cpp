@@ -18,11 +18,11 @@ void CurrencyTest::defaultConstructorShouldUseCurrentLocale_data() {
     QTest::addColumn<Currency>("currency");
 
     QTest::newRow("en-US") << QLocale(QLocale::English, QLocale::UnitedStates)
-        << Currency("USD");
+        << Currency(0, "USD");
     QTest::newRow("uk-UA") << QLocale(QLocale::Ukrainian, QLocale::Ukraine)
-        << Currency("UAH");
+        << Currency(0, "UAH");
     QTest::newRow("de-DE") << QLocale(QLocale::German, QLocale::Germany)
-        << Currency("EUR");
+        << Currency(0, "EUR");
 }
 
 //------------------------------------------------------------------------------
@@ -43,28 +43,28 @@ void CurrencyTest::shouldFormatValuesWithAppropriateCurrencySymbol_data() {
     QTest::addColumn<QString>("result");
 
     QTest::newRow("en-US_usd_short")
-        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency("USD")
+        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency(0, "USD")
         << 4.0 << "$4.00";
     QTest::newRow("en-US_usd_long")
-        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency("USD")
+        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency(0, "USD")
         << 1234.0 << "$1,234.00";
     QTest::newRow("en-US_usd_negative")
-        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency("USD")
+        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency(0, "USD")
         << -234.32 << "$-234.32";
     QTest::newRow("en-US_uah")
-        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency("UAH")
+        << QLocale(QLocale::English, QLocale::UnitedStates) << Currency(0, "UAH")
         << 1234.0 << QChar(8372) + QString("1,234.00");
     QTest::newRow("uk-UA_uah_short")
-        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency("UAH")
+        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency(0, "UAH")
         << 4.0 << QString::fromUtf8("4,00\u00A0\u20B4");
     QTest::newRow("uk-UA_uah_long")
-        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency("UAH")
+        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency(0, "UAH")
         << 1234.0 << QString::fromUtf8("1\u00A0234,00\u00A0\u20B4");
     QTest::newRow("uk-UA_uah_negative")
-        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency("UAH")
+        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency(0, "UAH")
         << -234.32 << QString::fromUtf8("-234,32\u00A0\u20B4");
     QTest::newRow("uk-UA_usd")
-        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency("USD")
+        << QLocale(QLocale::Ukrainian, QLocale::Ukraine) << Currency(0, "USD")
         << 1234.0 << "1\u00A0234,00\u00A0$";
 }
 

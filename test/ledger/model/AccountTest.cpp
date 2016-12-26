@@ -16,16 +16,16 @@ namespace ledger {
 //--------------------------------------------------------------------------------------------------
 void AccountTest::setCurrentBalanceShouldThrowIfCurrencyDoesNotMatch() {
     Account acct;
-    acct.setCurrency(Currency("USD"));
-    Money balance(10.0, Currency("UAH"));
+    acct.setCurrency(Currency(0, "USD"));
+    Money balance(10.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(acct.setCurrentBalance(balance), std::invalid_argument);
 }
 
 //--------------------------------------------------------------------------------------------------
 void AccountTest::setReconciledBalanceShouldThrowIfCurrencyDoesNotMatch() {
     Account acct;
-    acct.setCurrency(Currency("USD"));
-    Money balance(10.0, Currency("UAH"));
+    acct.setCurrency(Currency(0, "USD"));
+    Money balance(10.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(acct.setReconciledBalance(balance), std::invalid_argument);
 }
 

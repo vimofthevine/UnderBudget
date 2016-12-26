@@ -16,8 +16,8 @@ namespace ledger {
 //--------------------------------------------------------------------------------------------------
 void EnvelopeTest::setCurrentBalanceShouldThrowIfCurrencyDoesNotMatch() {
     Envelope envelope;
-    envelope.setCurrency(Currency("USD"));
-    Money balance(10.0, Currency("UAH"));
+    envelope.setCurrency(Currency(0, "USD"));
+    Money balance(10.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(envelope.setCurrentBalance(balance), std::invalid_argument);
 }
 

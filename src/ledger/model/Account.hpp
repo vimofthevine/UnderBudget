@@ -32,6 +32,12 @@ public:
      */
     explicit Account(int id);
 
+    // Copy constructor
+    Account(const Account & orig) = default;
+
+    // Assignment operator
+    Account & operator=(const Account & orig) = default;
+
     /**
      * Returns the category of this account.
      *

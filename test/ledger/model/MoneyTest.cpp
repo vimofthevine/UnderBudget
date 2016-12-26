@@ -71,15 +71,15 @@ void MoneyTest::shouldFormatAccordingToCurrency_data() {
 
 	// Important! These are only tested with the en-US locale (see CurrencyTest
 	// for more exhaustive testing of formatting in other locales)
-    QTest::newRow("zero") << Money(0.0, Currency("USD")) << "$0.00";
-    QTest::newRow("whole") << Money(12.0, Currency("USD")) << "$12.00";
-    QTest::newRow("decimal") << Money(43.72, Currency("USD")) << "$43.72";
-    QTest::newRow("thousands") << Money(1322.04, Currency("USD")) << "$1,322.04";
-    QTest::newRow("negative") << Money(-3.92, Currency("USD")) << "$-3.92";
-    QTest::newRow("foreign") << Money(1322.04, Currency("UAH"))
+    QTest::newRow("zero") << Money(0.0, Currency(0, "USD")) << "$0.00";
+    QTest::newRow("whole") << Money(12.0, Currency(0, "USD")) << "$12.00";
+    QTest::newRow("decimal") << Money(43.72, Currency(0, "USD")) << "$43.72";
+    QTest::newRow("thousands") << Money(1322.04, Currency(0, "USD")) << "$1,322.04";
+    QTest::newRow("negative") << Money(-3.92, Currency(0, "USD")) << "$-3.92";
+    QTest::newRow("foreign") << Money(1322.04, Currency(0, "UAH"))
                              << QChar(8372) + QString("1,322.04");
-    QTest::newRow("pos-precision") << Money(1.234567, Currency("USD")) << "$1.23";
-    QTest::newRow("neg-precision") << Money(-1.234567, Currency("USD")) << "$-1.23";
+    QTest::newRow("pos-precision") << Money(1.234567, Currency(0, "USD")) << "$1.23";
+    QTest::newRow("neg-precision") << Money(-1.234567, Currency(0, "USD")) << "$-1.23";
 }
 
 //------------------------------------------------------------------------------
@@ -172,8 +172,8 @@ void MoneyTest::additionShouldAddMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::additionShouldThrowWhenDifferentCurrency() {
-    Money usd(1.0, Currency("USD"));
-    Money uah(8.0, Currency("UAH"));
+    Money usd(1.0, Currency(0, "USD"));
+    Money uah(8.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd + uah, std::invalid_argument);
 }
 
@@ -210,8 +210,8 @@ void MoneyTest::subtractionShouldSubtractMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::subtractionShouldThrowWhenDifferentCurrency() {
-    Money usd(2.0, Currency("USD"));
-    Money uah(8.0, Currency("UAH"));
+    Money usd(2.0, Currency(0, "USD"));
+    Money uah(8.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd - uah, std::invalid_argument);
 }
 
@@ -271,8 +271,8 @@ void MoneyTest::divisionShouldDivideMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::divisionShouldThrowWhenDifferentCurrency() {
-    Money usd(1.0, Currency("USD"));
-    Money uah(16.0, Currency("UAH"));
+    Money usd(1.0, Currency(0, "USD"));
+    Money uah(16.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd / uah, std::invalid_argument);
 }
 
@@ -307,7 +307,7 @@ void MoneyTest::inequalShouldCompareCurrencyAndAmount_data() {
 	QTest::newRow("opposite_signs") << Money(10) << Money(-10) << true;
 	QTest::newRow("negatives") << Money(-23.53) << Money(-23.53) << false;
 	QTest::newRow("large_exact") << Money(1234567.89) << Money(1234567.89) << false;
-    QTest::newRow("diff_curr") << Money(1.1, Currency("USD")) << Money(1.1, Currency("UAH"))
+    QTest::newRow("diff_curr") << Money(1.1, Currency(0, "USD")) << Money(1.1, Currency(0, "UAH"))
                                << true;
 	QTest::newRow("precision-eq") << Money(1.2345678) << Money(1.2345678) << false;
 	QTest::newRow("precision-round") << Money(1.2345687) << Money(1.2345678) << false;
@@ -342,7 +342,7 @@ void MoneyTest::equalShouldCompareCurrencyAndAmount_data() {
 	QTest::newRow("opposite_signs") << Money(10) << Money(-10) << false;
 	QTest::newRow("negatives") << Money(-23.53) << Money(-23.53) << true;
 	QTest::newRow("large_exact") << Money(1234567.89) << Money(1234567.89) << true;
-    QTest::newRow("diff_curr") << Money(1.1, Currency("USD")) << Money(1.1, Currency("UAH"))
+    QTest::newRow("diff_curr") << Money(1.1, Currency(0, "USD")) << Money(1.1, Currency(0, "UAH"))
                                << false;
 	QTest::newRow("precision-eq") << Money(1.2345678) << Money(1.2345678) << true;
 	QTest::newRow("precision-round") << Money(1.2345687) << Money(1.2345678) << true;
@@ -387,8 +387,8 @@ void MoneyTest::greaterThanShouldCompareMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::greaterThanShouldThrowWhenDifferentCurrency() {
-    Money usd(2.0, Currency("USD"));
-    Money uah(8.0, Currency("UAH"));
+    Money usd(2.0, Currency(0, "USD"));
+    Money uah(8.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd > uah, std::invalid_argument);
 }
 
@@ -422,8 +422,8 @@ void MoneyTest::greaterThanOrEqualShouldCompareMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::greaterThanOrEqualShouldThrowWhenDifferentCurrency() {
-    Money usd(2.0, Currency("USD"));
-    Money uah(8.0, Currency("UAH"));
+    Money usd(2.0, Currency(0, "USD"));
+    Money uah(8.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd >= uah, std::invalid_argument);
 }
 
@@ -457,8 +457,8 @@ void MoneyTest::lesserThanShouldCompareMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::lesserThanShouldThrowWhenDifferentCurrency() {
-    Money usd(2.0, Currency("USD"));
-    Money uah(8.0, Currency("UAH"));
+    Money usd(2.0, Currency(0, "USD"));
+    Money uah(8.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd < uah, std::invalid_argument);
 }
 
@@ -492,8 +492,8 @@ void MoneyTest::lesserThanOrEqualShouldCompareMoniesWhenSameCurrency() {
 
 //------------------------------------------------------------------------------
 void MoneyTest::lesserThanOrEqualShouldThrowWhenDifferentCurrency() {
-    Money usd(2.0, Currency("USD"));
-    Money uah(8.0, Currency("UAH"));
+    Money usd(2.0, Currency(0, "USD"));
+    Money uah(8.0, Currency(0, "UAH"));
     QVERIFY_EXCEPTION_THROWN(usd <= uah, std::invalid_argument);
 }
 
