@@ -1,4 +1,4 @@
 # Ledger persistence test CMake configuration
 
 # Build unit tests
-build_test(AssetAccountTest ledger_persistence)
+build_test(SQLCurrencyRepositoryTest ledger_persistence)
