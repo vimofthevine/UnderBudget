@@ -1,11 +1,13 @@
 #pragma once
 
+// Standard include(s)
+#include <vector>
+
 // Qt include(s)
 #include <QString>
 
 // UnderBudget include(s)
 #include "Currency.hpp"
-#include "Money.hpp"
 
 namespace ub {
 namespace ledger {
@@ -39,11 +41,11 @@ public:
     Account & operator=(const Account & orig) = default;
 
     /**
-     * Returns the category of this account.
+     * Returns the IDs of the children of this account.
      *
-     * @return Category of this account
+     * @return Children account IDs
      */
-    QString category() const;
+    std::vector<int> children() const;
 
     /**
      * Returns the currency of this account.
@@ -51,13 +53,6 @@ public:
      * @return Currency of this account
      */
     Currency currency() const;
-
-    /**
-     * Returns the current balance of this account.
-     *
-     * @return Current balance
-     */
-    Money currentBalance() const;
 
     /**
      * Returns the ID of this account.
@@ -74,18 +69,18 @@ public:
     QString name() const;
 
     /**
-     * Returns the reconciled balance of this account.
+     * Returns the ID of the parent to this account.
      *
-     * @return Reconciled balance
+     * @return Parent account ID
      */
-    Money reconciledBalance() const;
+    int parent() const;
 
     /**
-     * Updates the category of this account.
+     * Updates the children of this account.
      *
-     * @param[in] category New category
+     * @param[in] children New children IDs
      */
-    void setCategory(const QString & category);
+    void setChildren(const std::vector<int> & children);
 
     /**
      * Updates the currency of this account.
@@ -95,15 +90,6 @@ public:
     void setCurrency(const Currency & currency);
 
     /**
-     * Updates the current balance of this account.
-     *
-     * @param[in] balance New current balance
-     * @throw std::invalid_argument if the balance currency does not match the
-     *        account currency
-     */
-    void setCurrentBalance(const Money & balance);
-
-    /**
      * Updates the name of this account.
      *
      * @param[in] name New account name
@@ -111,27 +97,23 @@ public:
     void setName(const QString & name);
 
     /**
-     * Updates the reconciled balance of this account.
+     * Updates the parent ID of this account.
      *
-     * @param[in] balance New reconciled balance
-     * @throw std::invalid_argument if the balance currency does not match the
-     *        account currency
+     * @param[in] id New parent ID
      */
-    void setReconciledBalance(const Money & balance);
+    void setParent(int id);
 
 private:
     /** Name of this account */
     QString account_name_;
-    /** Category */
-    QString category_;
+    /** Child IDs */
+    std::vector<int> children_;
     /** Currency */
     Currency currency_;
-    /** Current balance */
-    Money current_balance_;
     /** Account ID */
     int id_;
-    /** Reconciled balance */
-    Money reconciled_balance_;
+    /** Parent ID */
+    int parent_;
 };
 
 } // ledger namespace

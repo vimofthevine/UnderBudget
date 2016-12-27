@@ -1,3 +1,6 @@
+// // Standard include(s)
+#include <vector>
+
 // Qt include(s)
 #include <QtCore>
 
@@ -8,24 +11,19 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-Account::Account() :  id_(0) {}
+Account::Account() :  id_(0), parent_(0) {}
 
 //--------------------------------------------------------------------------------------------------
-Account::Account(int id) : id_(id) {}
+Account::Account(int id) : id_(id), parent_(0) {}
 
 //--------------------------------------------------------------------------------------------------
-QString Account::category() const {
-    return category_;
+std::vector<int> Account::children() const {
+    return children_;
 }
 
 //--------------------------------------------------------------------------------------------------
 Currency Account::currency() const {
     return currency_;
-}
-
-//--------------------------------------------------------------------------------------------------
-Money Account::currentBalance() const {
-    return current_balance_;
 }
 
 //------------------------------------------------------------------------------
@@ -39,13 +37,13 @@ QString Account::name() const {
 }
 
 //------------------------------------------------------------------------------
-Money Account::reconciledBalance() const {
-    return reconciled_balance_;
+int Account::parent() const {
+    return parent_;
 }
 
 //------------------------------------------------------------------------------
-void Account::setCategory(const QString & category) {
-    category_ = category;
+void Account::setChildren(const std::vector<int> & children) {
+    children_ = children;
 }
 
 //------------------------------------------------------------------------------
@@ -54,24 +52,8 @@ void Account::setCurrency(const Currency & currency) {
 }
 
 //------------------------------------------------------------------------------
-void Account::setCurrentBalance(const Money & balance) {
-    if (currency_ != balance.currency()) {
-        throw std::invalid_argument("");
-    }
-    current_balance_ = balance;
-}
-
-//------------------------------------------------------------------------------
 void Account::setName(const QString & name) {
     account_name_ = name;
-}
-
-//------------------------------------------------------------------------------
-void Account::setReconciledBalance(const Money & balance) {
-    if (currency_ != balance.currency()) {
-        throw std::invalid_argument("");
-    }
-    reconciled_balance_ = balance;
 }
 
 } // ledger namespace
