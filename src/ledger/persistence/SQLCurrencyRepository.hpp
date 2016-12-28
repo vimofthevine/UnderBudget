@@ -13,6 +13,8 @@ namespace ledger {
 
 /**
  * Currency repository implementation that uses an SQLite database.
+ *
+ * @ingroup ledger
  */
 class SQLCurrencyRepository : public CurrencyRepository {
 public:

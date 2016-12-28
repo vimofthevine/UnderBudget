@@ -160,7 +160,7 @@ const QMap<QString,QString>& symbols() {
 }
 
 //--------------------------------------------------------------------------------------------------
-Currency::Currency() : id_(0), iso4217_(QLocale().currencySymbol(QLocale::CurrencyIsoCode)) {}
+Currency::Currency() : id_(1), iso4217_(QLocale().currencySymbol(QLocale::CurrencyIsoCode)) {}
 
 //--------------------------------------------------------------------------------------------------
 Currency::Currency(int id, const QString & code) : id_(id), iso4217_(code) {}

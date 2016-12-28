@@ -16,7 +16,7 @@ namespace ledger {
 //--------------------------------------------------------------------------------------------------
 void SQLCurrencyRepositoryTest::dropAllTables() {
     auto tables = db.tables();
-    QSqlQuery query;
+    QSqlQuery query(db);
     for (auto table : tables) {
         if (not query.exec("drop table " + table)) {
             qWarning() << query.lastError();

@@ -2,13 +2,23 @@
 
 if (NOT SKIP_TESTS)
 
-	# Macro to build a unit test and add it to CTest
+	# Macro to build a QtTest unit test and add it to CTest
 	macro(build_test name libs)
 		add_executable(${name} ${name}.cpp)
 		qt5_use_modules(${name} Core Widgets Test Sql)
 		target_link_libraries(${name} ${libs})
 		add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
 	endmacro(build_test)
+
+	# Macro to build a GoogleTest unit test and add it to CTest
+	macro(build_gtest name libs)
+		find_package(GTest)
+		include_directories(${GTEST_INCLUDE_DIRS})
+		add_executable(${name} ${name}.cpp)
+                qt5_use_modules(${name} Core Sql Widgets)
+                target_link_libraries(${name} ${libs} ${GTEST_BOTH_LIBRARIES} gmock)
+		add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
+	endmacro(build_gtest)
 
 	# Add test sub-directories
 	add_subdirectory(accounting)

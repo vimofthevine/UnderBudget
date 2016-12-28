@@ -6,6 +6,7 @@
 #include <QtSql>
 
 // UnderBudget include(s)
+#include <ledger/model/Currency.hpp>
 #include "SQLCurrencyRepository.hpp"
 
 namespace ub {

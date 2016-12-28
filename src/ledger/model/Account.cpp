@@ -56,5 +56,10 @@ void Account::setName(const QString & name) {
     account_name_ = name;
 }
 
+//------------------------------------------------------------------------------
+void Account::setParent(int id) {
+    parent_ = id;
+}
+
 } // ledger namespace
 } // ub namespace
