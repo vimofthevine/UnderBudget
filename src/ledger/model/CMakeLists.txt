@@ -6,6 +6,7 @@ set(ledger_model_srcs
     AccountTransaction.cpp
     Currency.cpp
     Envelope.cpp
+    EnvelopeTransaction.cpp
     Money.cpp
 )
 

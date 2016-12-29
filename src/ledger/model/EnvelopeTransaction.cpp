@@ -2,81 +2,81 @@
 #include <QtCore>
 
 // UnderBudget include(s)
-#include "Account.hpp"
-#include "AccountTransaction.hpp"
+#include "Envelope.hpp"
+#include "EnvelopeTransaction.hpp"
 
 namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AccountTransaction::AccountTransaction() : AccountTransaction(-1) {}
+EnvelopeTransaction::EnvelopeTransaction() : EnvelopeTransaction(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-AccountTransaction::AccountTransaction(int id)
+EnvelopeTransaction::EnvelopeTransaction(int id)
     : cleared_(false), id_(id), reconciliation_(-1), transaction_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-Account AccountTransaction::account() const {
-    return account_;
-}
-
-//--------------------------------------------------------------------------------------------------
-Money AccountTransaction::amount() const {
+Money EnvelopeTransaction::amount() const {
     return amount_;
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransaction::id() const {
+Envelope EnvelopeTransaction::envelope() const {
+    return envelope_;
+}
+
+//--------------------------------------------------------------------------------------------------
+int EnvelopeTransaction::id() const {
     return id_;
 }
 
 //--------------------------------------------------------------------------------------------------
-bool AccountTransaction::isCleared() const {
+bool EnvelopeTransaction::isCleared() const {
     return cleared_;
 }
 
 //--------------------------------------------------------------------------------------------------
-QString AccountTransaction::memo() const {
+QString EnvelopeTransaction::memo() const {
     return memo_;
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransaction::reconciliation() const {
+int EnvelopeTransaction::reconciliation() const {
     return reconciliation_;
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setAccount(const Account & account) {
-    account_ = account;
-}
-
-//--------------------------------------------------------------------------------------------------
-void AccountTransaction::setAmount(const Money & amount) {
+void EnvelopeTransaction::setAmount(const Money & amount) {
     amount_ = amount;
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setCleared(bool cleared) {
+void EnvelopeTransaction::setCleared(bool cleared) {
     cleared_ = cleared;
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setMemo(const QString & memo) {
+void EnvelopeTransaction::setEnvelope(const Envelope & envelope) {
+    envelope_ = envelope;
+}
+
+//--------------------------------------------------------------------------------------------------
+void EnvelopeTransaction::setMemo(const QString & memo) {
     memo_ = memo;
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setReconciliation(int id) {
+void EnvelopeTransaction::setReconciliation(int id) {
     reconciliation_ = id;
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setTransaction(int id) {
+void EnvelopeTransaction::setTransaction(int id) {
     transaction_ = id;
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransaction::transaction() const {
+int EnvelopeTransaction::transaction() const {
     return transaction_;
 }
 

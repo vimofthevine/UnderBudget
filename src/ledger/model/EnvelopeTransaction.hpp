@@ -4,43 +4,36 @@
 #include <QString>
 
 // UnderBudget include(s)
-#include "Account.hpp"
+#include "Envelope.hpp"
 #include "Money.hpp"
 
 namespace ub {
 namespace ledger {
 
 /**
- * A transaction against a single account, as part of a double-entry transaction.
+ * A transaction against a single envelope, as part of a double-entry transaction.
  *
  * @ingroup ledger
  */
-class AccountTransaction {
+class EnvelopeTransaction {
 public:
     /**
      * Initializes a transaction with default values.
      */
-    AccountTransaction();
+    EnvelopeTransaction();
 
     /**
      * Initializes a transaction with the given ID.
      *
-     * @param[in] id Account transaction ID
+     * @param[in] id Envelope transaction ID
      */
-    explicit AccountTransaction(int id);
+    explicit EnvelopeTransaction(int id);
 
     // Copy constructor
-    AccountTransaction(const AccountTransaction & orig) = default;
+    EnvelopeTransaction(const EnvelopeTransaction & orig) = default;
 
     // Assignment operator
-    AccountTransaction & operator=(const AccountTransaction & orig) = default;
-
-    /**
-     * Returns the account against which this transaction applies.
-     *
-     * @return Account against which this transaction applies
-     */
-    Account account() const;
+    EnvelopeTransaction & operator=(const EnvelopeTransaction & orig) = default;
 
     /**
      * Returns the amount of this transaction.
@@ -50,9 +43,16 @@ public:
     Money amount() const;
 
     /**
-     * Returns the ID of this account transaction.
+     * Returns the envelope against which this transaction applies.
      *
-     * @return Account transaction ID
+     * @return Envelope against which this transaction applies
+     */
+    Envelope envelope() const;
+
+    /**
+     * Returns the ID of this envelope transaction.
+     *
+     * @return Envelope transaction ID
      */
     int id() const;
 
@@ -64,9 +64,9 @@ public:
     bool isCleared() const;
 
     /**
-     * Returns the memo of this account transaction.
+     * Returns the memo of this envelope transaction.
      *
-     * @return Account transaction memo
+     * @return Envelope transaction memo
      */
     QString memo() const;
 
@@ -76,13 +76,6 @@ public:
      * @return Reconciliation ID, or -1 if not associated with a reconciliation
      */
     int reconciliation() const;
-
-    /**
-     * Updates the account to which this transaction applies.
-     *
-     * @param[in] account New account
-     */
-    void setAccount(const Account & account);
 
     /**
      * Updates the amount of this transaction.
@@ -99,6 +92,13 @@ public:
     void setCleared(bool cleared);
 
     /**
+     * Updates the envelope to which this transaction applies.
+     *
+     * @param[in] envelope New envelope
+     */
+    void setEnvelope(const Envelope & envelope);
+
+    /**
      * Updates the memo of this transaction.
      *
      * @param[in] memo New memo
@@ -113,7 +113,7 @@ public:
     void setReconciliation(int id);
 
     /**
-     * Updates the double-entry transaction ID associated with this account transaction.
+     * Updates the double-entry transaction ID associated with this envelope transaction.
      *
      * @param[in] id New transaction ID
      */
@@ -127,13 +127,13 @@ public:
     int transaction() const;
 
 private:
-    /** Account */
-    Account account_;
+    /** Envelope */
+    Envelope envelope_;
     /** Transaction amount */
     Money amount_;
     /** Cleared */
     bool cleared_;
-    /** Account transaction ID */
+    /** Envelope transaction ID */
     int id_;
     /** Memo */
     QString memo_;
