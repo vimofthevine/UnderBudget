@@ -6,6 +6,7 @@
 // UnderBudget include(s)
 #include "Envelope.hpp"
 #include "Money.hpp"
+#include "Transaction.hpp"
 
 namespace ub {
 namespace ledger {
@@ -113,18 +114,18 @@ public:
     void setReconciliation(int id);
 
     /**
-     * Updates the double-entry transaction ID associated with this envelope transaction.
+     * Updates the double-entry transaction associated with this envelope transaction.
      *
-     * @param[in] id New transaction ID
+     * @param[in] transaction New transaction
      */
-    void setTransaction(int id);
+    void setTransaction(const Transaction & transaction);
 
     /**
-     * Returns the ID of the double-entry transaction.
+     * Returns the double-entry transaction to which this envelope tranaction belongs.
      *
-     * @return Transaction ID
+     * @return Double-entry transaction
      */
-    int transaction() const;
+    Transaction transaction() const;
 
 private:
     /** Envelope */
@@ -139,8 +140,8 @@ private:
     QString memo_;
     /** Reconciliation ID */
     int reconciliation_;
-    /** Transaction ID */
-    int transaction_;
+    /** Transaction */
+    Transaction transaction_;
 };
 
 } // ledger namespace

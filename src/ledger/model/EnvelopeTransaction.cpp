@@ -4,6 +4,7 @@
 // UnderBudget include(s)
 #include "Envelope.hpp"
 #include "EnvelopeTransaction.hpp"
+#include "Transaction.hpp"
 
 namespace ub {
 namespace ledger {
@@ -13,7 +14,7 @@ EnvelopeTransaction::EnvelopeTransaction() : EnvelopeTransaction(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 EnvelopeTransaction::EnvelopeTransaction(int id)
-    : cleared_(false), id_(id), reconciliation_(-1), transaction_(-1) {}
+    : cleared_(false), id_(id), reconciliation_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 Money EnvelopeTransaction::amount() const {
@@ -71,12 +72,12 @@ void EnvelopeTransaction::setReconciliation(int id) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void EnvelopeTransaction::setTransaction(int id) {
-    transaction_ = id;
+void EnvelopeTransaction::setTransaction(const Transaction & transaction) {
+    transaction_ = transaction;
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeTransaction::transaction() const {
+Transaction EnvelopeTransaction::transaction() const {
     return transaction_;
 }
 

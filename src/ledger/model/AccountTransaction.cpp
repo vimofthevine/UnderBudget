@@ -4,6 +4,7 @@
 // UnderBudget include(s)
 #include "Account.hpp"
 #include "AccountTransaction.hpp"
+#include "Transaction.hpp"
 
 namespace ub {
 namespace ledger {
@@ -13,7 +14,7 @@ AccountTransaction::AccountTransaction() : AccountTransaction(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 AccountTransaction::AccountTransaction(int id)
-    : cleared_(false), id_(id), reconciliation_(-1), transaction_(-1) {}
+    : cleared_(false), id_(id), reconciliation_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 Account AccountTransaction::account() const {
@@ -71,12 +72,12 @@ void AccountTransaction::setReconciliation(int id) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setTransaction(int id) {
-    transaction_ = id;
+void AccountTransaction::setTransaction(const Transaction & transaction) {
+    transaction_ = transaction;
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransaction::transaction() const {
+Transaction AccountTransaction::transaction() const {
     return transaction_;
 }
 

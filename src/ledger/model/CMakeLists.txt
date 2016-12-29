@@ -8,6 +8,7 @@ set(ledger_model_srcs
     Envelope.cpp
     EnvelopeTransaction.cpp
     Money.cpp
+    Transaction.cpp
 )
 
 # Build ledger model library
