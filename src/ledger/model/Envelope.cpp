@@ -37,6 +37,11 @@ QString Envelope::name() const {
 }
 
 //------------------------------------------------------------------------------
+int Envelope::parent() const {
+    return parent_;
+}
+
+//------------------------------------------------------------------------------
 void Envelope::setChildren(const std::vector<int> & children) {
     children_ = children;
 }

@@ -2,9 +2,9 @@
 
 # Specify ledger persistence source files
 set(ledger_persistence_srcs
-    AssetAccount.cpp
     SQLAccountRepository.cpp
     SQLCurrencyRepository.cpp
+    SQLEnvelopeRepository.cpp
 )
 
 # Build ledger persistence library
