@@ -3,6 +3,7 @@
 # Specify ledger model source files
 set(ledger_model_srcs
     Account.cpp
+    AccountTransaction.cpp
     Currency.cpp
     Envelope.cpp
     Money.cpp
