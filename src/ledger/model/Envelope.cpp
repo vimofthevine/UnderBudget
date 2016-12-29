@@ -1,3 +1,6 @@
+// Standard include(s)
+#include <vector>
+
 // Qt include(s)
 #include <QtCore>
 
@@ -8,24 +11,19 @@ namespace ub {
 namespace ledger {
 
 //------------------------------------------------------------------------------
-Envelope::Envelope() : id_(0) {}
+Envelope::Envelope() : id_(-1), parent_(-1) {}
 
 //------------------------------------------------------------------------------
-Envelope::Envelope(int id) : id_(id) {}
+Envelope::Envelope(int id) : id_(id), parent_(-1) {}
 
 //------------------------------------------------------------------------------
-QString Envelope::category() const {
-    return category_;
+std::vector<int> Envelope::children() const {
+    return children_;
 }
 
 //------------------------------------------------------------------------------
 Currency Envelope::currency() const {
     return currency_;
-}
-
-//------------------------------------------------------------------------------
-Money Envelope::currentBalance() const {
-    return current_balance_;
 }
 
 //------------------------------------------------------------------------------
@@ -39,8 +37,8 @@ QString Envelope::name() const {
 }
 
 //------------------------------------------------------------------------------
-void Envelope::setCategory(const QString & category) {
-    category_ = category;
+void Envelope::setChildren(const std::vector<int> & children) {
+    children_ = children;
 }
 
 //------------------------------------------------------------------------------
@@ -49,16 +47,13 @@ void Envelope::setCurrency(const Currency & currency) {
 }
 
 //------------------------------------------------------------------------------
-void Envelope::setCurrentBalance(const Money & balance) {
-    if (currency_ != balance.currency()) {
-        throw std::invalid_argument("");
-    }
-    current_balance_ = balance;
+void Envelope::setName(const QString & name) {
+    name_ = name;
 }
 
 //------------------------------------------------------------------------------
-void Envelope::setName(const QString & name) {
-    name_ = name;
+void Envelope::setParent(int id) {
+    parent_ = id;
 }
 
 } // ledger namespace

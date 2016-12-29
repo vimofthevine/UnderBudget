@@ -1,5 +1,8 @@
 #pragma once
 
+// Standard include(s)
+#include <vector>
+
 // Qt include(s)
 #include <QString>
 
@@ -35,11 +38,11 @@ public:
     Envelope & operator=(const Envelope & orig) = default;
 
     /**
-     * Returns the category of this envelope.
+     * Returns the IDs of the children of this envelope.
      *
-     * @return Category of this envelope
+     * @return Children envelope IDs
      */
-    QString category() const;
+    std::vector<int> children() const;
 
     /**
      * Returns the currency of this envelope.
@@ -47,13 +50,6 @@ public:
      * @return Currency of this envelope
      */
     Currency currency() const;
-
-    /**
-     * Returns the current balance of this envelope.
-     *
-     * @return Current balance
-     */
-    Money currentBalance() const;
 
     /**
      * Returns the ID of this envelope.
@@ -70,11 +66,18 @@ public:
     QString name() const;
 
     /**
-     * Updates the category of this envelope.
+     * Returns the ID of the parent to this envelope.
      *
-     * @param[in] category New Category
+     * @return Parent envelope ID
      */
-    void setCategory(const QString & category);
+    int parent() const;
+
+    /**
+     * Updates the children of this envelope.
+     *
+     * @param[in] children New children IDs
+     */
+    void setChildren(const std::vector<int> & children);
 
     /**
      * Updates the currency of this envelope.
@@ -84,32 +87,30 @@ public:
     void setCurrency(const Currency & currency);
 
     /**
-     * Updates the current balance of this envelope.
-     *
-     * @param[in] balance New current balance
-     * @throw std::invalid_argument if the balance currency does not match the
-     *        envelope currency
-     */
-    void setCurrentBalance(const Money & balance);
-
-    /**
      * Updates the name of this envelope.
      *
      * @param[in] name New envelope name
      */
     void setName(const QString & name);
 
+    /**
+     * Updates the parent ID of this envelope.
+     *
+     * @param[in] id New parent ID
+     */
+    void setParent(int id);
+
 private:
-    /** Category */
-    QString category_;
+    /** Child IDs */
+    std::vector<int> children_;
     /** Currency */
     Currency currency_;
-    /** Current balance */
-    Money current_balance_;
     /** Envelope ID */
     int id_;
     /** Envelope name */
     QString name_;
+    /** Parent ID */
+    int parent_;
 };
 
 } // ledger namespace
