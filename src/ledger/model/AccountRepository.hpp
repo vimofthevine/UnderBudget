@@ -1,5 +1,8 @@
 #pragma once
 
+// Standard include(s)
+#include <vector>
+
 // Qt include(s)
 #include <QString>
 
@@ -37,6 +40,13 @@ public:
      * @return Account for the given ID
      */
     virtual Account getAccount(int id) = 0;
+
+    /**
+     * Retrieves all leaf accounts.
+     *
+     * @return List of all leaf accounts
+     */
+    virtual std::vector<Account> getLeafAccounts() = 0;
 
     /**
      * Retrieves the root account from the repository.

@@ -147,6 +147,30 @@ Account SQLAccountRepository::getAccount(int id) {
 }
 
 //--------------------------------------------------------------------------------------------------
+std::vector<Account> SQLAccountRepository::getLeafAccounts() {
+    std::vector<Account> accounts;
+
+    QSqlQuery query(db_);
+    query.prepare("SELECT id FROM " + table_name_ + " WHERE rgt=lft+1 ORDER BY name;");
+    if (not query.exec()) {
+        last_error_ = query.lastError().text();
+    }
+    while (query.next()) {
+        int id = query.record().value("id").toInt();
+        // Don't ever include the root account
+        if (id == 1) {
+            continue;
+        }
+        auto iter = accounts_.find(id);
+        if (iter != accounts_.end()) {
+            accounts.push_back(iter->second);
+        }
+    }
+
+    return accounts;
+}
+
+//--------------------------------------------------------------------------------------------------
 Account SQLAccountRepository::getRoot() {
     return getAccount(1);
 }

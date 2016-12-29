@@ -187,6 +187,17 @@ TEST_F(SQLAccountRepositoryTest, ShouldReturnInvalidAccountWhenNoAccountExistsFo
     EXPECT_EQ(-1, repo.getAccount(42).id());
 }
 
+/** Verifies that leaf nodes can be retrieved */
+TEST_F(SQLAccountRepositoryTest, ShouldFindLeafNodes) {
+    createTree();
+
+    SQLAccountRepository repo(db, currencies);
+    auto leafs = repo.getLeafAccounts();
+    ASSERT_EQ(2u, leafs.size());
+    EXPECT_EQ(5, leafs.at(0).id());
+    EXPECT_EQ(6, leafs.at(1).id());
+}
+
 /** Verifies that leaf nodes can be moved towards the back of the tree */
 TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
     createTree();

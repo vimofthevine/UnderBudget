@@ -55,6 +55,13 @@ public:
     Account getAccount(int id) override;
 
     /**
+     * Retrieves all leaf accounts.
+     *
+     * @return List of all leaf accounts
+     */
+    std::vector<Account> getLeafAccounts() override;
+
+    /**
      * Retrieves the root account from the repository.
      *
      * @return Root account
