@@ -1,7 +1,6 @@
 // Standard include(s)
 #include <iostream>
 #include <map>
-#include <memory>
 #include <stack>
 #include <stdexcept>
 #include <vector>
@@ -21,9 +20,12 @@ namespace ledger {
 QString SQLEnvelopeRepository::table_name_ = "envelope";
 
 //--------------------------------------------------------------------------------------------------
-SQLEnvelopeRepository::SQLEnvelopeRepository(QSqlDatabase & db,
-                                           std::shared_ptr<CurrencyRepository> currencies)
-    : db_(db), currencies_(currencies) {
+SQLEnvelopeRepository::SQLEnvelopeRepository(QSqlDatabase & db) : db_(db) {
+    if (not db.tables().contains("currency")) {
+        last_error_ = QObject::tr("Currency table does not exist");
+        throw std::runtime_error(last_error_.toStdString());
+    }
+
     QSqlQuery query(db);
     bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
                               "id INTEGER PRIMARY KEY, "
@@ -57,7 +59,9 @@ void SQLEnvelopeRepository::cache() {
     envelopes_.clear();
 
     QSqlQuery query(db_);
-    query.exec("SELECT * FROM " + table_name_ + " ORDER BY lft;");
+    query.exec("SELECT envelope.id,envelope.name,envelope.currency_id,currency.code,envelope.lft,"
+            "envelope.rgt FROM " + table_name_ +
+            " JOIN currency on envelope.currency_id=currency.id ORDER BY lft;");
 
     QSqlRecord record;
 
@@ -67,7 +71,8 @@ void SQLEnvelopeRepository::cache() {
 
         NestedSetEnvelope envelope(record.value("id").toInt());
         envelope.setName(record.value("name").toString());
-        envelope.setCurrency(currencies_->getCurrency(record.value("currency_id").toInt()));
+        envelope.setCurrency(Currency(record.value("currency_id").toInt(),
+                                      record.value("code").toString()));
         envelope.lft = record.value("lft").toInt();
         envelope.rgt = record.value("rgt").toInt();
 

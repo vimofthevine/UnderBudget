@@ -1,5 +1,4 @@
 // Standard include(s)
-#include <memory>
 #include <vector>
 
 // Qt include(s)
@@ -7,7 +6,6 @@
 #include <QtSql>
 
 // Google include(s)
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 // UnderBudget include(s)
@@ -19,34 +17,14 @@
 namespace ub {
 namespace ledger {
 
-/** Mock currency repository */
-class MockCurrencyRepository : public CurrencyRepository {
-public:
-    MOCK_METHOD1(create, int(const Currency &));
-    MOCK_METHOD1(getCurrency, Currency(int));
-    MOCK_METHOD0(lastError, QString());
-    MOCK_METHOD1(remove, bool(const Currency &));
-    MOCK_METHOD1(update, bool(const Currency &));
-};
-
 /** Test fixture */
 class SQLEnvelopeRepositoryTest : public ::testing::Test {
 protected:
     /** In-memory SQL database */
     QSqlDatabase db;
-    /** Mock currency repository */
-    std::shared_ptr<MockCurrencyRepository> currencies;
-
-    /** Initializes the test fixture. */
-    SQLEnvelopeRepositoryTest() : currencies(new ::testing::NiceMock<MockCurrencyRepository>()) {}
 
     /** Sets up the in-memory database */
     void SetUp() override {
-        ON_CALL(*currencies.get(),
-                getCurrency(1)).WillByDefault(::testing::Return(Currency(1, "USD")));
-        ON_CALL(*currencies.get(),
-                getCurrency(2)).WillByDefault(::testing::Return(Currency(2, "UAH")));
-
         if (QSqlDatabase::contains()) {
             db = QSqlDatabase::database();
         } else {
@@ -56,6 +34,11 @@ protected:
         }
 
         dropAllTables();
+
+        QSqlQuery query(db);
+        query.exec("create table currency(id integer primary key, code varchar);");
+        query.exec("insert into currency(id, code) values(1, 'USD')");
+        query.exec("insert into currency(id, code) values(2, 'UAH')");
     }
 
     /** Clears the in-memory database */
@@ -65,7 +48,7 @@ protected:
 
     /** Creates a family tree of envelopes */
     void createTree() {
-        SQLEnvelopeRepository repo(db, currencies);
+        SQLEnvelopeRepository repo(db);
         Envelope envelope;
         envelope.setName("Child");
         EXPECT_EQ(2, repo.create(envelope, repo.getRoot()));
@@ -117,7 +100,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateTableWhenItDoesNotAlreadyExist) {
     auto tables = db.tables();
     ASSERT_FALSE(tables.contains("envelope"));
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
 
     tables = db.tables();
     ASSERT_TRUE(tables.contains("envelope"));
@@ -126,7 +109,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateTableWhenItDoesNotAlreadyExist) {
 /** Verifies that the root envelope is created when it does not already exist. */
 TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateRootEnvelopeWhenItDoesNotAlreadyExist) {
     {
-        SQLEnvelopeRepository repo(db, currencies);
+        SQLEnvelopeRepository repo(db);
         QSqlQuery query(db);
         query.exec("select count(id) from envelope;");
         query.first();
@@ -135,7 +118,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateRootEnvelopeWhenItDoesNotAlreadyEx
     }
 
     {
-        SQLEnvelopeRepository repo(db, currencies);
+        SQLEnvelopeRepository repo(db);
         QSqlQuery query(db);
         query.exec("select count(id) from envelope;");
         query.first();
@@ -152,14 +135,14 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateRootEnvelopeWhenItDoesNotAlreadyEx
 /** Verifies that envelopes can be created under the root envelope. */
 TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateEnvelopeUnderRoot) {
     {
-        SQLEnvelopeRepository repo(db, currencies);
+        SQLEnvelopeRepository repo(db);
         Envelope envelope;
         envelope.setName("First Child");
         EXPECT_EQ(2, repo.create(envelope, repo.getRoot()));
     }
 
     {
-        SQLEnvelopeRepository repo(db, currencies);
+        SQLEnvelopeRepository repo(db);
         Envelope root = repo.getRoot();
         ASSERT_EQ(1u, root.children().size());
         EXPECT_EQ(2, root.children().at(0));
@@ -171,7 +154,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateEnvelopeUnderRoot) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateEnvelopesUnderNonRoot) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3, 4});
@@ -183,7 +166,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateEnvelopesUnderNonRoot) {
 
 /** Verifies that an invalid envelope is returned for an invalid ID */
 TEST_F(SQLEnvelopeRepositoryTest, ShouldReturnInvalidEnvelopeWhenNoEnvelopeExistsForRequestedID) {
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     EXPECT_EQ(-1, repo.getEnvelope(42).id());
 }
 
@@ -191,7 +174,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldReturnInvalidEnvelopeWhenNoEnvelopeExist
 TEST_F(SQLEnvelopeRepositoryTest, ShouldFindLeafNodes) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     auto leafs = repo.getLeafEnvelopes();
     ASSERT_EQ(2u, leafs.size());
     EXPECT_EQ(5, leafs.at(0).id());
@@ -202,7 +185,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldFindLeafNodes) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(6), repo.getEnvelope(4)))
             << repo.lastError().toStdString();
 
@@ -218,7 +201,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveLeafTowardsFrontOfTree) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(5), repo.getEnvelope(3)))
             << repo.lastError().toStdString();
 
@@ -234,7 +217,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveLeafTowardsFrontOfTree) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveSubtreeTowardsBackOfTree) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(3), repo.getEnvelope(1)))
             << repo.lastError().toStdString();
 
@@ -250,7 +233,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveSubtreeTowardsBackOfTree) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveSubtreeTowardsFrontOfTree) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(4), repo.getEnvelope(3)))
             << repo.lastError().toStdString();
 
@@ -266,7 +249,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveSubtreeTowardsFrontOfTree) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldRemoveLeafFromTree) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.remove(repo.getEnvelope(5))) << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
@@ -280,7 +263,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldRemoveLeafFromTree) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldRemoveSubtreeFromTree) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.remove(repo.getEnvelope(3))) << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
@@ -293,7 +276,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldRemoveSubtreeFromTree) {
 TEST_F(SQLEnvelopeRepositoryTest, ShouldUpdateEnvelopeInDatabase) {
     createTree();
 
-    SQLEnvelopeRepository repo(db, currencies);
+    SQLEnvelopeRepository repo(db);
     Envelope envelope = repo.getEnvelope(4);
     envelope.setCurrency(Currency(2, "UAH"));
     envelope.setName("Fred");

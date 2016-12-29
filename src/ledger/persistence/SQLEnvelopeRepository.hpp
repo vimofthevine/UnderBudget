@@ -2,7 +2,6 @@
 
 // Standard include(s)
 #include <map>
-#include <memory>
 
 // Qt include(s)
 #include <QSqlDatabase>
@@ -29,11 +28,10 @@ public:
      * This will set up the envelope table and add an entry for the root
      * envelope if one does not exist.
      *
-     * @param[in] db         SQL database connection
-     * @param[in] currencies Currency repository
+     * @param[in] db SQL database connection
      * @throw std::runtime_error if the database table could not be set up
      */
-    SQLEnvelopeRepository(QSqlDatabase & db, std::shared_ptr<CurrencyRepository> currencies);
+    SQLEnvelopeRepository(QSqlDatabase & db);
 
     /**
      * Creates a new envelope as a child of the specified parent envelope.
@@ -132,8 +130,6 @@ private:
 
     /** Database connection */
     QSqlDatabase db_;
-    /** Currency repository */
-    std::shared_ptr<CurrencyRepository> currencies_;
     /** Last error message */
     QString last_error_;
     /** Cached envelopes */

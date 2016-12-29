@@ -2,7 +2,6 @@
 
 // Standard include(s)
 #include <map>
-#include <memory>
 
 // Qt include(s)
 #include <QSqlDatabase>
@@ -29,11 +28,10 @@ public:
      * This will set up the account table and add an entry for the root
      * account if one does not exist.
      *
-     * @param[in] db         SQL database connection
-     * @param[in] currencies Currency repository
+     * @param[in] db SQL database connection
      * @throw std::runtime_error if the database table could not be set up
      */
-    SQLAccountRepository(QSqlDatabase & db, std::shared_ptr<CurrencyRepository> currencies);
+    SQLAccountRepository(QSqlDatabase & db);
 
     /**
      * Creates a new account as a child of the specified parent account.
@@ -132,8 +130,6 @@ private:
 
     /** Database connection */
     QSqlDatabase db_;
-    /** Currency repository */
-    std::shared_ptr<CurrencyRepository> currencies_;
     /** Last error message */
     QString last_error_;
     /** Cached accounts */

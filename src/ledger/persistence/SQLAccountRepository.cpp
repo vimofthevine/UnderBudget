@@ -1,7 +1,6 @@
 // Standard include(s)
 #include <iostream>
 #include <map>
-#include <memory>
 #include <stack>
 #include <stdexcept>
 #include <vector>
@@ -21,9 +20,12 @@ namespace ledger {
 QString SQLAccountRepository::table_name_ = "account";
 
 //--------------------------------------------------------------------------------------------------
-SQLAccountRepository::SQLAccountRepository(QSqlDatabase & db,
-                                           std::shared_ptr<CurrencyRepository> currencies)
-    : db_(db), currencies_(currencies) {
+SQLAccountRepository::SQLAccountRepository(QSqlDatabase & db) : db_(db) {
+    if (not db.tables().contains("currency")) {
+        last_error_ = QObject::tr("Currency table does not exist");
+        throw std::runtime_error(last_error_.toStdString());
+    }
+
     QSqlQuery query(db);
     bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
                               "id INTEGER PRIMARY KEY, "
@@ -57,7 +59,9 @@ void SQLAccountRepository::cache() {
     accounts_.clear();
 
     QSqlQuery query(db_);
-    query.exec("SELECT * FROM " + table_name_ + " ORDER BY lft;");
+    query.exec("SELECT account.id,account.name,account.currency_id,currency.code,account.lft,"
+            "account.rgt FROM " + table_name_ +
+            " JOIN currency on account.currency_id=currency.id ORDER BY lft;");
 
     QSqlRecord record;
 
@@ -67,7 +71,8 @@ void SQLAccountRepository::cache() {
 
         NestedSetAccount account(record.value("id").toInt());
         account.setName(record.value("name").toString());
-        account.setCurrency(currencies_->getCurrency(record.value("currency_id").toInt()));
+        account.setCurrency(Currency(record.value("currency_id").toInt(),
+                                     record.value("code").toString()));
         account.lft = record.value("lft").toInt();
         account.rgt = record.value("rgt").toInt();
 

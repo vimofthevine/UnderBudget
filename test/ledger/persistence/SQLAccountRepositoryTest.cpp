@@ -7,7 +7,6 @@
 #include <QtSql>
 
 // Google include(s)
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 // UnderBudget include(s)
@@ -19,34 +18,14 @@
 namespace ub {
 namespace ledger {
 
-/** Mock currency repository */
-class MockCurrencyRepository : public CurrencyRepository {
-public:
-    MOCK_METHOD1(create, int(const Currency &));
-    MOCK_METHOD1(getCurrency, Currency(int));
-    MOCK_METHOD0(lastError, QString());
-    MOCK_METHOD1(remove, bool(const Currency &));
-    MOCK_METHOD1(update, bool(const Currency &));
-};
-
 /** Test fixture */
 class SQLAccountRepositoryTest : public ::testing::Test {
 protected:
     /** In-memory SQL database */
     QSqlDatabase db;
-    /** Mock currency repository */
-    std::shared_ptr<MockCurrencyRepository> currencies;
-
-    /** Initializes the test fixture. */
-    SQLAccountRepositoryTest() : currencies(new ::testing::NiceMock<MockCurrencyRepository>()) {}
 
     /** Sets up the in-memory database */
     void SetUp() override {
-        ON_CALL(*currencies.get(),
-                getCurrency(1)).WillByDefault(::testing::Return(Currency(1, "USD")));
-        ON_CALL(*currencies.get(),
-                getCurrency(2)).WillByDefault(::testing::Return(Currency(2, "UAH")));
-
         if (QSqlDatabase::contains()) {
             db = QSqlDatabase::database();
         } else {
@@ -56,6 +35,11 @@ protected:
         }
 
         dropAllTables();
+
+        QSqlQuery query(db);
+        query.exec("create table currency(id integer primary key, code varchar);");
+        query.exec("insert into currency(id, code) values(1, 'USD')");
+        query.exec("insert into currency(id, code) values(2, 'UAH')");
     }
 
     /** Clears the in-memory database */
@@ -65,7 +49,7 @@ protected:
 
     /** Creates a family tree of accounts */
     void createTree() {
-        SQLAccountRepository repo(db, currencies);
+        SQLAccountRepository repo(db);
         Account newAcct;
         newAcct.setName("Child");
         EXPECT_EQ(2, repo.create(newAcct, repo.getRoot()));
@@ -117,7 +101,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateTableWhenItDoesNotAlreadyExist) {
     auto tables = db.tables();
     ASSERT_FALSE(tables.contains("account"));
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
 
     tables = db.tables();
     ASSERT_TRUE(tables.contains("account"));
@@ -126,7 +110,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateTableWhenItDoesNotAlreadyExist) {
 /** Verifies that the root account is created when it does not already exist. */
 TEST_F(SQLAccountRepositoryTest, ShouldCreateRootAccountWhenItDoesNotAlreadyExist) {
     {
-        SQLAccountRepository repo(db, currencies);
+        SQLAccountRepository repo(db);
         QSqlQuery query(db);
         query.exec("select count(id) from account;");
         query.first();
@@ -135,7 +119,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateRootAccountWhenItDoesNotAlreadyExis
     }
 
     {
-        SQLAccountRepository repo(db, currencies);
+        SQLAccountRepository repo(db);
         QSqlQuery query(db);
         query.exec("select count(id) from account;");
         query.first();
@@ -152,14 +136,14 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateRootAccountWhenItDoesNotAlreadyExis
 /** Verifies that accounts can be created under the root account. */
 TEST_F(SQLAccountRepositoryTest, ShouldCreateAccountUnderRoot) {
     {
-        SQLAccountRepository repo(db, currencies);
+        SQLAccountRepository repo(db);
         Account newAcct;
         newAcct.setName("First Child");
         EXPECT_EQ(2, repo.create(newAcct, repo.getRoot()));
     }
 
     {
-        SQLAccountRepository repo(db, currencies);
+        SQLAccountRepository repo(db);
         Account root = repo.getRoot();
         ASSERT_EQ(1u, root.children().size());
         EXPECT_EQ(2, root.children().at(0));
@@ -171,7 +155,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateAccountUnderRoot) {
 TEST_F(SQLAccountRepositoryTest, ShouldCreateAccountsUnderNonRoot) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3, 4});
@@ -183,7 +167,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateAccountsUnderNonRoot) {
 
 /** Verifies that an invalid account is returned for an invalid ID */
 TEST_F(SQLAccountRepositoryTest, ShouldReturnInvalidAccountWhenNoAccountExistsForRequestedID) {
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     EXPECT_EQ(-1, repo.getAccount(42).id());
 }
 
@@ -191,7 +175,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldReturnInvalidAccountWhenNoAccountExistsFo
 TEST_F(SQLAccountRepositoryTest, ShouldFindLeafNodes) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     auto leafs = repo.getLeafAccounts();
     ASSERT_EQ(2u, leafs.size());
     EXPECT_EQ(5, leafs.at(0).id());
@@ -202,7 +186,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldFindLeafNodes) {
 TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(6), repo.getAccount(4)))
             << repo.lastError().toStdString();
 
@@ -218,7 +202,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
 TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsFrontOfTree) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(5), repo.getAccount(3)))
             << repo.lastError().toStdString();
 
@@ -234,7 +218,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsFrontOfTree) {
 TEST_F(SQLAccountRepositoryTest, ShouldMoveSubtreeTowardsBackOfTree) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(3), repo.getAccount(1)))
             << repo.lastError().toStdString();
 
@@ -250,7 +234,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveSubtreeTowardsBackOfTree) {
 TEST_F(SQLAccountRepositoryTest, ShouldMoveSubtreeTowardsFrontOfTree) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(4), repo.getAccount(3)))
             << repo.lastError().toStdString();
 
@@ -266,7 +250,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveSubtreeTowardsFrontOfTree) {
 TEST_F(SQLAccountRepositoryTest, ShouldRemoveLeafFromTree) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.remove(repo.getAccount(5))) << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
@@ -280,7 +264,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldRemoveLeafFromTree) {
 TEST_F(SQLAccountRepositoryTest, ShouldRemoveSubtreeFromTree) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.remove(repo.getAccount(3))) << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
@@ -293,7 +277,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldRemoveSubtreeFromTree) {
 TEST_F(SQLAccountRepositoryTest, ShouldUpdateAccountInDatabase) {
     createTree();
 
-    SQLAccountRepository repo(db, currencies);
+    SQLAccountRepository repo(db);
     Account account = repo.getAccount(4);
     account.setCurrency(Currency(2, "UAH"));
     account.setName("Fred");
