@@ -1,6 +1,7 @@
 #pragma once
 
 // Standard include(s)
+#include <iostream>
 #include <stdexcept>
 
 // Qt include(s)
@@ -59,10 +60,18 @@ public:
     /**
      * Initializes a money value of the given amount in the given currency.
      *
+     * @param[in] scaled   Monetary amount
+     * @param[in] currency Monetary currency
+     */
+    explicit Money(int scaled = 0, const Currency & currency = Currency());
+
+    /**
+     * Initializes a money value of the given amount in the given currency.
+     *
      * @param[in] amount   Monetary amount
      * @param[in] currency Monetary currency
      */
-    Money(double amount = 0.0, const Currency & currency = Currency());
+    Money(double amount, const Currency & currency = Currency());
 
     // Copy constructor
     Money(const Money & orig) = default;
@@ -97,6 +106,13 @@ public:
      * @return `true` if this money value is equal to zero
      */
     bool isZero() const;
+
+    /**
+     * Returns the scaled integer amount of this money value.
+     *
+     * @return Scaled amount of this money value
+     */
+    int scaled() const;
 
     /**
      * Creates a string representation of this money value.
@@ -291,10 +307,20 @@ const Money operator*(double scalar, const Money & money);
 /**
  * Prints this money value to the output stream.
  *
- * @param[in] os output stream
- * @param[in] money money value
+ * @param[in] os    Output stream
+ * @param[in] money Money value
+ * @return Output stream
  */
 QDataStream & operator<<(QDataStream & os, const Money & money);
+
+/**
+ * Prints this money value to the output stream.
+ *
+ * @param[in] os    Output stream
+ * @param[in] money Money value
+ * @return Output stream
+ */
+std::ostream & operator<<(std::ostream & os, const Money & money);
 
 } // ledger namespace
 } // ub namespace

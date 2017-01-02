@@ -10,6 +10,11 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
+Money::Money(int scaled, const Currency & currency)
+    : amount_(scaled), currency_(currency)
+{ }
+
+//--------------------------------------------------------------------------------------------------
 Money::Money(double amount, const Currency & currency)
     : amount_(scale(amount)), currency_(currency)
 { }
@@ -32,6 +37,11 @@ bool Money::isNegative() const {
 //--------------------------------------------------------------------------------------------------
 bool Money::isZero() const {
     return (amount_ == 0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int Money::scaled() const {
+    return amount_;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -148,6 +158,11 @@ bool operator<=(const Money & lhs, const Money & rhs) {
 //--------------------------------------------------------------------------------------------------
 QDataStream & operator<<(QDataStream & os, const Money & money) {
     return os << money.toString();
+}
+
+//--------------------------------------------------------------------------------------------------
+std::ostream & operator<<(std::ostream & os, const Money & money) {
+    return os << money.toString().toStdString();
 }
 
 } // ledger namespace

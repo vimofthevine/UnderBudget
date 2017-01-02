@@ -10,11 +10,10 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-EnvelopeTransaction::EnvelopeTransaction() : EnvelopeTransaction(-1) {}
+EnvelopeTransaction::EnvelopeTransaction() : id_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-EnvelopeTransaction::EnvelopeTransaction(int id)
-    : cleared_(false), id_(id), reconciliation_(-1) {}
+EnvelopeTransaction::EnvelopeTransaction(int id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
 Money EnvelopeTransaction::amount() const {
@@ -32,28 +31,13 @@ int EnvelopeTransaction::id() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-bool EnvelopeTransaction::isCleared() const {
-    return cleared_;
-}
-
-//--------------------------------------------------------------------------------------------------
 QString EnvelopeTransaction::memo() const {
     return memo_;
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeTransaction::reconciliation() const {
-    return reconciliation_;
-}
-
-//--------------------------------------------------------------------------------------------------
 void EnvelopeTransaction::setAmount(const Money & amount) {
     amount_ = amount;
-}
-
-//--------------------------------------------------------------------------------------------------
-void EnvelopeTransaction::setCleared(bool cleared) {
-    cleared_ = cleared;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -64,11 +48,6 @@ void EnvelopeTransaction::setEnvelope(const Envelope & envelope) {
 //--------------------------------------------------------------------------------------------------
 void EnvelopeTransaction::setMemo(const QString & memo) {
     memo_ = memo;
-}
-
-//--------------------------------------------------------------------------------------------------
-void EnvelopeTransaction::setReconciliation(int id) {
-    reconciliation_ = id;
 }
 
 //--------------------------------------------------------------------------------------------------

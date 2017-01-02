@@ -5,6 +5,7 @@ set(ledger_persistence_srcs
     SQLAccountRepository.cpp
     SQLCurrencyRepository.cpp
     SQLEnvelopeRepository.cpp
+    SQLTransactionRepository.cpp
 )
 
 # Build ledger persistence library

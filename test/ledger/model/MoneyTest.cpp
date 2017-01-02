@@ -231,7 +231,7 @@ void MoneyTest::multiplicationShouldMultiplyScalarWithMoney_data() {
 	QTest::newRow("zero_factors") << Money() << 0.0 << Money();
 	QTest::newRow("zero_money") << Money() << 4.3 << Money();
 	QTest::newRow("zero_scalar") << Money(3.45) << 0.0 << Money();
-	QTest::newRow("one_money") << Money(1) << 0.23 << Money(0.23);
+	QTest::newRow("one_money") << Money(1.0) << 0.23 << Money(0.23);
 	QTest::newRow("one_scalar") << Money(2.63) << 1.0 << Money(2.63);
 	QTest::newRow("pos_pos") << Money(2.50) << 2.0 << Money(5.0);
 	QTest::newRow("pos_neg") << Money(3.33) << -3.0 << Money(-9.99);
@@ -255,10 +255,10 @@ void MoneyTest::divisionShouldDivideMoniesWhenSameCurrency_data() {
 	QTest::addColumn<Money>("divisor");
 	QTest::addColumn<double>("quotient");
 
-	QTest::newRow("identity") << Money(23.5) << Money(1) << 23.5;
+	QTest::newRow("identity") << Money(23.5) << Money(1.0) << 23.5;
 	QTest::newRow("equal") << Money(23.5) << Money(23.5) << 1.0;
-	QTest::newRow("over") << Money(110) << Money(100) << 1.1;
-	QTest::newRow("under") << Money(70) << Money(100) << 0.7;
+	QTest::newRow("over") << Money(110.0) << Money(100.0) << 1.1;
+	QTest::newRow("under") << Money(70.0) << Money(100.0) << 0.7;
 }
 
 //------------------------------------------------------------------------------
@@ -283,9 +283,9 @@ void MoneyTest::divisionShouldDivideMoneyByScalar_data() {
 	QTest::addColumn<Money>("quotient");
 
 	QTest::newRow("identity") << Money(23.5) << 1.0 << Money(23.5);
-	QTest::newRow("equal") << Money(23.5) << 23.5 << Money(1);
-	QTest::newRow("over") << Money(110) << 100.0 << Money(1.1);
-	QTest::newRow("under") << Money(70) << 100.0 << Money(0.7);
+	QTest::newRow("equal") << Money(23.5) << 23.5 << Money(1.0);
+	QTest::newRow("over") << Money(110.0) << 100.0 << Money(1.1);
+	QTest::newRow("under") << Money(70.0) << 100.0 << Money(0.7);
 }
 
 //------------------------------------------------------------------------------

@@ -58,13 +58,6 @@ public:
     int id() const;
 
     /**
-     * Returns whether the transaction has been marked cleared.
-     *
-     * @return @c true if cleared
-     */
-    bool isCleared() const;
-
-    /**
      * Returns the memo of this envelope transaction.
      *
      * @return Envelope transaction memo
@@ -72,25 +65,11 @@ public:
     QString memo() const;
 
     /**
-     * Returns the ID of the associated reconciliation, if any.
-     *
-     * @return Reconciliation ID, or -1 if not associated with a reconciliation
-     */
-    int reconciliation() const;
-
-    /**
      * Updates the amount of this transaction.
      *
      * @param[in] amount New amount
      */
     void setAmount(const Money & amount);
-
-    /**
-     * Updates whether the transaction has cleared.
-     *
-     * @param[in] cleared @c true if the transaction has cleared
-     */
-    void setCleared(bool cleared);
 
     /**
      * Updates the envelope to which this transaction applies.
@@ -105,13 +84,6 @@ public:
      * @param[in] memo New memo
      */
     void setMemo(const QString & memo);
-
-    /**
-     * Updates the reconciliation ID associated with this transaction.
-     *
-     * @param[in] id New reconciliation ID
-     */
-    void setReconciliation(int id);
 
     /**
      * Updates the double-entry transaction associated with this envelope transaction.
@@ -132,14 +104,10 @@ private:
     Envelope envelope_;
     /** Transaction amount */
     Money amount_;
-    /** Cleared */
-    bool cleared_;
     /** Envelope transaction ID */
     int id_;
     /** Memo */
     QString memo_;
-    /** Reconciliation ID */
-    int reconciliation_;
     /** Transaction */
     Transaction transaction_;
 };
