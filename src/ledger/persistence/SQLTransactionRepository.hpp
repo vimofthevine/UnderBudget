@@ -196,6 +196,13 @@ public:
      */
     bool remove(const EnvelopeTransaction & transaction) override;
 
+    /**
+     * Applies all changes to the repository.
+     *
+     * @return @c true if successful
+     */
+    bool save() override;
+
     /** Updates the given transaction in the repository.
      *
      * The ID must match an existing entry. All other parameters will be updated.

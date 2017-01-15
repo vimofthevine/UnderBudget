@@ -186,6 +186,13 @@ public:
      */
     virtual bool remove(const EnvelopeTransaction & transaction) = 0;
 
+    /**
+     * Applies all changes to the repository.
+     *
+     * @return @c true if successful
+     */
+    virtual bool save() = 0;
+
     /** Updates the given transaction in the repository.
      *
      * The ID must match an existing entry. All other parameters will be updated.

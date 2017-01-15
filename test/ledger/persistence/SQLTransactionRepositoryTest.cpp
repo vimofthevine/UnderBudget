@@ -229,7 +229,7 @@ protected:
         refund2.setTransaction(Transaction(5));
         EXPECT_EQ(5, repo->create(refund2)) << repo->lastError().toStdString();
 
-        // TODO repo->save();
+        EXPECT_TRUE(repo->save());
     }
 };
 

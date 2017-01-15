@@ -338,6 +338,10 @@ QString SQLTransactionRepository::lastError() {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::remove(const Transaction & transaction) {
+    if (not in_transaction_) {
+        in_transaction_ = db_.transaction();
+    }
+
     QSqlQuery query(db_);
     query.prepare("DELETE FROM transaction_entry WHERE id=:id;");
     query.bindValue(":id", transaction.id());
@@ -350,6 +354,10 @@ bool SQLTransactionRepository::remove(const Transaction & transaction) {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::remove(const AccountTransaction & transaction) {
+    if (not in_transaction_) {
+        in_transaction_ = db_.transaction();
+    }
+
     QSqlQuery query(db_);
     query.prepare("DELETE FROM account_transaction WHERE id=:id;");
     query.bindValue(":id", transaction.id());
@@ -362,6 +370,10 @@ bool SQLTransactionRepository::remove(const AccountTransaction & transaction) {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::remove(const EnvelopeTransaction & transaction) {
+    if (not in_transaction_) {
+        in_transaction_ = db_.transaction();
+    }
+
     QSqlQuery query(db_);
     query.prepare("DELETE FROM envelope_transaction WHERE id=:id;");
     query.bindValue(":id", transaction.id());
@@ -373,7 +385,16 @@ bool SQLTransactionRepository::remove(const EnvelopeTransaction & transaction) {
 }
 
 //--------------------------------------------------------------------------------------------------
+bool SQLTransactionRepository::save() {
+    return db_.commit();
+}
+
+//--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::update(const Transaction & transaction) {
+    if (not in_transaction_) {
+        in_transaction_ = db_.transaction();
+    }
+
     QSqlQuery query(db_);
     query.prepare("UPDATE transaction_entry SET payee=:payee, date=strftime('%s', :date) "
                   " WHERE id=:id;");
@@ -389,6 +410,10 @@ bool SQLTransactionRepository::update(const Transaction & transaction) {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::update(const AccountTransaction & transaction) {
+    if (not in_transaction_) {
+        in_transaction_ = db_.transaction();
+    }
+
     QSqlQuery query(db_);
     query.prepare("UPDATE account_transaction SET account_id=:account, amount=:amount, "
                   "memo=:memo, cleared=:cleared, reconciliation_id=:reconciliation "
@@ -410,6 +435,10 @@ bool SQLTransactionRepository::update(const AccountTransaction & transaction) {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::update(const EnvelopeTransaction & transaction) {
+    if (not in_transaction_) {
+        in_transaction_ = db_.transaction();
+    }
+
     QSqlQuery query(db_);
     query.prepare("UPDATE envelope_transaction SET envelope_id=:envelope, amount=:amount, "
                   "memo=:memo WHERE id=:id;");

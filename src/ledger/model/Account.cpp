@@ -1,4 +1,4 @@
-// // Standard include(s)
+// Standard include(s)
 #include <vector>
 
 // Qt include(s)
