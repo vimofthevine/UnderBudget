@@ -28,6 +28,11 @@ class AccountModel : public QAbstractItemModel {
     Q_OBJECT
 
 public:
+    /** Account name column */
+    static const int NAME = 0;
+    /** Account balance column */
+    static const int BALANCE = 1;
+
     /**
      * Initializes the account view model.
      *

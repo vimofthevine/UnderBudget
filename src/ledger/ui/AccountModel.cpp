@@ -51,9 +51,9 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const {
     }
 
     switch (index.column()) {
-    case 0:
+    case NAME:
         return account.name();
-    case 1:
+    case BALANCE:
         if (account.children().size() > 0u) {
             return QVariant();
         } else {
