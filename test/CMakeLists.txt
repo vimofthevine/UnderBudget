@@ -16,7 +16,7 @@ if (NOT SKIP_TESTS)
 		include_directories(${GTEST_INCLUDE_DIRS})
 		add_executable(${name} ${name}.cpp)
                 qt5_use_modules(${name} Core Sql Widgets)
-                target_link_libraries(${name} ${libs} ${GTEST_BOTH_LIBRARIES} gmock)
+                target_link_libraries(${name} ${libs} ${GTEST_BOTH_LIBRARIES} gmock pthread)
 		add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
 	endmacro(build_gtest)
 

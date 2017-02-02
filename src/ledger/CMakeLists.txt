@@ -4,6 +4,7 @@
 add_subdirectory(model)
 add_subdirectory(persistence)
 add_subdirectory(storage)
+add_subdirectory(ui)
 
 # Specify ledger source files
 set(ledger_srcs
