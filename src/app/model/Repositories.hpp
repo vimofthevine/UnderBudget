@@ -1,8 +1,10 @@
 #pragma once
 
 // Standard include(s)
-#include <string>
 #include <memory>
+
+// Qt include(s)
+#include <QString>
 
 namespace ub {
 
@@ -27,7 +29,7 @@ public:
      *
      * @return Repository source location
      */
-    virtual std::string location() const = 0;
+    virtual QString location() const = 0;
 
     /**
      * Returns a pointer to the account repository.

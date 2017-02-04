@@ -3,6 +3,7 @@
 # Specify application model source files
 set(app_model_srcs
     DatabaseRepositories.cpp
+    Demo.cpp
 )
 
 # Build application model library

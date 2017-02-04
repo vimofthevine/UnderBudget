@@ -19,6 +19,7 @@
 
 // Qt include(s)
 #include <QApplication>
+#include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QIcon>
 #include <QSettings>
@@ -27,9 +28,10 @@
 // UnderBudget include(s)
 #include "info.hpp"
 #include <app/model/DatabaseRepositories.hpp>
+#include <app/model/Demo.hpp>
 #include <app/ui/DatabaseFileChooser.hpp>
-#include "ui/MainWindow.hpp"
-#include "ui/SdiWindow.hpp"
+#include <ledger/ui/AccountListWidget.hpp>
+#include <ledger/ui/AccountModel.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -41,6 +43,10 @@ int main(int argc, char* argv[])
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("file", app.tr("Database file to be opened"));
+
+    QCommandLineOption demoOption("demo", app.tr("Open an in-memory demo database"));
+    parser.addOption(demoOption);
+
     parser.process(app);
 
 	QString iconTheme = getenv("UB_ICON_THEME_OVERRIDE");
@@ -51,29 +57,37 @@ int main(int argc, char* argv[])
 
     std::shared_ptr<ub::DatabaseRepositories> repos;
 
-    auto pos = parser.positionalArguments();
-    if (pos.size() > 0) {
-        repos.reset(new ub::DatabaseRepositories(pos[0]));
-    }
+    if (parser.isSet(demoOption)) {
+        repos.reset(new ub::DatabaseRepositories(":memory:"));
+        ub::Demo::populate(repos);
+    } else {
+        auto pos = parser.positionalArguments();
+        if (pos.size() > 0) {
+            repos.reset(new ub::DatabaseRepositories(pos[0]));
+        }
 
-    if (not repos or not repos->isOpen()) {
-        auto file = ub::DatabaseFileChooser::lastOpenedFile();
-        if (not file.isEmpty()) {
-            repos.reset(new ub::DatabaseRepositories(file));
+        if (not repos or not repos->isOpen()) {
+            auto file = ub::DatabaseFileChooser::lastOpenedFile();
+            if (not file.isEmpty()) {
+                repos.reset(new ub::DatabaseRepositories(file));
+            }
+        }
+
+        if (not repos or not repos->isOpen()) {
+            auto file = ub::DatabaseFileChooser::getFileToOpen(nullptr);
+            if (not file.isEmpty()) {
+                repos.reset(new ub::DatabaseRepositories(file));
+            }
         }
     }
 
-    if (not repos or not repos->isOpen()) {
-        auto file = ub::DatabaseFileChooser::getFileToOpen(nullptr);
-        if (not file.isEmpty()) {
-            repos.reset(new ub::DatabaseRepositories(file));
-        }
+    if (repos and repos->isOpen()) {
+        auto model = new ub::ledger::AccountModel(repos->accounts(), repos->transactions());
+        auto view = new ub::ledger::AccountListWidget(model, nullptr);
+        view->show();
+    } else {
+        return 0;
     }
-
-    return 2;
-
-    ub::SdiWindow* mainWindow = new ub::SdiWindow();
-    mainWindow->show();
 
 	return app.exec();
 }

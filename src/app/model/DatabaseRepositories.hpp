@@ -48,7 +48,7 @@ public:
      */
     bool isOpen() const;
 
-    std::string location() const override;
+    QString location() const override;
 
     std::shared_ptr<ledger::AccountRepository> accounts() const override;
 

@@ -51,7 +51,7 @@ qt5_add_resources(ui_rcs_srcs ${ui_rcs})
 
 # Build underbudget executable
 add_executable(underbudget ${underbudget_srcs} ${ui_rcs_srcs})
-target_link_libraries(underbudget app_model app_ui)
+target_link_libraries(underbudget app_model app_ui ledger_ui)
 qt5_use_modules(underbudget Core Sql Widgets)
 
 # Add executable to install target

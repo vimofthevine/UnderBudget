@@ -42,8 +42,8 @@ bool DatabaseRepositories::isOpen() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-std::string DatabaseRepositories::location() const {
-    return location_.toStdString();
+QString DatabaseRepositories::location() const {
+    return location_;
 }
 
 //--------------------------------------------------------------------------------------------------

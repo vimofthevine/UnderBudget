@@ -8,5 +8,4 @@
 add_subdirectory(model)
 add_subdirectory(persistence)
 add_subdirectory(storage)
-add_subdirectory(ui)
 
