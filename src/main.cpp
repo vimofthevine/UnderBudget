@@ -30,6 +30,7 @@
 #include <app/model/DatabaseRepositories.hpp>
 #include <app/model/Demo.hpp>
 #include <app/ui/DatabaseFileChooser.hpp>
+#include <app/ui/MainWindow.hpp>
 #include <ledger/ui/AccountListWidget.hpp>
 #include <ledger/ui/AccountModel.hpp>
 
@@ -82,12 +83,16 @@ int main(int argc, char* argv[])
     }
 
     auto model = new ub::ledger::AccountModel;
-    auto view = new ub::ledger::AccountListWidget(model, nullptr);
 
     if (repos and repos->isOpen()) {
         model->setRepository(repos);
     }
 
+    auto window = new ub::MainWindow;
+    window->show();
+
+    auto view = new ub::ledger::AccountListWidget(model, nullptr);
     view->show();
+
 	return app.exec();
 }

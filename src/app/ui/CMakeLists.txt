@@ -3,6 +3,7 @@
 # Specify application UI source files
 set(app_ui_srcs
     DatabaseFileChooser.cpp
+    MainWindow.cpp
 )
 
 # Build ledger UI library
