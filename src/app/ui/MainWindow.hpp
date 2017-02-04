@@ -20,6 +20,10 @@ public:
      */
     MainWindow();
 
+signals:
+    /** Emitted when the open menu action is triggered. */
+    void openDatabase();
+
 protected:
     /**
      * Intercepts the window closing event to save window state.
@@ -27,6 +31,12 @@ protected:
      * @param[in] event window closing event
      */
     void closeEvent(QCloseEvent* event);
+
+protected slots:
+    /**
+     * Displays information about the application.
+     */
+    void about();
 
 private:
     /** Main menu bar */
