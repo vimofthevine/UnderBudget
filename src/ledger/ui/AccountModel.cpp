@@ -16,10 +16,17 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AccountModel::AccountModel(std::shared_ptr<AccountRepository> accounts,
-                           std::shared_ptr<TransactionRepository> transactions)
-        : accounts_(accounts), transactions_(transactions) {
+AccountModel::AccountModel() {
     headers_ << tr("Name") << tr("Balance");
+}
+
+//--------------------------------------------------------------------------------------------------
+void AccountModel::setRepositories(std::shared_ptr<AccountRepository> accounts,
+                                   std::shared_ptr<TransactionRepository> transactions) {
+    beginResetModel();
+    accounts_ = accounts;
+    transactions_ = transactions;
+    endResetModel();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -37,7 +44,7 @@ QVariant AccountModel::headerData(int section, Qt::Orientation orientation, int 
 
 //--------------------------------------------------------------------------------------------------
 QVariant AccountModel::data(const QModelIndex &index, int role) const {
-    if (not index.isValid()) {
+    if (not accounts_ or not index.isValid()) {
         return QVariant();
     }
 
@@ -66,7 +73,7 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const {
 
 //--------------------------------------------------------------------------------------------------
 int AccountModel::rowCount(const QModelIndex &parent) const {
-    if (parent.column() > 0) {
+    if (not accounts_ or parent.column() > 0) {
         return 0;
     }
 
@@ -79,7 +86,7 @@ int AccountModel::rowCount(const QModelIndex &parent) const {
 
 //--------------------------------------------------------------------------------------------------
 QModelIndex AccountModel::index(int row, int column, const QModelIndex &parent) const {
-    if (not hasIndex(row, column, parent)) {
+    if (not accounts_ or not hasIndex(row, column, parent)) {
         return QModelIndex();
     }
 
@@ -99,7 +106,7 @@ QModelIndex AccountModel::index(int row, int column, const QModelIndex &parent) 
 
 //--------------------------------------------------------------------------------------------------
 QModelIndex AccountModel::parent(const QModelIndex &child) const {
-    if (not child.isValid()) {
+    if (not accounts_ or not child.isValid()) {
         return QModelIndex();
     }
 

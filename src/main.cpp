@@ -81,13 +81,13 @@ int main(int argc, char* argv[])
         }
     }
 
+    auto model = new ub::ledger::AccountModel;
+    auto view = new ub::ledger::AccountListWidget(model, nullptr);
+
     if (repos and repos->isOpen()) {
-        auto model = new ub::ledger::AccountModel(repos->accounts(), repos->transactions());
-        auto view = new ub::ledger::AccountListWidget(model, nullptr);
-        view->show();
-    } else {
-        return 0;
+        model->setRepositories(repos->accounts(), repos->transactions());
     }
 
+    view->show();
 	return app.exec();
 }

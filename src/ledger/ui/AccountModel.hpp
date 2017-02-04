@@ -35,12 +35,17 @@ public:
 
     /**
      * Initializes the account view model.
-     *
-     * @param[in] accounts     Account repository
-     * @param[in] transactions Transaction repository
      */
-    AccountModel(std::shared_ptr<AccountRepository> accounts,
-                 std::shared_ptr<TransactionRepository> transactions);
+    AccountModel();
+
+    /**
+     * Sets the repositories to be used by the model.
+     *
+     * @param accounts     Account repository
+     * @param transactions Transaction repository
+     */
+    void setRepositories(std::shared_ptr<AccountRepository> accounts,
+                         std::shared_ptr<TransactionRepository> transactions);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
