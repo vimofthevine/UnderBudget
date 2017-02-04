@@ -18,10 +18,9 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
-#include "ui/icons.hpp"
+#include "icons.hpp"
 
 namespace ub {
-
 namespace Icon {
 
 /**
@@ -32,11 +31,9 @@ namespace Icon {
  * @param[in] name standard icon name
  * @return requested icon from the current theme
  */
-QIcon get(const QString& name)
-{
+QIcon get(const QString &name) {
 	QIcon icon = QIcon::fromTheme(name);
-	if (icon.isNull())
-	{
+    if (icon.isNull()) {
 		icon.addFile(QString(":/icons/tango/22x22/%1").arg(name), QSize(22,22));
 		icon.addFile(QString(":/icons/tango/48x48/%1").arg(name), QSize(48,48));
 	}
@@ -44,162 +41,134 @@ QIcon get(const QString& name)
 }
 
 //------------------------------------------------------------------------------
-QIcon about()
-{
+QIcon about() {
 	return get("help-about");
 }
 
 //------------------------------------------------------------------------------
-QIcon analysisSummary()
-{
+QIcon analysisSummary() {
 	return get("x-office-presentation");
 }
 
 //------------------------------------------------------------------------------
-QIcon assign()
-{
+QIcon assign() {
 	return get("assign-transactions");
 }
 
 //------------------------------------------------------------------------------
-QIcon calculate()
-{
+QIcon calculate() {
 	return get("accessories-calculator");
 }
 
 //------------------------------------------------------------------------------
-QIcon close()
-{
+QIcon close() {
 	return get("window-close");
 }
 
 //------------------------------------------------------------------------------
-QIcon closeAll()
-{
+QIcon closeAll() {
 	return QIcon();
 }
 
 //------------------------------------------------------------------------------
-QIcon editBudget()
-{
+QIcon editBudget() {
 	return get("edit-budget");
 }
 
 //------------------------------------------------------------------------------
-QIcon editEstimates()
-{
+QIcon editEstimates() {
 	return get("edit-estimates");
 }
 
 //------------------------------------------------------------------------------
-QIcon editRules()
-{
+QIcon editRules() {
 	return get("edit-rules");
 }
 
 //------------------------------------------------------------------------------
-QIcon editPreferences()
-{
+QIcon editPreferences() {
 	return get("preferences-system");
 }
 
 //------------------------------------------------------------------------------
-QIcon estimateImpact()
-{
+QIcon estimateImpact() {
 	return get("view-financial-forecast");
 }
 
 //------------------------------------------------------------------------------
-QIcon estimateProgress()
-{
+QIcon estimateProgress() {
 	return get("x-office-spreadsheet");
 }
 
 //------------------------------------------------------------------------------
-QIcon exit()
-{
+QIcon exit() {
 	return get("application-exit");
 }
 
 //------------------------------------------------------------------------------
-QIcon exportFile()
-{
+QIcon exportFile() {
 	return get("document-export");
 }
 
 //------------------------------------------------------------------------------
-QIcon importedTransactions()
-{
+QIcon importedTransactions() {
 	return get("view-transactions");
 }
 
 //------------------------------------------------------------------------------
-QIcon importTransactions()
-{
+QIcon importTransactions() {
 	return get("import-transactions");
 }
 
 //------------------------------------------------------------------------------
-QIcon importTransactionsFrom()
-{
+QIcon importTransactionsFrom() {
 	return QIcon();
 }
 
 //------------------------------------------------------------------------------
-QIcon newDocument()
-{
+QIcon newDocument() {
 	return get("document-new");
 }
 
 //------------------------------------------------------------------------------
-QIcon openDocument()
-{
+QIcon openDocument() {
 	return get("document-open");
 }
 
 //------------------------------------------------------------------------------
-QIcon redo()
-{
+QIcon redo() {
 	return get("edit-redo");
 }
 
 //------------------------------------------------------------------------------
-QIcon saveAs()
-{
+QIcon saveAs() {
 	return get("document-save-as");
 }
 
 //------------------------------------------------------------------------------
-QIcon saveAsTemplate()
-{
+QIcon saveAsTemplate() {
 	return get("document-edit-sign");
 }
 
 //------------------------------------------------------------------------------
-QIcon saveDocument()
-{
+QIcon saveDocument() {
 	return get("document-save");
 }
 
 //------------------------------------------------------------------------------
-QIcon undo()
-{
+QIcon undo() {
 	return get("edit-undo");
 }
 
 //------------------------------------------------------------------------------
-QIcon windowCascade()
-{
+QIcon windowCascade() {
 	return QIcon();
 }
 
 //------------------------------------------------------------------------------
-QIcon windowTile()
-{
+QIcon windowTile() {
 	return QIcon();
 }
 
-}
-
-}
-
+} // Icon namespace
+} // ub namespace

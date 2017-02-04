@@ -27,10 +27,11 @@ endif (WIN32)
 add_subdirectory(accounting)
 add_subdirectory(analysis)
 add_subdirectory(app)
+add_subdirectory(app/resources)
 add_subdirectory(budget)
 add_subdirectory(gzip)
 add_subdirectory(ledger)
-add_subdirectory(ui)
+#add_subdirectory(ui)
 
 # Instruct CMake to place executable in the bin folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)

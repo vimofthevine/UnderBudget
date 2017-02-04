@@ -3,6 +3,7 @@
 
 // UnderBudget include(s)
 #include "MainWindow.hpp"
+#include "MenuBar.hpp"
 
 namespace ub {
 
@@ -11,7 +12,7 @@ const QString MAIN_WINDOW_SIZE = "MainWindowSize";
 const QString MAIN_WINDOW_STATE = "MainWindowState";
 
 //--------------------------------------------------------------------------------------------------
-MainWindow::MainWindow() {
+MainWindow::MainWindow() : menu_(new MenuBar(menuBar())) {
     restoreSettings();
 
     setWindowTitle(qApp->applicationName());

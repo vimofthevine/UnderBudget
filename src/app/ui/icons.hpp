@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef ICONS_HPP
-#define ICONS_HPP
+#pragma once
 
 // Qt include(s)
 #include <QIcon>
-
-// Forward declaration(s)
-class QWidget;
 
 namespace ub {
 
@@ -32,7 +28,7 @@ namespace ub {
  * The implementations for these functions are platform-specific,
  * to provide native look-and-feel.
  *
- * @ingroup ui
+ * @ingroup app
  */
 namespace Icon {
 
@@ -218,8 +214,5 @@ QIcon windowCascade();
  */
 QIcon windowTile();
 
-}
-
-}
-
-#endif //ICONS_HPP
+} // Icon namespace
+} // ub namespace
