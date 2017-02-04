@@ -16,8 +16,8 @@ namespace ledger {
 QString SQLCurrencyRepository::table_name_ = "currency";
 
 //--------------------------------------------------------------------------------------------------
-SQLCurrencyRepository::SQLCurrencyRepository(QSqlDatabase & db) {
-    QSqlQuery query;
+SQLCurrencyRepository::SQLCurrencyRepository(QSqlDatabase & db) : db_(db) {
+    QSqlQuery query(db_);
     bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
                               "id INTEGER PRIMARY KEY, "
                               "code VARCHAR);");
@@ -43,7 +43,7 @@ SQLCurrencyRepository::SQLCurrencyRepository(QSqlDatabase & db) {
 int SQLCurrencyRepository::create(const Currency & currency) {
     {
         // First check if a non-default entry exists for the currency code
-        QSqlQuery query;
+        QSqlQuery query(db_);
         query.prepare("SELECT id FROM " + table_name_ + " WHERE code=:code;");
         query.bindValue(":code", currency.code());
         if (query.exec() && query.first()) {
@@ -56,7 +56,7 @@ int SQLCurrencyRepository::create(const Currency & currency) {
     }
 
     {
-        QSqlQuery query;
+        QSqlQuery query(db_);
         query.prepare("INSERT INTO " + table_name_ + "(code) VALUES(:code);");
         query.bindValue(":code", currency.code());
 
@@ -72,7 +72,7 @@ int SQLCurrencyRepository::create(const Currency & currency) {
 
 //--------------------------------------------------------------------------------------------------
 Currency SQLCurrencyRepository::getCurrency(int id) {
-    QSqlQuery query;
+    QSqlQuery query(db_);
     query.prepare("SELECT * FROM " + table_name_ + " WHERE id=:id;");
     query.bindValue(":id", id);
     if (query.exec() && query.first()) {
@@ -90,7 +90,7 @@ QString SQLCurrencyRepository::lastError() {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLCurrencyRepository::remove(const Currency & currency) {
-    QSqlQuery query;
+    QSqlQuery query(db_);
     query.prepare("DELETE FROM " + table_name_ + " WHERE id=:id;");
     query.bindValue(":id", currency.id());
     if (query.exec()) {
@@ -105,7 +105,7 @@ bool SQLCurrencyRepository::update(const Currency & currency) {
     if (currency.id() != 1) {
         throw std::invalid_argument("Cannot update non-default currency");
     }
-    QSqlQuery query;
+    QSqlQuery query(db_);
     query.prepare("UPDATE " + table_name_ + " SET code=:code WHERE id=1;");
     query.bindValue(":code", currency.code());
     if (query.exec()) {

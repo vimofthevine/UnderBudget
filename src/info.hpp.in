@@ -31,7 +31,7 @@ void setupApp(const QApplication& app)
 {
 	app.setOrganizationName("vimofthevine");
 	app.setOrganizationDomain("underbudget.vimofthevine.com");
-	app.setApplicationName("UnderBudget");
+	app.setApplicationName("UnderBudget${APP_REL_TYPE}");
 	app.setApplicationVersion("${APP_VERSION}");
 }
 

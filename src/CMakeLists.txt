@@ -5,6 +5,11 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
 	add_definitions(-DQT_NO_DEBUG_OUTPUT)
 endif (CMAKE_BUILD_TYPE MATCHES Release)
 
+# Set app release type property to dev when not a release build
+if (NOT CMAKE_BUILD_TYPE MATCHES Release)
+	set(APP_REL_TYPE "-dev")
+endif (NOT CMAKE_BUILD_TYPE MATCHES Release)
+
 # Enable extra debugging options if debug build type
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions(-DQT_SHAREDPOINTER_TRACK_POINTERS)
@@ -21,6 +26,7 @@ endif (WIN32)
 # Add source sub-directories
 add_subdirectory(accounting)
 add_subdirectory(analysis)
+add_subdirectory(app)
 add_subdirectory(budget)
 add_subdirectory(gzip)
 add_subdirectory(ledger)
@@ -45,8 +51,8 @@ qt5_add_resources(ui_rcs_srcs ${ui_rcs})
 
 # Build underbudget executable
 add_executable(underbudget ${underbudget_srcs} ${ui_rcs_srcs})
-target_link_libraries(underbudget ui)
-qt5_use_modules(underbudget Core Widgets)
+target_link_libraries(underbudget app_model app_ui)
+qt5_use_modules(underbudget Core Sql Widgets)
 
 # Add executable to install target
 install(PROGRAMS ${PROJECT_BINARY_DIR}/bin/underbudget DESTINATION bin)
