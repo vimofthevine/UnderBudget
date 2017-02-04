@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
     auto view = new ub::ledger::AccountListWidget(model, nullptr);
 
     if (repos and repos->isOpen()) {
-        model->setRepositories(repos->accounts(), repos->transactions());
+        model->setRepository(repos);
     }
 
     view->show();

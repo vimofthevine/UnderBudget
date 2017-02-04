@@ -6,20 +6,15 @@
 // Qt include(s)
 #include <QString>
 
-namespace ub {
+// UnderBudget include(s)
+#include <ledger/model/LedgerRepository.hpp>
 
-namespace ledger {
-// Forward declaration(s)
-class AccountRepository;
-class CurrencyRepository;
-class EnvelopeRepository;
-class TransactionRepository;
-}
+namespace ub {
 
 /**
  * Collection of repositories for the application.
  */
-class Repositories {
+class Repositories : public ledger::LedgerRepository {
 public:
     // Virtual destructor
     virtual ~Repositories() {}
@@ -30,33 +25,5 @@ public:
      * @return Repository source location
      */
     virtual QString location() const = 0;
-
-    /**
-     * Returns a pointer to the account repository.
-     *
-     * @return Account repository
-     */
-    virtual std::shared_ptr<ledger::AccountRepository> accounts() const = 0;
-
-    /**
-     * Returns a pointer to the currency repository.
-     *
-     * @return Currency repository
-     */
-    virtual std::shared_ptr<ledger::CurrencyRepository> currencies() const = 0;
-
-    /**
-     * Returns a pointer to the envelope repository.
-     *
-     * @return Envelope repository
-     */
-    virtual std::shared_ptr<ledger::EnvelopeRepository> envelopes() const = 0;
-
-    /**
-     * Returns a pointer to the transaction repository.
-     *
-     * @return Transaction repository
-     */
-    virtual std::shared_ptr<ledger::TransactionRepository> transactions() const = 0;
 };
 } // ub namespace

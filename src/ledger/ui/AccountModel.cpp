@@ -9,6 +9,7 @@
 // UnderBudget include(s)
 #include <ledger/model/Account.hpp>
 #include <ledger/model/AccountRepository.hpp>
+#include <ledger/model/LedgerRepository.hpp>
 #include <ledger/model/TransactionRepository.hpp>
 #include "AccountModel.hpp"
 
@@ -21,11 +22,10 @@ AccountModel::AccountModel() {
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountModel::setRepositories(std::shared_ptr<AccountRepository> accounts,
-                                   std::shared_ptr<TransactionRepository> transactions) {
+void AccountModel::setRepository(std::shared_ptr<LedgerRepository> repository) {
     beginResetModel();
-    accounts_ = accounts;
-    transactions_ = transactions;
+    accounts_ = repository->accounts();
+    transactions_ = repository->transactions();
     endResetModel();
 }
 

@@ -17,6 +17,7 @@ namespace ledger {
 
 // Forward declaration(s)
 class AccountRepository;
+class LedgerRepository;
 class TransactionRepository;
 
 /**
@@ -39,13 +40,11 @@ public:
     AccountModel();
 
     /**
-     * Sets the repositories to be used by the model.
+     * Updates the repositories used by the model.
      *
-     * @param accounts     Account repository
-     * @param transactions Transaction repository
+     * @param repository Ledger repository
      */
-    void setRepositories(std::shared_ptr<AccountRepository> accounts,
-                         std::shared_ptr<TransactionRepository> transactions);
+    void setRepository(std::shared_ptr<LedgerRepository> repository);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
