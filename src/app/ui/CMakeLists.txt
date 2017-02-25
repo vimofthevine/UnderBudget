@@ -4,6 +4,7 @@
 set(app_ui_srcs
     DatabaseFileChooser.cpp
     MainWindow.cpp
+    MainWindowModel.cpp
     MenuBar.cpp
 )
 

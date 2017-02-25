@@ -3,10 +3,11 @@
 // Qt include(s)
 #include <QMainWindow>
 
-namespace ub {
-
 // Forward declaration(s)
-class MenuBar;
+class QCloseEvent;
+class QStackedWidget;
+
+namespace ub {
 
 /**
  * Main application window.
@@ -19,6 +20,13 @@ public:
      * Initializes the application main window.
      */
     MainWindow();
+
+    /**
+     * Returns the stacked widget containing the central content of the main window.
+     *
+     * @return Main window content stacked widget
+     */
+    QStackedWidget *contentWidget();
 
 signals:
     /** Emitted when the open menu action is triggered. */
@@ -39,8 +47,8 @@ protected slots:
     void about();
 
 private:
-    /** Main menu bar */
-    MenuBar *menu_;
+    /** Stacked content widget */
+    QStackedWidget *content_;
 
     /**
      * Stores current windows settings, such as size, geometry, etc.

@@ -1,27 +1,27 @@
 #pragma once
 
 // Qt include(s)
-#include <QObject>
+#include <QMenuBar>
 
 // Forward declaration(s)
-class QMenuBar;
+class QAction;
+class QWidget;
 
 namespace ub {
 
 /**
  * Main application window menu bar.
  */
-class MenuBar : public QObject {
+class MenuBar : public QMenuBar {
     Q_OBJECT
 
 public:
     /**
      * Initializes the menu bar.
      *
-     * @param menu   Main window's menu bar
-     * @param parent Parent object
+     * @param parent Parent widget
      */
-    MenuBar(QMenuBar *menu, QObject *parent);
+    MenuBar(QWidget *parent);
 
 signals:
     /** Emitted when the open menu action is triggered. */
