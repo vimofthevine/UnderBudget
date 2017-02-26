@@ -139,31 +139,35 @@ void LedgerEntry::removeSplit(const EnvelopeTransaction & transaction) {
 //--------------------------------------------------------------------------------------------------
 bool LedgerEntry::save() {
     if (not isValid()) {
+        qDebug() << "entry is not valid";
         return false;
     }
 
     if (transaction_.id() > 0) {
         if (not transactions_->update(transaction_)) {
-            last_error_ = transactions_->lastError();
+            last_error_ = "Transaction update error: " + transactions_->lastError();
             return false;
         }
     } else {
-        if (not transactions_->create(transaction_)) {
-            last_error_ = transactions_->lastError();
+        int id = transactions_->create(transaction_);
+        if (id <= 0) {
+            last_error_ = "Transaction create error: " + transactions_->lastError();
             return false;
+        } else {
+            transaction_ = transactions_->getTransaction(id);
         }
     }
 
     for (auto transaction : account_splits_to_remove_) {
         if (not transactions_->remove(transaction)) {
-            last_error_ = transactions_->lastError();
+            last_error_ = "Account transaction removal error: " + transactions_->lastError();
             return false;
         }
     }
 
     for (auto transaction : envelope_splits_to_remove_) {
         if (not transactions_->remove(transaction)) {
-            last_error_ = transactions_->lastError();
+            last_error_ = "Envelope transaction removal error: " + transactions_->lastError();
             return false;
         }
     }
@@ -171,12 +175,13 @@ bool LedgerEntry::save() {
     for (auto transaction : account_splits_) {
         if (transaction.id() > 0) {
             if (not transactions_->update(transaction)) {
-                last_error_ = transactions_->lastError();
+                last_error_ = "Account transaction update error: " + transactions_->lastError();
                 return false;
             }
         } else {
-            if (not transactions_->create(transaction)) {
-                last_error_ = transactions_->lastError();
+            transaction.setTransaction(transaction_);
+            if (transactions_->create(transaction) <= 0) {
+                last_error_ = "Account transaction create error: " + transactions_->lastError();
                 return false;
             }
         }
@@ -185,18 +190,23 @@ bool LedgerEntry::save() {
     for (auto transaction : envelope_splits_) {
         if (transaction.id() > 0) {
             if (not transactions_->update(transaction)) {
-                last_error_ = transactions_->lastError();
+                last_error_ = "Envelope transaction update error: " + transactions_->lastError();
                 return false;
             }
         } else {
-            if (not transactions_->create(transaction)) {
-                last_error_ = transactions_->lastError();
+            transaction.setTransaction(transaction_);
+            if (transactions_->create(transaction) <= 0) {
+                last_error_ = "Envelope transaction create error: " + transactions_->lastError();
                 return false;
             }
         }
     }
 
-    return transactions_->save();
+    bool saved = transactions_->save();
+    if (not saved) {
+        last_error_ = "Ledger entry create error: " + transactions_->lastError();
+    }
+    return saved;
 }
 
 //--------------------------------------------------------------------------------------------------

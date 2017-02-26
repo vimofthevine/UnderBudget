@@ -45,8 +45,9 @@ SQLTransactionRepository::SQLTransactionRepository(QSqlDatabase & db,
                          "cleared BOOLEAN DEFAULT 0, "
                          "reconciliation_id INTEGER, "
                          "FOREIGN KEY(transaction_entry_id) REFERENCES transaction_entry(id) ON DELETE CASCADE, "
-                         "FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT, "
-                         "FOREIGN KEY(reconciliation_id) REFERENCES reconciliation(id) ON DELETE SET NULL);");
+                         "FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT)");
+                         //"FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT, "
+                         //"FOREIGN KEY(reconciliation_id) REFERENCES reconciliation(id) ON DELETE SET NULL);");
     if (not success) {
         throw std::runtime_error("Unable to create account_transaction table: " +
                                  query.lastError().text().toStdString());
@@ -82,7 +83,7 @@ int SQLTransactionRepository::create(const AccountTransaction & transaction) {
     query.bindValue(":memo", transaction.memo());
     query.bindValue(":cleared", transaction.isCleared());
     query.bindValue(":reconciliation", (transaction.reconciliation() > 0)
-                    ? transaction.reconciliation() : QVariant());
+                    ? transaction.reconciliation() : QVariant(QVariant::Int));
 
     if (not query.exec()) {
         last_error_ = query.lastError().text();
@@ -386,7 +387,12 @@ bool SQLTransactionRepository::remove(const EnvelopeTransaction & transaction) {
 
 //--------------------------------------------------------------------------------------------------
 bool SQLTransactionRepository::save() {
-    return db_.commit();
+    bool success = db_.commit();
+    in_transaction_ = false;
+    if (not success) {
+        last_error_ = db_.lastError().text();
+    }
+    return success;
 }
 
 //--------------------------------------------------------------------------------------------------
