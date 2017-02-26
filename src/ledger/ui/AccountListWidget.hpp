@@ -1,10 +1,9 @@
 #pragma once
 
 // Qt include(s)
-#include <QTreeView>
+#include <QSplitter>
 
 // Forward declaration(s)
-class QContextMenuEvent;
 class QWidget;
 
 namespace ub {
@@ -13,13 +12,14 @@ namespace ledger {
 // Forward declaration(s)
 class AccountDetailsDialog;
 class AccountModel;
+class AccountTreeView;
 
 /**
- * Widget for displaying a list of accounts.
+ * Widget for displaying a list of accounts and associated transactions.
  *
  * @ingroup ledger
  */
-class AccountListWidget : public QTreeView {
+class AccountListWidget : public QSplitter {
     Q_OBJECT
 
 public:
@@ -48,16 +48,13 @@ protected slots:
      */
     void deleteAccount(const QModelIndex &index);
 
-protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
-    bool eventFilter(QObject *object, QEvent *event) override;
-
 private:
     /** Account model */
     AccountModel *model_;
     /** Account details dialog */
     AccountDetailsDialog *details_;
+    /** Account tree view */
+    AccountTreeView *tree_;
 };
 
 } // ledger namespace
