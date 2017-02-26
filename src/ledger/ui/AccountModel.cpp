@@ -128,7 +128,7 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const {
         if (account.children().size() > 0u) {
             return QVariant();
         } else {
-            return transactions_->getBalance(QDate(), account).toString();
+            return transactions_->getBalance(QDate::currentDate(), account).toString();
         }
     default:
         return QVariant();
