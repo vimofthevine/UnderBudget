@@ -5,6 +5,7 @@
 
 // Qt include(s)
 #include <QObject>
+#include <QString>
 
 namespace ub {
 
@@ -44,6 +45,13 @@ protected slots:
      * Prompts the user to select a database file to be opened.
      */
     void openDatabase();
+
+    /**
+     * Displays an error popup dialog with the given message.
+     *
+     * @param message Error message
+     */
+    void showError(const QString &message);
 
 private:
     /** Account model */

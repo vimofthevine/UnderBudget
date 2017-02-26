@@ -11,6 +11,7 @@ namespace ub {
 namespace ledger {
 
 // Forward declaration(s)
+class AccountDetailsDialog;
 class AccountModel;
 
 /**
@@ -32,27 +33,6 @@ public:
 
 signals:
     /**
-     * Emitted to indicate a request to create a new account.
-     *
-     * @param[in] index Model index of the parent account under which to create a new account
-     */
-    void createAccount(const QModelIndex &index);
-
-    /**
-     * Emitted to indicate a request to delete an account.
-     *
-     * @param[in] index Model index of the account to be deleted
-     */
-    void deleteAccount(const QModelIndex &index);
-
-    /**
-     * Emitted to indicate a request to modify an account.
-     *
-     * @param[in] index Model index of the account to be modified
-     */
-    void modifyAccount(const QModelIndex &index);
-
-    /**
      * Emitted to indicate the currently selected account.
      *
      * @param[in] current  Model index of the currently selected account
@@ -60,12 +40,24 @@ signals:
      */
     void selectAccount(const QModelIndex &current, const QModelIndex &previous);
 
+protected slots:
+    /**
+     * Prompts the user to confirm deletion of the requested account.
+     *
+     * @param index Model index of the account to be deleted
+     */
+    void deleteAccount(const QModelIndex &index);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
+
+    bool eventFilter(QObject *object, QEvent *event) override;
 
 private:
     /** Account model */
     AccountModel *model_;
+    /** Account details dialog */
+    AccountDetailsDialog *details_;
 };
 
 } // ledger namespace

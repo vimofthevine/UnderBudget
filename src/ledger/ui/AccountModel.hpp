@@ -7,6 +7,7 @@
 #include <QAbstractItemModel>
 #include <QList>
 #include <QModelIndex>
+#include <QString>
 #include <QVariant>
 
 // UnderBudget include(s)
@@ -46,6 +47,39 @@ public:
      */
     void setRepository(std::shared_ptr<LedgerRepository> repository);
 
+    /**
+     * Returns the account at the given model index.
+     *
+     * @param index Model index of the account to be retrieved
+     */
+    Account account(const QModelIndex &index) const;
+
+    /**
+     * Creates a new account under the given parent account.
+     *
+     * @param account Account to be created
+     * @param parent Model index of the parent under which to create the account
+     * @return @c true if successfully created
+     */
+    bool create(const Account &account, const QModelIndex &parent);
+
+    /**
+     * Updates the account located at the specified index.
+     *
+     * @param account Account to be updated
+     * @param index   Model index of the account to be updated
+     * @return @c true if successfully updated
+     */
+    bool update(const Account &account, const QModelIndex &index);
+
+    /**
+     * Removes the account located at the specified index.
+     *
+     * @param index Model index of the account to be removed
+     * @return @c true if successfully removed
+     */
+    bool remove(const QModelIndex &index);
+
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
@@ -57,6 +91,10 @@ public:
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
 
     QModelIndex parent(const QModelIndex &child) const override;
+
+signals:
+    /** Emitted when an error has occurred. */
+    void error(const QString &message) const;
 
 private:
     /** Account repository */

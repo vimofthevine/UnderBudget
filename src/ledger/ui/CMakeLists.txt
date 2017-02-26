@@ -2,6 +2,7 @@
 
 # Specify ledger UI source files
 set(ledger_ui_srcs
+    AccountDetailsDialog.cpp
     AccountModel.cpp
     AccountListWidget.cpp
 )

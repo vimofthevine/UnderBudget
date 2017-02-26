@@ -16,9 +16,10 @@ namespace ub {
 MainWindowModel::MainWindowModel(MainWindow *window)
         : QObject(window), account_model_(new ledger::AccountModel), window_(window),
           account_list_(new ledger::AccountListWidget(account_model_, window_)) {
-    connect(window_, &MainWindow::openDatabase, this, &MainWindowModel::openDatabase);
-
     window_->contentWidget()->addWidget(account_list_);
+
+    connect(window_, &MainWindow::openDatabase, this, &MainWindowModel::openDatabase);
+    connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -29,6 +30,11 @@ void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::openDatabase() {
     auto file = ub::DatabaseFileChooser::getFileToOpen(window_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::showError(const QString &message) {
+    QMessageBox::warning(window_, tr("Error"), message);
 }
 
 } // ub namespace

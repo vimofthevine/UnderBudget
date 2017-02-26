@@ -61,7 +61,7 @@ public:
      *
      * @return Last error message
      */
-    virtual QString lastError() = 0;
+    virtual QString lastError() const = 0;
 
     /**
      * Moves the given account to the specified parent account.

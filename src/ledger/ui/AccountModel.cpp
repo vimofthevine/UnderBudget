@@ -30,6 +30,69 @@ void AccountModel::setRepository(std::shared_ptr<LedgerRepository> repository) {
 }
 
 //--------------------------------------------------------------------------------------------------
+Account AccountModel::account(const QModelIndex &index) const {
+    if (not accounts_) {
+        return Account();
+    }
+
+    return index.isValid() ?  accounts_->getAccount(index.internalId())
+        : accounts_->getRoot();
+}
+
+//--------------------------------------------------------------------------------------------------
+bool AccountModel::create(const Account &account, const QModelIndex &parent) {
+    if (not accounts_) {
+        return false;
+    }
+
+    int rows = rowCount(parent);
+    beginInsertRows(parent, rows, rows);
+    int id = accounts_->create(account, this->account(parent));
+    endInsertRows();
+
+    if (id <= 0) {
+        emit error(accounts_->lastError());
+    }
+
+    return (id > 0);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool AccountModel::update(const Account &account, const QModelIndex &index) {
+    if (not accounts_) {
+        return false;
+    }
+
+    bool success = accounts_->update(account);
+    if (success) {
+        emit dataChanged(
+            this->index(index.row(), 0, index.parent()),
+            this->index(index.row(), columnCount(index) - 1, index.parent()));
+    } else {
+        emit error(accounts_->lastError());
+    }
+
+    return success;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool AccountModel::remove(const QModelIndex &index) {
+    if (not accounts_) {
+        return false;
+    }
+
+    beginRemoveRows(index.parent(), index.row(), index.row());
+    bool success = accounts_->remove(this->account(index));
+    endRemoveRows();
+
+    if (not success) {
+        emit error(accounts_->lastError());
+    }
+
+    return success;
+}
+
+//--------------------------------------------------------------------------------------------------
 int AccountModel::columnCount(const QModelIndex &parent) const {
     return headers_.size();
 }
@@ -54,6 +117,7 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const {
 
     Account account = accounts_->getAccount(index.internalId());
     if (account.id() == -1) {
+        emit error(accounts_->lastError());
         return QVariant();
     }
 

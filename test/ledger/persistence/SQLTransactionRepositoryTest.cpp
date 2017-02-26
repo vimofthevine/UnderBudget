@@ -29,7 +29,7 @@ public:
     MOCK_METHOD1(getAccount, Account(int));
     MOCK_METHOD0(getLeafAccounts, std::vector<Account>());
     MOCK_METHOD0(getRoot, Account());
-    MOCK_METHOD0(lastError, QString());
+    MOCK_CONST_METHOD0(lastError, QString());
     MOCK_METHOD2(move, bool(const Account &, const Account &));
     MOCK_METHOD1(remove, bool(const Account &));
     MOCK_METHOD1(update, bool(const Account &));

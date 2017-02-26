@@ -181,7 +181,7 @@ Account SQLAccountRepository::getRoot() {
 }
 
 //--------------------------------------------------------------------------------------------------
-QString SQLAccountRepository::lastError() {
+QString SQLAccountRepository::lastError() const {
     return last_error_;
 }
 

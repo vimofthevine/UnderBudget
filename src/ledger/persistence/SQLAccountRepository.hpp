@@ -72,7 +72,7 @@ public:
      *
      * @return Last error message
      */
-    QString lastError() override;
+    QString lastError() const override;
 
     /**
      * Moves the given account to the specified parent account.
