@@ -6,6 +6,7 @@
 // Forward declaration(s)
 class QAbstractItemModel;
 class QContextMenuEvent;
+class QSortFilterProxyModel;
 class QWidget;
 
 namespace ub {
@@ -63,6 +64,10 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
     bool eventFilter(QObject *object, QEvent *event) override;
+
+private:
+    /** Sort proxy model */
+    QSortFilterProxyModel *filter_;
 };
 
 } // ledger namespace

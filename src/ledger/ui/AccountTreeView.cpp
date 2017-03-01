@@ -8,21 +8,28 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AccountTreeView::AccountTreeView(QWidget *parent) : QTreeView(parent) {
+AccountTreeView::AccountTreeView(QWidget *parent)
+        : QTreeView(parent),
+          filter_(new QSortFilterProxyModel(this)) {
+    QTreeView::setModel(filter_);
+    filter_->sort(0);
+
     // Setup context menu
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
     setSelectionBehavior(QTreeView::SelectRows);
     setSelectionMode(QTreeView::SingleSelection);
 
-    connect(this, &QTreeView::doubleClicked, this, &AccountTreeView::modifyAccount);
+    connect(this, &QTreeView::doubleClicked, this, [this] (const QModelIndex &index) {
+                emit modifyAccount(this->filter_->mapToSource(index));
+            });
 
     this->installEventFilter(this);
 }
 
 //--------------------------------------------------------------------------------------------------
 void AccountTreeView::setModel(QAbstractItemModel *model) {
-    QTreeView::setModel(model);
+    filter_->setSourceModel(model);
 
     connect(model, &QAbstractItemModel::modelReset, this, [this] () {
         this->expandAll();
@@ -33,8 +40,10 @@ void AccountTreeView::setModel(QAbstractItemModel *model) {
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
 
     // Can't set this up until after the model has been set
-    connect(selectionModel(), &QItemSelectionModel::currentRowChanged,
-            this, &AccountTreeView::selectAccount);
+    connect(selectionModel(), &QItemSelectionModel::currentRowChanged, this,
+            [this] (const QModelIndex& current, const QModelIndex& previous) {
+                emit selectAccount(filter_->mapToSource(current), filter_->mapToSource(previous));
+            });
 
     expandAll();
 }
@@ -48,7 +57,7 @@ void AccountTreeView::contextMenuEvent(QContextMenuEvent *event) {
         auto add = new QAction(tr("Add child account"), this);
         connect(add, &QAction::triggered, this, [this] () {
             if (currentIndex().isValid()) {
-                emit createAccount(currentIndex());
+                emit createAccount(filter_->mapToSource(currentIndex()));
             }
         });
 
@@ -56,7 +65,7 @@ void AccountTreeView::contextMenuEvent(QContextMenuEvent *event) {
         del->setEnabled(currentIndex().isValid());
         connect(del, &QAction::triggered, this, [this] () {
             if (currentIndex().isValid()) {
-                emit deleteAccount(currentIndex());
+                emit deleteAccount(filter_->mapToSource(currentIndex()));
             }
         });
 
@@ -82,11 +91,11 @@ bool AccountTreeView::eventFilter(QObject *object, QEvent *event) {
             QKeyEvent *key_event = static_cast<QKeyEvent *>(event);
 
             if ((key_event->key() == Qt::Key_Enter) or (key_event->key() == Qt::Key_Return)){
-                emit modifyAccount(currentIndex());
+                emit modifyAccount(filter_->mapToSource(currentIndex()));
             } else if (key_event->key() == Qt::Key_Delete) {
-                emit deleteAccount(currentIndex());
+                emit deleteAccount(filter_->mapToSource(currentIndex()));
             } else if (key_event->key() == Qt::Key_A) {
-                emit createAccount(currentIndex());
+                emit createAccount(filter_->mapToSource(currentIndex()));
             }
         }
     }
