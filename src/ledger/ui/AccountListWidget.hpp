@@ -4,6 +4,7 @@
 #include <QSplitter>
 
 // Forward declaration(s)
+class QTableView;
 class QWidget;
 
 namespace ub {
@@ -12,6 +13,7 @@ namespace ledger {
 // Forward declaration(s)
 class AccountDetailsDialog;
 class AccountModel;
+class AccountTransactionModel;
 class AccountTreeView;
 
 /**
@@ -26,10 +28,12 @@ public:
     /**
      * Initializes the account list widget.
      *
-     * @param[in] model  Account model
-     * @param[in] parent Parent widget
+     * @param[in] model        Account model
+     * @param[in] transactions Account transaction model
+     * @param[in] parent       Parent widget
      */
-    AccountListWidget(AccountModel *model, QWidget *parent);
+    AccountListWidget(AccountModel *model, AccountTransactionModel *transactions,
+                      QWidget *parent);
 
 signals:
     /**
@@ -48,13 +52,26 @@ protected slots:
      */
     void deleteAccount(const QModelIndex &index);
 
+    /**
+     * Updates the account transactions model to display transactions for the selected account.
+     *
+     * @param[in] current  Model index of the currently selected account
+     * @param[in] previous Model index of the previoiusly selected account
+     */
+    void setTransactionFilter(const QModelIndex &current, const QModelIndex &previous);
+
 private:
     /** Account model */
     AccountModel *model_;
+    /** Account transaction model */
+    AccountTransactionModel *transactions_;
+
     /** Account details dialog */
     AccountDetailsDialog *details_;
     /** Account tree view */
     AccountTreeView *tree_;
+    /** Account transactions list view */
+    QTableView *transaction_list_;
 };
 
 } // ledger namespace

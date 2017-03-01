@@ -17,6 +17,7 @@ namespace ledger {
 // Forward declaration(s)
 class AccountListWidget;
 class AccountModel;
+class AccountTransactionModel;
 }
 
 /**
@@ -56,6 +57,8 @@ protected slots:
 private:
     /** Account model */
     ledger::AccountModel *account_model_;
+    /** Account transaction model */
+    ledger::AccountTransactionModel *account_transaction_model_;
 
     /** Main window */
     MainWindow *window_;
