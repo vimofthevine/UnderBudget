@@ -22,6 +22,11 @@ Account AccountTransaction::account() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+Money AccountTransaction::balance() const {
+    return balance_;
+}
+
+//--------------------------------------------------------------------------------------------------
 Money AccountTransaction::amount() const {
     return amount_;
 }
@@ -54,6 +59,11 @@ void AccountTransaction::setAccount(const Account & account) {
 //--------------------------------------------------------------------------------------------------
 void AccountTransaction::setAmount(const Money & amount) {
     amount_ = amount;
+}
+
+//--------------------------------------------------------------------------------------------------
+void AccountTransaction::setBalance(const Money & balance) {
+    balance_ = balance;
 }
 
 //--------------------------------------------------------------------------------------------------

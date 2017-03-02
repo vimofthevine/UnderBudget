@@ -374,20 +374,36 @@ TEST_F(SQLTransactionRepositoryTest, ShouldReturnAllTransactionsAgainstAccount) 
     EXPECT_EQ(4u, repo->getTransactions(Account(4)).size()) << repo->lastError().toStdString();
 }
 
-/** Verifies that transactions are returned in reverse-chronological order for an account. */
+/** Verifies that transactions are returned in chronological order for an account. */
 TEST_F(SQLTransactionRepositoryTest, ShouldReturnTransactionsAgainstAccountSortedByDate) {
     createRepo();
     populate();
     auto list = repo->getTransactions(Account(4));
     ASSERT_EQ(4u, list.size()) << repo->lastError().toStdString();
-    EXPECT_EQ(6, list.at(0).id());
-    EXPECT_EQ(QDate(2017, 12, 7), list.at(0).transaction().date());
-    EXPECT_EQ(5, list.at(1).id());
-    EXPECT_EQ(QDate(2017, 2, 28), list.at(1).transaction().date());
-    EXPECT_EQ(4, list.at(2).id());
-    EXPECT_EQ(QDate(2017, 1, 15), list.at(2).transaction().date());
-    EXPECT_EQ(2, list.at(3).id());
-    EXPECT_EQ(QDate(2016, 12, 24), list.at(3).transaction().date());
+    EXPECT_EQ(2, list.at(0).id());
+    EXPECT_EQ(QDate(2016, 12, 24), list.at(0).transaction().date());
+    EXPECT_EQ(4, list.at(1).id());
+    EXPECT_EQ(QDate(2017, 1, 15), list.at(1).transaction().date());
+    EXPECT_EQ(5, list.at(2).id());
+    EXPECT_EQ(QDate(2017, 2, 28), list.at(2).transaction().date());
+    EXPECT_EQ(6, list.at(3).id());
+    EXPECT_EQ(QDate(2017, 12, 7), list.at(3).transaction().date());
+}
+
+/** Verifies that transactions contain the appropriate balances. */
+TEST_F(SQLTransactionRepositoryTest, ShouldReturnTransactionsWithBalances) {
+    createRepo();
+    populate();
+    auto list = repo->getTransactions(Account(4));
+    ASSERT_EQ(4u, list.size()) << repo->lastError().toStdString();
+    EXPECT_EQ(2, list.at(0).id());
+    EXPECT_EQ(Money(-24.75), list.at(0).balance());
+    EXPECT_EQ(4, list.at(1).id());
+    EXPECT_EQ(Money(), list.at(1).balance());
+    EXPECT_EQ(5, list.at(2).id());
+    EXPECT_EQ(Money(-32.53), list.at(2).balance());
+    EXPECT_EQ(6, list.at(3).id());
+    EXPECT_EQ(Money(-27.53), list.at(3).balance());
 }
 
 /** Verifies that an empty transaction list is returned for an invalid envelope. */
@@ -412,14 +428,30 @@ TEST_F(SQLTransactionRepositoryTest, ShouldReturnTransactionsAgainstEnvelopeSort
     populate();
     auto list = repo->getTransactions(Envelope(5));
     ASSERT_EQ(4u, list.size()) << repo->lastError().toStdString();
-    EXPECT_EQ(5, list.at(0).id());
-    EXPECT_EQ(QDate(2017, 12, 7), list.at(0).transaction().date());
-    EXPECT_EQ(4, list.at(1).id());
-    EXPECT_EQ(QDate(2017, 2, 28), list.at(1).transaction().date());
-    EXPECT_EQ(2, list.at(2).id());
-    EXPECT_EQ(QDate(2016, 12, 24), list.at(2).transaction().date());
-    EXPECT_EQ(1, list.at(3).id());
-    EXPECT_EQ(QDate(2016, 11, 2), list.at(3).transaction().date());
+    EXPECT_EQ(1, list.at(0).id());
+    EXPECT_EQ(QDate(2016, 11, 2), list.at(0).transaction().date());
+    EXPECT_EQ(2, list.at(1).id());
+    EXPECT_EQ(QDate(2016, 12, 24), list.at(1).transaction().date());
+    EXPECT_EQ(4, list.at(2).id());
+    EXPECT_EQ(QDate(2017, 2, 28), list.at(2).transaction().date());
+    EXPECT_EQ(5, list.at(3).id());
+    EXPECT_EQ(QDate(2017, 12, 7), list.at(3).transaction().date());
+}
+
+/** Verifies that envelope balances can be retrieved. */
+TEST_F(SQLTransactionRepositoryTest, ShouldCalculateEnvelopeBalances) {
+    createRepo();
+    populate();
+    auto list = repo->getTransactions(Envelope(5));
+    ASSERT_EQ(4u, list.size()) << repo->lastError().toStdString();
+    EXPECT_EQ(1, list.at(0).id());
+    EXPECT_EQ(Money(100.00), list.at(0).balance());
+    EXPECT_EQ(2, list.at(1).id());
+    EXPECT_EQ(Money(75.25), list.at(1).balance());
+    EXPECT_EQ(4, list.at(2).id());
+    EXPECT_EQ(Money(52.72), list.at(2).balance());
+    EXPECT_EQ(5, list.at(3).id());
+    EXPECT_EQ(Money(57.72), list.at(3).balance());
 }
 
 /** Verifies that double-entry transactions can be removed. */
@@ -503,7 +535,7 @@ TEST_F(SQLTransactionRepositoryTest, ShouldUpdateEnvelopeTransaction) {
 }
 
 /** Verifies that account balances can be retrieved. */
-TEST_F(SQLTransactionRepositoryTest, ShouldCalculateAccountBalance) {
+TEST_F(SQLTransactionRepositoryTest, ShouldCalculateAccountBalances) {
     createRepo();
     populate();
 

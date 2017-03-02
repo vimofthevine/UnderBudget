@@ -44,6 +44,13 @@ public:
     Money amount() const;
 
     /**
+     * Returns the envelope balance after applying this transaction.
+     *
+     * @return Envelope balance
+     */
+    Money balance() const;
+
+    /**
      * Returns the envelope against which this transaction applies.
      *
      * @return Envelope against which this transaction applies
@@ -70,6 +77,13 @@ public:
      * @param[in] amount New amount
      */
     void setAmount(const Money & amount);
+
+    /**
+     * Updates the envelope balance after this transaction is applied.
+     *
+     * @param[in] balance New balance
+     */
+    void setBalance(const Money & balance);
 
     /**
      * Updates the envelope to which this transaction applies.
@@ -104,6 +118,8 @@ private:
     Envelope envelope_;
     /** Transaction amount */
     Money amount_;
+    /** Envelope balance after applying this transaction */
+    Money balance_;
     /** Envelope transaction ID */
     int id_;
     /** Memo */

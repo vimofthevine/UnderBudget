@@ -21,6 +21,11 @@ Money EnvelopeTransaction::amount() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+Money EnvelopeTransaction::balance() const {
+    return balance_;
+}
+
+//--------------------------------------------------------------------------------------------------
 Envelope EnvelopeTransaction::envelope() const {
     return envelope_;
 }
@@ -38,6 +43,11 @@ QString EnvelopeTransaction::memo() const {
 //--------------------------------------------------------------------------------------------------
 void EnvelopeTransaction::setAmount(const Money & amount) {
     amount_ = amount;
+}
+
+//--------------------------------------------------------------------------------------------------
+void EnvelopeTransaction::setBalance(const Money & balance) {
+    balance_ = balance;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -39,6 +39,8 @@ public:
     static const int MEMO = 2;
     /** Transaction amount column */
     static const int AMOUNT = 3;
+    /** Account balance column */
+    static const int BALANCE = 4;
 
     /**
      * Initializes the account transaction view model.

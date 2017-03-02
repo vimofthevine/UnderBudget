@@ -12,7 +12,7 @@ namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
 AccountTransactionModel::AccountTransactionModel() {
-    headers_ << tr("Date") << tr("Payee") << tr("Memo") << tr("Amount");
+    headers_ << tr("Date") << tr("Payee") << tr("Memo") << tr("Amount") << tr("Balance");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -72,6 +72,8 @@ QVariant AccountTransactionModel::data(const QModelIndex &index, int role) const
         return transaction.memo();
     case AMOUNT:
         return transaction.amount().toString();
+    case BALANCE:
+        return transaction.balance().toString();
     default:
         return QVariant();
     }

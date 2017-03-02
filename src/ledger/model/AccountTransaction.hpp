@@ -51,6 +51,13 @@ public:
     Money amount() const;
 
     /**
+     * Returns the account balance after applying this transaction.
+     *
+     * @return Account balance
+     */
+    Money balance() const;
+
+    /**
      * Returns the ID of this account transaction.
      *
      * @return Account transaction ID
@@ -84,6 +91,13 @@ public:
      * @param[in] account New account
      */
     void setAccount(const Account & account);
+
+    /**
+     * Updates the account balance after this transaction is applied.
+     *
+     * @param[in] balance New balance
+     */
+    void setBalance(const Money & balance);
 
     /**
      * Updates the amount of this transaction.
@@ -132,6 +146,8 @@ private:
     Account account_;
     /** Transaction amount */
     Money amount_;
+    /** Account balance after applying this transaction */
+    Money balance_;
     /** Cleared */
     bool cleared_;
     /** Account transaction ID */

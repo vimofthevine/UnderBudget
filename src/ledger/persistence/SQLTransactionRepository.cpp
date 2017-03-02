@@ -154,7 +154,9 @@ AccountTransaction SQLTransactionRepository::getAccountTransaction(int id) {
     } else if (not query.first()) {
         last_error_ = QObject::tr("No account transaction found for ID %1").arg(id);
     } else {
-        return toAccountTransaction(query.record());
+        auto trn = toAccountTransaction(query.record());
+        trn.setBalance(getBalance(trn.transaction().date(), trn.account()));
+        return trn;
     }
     return AccountTransaction();
 }
@@ -174,7 +176,9 @@ std::vector<AccountTransaction> SQLTransactionRepository::getAccountTransactions
         last_error_ = query.lastError().text();
     }
     while (query.next()) {
-        accounts.push_back(toAccountTransaction(query.record()));
+        auto trn = toAccountTransaction(query.record());
+        trn.setBalance(getBalance(trn.transaction().date(), trn.account()));
+        accounts.push_back(trn);
     }
     return accounts;
 }
@@ -229,7 +233,9 @@ EnvelopeTransaction SQLTransactionRepository::getEnvelopeTransaction(int id) {
     } else if (not query.first()) {
         last_error_ = QObject::tr("No envelope transaction found for ID %1").arg(id);
     } else {
-        return toEnvelopeTransaction(query.record());
+        auto trn = toEnvelopeTransaction(query.record());
+        trn.setBalance(getBalance(trn.transaction().date(), trn.envelope()));
+        return trn;
     }
     return EnvelopeTransaction();
 }
@@ -249,7 +255,9 @@ std::vector<EnvelopeTransaction> SQLTransactionRepository::getEnvelopeTransactio
         last_error_ = query.lastError().text();
     }
     while (query.next()) {
-        envelopes.push_back(toEnvelopeTransaction(query.record()));
+        auto trn = toEnvelopeTransaction(query.record());
+        trn.setBalance(getBalance(trn.transaction().date(), trn.envelope()));
+        envelopes.push_back(trn);
     }
     return envelopes;
 }
@@ -301,13 +309,17 @@ std::vector<AccountTransaction> SQLTransactionRepository::getTransactions(const 
                   "date(transaction_entry.date, 'unixepoch') AS date "
                   "FROM account_transaction JOIN transaction_entry ON "
                   "account_transaction.transaction_entry_id=transaction_entry.id "
-                  "WHERE account_transaction.account_id=:id ORDER BY transaction_entry.date DESC;");
+                  "WHERE account_transaction.account_id=:id ORDER BY transaction_entry.date ASC;");
     query.bindValue(":id", account.id());
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
+    Money balance(0, account.currency());
     while (query.next()) {
-        accounts.push_back(toAccountTransaction(query.record()));
+        auto trn = toAccountTransaction(query.record());
+        trn.setBalance(balance + trn.amount());
+        accounts.push_back(trn);
+        balance = trn.balance();
     }
     return accounts;
 }
@@ -321,13 +333,17 @@ std::vector<EnvelopeTransaction> SQLTransactionRepository::getTransactions(const
                   "FROM envelope_transaction JOIN transaction_entry ON "
                   "envelope_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE envelope_transaction.envelope_id=:id "
-                  "ORDER BY transaction_entry.date DESC;");
+                  "ORDER BY transaction_entry.date ASC;");
     query.bindValue(":id", envelope.id());
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
+    Money balance(0, envelope.currency());
     while (query.next()) {
-        envelopes.push_back(toEnvelopeTransaction(query.record()));
+        auto trn = toEnvelopeTransaction(query.record());
+        trn.setBalance(balance + trn.amount());
+        envelopes.push_back(trn);
+        balance = trn.balance();
     }
     return envelopes;
 }
