@@ -2,6 +2,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include "AccountModel.hpp"
 #include "AccountTreeView.hpp"
 
 namespace ub {
@@ -37,7 +38,7 @@ void AccountTreeView::setModel(QAbstractItemModel *model) {
 
     // Give the name column the most weight
     header()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    header()->setSectionResizeMode(0, QHeaderView::Stretch);
+    header()->setSectionResizeMode(AccountModel::NAME, QHeaderView::Stretch);
 
     // Can't set this up until after the model has been set
     connect(selectionModel(), &QItemSelectionModel::currentRowChanged, this,

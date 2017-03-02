@@ -7,6 +7,7 @@ set(ledger_ui_srcs
     AccountListWidget.cpp
     AccountTreeView.cpp
     AccountTransactionModel.cpp
+    AccountTransactionTableView.cpp
 )
 
 # Build ledger UI library

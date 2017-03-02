@@ -4,7 +4,6 @@
 #include <QSplitter>
 
 // Forward declaration(s)
-class QTableView;
 class QWidget;
 
 namespace ub {
@@ -13,6 +12,7 @@ namespace ledger {
 // Forward declaration(s)
 class AccountDetailsDialog;
 class AccountModel;
+class AccountTransactionTableView;
 class AccountTransactionModel;
 class AccountTreeView;
 
@@ -71,7 +71,7 @@ private:
     /** Account tree view */
     AccountTreeView *tree_;
     /** Account transactions list view */
-    QTableView *transaction_list_;
+    AccountTransactionTableView * transaction_list_;
 };
 
 } // ledger namespace
