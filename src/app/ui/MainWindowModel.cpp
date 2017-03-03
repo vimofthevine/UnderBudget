@@ -6,6 +6,9 @@
 #include <ledger/ui/AccountListWidget.hpp>
 #include <ledger/ui/AccountModel.hpp>
 #include <ledger/ui/AccountTransactionModel.hpp>
+#include <ledger/ui/EnvelopeListWidget.hpp>
+#include <ledger/ui/EnvelopeModel.hpp>
+#include <ledger/ui/EnvelopeTransactionModel.hpp>
 #include "DatabaseFileChooser.hpp"
 #include "MainWindow.hpp"
 #include "MainWindowModel.hpp"
@@ -18,14 +21,25 @@ MainWindowModel::MainWindowModel(MainWindow *window)
         : QObject(window),
           account_model_(new ledger::AccountModel),
           account_transaction_model_(new ledger::AccountTransactionModel),
+          envelope_model_(new ledger::EnvelopeModel),
+          envelope_transaction_model_(new ledger::EnvelopeTransactionModel),
           window_(window),
           account_list_(new ledger::AccountListWidget(account_model_, account_transaction_model_,
-                                                      window_)) {
+                                                      window_)),
+          envelope_list_(new ledger::EnvelopeListWidget(envelope_model_, envelope_transaction_model_,
+                                                        window_)) {
     window_->contentWidget()->addWidget(account_list_);
+    window_->contentWidget()->addWidget(envelope_list_);
 
-    connect(window_, &MainWindow::openDatabase, this, &MainWindowModel::openDatabase);
+    auto menu = window_->menu();
+    connect(menu, &MenuBar::openDatabase, this, &MainWindowModel::openDatabase);
+    connect(menu, &MenuBar::viewAccounts, this, &MainWindowModel::showAccounts);
+    connect(menu, &MenuBar::viewEnvelopes, this, &MainWindowModel::showEnvelopes);
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error,
+            this, &MainWindowModel::showError);
+    connect(envelope_model_, &ledger::EnvelopeModel::error, this, &MainWindowModel::showError);
+    connect(envelope_transaction_model_, &ledger::EnvelopeTransactionModel::error,
             this, &MainWindowModel::showError);
 }
 
@@ -33,11 +47,23 @@ MainWindowModel::MainWindowModel(MainWindow *window)
 void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories) {
     account_model_->setRepository(repositories);
     account_transaction_model_->setRepository(repositories);
+    envelope_model_->setRepository(repositories);
+    envelope_transaction_model_->setRepository(repositories);
 }
 
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::openDatabase() {
     auto file = ub::DatabaseFileChooser::getFileToOpen(window_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::showAccounts() {
+    window_->contentWidget()->setCurrentWidget(account_list_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::showEnvelopes() {
+    window_->contentWidget()->setCurrentWidget(envelope_list_);
 }
 
 //--------------------------------------------------------------------------------------------------

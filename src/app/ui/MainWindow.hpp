@@ -9,6 +9,9 @@ class QStackedWidget;
 
 namespace ub {
 
+// Forward declaration(s)
+class MenuBar;
+
 /**
  * Main application window.
  */
@@ -22,15 +25,18 @@ public:
     MainWindow();
 
     /**
+     * Returns the main window menu bar.
+     *
+     * @return Main window menu bar
+     */
+    MenuBar * menu() const;
+
+    /**
      * Returns the stacked widget containing the central content of the main window.
      *
      * @return Main window content stacked widget
      */
-    QStackedWidget *contentWidget();
-
-signals:
-    /** Emitted when the open menu action is triggered. */
-    void openDatabase();
+    QStackedWidget * contentWidget() const;
 
 protected:
     /**
@@ -47,6 +53,8 @@ protected slots:
     void about();
 
 private:
+    /** Menu bar */
+    MenuBar *menu_;
     /** Stacked content widget */
     QStackedWidget *content_;
 

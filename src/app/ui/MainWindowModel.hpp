@@ -18,6 +18,9 @@ namespace ledger {
 class AccountListWidget;
 class AccountModel;
 class AccountTransactionModel;
+class EnvelopeListWidget;
+class EnvelopeModel;
+class EnvelopeTransactionModel;
 }
 
 /**
@@ -48,6 +51,16 @@ protected slots:
     void openDatabase();
 
     /**
+     * Displays the accounts list view.
+     */
+    void showAccounts();
+
+    /**
+     * Displays the envelopes list view.
+     */
+    void showEnvelopes();
+
+    /**
      * Displays an error popup dialog with the given message.
      *
      * @param message Error message
@@ -59,11 +72,17 @@ private:
     ledger::AccountModel *account_model_;
     /** Account transaction model */
     ledger::AccountTransactionModel *account_transaction_model_;
+    /** Envelope model */
+    ledger::EnvelopeModel * envelope_model_;
+    /** Envelope transaction model */
+    ledger::EnvelopeTransactionModel * envelope_transaction_model_;
 
     /** Main window */
     MainWindow *window_;
     /** Account list widget */
     ledger::AccountListWidget *account_list_;
+    /** Envelope list widget */
+    ledger::EnvelopeListWidget * envelope_list_;
 };
 
 } // ub namespace

@@ -3,7 +3,6 @@
 
 // UnderBudget include(s)
 #include "MainWindow.hpp"
-#include "MainWindowModel.hpp"
 #include "MenuBar.hpp"
 
 namespace ub {
@@ -13,7 +12,7 @@ const QString MAIN_WINDOW_SIZE = "MainWindowSize";
 const QString MAIN_WINDOW_STATE = "MainWindowState";
 
 //--------------------------------------------------------------------------------------------------
-MainWindow::MainWindow() : content_(new QStackedWidget(this)) {
+MainWindow::MainWindow() : menu_(new MenuBar(this)), content_(new QStackedWidget(this)) {
     restoreSettings();
 
     setWindowTitle(qApp->applicationName());
@@ -21,18 +20,21 @@ MainWindow::MainWindow() : content_(new QStackedWidget(this)) {
     setUnifiedTitleAndToolBarOnMac(true);
     setAttribute(Qt::WA_DeleteOnClose, true);
 
-    auto menu = new MenuBar(this);
-    connect(menu, &MenuBar::openDatabase, this, &MainWindow::openDatabase);
-    connect(menu, &MenuBar::exitApplication, qApp, &QApplication::closeAllWindows);
-    connect(menu, &MenuBar::aboutApplication, this, &MainWindow::about);
-    connect(menu, &MenuBar::aboutQt, qApp, QApplication::aboutQt);
-    setMenuBar(menu);
+    connect(menu_, &MenuBar::exitApplication, qApp, &QApplication::closeAllWindows);
+    connect(menu_, &MenuBar::aboutApplication, this, &MainWindow::about);
+    connect(menu_, &MenuBar::aboutQt, qApp, QApplication::aboutQt);
+    setMenuBar(menu_);
 
     setCentralWidget(content_);
 }
 
 //--------------------------------------------------------------------------------------------------
-QStackedWidget *MainWindow::contentWidget() {
+MenuBar * MainWindow::menu() const {
+    return menu_;
+}
+
+//--------------------------------------------------------------------------------------------------
+QStackedWidget *MainWindow::contentWidget() const {
     return content_;
 }
 
