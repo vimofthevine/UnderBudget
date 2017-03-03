@@ -6,6 +6,10 @@ set(ledger_ui_srcs
     AccountModel.cpp
     AccountListWidget.cpp
     AccountTransactionModel.cpp
+    EnvelopeDetailsDialog.cpp
+    EnvelopeModel.cpp
+    EnvelopeListWidget.cpp
+    EnvelopeTransactionModel.cpp
     TransactionTableView.cpp
     TreeView.cpp
 )
