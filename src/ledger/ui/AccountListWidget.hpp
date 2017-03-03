@@ -12,8 +12,8 @@ namespace ledger {
 // Forward declaration(s)
 class AccountDetailsDialog;
 class AccountModel;
-class AccountTransactionTableView;
 class AccountTransactionModel;
+class TransactionTableView;
 class TreeView;
 
 /**
@@ -71,7 +71,7 @@ private:
     /** Account tree view */
     TreeView *tree_;
     /** Account transactions list view */
-    AccountTransactionTableView * transaction_list_;
+    TransactionTableView * transaction_list_;
 };
 
 } // ledger namespace

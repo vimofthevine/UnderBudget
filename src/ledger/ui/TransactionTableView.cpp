@@ -3,13 +3,13 @@
 
 // UnderBudget include(s)
 #include "AccountTransactionModel.hpp"
-#include "AccountTransactionTableView.hpp"
+#include "TransactionTableView.hpp"
 
 namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AccountTransactionTableView::AccountTransactionTableView(QWidget * parent)
+TransactionTableView::TransactionTableView(QWidget * parent)
         : QTableView(parent), filter_(new QSortFilterProxyModel(this)) {
     QTableView::setModel(filter_);
     setSortingEnabled(true);
@@ -22,7 +22,7 @@ AccountTransactionTableView::AccountTransactionTableView(QWidget * parent)
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransactionTableView::setModel(QAbstractItemModel * model) {
+void TransactionTableView::setModel(QAbstractItemModel * model) {
     filter_->setSourceModel(model);
 
     // Give the payee and memo columns the most weight

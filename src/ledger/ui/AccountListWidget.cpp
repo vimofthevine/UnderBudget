@@ -5,8 +5,8 @@
 #include "AccountDetailsDialog.hpp"
 #include "AccountListWidget.hpp"
 #include "AccountModel.hpp"
-#include "AccountTransactionTableView.hpp"
 #include "AccountTransactionModel.hpp"
+#include "TransactionTableView.hpp"
 #include "TreeView.hpp"
 
 namespace ub {
@@ -17,7 +17,7 @@ AccountListWidget::AccountListWidget(AccountModel *model, AccountTransactionMode
         QWidget *parent)
         : QSplitter(Qt::Horizontal, parent), model_(model), transactions_(transactions),
           details_(new AccountDetailsDialog(model_, parent)), tree_(new TreeView(this)),
-          transaction_list_(new AccountTransactionTableView(this)) {
+          transaction_list_(new TransactionTableView(this)) {
     tree_->setModel(model_);
     transaction_list_->setModel(transactions_);
 

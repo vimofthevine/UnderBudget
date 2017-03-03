@@ -10,20 +10,20 @@ namespace ub {
 namespace ledger {
 
 /**
- * Table view for displaying a list of account transactions.
+ * Table view for displaying a list of transactions.
  *
  * @ingroup ledger
  */
-class AccountTransactionTableView : public QTableView {
+class TransactionTableView : public QTableView {
     Q_OBJECT
 
 public:
     /**
-     * Initializes the account transaction table view.
+     * Initializes the transaction table view.
      *
      * @param parent Parent widget
      */
-    AccountTransactionTableView(QWidget * parent);
+    TransactionTableView(QWidget * parent);
 
     void setModel(QAbstractItemModel * model) override;
 

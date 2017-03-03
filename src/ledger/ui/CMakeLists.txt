@@ -6,7 +6,7 @@ set(ledger_ui_srcs
     AccountModel.cpp
     AccountListWidget.cpp
     AccountTransactionModel.cpp
-    AccountTransactionTableView.cpp
+    TransactionTableView.cpp
     TreeView.cpp
 )
 
