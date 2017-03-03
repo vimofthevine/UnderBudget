@@ -7,7 +7,7 @@
 #include "AccountModel.hpp"
 #include "AccountTransactionTableView.hpp"
 #include "AccountTransactionModel.hpp"
-#include "AccountTreeView.hpp"
+#include "TreeView.hpp"
 
 namespace ub {
 namespace ledger {
@@ -16,7 +16,7 @@ namespace ledger {
 AccountListWidget::AccountListWidget(AccountModel *model, AccountTransactionModel *transactions,
         QWidget *parent)
         : QSplitter(Qt::Horizontal, parent), model_(model), transactions_(transactions),
-          details_(new AccountDetailsDialog(model_, parent)), tree_(new AccountTreeView(this)),
+          details_(new AccountDetailsDialog(model_, parent)), tree_(new TreeView(this)),
           transaction_list_(new AccountTransactionTableView(this)) {
     tree_->setModel(model_);
     transaction_list_->setModel(transactions_);
@@ -24,12 +24,12 @@ AccountListWidget::AccountListWidget(AccountModel *model, AccountTransactionMode
     details_->hide();
     details_->setModal(true);
 
-    connect(tree_, &AccountTreeView::selectAccount, this, &AccountListWidget::selectAccount);
-    connect(tree_, &AccountTreeView::selectAccount, this, &AccountListWidget::setTransactionFilter);
-    connect(tree_, &AccountTreeView::createAccount,
+    connect(tree_, &TreeView::selectItem, this, &AccountListWidget::selectAccount);
+    connect(tree_, &TreeView::selectItem, this, &AccountListWidget::setTransactionFilter);
+    connect(tree_, &TreeView::createItem,
             details_, &AccountDetailsDialog::resetForNewAccount);
-    connect(tree_, &AccountTreeView::modifyAccount, details_, &AccountDetailsDialog::showAccount);
-    connect(tree_, &AccountTreeView::deleteAccount, this, &AccountListWidget::deleteAccount);
+    connect(tree_, &TreeView::modifyItem, details_, &AccountDetailsDialog::showAccount);
+    connect(tree_, &TreeView::deleteItem, this, &AccountListWidget::deleteAccount);
 
     addWidget(tree_);
     addWidget(transaction_list_);

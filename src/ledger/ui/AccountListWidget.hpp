@@ -14,7 +14,7 @@ class AccountDetailsDialog;
 class AccountModel;
 class AccountTransactionTableView;
 class AccountTransactionModel;
-class AccountTreeView;
+class TreeView;
 
 /**
  * Widget for displaying a list of accounts and associated transactions.
@@ -69,7 +69,7 @@ private:
     /** Account details dialog */
     AccountDetailsDialog *details_;
     /** Account tree view */
-    AccountTreeView *tree_;
+    TreeView *tree_;
     /** Account transactions list view */
     AccountTransactionTableView * transaction_list_;
 };
