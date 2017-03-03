@@ -55,6 +55,13 @@ void AccountTreeView::contextMenuEvent(QContextMenuEvent *event) {
     auto menu = new QMenu(this);
 
     if (index.isValid()) {
+        auto mod = new QAction(tr("Edit"), this);
+        connect(mod, &QAction::triggered, this, [this] () {
+            if (currentIndex().isValid()) {
+                emit modifyAccount(filter_->mapToSource(currentIndex()));
+            }
+        });
+
         auto add = new QAction(tr("Add child account"), this);
         connect(add, &QAction::triggered, this, [this] () {
             if (currentIndex().isValid()) {
@@ -63,13 +70,13 @@ void AccountTreeView::contextMenuEvent(QContextMenuEvent *event) {
         });
 
         auto del = new QAction(tr("Delete"), this);
-        del->setEnabled(currentIndex().isValid());
         connect(del, &QAction::triggered, this, [this] () {
             if (currentIndex().isValid()) {
                 emit deleteAccount(filter_->mapToSource(currentIndex()));
             }
         });
 
+        menu->addAction(mod);
         menu->addAction(add);
         menu->addAction(del);
     } else {
