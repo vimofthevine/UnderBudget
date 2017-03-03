@@ -17,68 +17,68 @@ namespace ub {
 namespace ledger {
 
 /**
- * A double-entry ledger entry with account and envelope transactions.
+ * A journal entry with account and envelope transactions.
  *
- * The ledger entry ensures that the transaction has all required splits (account or
+ * The journal entry ensures that the transaction has all required splits (account or
  * envelope transactions) and has a zero-sum. That is, the sum of all account transactions
  * less the sum of all envelope transactions is zero.
  *
  * @ingroup ledger
  */
-class LedgerEntry {
+class JournalEntry {
 public:
     /**
-     * Initializes a new ledger entry.
+     * Initializes a new journal entry.
      *
      * @param[in] repo Transaction repository
      */
-    LedgerEntry(std::shared_ptr<TransactionRepository> repo);
+    JournalEntry(std::shared_ptr<TransactionRepository> repo);
 
     /**
-     * Initializes a ledger entry for the existing transaction for modification.
+     * Initializes a journal entry for the existing transaction for modification.
      *
      * @param[in] repo        Transaction repository
      * @param[in] transaction Transaction to be modified
      */
-    LedgerEntry(std::shared_ptr<TransactionRepository> repo, const Transaction & transaction);
+    JournalEntry(std::shared_ptr<TransactionRepository> repo, const Transaction & transaction);
 
     /**
-     * Adds the given account transaction split to this ledger entry.
+     * Adds the given account transaction split to this journal entry.
      *
      * @param transaction Account transaction split
      */
     void addSplit(const AccountTransaction & transaction);
 
     /**
-     * Adds the given envelope transaction split to this ledger entry.
+     * Adds the given envelope transaction split to this journal entry.
      *
      * @param transaction Envelope transaction split
      */
     void addSplit(const EnvelopeTransaction & transaction);
 
     /**
-     * Returns the list of account transaction splits in this ledger entry.
+     * Returns the list of account transaction splits in this journal entry.
      *
      * @return List of account transaction splits
      */
     std::vector<AccountTransaction> getAccountSplits() const;
 
     /**
-     * Returns the list of envelope transaction splits in this ledger entry.
+     * Returns the list of envelope transaction splits in this journal entry.
      *
      * @return List of envelope transaction splits
      */
     std::vector<EnvelopeTransaction> getEnvelopeSplits() const;
 
     /**
-     * Returns the double-entry transaction representing this ledger entry.
+     * Returns the double-entry transaction representing this journal entry.
      *
      * @return Double-entry transaction
      */
     Transaction getTransaction() const;
 
     /**
-     * Checks if the account and envelope splits in this ledger entry satisfy all required
+     * Checks if the account and envelope splits in this journal entry satisfy all required
      * conditions.
      *
      * @return @c true if the transaction splits satisfy all required conditions
@@ -93,14 +93,14 @@ public:
     QString lastError() const;
 
     /**
-     * Removes the given account transaction split from this ledger entry.
+     * Removes the given account transaction split from this journal entry.
      *
      * @param transaction Account transaction split to be removed
      */
     void removeSplit(const AccountTransaction & transaction);
 
     /**
-     * Removes the given envelope transaction split from this ledger entry.
+     * Removes the given envelope transaction split from this journal entry.
      *
      * @param transaction Envelope transaction split to be removed
      */
@@ -130,7 +130,7 @@ public:
     void updateSplit(const EnvelopeTransaction & transaction, size_t pos);
 
     /**
-     * Updates the double-entry transaction in this ledger entry.
+     * Updates the double-entry transaction in this journal entry.
      *
      * @param transaction Transaction to be updated
      */

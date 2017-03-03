@@ -13,7 +13,7 @@
 #include <ledger/model/AccountTransaction.hpp>
 #include <ledger/model/Currency.hpp>
 #include <ledger/model/EnvelopeTransaction.hpp>
-#include <ledger/model/LedgerEntry.hpp>
+#include <ledger/model/JournalEntry.hpp>
 #include <ledger/model/Money.hpp>
 #include <ledger/model/Transaction.hpp>
 #include <ledger/model/TransactionRepository.hpp>
@@ -48,7 +48,7 @@ public:
 };
 
 /** Test fixture */
-class LedgerEntryTest : public ::testing::Test {
+class JournalEntryTest : public ::testing::Test {
 protected:
     /** Mock transaction repository */
     std::shared_ptr<MockTransactionRepository> repo;
@@ -86,14 +86,14 @@ protected:
 };
 
 /** Verifies that the entry is not valid if it has no splits. */
-TEST_F(LedgerEntryTest, ShouldBeInvalidWhenNoSplitsDefined) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldBeInvalidWhenNoSplitsDefined) {
+    JournalEntry entry(repo);
     EXPECT_FALSE(entry.isValid());
 }
 
 /** Verifies that the entry is not valid if it has multiple account and envelope splits. */
-TEST_F(LedgerEntryTest, ShouldBeInvalidWhenMultipleAccountAndMultipleEnvelopeSplitsDefined) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldBeInvalidWhenMultipleAccountAndMultipleEnvelopeSplitsDefined) {
+    JournalEntry entry(repo);
     entry.addSplit(AccountTransaction(2));
     entry.addSplit(AccountTransaction(4));
     entry.addSplit(EnvelopeTransaction(3));
@@ -102,8 +102,8 @@ TEST_F(LedgerEntryTest, ShouldBeInvalidWhenMultipleAccountAndMultipleEnvelopeSpl
 }
 
 /** Verifies that the entry is not valid if multiple currencies exist in the account splits. */
-TEST_F(LedgerEntryTest, ShouldBeInvalidWhenMultipleCurrenciesDefinedInAccountSplits) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldBeInvalidWhenMultipleCurrenciesDefinedInAccountSplits) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -117,8 +117,8 @@ TEST_F(LedgerEntryTest, ShouldBeInvalidWhenMultipleCurrenciesDefinedInAccountSpl
 }
 
 /** Verifies that the entry is not valid if multiple currencies exist in the envelope splits. */
-TEST_F(LedgerEntryTest, ShouldBeInvalidWhenMultipleCurrenciesDefinedInEnvelopeSplits) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldBeInvalidWhenMultipleCurrenciesDefinedInEnvelopeSplits) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -132,8 +132,8 @@ TEST_F(LedgerEntryTest, ShouldBeInvalidWhenMultipleCurrenciesDefinedInEnvelopeSp
 }
 
 /** Verifies that the entry is not valid if it does not have a zero sum. */
-TEST_F(LedgerEntryTest, ShouldBeInvalidWhenSumIsNotZero) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldBeInvalidWhenSumIsNotZero) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -147,10 +147,10 @@ TEST_F(LedgerEntryTest, ShouldBeInvalidWhenSumIsNotZero) {
 }
 
 /** Verifies that the transaction is not saved in the repository when not valid. */
-TEST_F(LedgerEntryTest, ShouldNotSaveWhenNotValid) {
+TEST_F(JournalEntryTest, ShouldNotSaveWhenNotValid) {
     EXPECT_CALL(*repo, save()).Times(0);
 
-    LedgerEntry entry(repo);
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -164,8 +164,8 @@ TEST_F(LedgerEntryTest, ShouldNotSaveWhenNotValid) {
 }
 
 /** Verifies that the entry is valid when all conditions are met. */
-TEST_F(LedgerEntryTest, ShouldBeValidWhenAllConditionsAreSatisfied) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldBeValidWhenAllConditionsAreSatisfied) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -183,8 +183,8 @@ TEST_F(LedgerEntryTest, ShouldBeValidWhenAllConditionsAreSatisfied) {
 }
 
 /** Verifies that account splits can be removed from an entry. */
-TEST_F(LedgerEntryTest, ShouldRemoveAccountSplitsFromEntry) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldRemoveAccountSplitsFromEntry) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -203,8 +203,8 @@ TEST_F(LedgerEntryTest, ShouldRemoveAccountSplitsFromEntry) {
 }
 
 /** Verifies that envelope splits can be removed from an entry. */
-TEST_F(LedgerEntryTest, ShouldRemoveEnvelopeSplitsFromEntry) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldRemoveEnvelopeSplitsFromEntry) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -227,8 +227,8 @@ TEST_F(LedgerEntryTest, ShouldRemoveEnvelopeSplitsFromEntry) {
 }
 
 /** Verifies that account splits can be updated in an entry. */
-TEST_F(LedgerEntryTest, ShouldUpdateAccountSplits) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldUpdateAccountSplits) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -250,8 +250,8 @@ TEST_F(LedgerEntryTest, ShouldUpdateAccountSplits) {
 }
 
 /** Verifies that envelope splits can be updated in an entry. */
-TEST_F(LedgerEntryTest, ShouldUpdateEnvelopeSplits) {
-    LedgerEntry entry(repo);
+TEST_F(JournalEntryTest, ShouldUpdateEnvelopeSplits) {
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -277,14 +277,14 @@ TEST_F(LedgerEntryTest, ShouldUpdateEnvelopeSplits) {
 }
 
 /** Verifies that new entries create transactions in the repository. */
-TEST_F(LedgerEntryTest, ShouldCreateTransactionsInRepoWhenNewEntry) {
+TEST_F(JournalEntryTest, ShouldCreateTransactionsInRepoWhenNewEntry) {
     using namespace ::testing;
     EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(true));
     EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).WillOnce(Return(true));
     EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(true));
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
-    LedgerEntry entry(repo);
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -298,14 +298,14 @@ TEST_F(LedgerEntryTest, ShouldCreateTransactionsInRepoWhenNewEntry) {
 }
 
 /** Verifies that new entries are not created when error creating an account transaction. */
-TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingAccountTransaction) {
+TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingAccountTransaction) {
     using namespace ::testing;
     EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(false));
     EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(true));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
-    LedgerEntry entry(repo);
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -319,7 +319,7 @@ TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingAccoun
 }
 
 /** Verifies that new entries are not created when error creating an envelope transaction. */
-TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingEnvelopeTransaction) {
+TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingEnvelopeTransaction) {
     using namespace ::testing;
     EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(true));
     EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).WillOnce(Return(false));
@@ -327,7 +327,7 @@ TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingEnvelo
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
-    LedgerEntry entry(repo);
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -341,13 +341,13 @@ TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingEnvelo
 }
 
 /** Verifies that new entries are not created when error creating a double-entry transaction. */
-TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingDoubleEntryTransaction) {
+TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingDoubleEntryTransaction) {
     using namespace ::testing;
     EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(false));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
-    LedgerEntry entry(repo);
+    JournalEntry entry(repo);
 
     AccountTransaction from;
     from.setAmount(Money(-12.35, Currency(1, "USD")));
@@ -361,9 +361,9 @@ TEST_F(LedgerEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingDouble
 }
 
 /** Verifies that the entry can be initialized to an existing transaction. */
-TEST_F(LedgerEntryTest, ShouldInitializeWithExistingTransaction) {
+TEST_F(JournalEntryTest, ShouldInitializeWithExistingTransaction) {
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
 
     EXPECT_EQ(QString("Grocer"), entry.getTransaction().payee());
     EXPECT_EQ(QString("From Bank"), entry.getAccountSplits()[0].memo());
@@ -372,7 +372,7 @@ TEST_F(LedgerEntryTest, ShouldInitializeWithExistingTransaction) {
 }
 
 /** Verifies that the entry will update an existing transaction in the repository. */
-TEST_F(LedgerEntryTest, ShouldUpdateTransactionInRepoWhenModifyingExisting) {
+TEST_F(JournalEntryTest, ShouldUpdateTransactionInRepoWhenModifyingExisting) {
     using namespace ::testing;
     EXPECT_CALL(*repo, update(Matcher<const AccountTransaction &>(
                                   AllOf(
@@ -397,7 +397,7 @@ TEST_F(LedgerEntryTest, ShouldUpdateTransactionInRepoWhenModifyingExisting) {
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
 
     auto as = entry.getAccountSplits()[0];
     as.setMemo("U1");
@@ -419,7 +419,7 @@ TEST_F(LedgerEntryTest, ShouldUpdateTransactionInRepoWhenModifyingExisting) {
 }
 
 /** Verifies that the entry is not saved if an error occurs updating an account transaction. */
-TEST_F(LedgerEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingAccountTransaction) {
+TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingAccountTransaction) {
     using namespace ::testing;
     EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
                                   Property(&Transaction::id, 80))))
@@ -431,12 +431,12 @@ TEST_F(LedgerEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingAccountTransa
     EXPECT_CALL(*repo, save()).Times(0);
 
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
     entry.save();
 }
 
 /** Verifies that the entry is not saved if an error occurs updating an envelope transaction. */
-TEST_F(LedgerEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingEnvelopeTransaction) {
+TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingEnvelopeTransaction) {
     using namespace ::testing;
     EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
                                   Property(&Transaction::id, 80))))
@@ -451,12 +451,12 @@ TEST_F(LedgerEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingEnvelopeTrans
     EXPECT_CALL(*repo, save()).Times(0);
 
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
     entry.save();
 }
 
 /** Verifies that the entry is not saved if an error occurs updating the double-entry transaction. */
-TEST_F(LedgerEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingDoubleEntryTransaction) {
+TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingDoubleEntryTransaction) {
     using namespace ::testing;
     EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
                                   Property(&Transaction::id, 80))))
@@ -465,12 +465,12 @@ TEST_F(LedgerEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingDoubleEntryTr
     EXPECT_CALL(*repo, save()).Times(0);
 
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
     entry.save();
 }
 
 /** Verifies that account transactions can be removed from transactions. */
-TEST_F(LedgerEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
+TEST_F(JournalEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
     using namespace ::testing;
     EXPECT_CALL(*repo, create(A<const AccountTransaction &>()))
             .WillOnce(Return(true));
@@ -489,7 +489,7 @@ TEST_F(LedgerEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
 
     entry.removeSplit(entry.getAccountSplits()[0]);
 
@@ -502,7 +502,7 @@ TEST_F(LedgerEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
 }
 
 /** Verifies that envelope transactions can be removed from transactions. */
-TEST_F(LedgerEntryTest, ShouldRemoveDeletedEnvelopeTransactionsFromRepository) {
+TEST_F(JournalEntryTest, ShouldRemoveDeletedEnvelopeTransactionsFromRepository) {
     using namespace ::testing;
     EXPECT_CALL(*repo, update(Matcher<const AccountTransaction &>(
                                   Property(&AccountTransaction::id, 3))))
@@ -519,7 +519,7 @@ TEST_F(LedgerEntryTest, ShouldRemoveDeletedEnvelopeTransactionsFromRepository) {
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();
-    LedgerEntry entry(repo, Transaction(80));
+    JournalEntry entry(repo, Transaction(80));
 
     entry.removeSplit(entry.getEnvelopeSplits()[1]);
 

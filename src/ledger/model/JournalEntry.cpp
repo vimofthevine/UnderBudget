@@ -7,7 +7,7 @@
 // UnderBudget include(s)
 #include "AccountTransaction.hpp"
 #include "EnvelopeTransaction.hpp"
-#include "LedgerEntry.hpp"
+#include "JournalEntry.hpp"
 #include "Transaction.hpp"
 #include "TransactionRepository.hpp"
 
@@ -15,10 +15,10 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-LedgerEntry::LedgerEntry(std::shared_ptr<TransactionRepository> repo) : transactions_(repo) {}
+JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo) : transactions_(repo) {}
 
 //--------------------------------------------------------------------------------------------------
-LedgerEntry::LedgerEntry(std::shared_ptr<TransactionRepository> repo,
+JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
                          const Transaction & transaction)
     : transactions_(repo) {
     transaction_ = transactions_->getTransaction(transaction.id());
@@ -27,32 +27,32 @@ LedgerEntry::LedgerEntry(std::shared_ptr<TransactionRepository> repo,
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::addSplit(const AccountTransaction & transaction) {
+void JournalEntry::addSplit(const AccountTransaction & transaction) {
     account_splits_.push_back(transaction);
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::addSplit(const EnvelopeTransaction & transaction) {
+void JournalEntry::addSplit(const EnvelopeTransaction & transaction) {
     envelope_splits_.push_back(transaction);
 }
 
 //--------------------------------------------------------------------------------------------------
-std::vector<AccountTransaction> LedgerEntry::getAccountSplits() const {
+std::vector<AccountTransaction> JournalEntry::getAccountSplits() const {
     return account_splits_;
 }
 
 //--------------------------------------------------------------------------------------------------
-std::vector<EnvelopeTransaction> LedgerEntry::getEnvelopeSplits() const {
+std::vector<EnvelopeTransaction> JournalEntry::getEnvelopeSplits() const {
     return envelope_splits_;
 }
 
 //--------------------------------------------------------------------------------------------------
-Transaction LedgerEntry::getTransaction() const {
+Transaction JournalEntry::getTransaction() const {
     return transaction_;
 }
 
 //--------------------------------------------------------------------------------------------------
-bool LedgerEntry::isValid() const {
+bool JournalEntry::isValid() const {
     if (account_splits_.empty() and envelope_splits_.empty()) {
         last_error_ = QObject::tr("No account or envelope splits defined");
         return false;
@@ -88,12 +88,12 @@ bool LedgerEntry::isValid() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-QString LedgerEntry::lastError() const {
+QString JournalEntry::lastError() const {
     return last_error_;
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::removeSplit(const AccountTransaction & transaction) {
+void JournalEntry::removeSplit(const AccountTransaction & transaction) {
     auto iter = account_splits_.begin();
     while (iter != account_splits_.end()) {
         if ((transaction.id() == iter->id())
@@ -115,7 +115,7 @@ void LedgerEntry::removeSplit(const AccountTransaction & transaction) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::removeSplit(const EnvelopeTransaction & transaction) {
+void JournalEntry::removeSplit(const EnvelopeTransaction & transaction) {
     auto iter = envelope_splits_.begin();
     while (iter != envelope_splits_.end()) {
         if ((transaction.id() == iter->id())
@@ -137,7 +137,7 @@ void LedgerEntry::removeSplit(const EnvelopeTransaction & transaction) {
 }
 
 //--------------------------------------------------------------------------------------------------
-bool LedgerEntry::save() {
+bool JournalEntry::save() {
     if (not isValid()) {
         qDebug() << "entry is not valid";
         return false;
@@ -210,21 +210,21 @@ bool LedgerEntry::save() {
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::updateSplit(const AccountTransaction & transaction, size_t pos) {
+void JournalEntry::updateSplit(const AccountTransaction & transaction, size_t pos) {
     if ((pos < account_splits_.size()) and (transaction.id() == account_splits_[pos].id())) {
         account_splits_[pos] = transaction;
     }
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::updateSplit(const EnvelopeTransaction & transaction, size_t pos) {
+void JournalEntry::updateSplit(const EnvelopeTransaction & transaction, size_t pos) {
     if ((pos < envelope_splits_.size()) and (transaction.id() == envelope_splits_[pos].id())) {
         envelope_splits_[pos] = transaction;
     }
 }
 
 //--------------------------------------------------------------------------------------------------
-void LedgerEntry::updateTransaction(const Transaction & transaction) {
+void JournalEntry::updateTransaction(const Transaction & transaction) {
     if (transaction.id() == transaction_.id()) {
         transaction_ = transaction;
     }

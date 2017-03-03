@@ -11,7 +11,7 @@
 #include <ledger/model/CurrencyRepository.hpp>
 #include <ledger/model/Envelope.hpp>
 #include <ledger/model/EnvelopeRepository.hpp>
-#include <ledger/model/LedgerEntry.hpp>
+#include <ledger/model/JournalEntry.hpp>
 #include <ledger/model/Transaction.hpp>
 #include <ledger/model/TransactionRepository.hpp>
 #include "Demo.hpp"
@@ -98,7 +98,7 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
             t1.setDate(QDate(2017, 2, 25));
             t1.setPayee("electric bill");
 
-            LedgerEntry entry1(transactions);
+            JournalEntry entry1(transactions);
             entry1.updateTransaction(t1);
             entry1.addSplit(at1);
             entry1.addSplit(et1);
@@ -125,7 +125,7 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
             t2.setDate(QDate(2017, 2, 24));
             t2.setPayee("Grocer");
 
-            LedgerEntry entry2(transactions);
+            JournalEntry entry2(transactions);
             entry2.updateTransaction(t2);
             entry2.addSplit(at2);
             entry2.addSplit(et2a);
@@ -148,7 +148,7 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
             t3.setDate(QDate(2017, 2, 24));
             t3.setPayee("Cash withdrawal");
 
-            LedgerEntry entry3(transactions);
+            JournalEntry entry3(transactions);
             entry3.updateTransaction(t3);
             entry3.addSplit(at3a);
             entry3.addSplit(at3b);
@@ -186,7 +186,7 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
             t4.setDate(QDate(2017, 2, 23));
             t4.setPayee("payday");
 
-            LedgerEntry entry4(transactions);
+            JournalEntry entry4(transactions);
             entry4.updateTransaction(t4);
             entry4.addSplit(at4);
             entry4.addSplit(et4a);

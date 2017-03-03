@@ -7,7 +7,7 @@ set(ledger_model_srcs
     Currency.cpp
     Envelope.cpp
     EnvelopeTransaction.cpp
-    LedgerEntry.cpp
+    JournalEntry.cpp
     Money.cpp
     Transaction.cpp
 )
