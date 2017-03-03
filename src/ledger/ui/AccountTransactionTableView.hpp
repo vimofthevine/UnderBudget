@@ -3,6 +3,9 @@
 // Qt include(s)
 #include <QTableView>
 
+// Forward declaration(s)
+class QSortFilterProxyModel;
+
 namespace ub {
 namespace ledger {
 
@@ -23,6 +26,10 @@ public:
     AccountTransactionTableView(QWidget * parent);
 
     void setModel(QAbstractItemModel * model) override;
+
+private:
+    /** Sort/filter proxy model */
+    QSortFilterProxyModel * filter_;
 };
 
 } // ledger namespace

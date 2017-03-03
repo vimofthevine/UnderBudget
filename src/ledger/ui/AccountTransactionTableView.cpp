@@ -9,21 +9,26 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AccountTransactionTableView::AccountTransactionTableView(QWidget * parent) : QTableView(parent) {
+AccountTransactionTableView::AccountTransactionTableView(QWidget * parent)
+        : QTableView(parent), filter_(new QSortFilterProxyModel(this)) {
+    QTableView::setModel(filter_);
+    setSortingEnabled(true);
+    sortByColumn(AccountTransactionModel::DATE, Qt::AscendingOrder);
+
     setSelectionBehavior(QTableView::SelectRows);
     setSelectionMode(QTableView::SingleSelection);
+
+    setAlternatingRowColors(true);
 }
 
 //--------------------------------------------------------------------------------------------------
 void AccountTransactionTableView::setModel(QAbstractItemModel * model) {
-    QTableView::setModel(model);
+    filter_->setSourceModel(model);
 
-    // Give the payee column the most weight
+    // Give the payee and memo columns the most weight
     horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     horizontalHeader()->setSectionResizeMode(AccountTransactionModel::PAYEE, QHeaderView::Stretch);
     horizontalHeader()->setSectionResizeMode(AccountTransactionModel::MEMO, QHeaderView::Stretch);
-
-    setAlternatingRowColors(true);
 }
 
 } // ledger namespace

@@ -53,7 +53,7 @@ QVariant AccountTransactionModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole) {
+    if ((role != Qt::DisplayRole) and (role != Qt::EditRole)){
         return QVariant();
     }
 
@@ -71,9 +71,11 @@ QVariant AccountTransactionModel::data(const QModelIndex &index, int role) const
     case MEMO:
         return transaction.memo();
     case AMOUNT:
-        return transaction.amount().toString();
+        return (role == Qt::DisplayRole) ? transaction.amount().toString()
+                                         : QVariant::fromValue(transaction.amount());
     case BALANCE:
-        return transaction.balance().toString();
+        return (role == Qt::DisplayRole) ? transaction.balance().toString()
+                                         : QVariant::fromValue(transaction.balance());
     default:
         return QVariant();
     }
