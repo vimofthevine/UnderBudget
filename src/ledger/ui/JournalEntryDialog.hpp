@@ -81,6 +81,13 @@ public slots:
      */
     void prepareForDuplication(const Transaction & transaction);
 
+    /**
+     * Prompts the user to confirm deletion of the requested transaction.
+     *
+     * @param transaction Transaction to be deleted
+     */
+    void deleteTransaction(const Transaction & transaction);
+
 private slots:
     /**
      * Updates the input widgets with the selected account split for modification.

@@ -35,6 +35,8 @@ AccountListWidget::AccountListWidget(AccountModel *model, AccountTransactionMode
             this, &AccountListWidget::modifyAccountTransaction);
     connect(transaction_list_, &TransactionTableView::duplicateItem,
             this, &AccountListWidget::duplicateAccountTransaction);
+    connect(transaction_list_, &TransactionTableView::deleteItem,
+            this, &AccountListWidget::deleteAccountTransaction);
 
     addWidget(tree_);
     addWidget(transaction_list_);
@@ -68,6 +70,11 @@ void AccountListWidget::modifyAccountTransaction(const QModelIndex & index) {
 //--------------------------------------------------------------------------------------------------
 void AccountListWidget::duplicateAccountTransaction(const QModelIndex & index) {
     emit duplicateTransaction(transactions_->transaction(index));
+}
+
+//--------------------------------------------------------------------------------------------------
+void AccountListWidget::deleteAccountTransaction(const QModelIndex & index) {
+    emit deleteTransaction(transactions_->transaction(index));
 }
 
 } // ledger namespace

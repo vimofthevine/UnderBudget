@@ -35,6 +35,8 @@ EnvelopeListWidget::EnvelopeListWidget(EnvelopeModel *model, EnvelopeTransaction
             this, &EnvelopeListWidget::modifyEnvelopeTransaction);
     connect(transaction_list_, &TransactionTableView::duplicateItem,
             this, &EnvelopeListWidget::duplicateEnvelopeTransaction);
+    connect(transaction_list_, &TransactionTableView::deleteItem,
+            this, &EnvelopeListWidget::deleteEnvelopeTransaction);
 
     addWidget(tree_);
     addWidget(transaction_list_);
@@ -68,6 +70,11 @@ void EnvelopeListWidget::modifyEnvelopeTransaction(const QModelIndex & index) {
 //--------------------------------------------------------------------------------------------------
 void EnvelopeListWidget::duplicateEnvelopeTransaction(const QModelIndex & index) {
     emit duplicateTransaction(transactions_->transaction(index));
+}
+
+//--------------------------------------------------------------------------------------------------
+void EnvelopeListWidget::deleteEnvelopeTransaction(const QModelIndex & index) {
+    emit deleteTransaction(transactions_->transaction(index));
 }
 
 } // ledger namespace

@@ -186,6 +186,19 @@ void JournalEntryDialog::prepareForDuplication(const Transaction & transaction) 
 }
 
 //--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::deleteTransaction(const Transaction & transaction) {
+    if (repository_) {
+        auto answer = QMessageBox::question(parentWidget(), tr("Delete Transaction?"),
+                                            tr("Are you sure you want to delete transaction %1 on %2")
+                                            .arg(transaction.payee()).arg(transaction.date().toString("yyyy-MM-dd")));
+        if (answer == QMessageBox::Yes) {
+            repository_->transactions()->remove(transaction);
+            emit accepted();
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::selectAccountSplit(const QModelIndex &current, const QModelIndex &previous) {
     if (entry_ and current.isValid()) {
         int row = current.row();
