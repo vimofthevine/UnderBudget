@@ -41,6 +41,13 @@ public:
     Account & operator=(const Account & orig) = default;
 
     /**
+     * Returns whether the account has been archived.
+     *
+     * @return @c true if the account has been archived
+     */
+    bool archived() const;
+
+    /**
      * Returns the IDs of the children of this account.
      *
      * @return Children account IDs
@@ -76,6 +83,13 @@ public:
     int parent() const;
 
     /**
+     * Updates the archive state of this account.
+     *
+     * @param[in] archive @c true if archived
+     */
+    void setArchived(bool archived);
+
+    /**
      * Updates the children of this account.
      *
      * @param[in] children New children IDs
@@ -106,6 +120,8 @@ public:
 private:
     /** Name of this account */
     QString account_name_;
+    /** Is archived */
+    bool archived_;
     /** Child IDs */
     std::vector<int> children_;
     /** Currency */

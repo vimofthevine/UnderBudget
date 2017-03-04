@@ -11,10 +11,15 @@ namespace ub {
 namespace ledger {
 
 //------------------------------------------------------------------------------
-Envelope::Envelope() : id_(-1), parent_(-1) {}
+Envelope::Envelope() : Envelope(-1) {}
 
 //------------------------------------------------------------------------------
-Envelope::Envelope(int id) : id_(id), parent_(-1) {}
+Envelope::Envelope(int id) : archived_(false), id_(id), parent_(-1) {}
+
+//------------------------------------------------------------------------------
+bool Envelope::archived() const {
+    return archived_;
+}
 
 //------------------------------------------------------------------------------
 std::vector<int> Envelope::children() const {
@@ -39,6 +44,11 @@ QString Envelope::name() const {
 //------------------------------------------------------------------------------
 int Envelope::parent() const {
     return parent_;
+}
+
+//------------------------------------------------------------------------------
+void Envelope::setArchived(bool archived) {
+    archived_ = archived;
 }
 
 //------------------------------------------------------------------------------

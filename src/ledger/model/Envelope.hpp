@@ -38,6 +38,13 @@ public:
     Envelope & operator=(const Envelope & orig) = default;
 
     /**
+     * Returns whether the envelope has been archived.
+     *
+     * @return @c true if the envelope has been archived
+     */
+    bool archived() const;
+
+    /**
      * Returns the IDs of the children of this envelope.
      *
      * @return Children envelope IDs
@@ -73,6 +80,13 @@ public:
     int parent() const;
 
     /**
+     * Updates the archive state of this envelope.
+     *
+     * @param[in] archive @c true if archived
+     */
+    void setArchived(bool archived);
+
+    /**
      * Updates the children of this envelope.
      *
      * @param[in] children New children IDs
@@ -101,6 +115,8 @@ public:
     void setParent(int id);
 
 private:
+    /** Is archived */
+    bool archived_;
     /** Child IDs */
     std::vector<int> children_;
     /** Currency */
