@@ -85,6 +85,11 @@ public slots:
      */
     void filterForAccount(const Account &account);
 
+    /**
+     * Resets the model with updated data from the repository.
+     */
+    void refresh();
+
 private:
     /** Transaction repository */
     std::shared_ptr<TransactionRepository> transactions_;

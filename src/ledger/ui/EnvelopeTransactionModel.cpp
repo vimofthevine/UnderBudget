@@ -49,6 +49,11 @@ void EnvelopeTransactionModel::filterForEnvelope(const Envelope &envelope) {
 }
 
 //--------------------------------------------------------------------------------------------------
+void EnvelopeTransactionModel::refresh() {
+    filterForEnvelope(envelope_);
+}
+
+//--------------------------------------------------------------------------------------------------
 int EnvelopeTransactionModel::columnCount(const QModelIndex &parent) const {
     return headers_.size();
 }

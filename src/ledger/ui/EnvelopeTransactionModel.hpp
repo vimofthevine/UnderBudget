@@ -85,6 +85,11 @@ public slots:
      */
     void filterForEnvelope(const Envelope &envelope);
 
+    /**
+     * Resets the model with updated data from the repository.
+     */
+    void refresh();
+
 private:
     /** Transaction repository */
     std::shared_ptr<TransactionRepository> transactions_;

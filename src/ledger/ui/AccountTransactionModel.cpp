@@ -49,6 +49,11 @@ void AccountTransactionModel::filterForAccount(const Account &account) {
 }
 
 //--------------------------------------------------------------------------------------------------
+void AccountTransactionModel::refresh() {
+    filterForAccount(account_);
+}
+
+//--------------------------------------------------------------------------------------------------
 int AccountTransactionModel::columnCount(const QModelIndex &parent) const {
     return headers_.size();
 }
