@@ -167,6 +167,25 @@ void JournalEntryDialog::prepareForModification(const Transaction & transaction)
 }
 
 //--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::prepareForDuplication(const Transaction & transaction) {
+    if (repository_) {
+        entry_.reset(new JournalEntry(repository_->transactions(), transaction, true));
+        populateAccountComboBox();
+        populateEnvelopeComboBox();
+        clearAccountSplit();
+        clearEnvelopeSplit();
+        transaction_ = entry_->getTransaction();
+        date_->setDate(transaction_.date());
+        payee_->setText(transaction_.payee());
+        account_splits_->setJournalEntry(entry_);
+        envelope_splits_->setJournalEntry(entry_);
+        show();
+    } else {
+        qWarning() << "No ledger repository has been given to the journal entry dialog";
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::selectAccountSplit(const QModelIndex &current, const QModelIndex &previous) {
     if (entry_ and current.isValid()) {
         int row = current.row();

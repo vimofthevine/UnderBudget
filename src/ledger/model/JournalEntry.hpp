@@ -43,6 +43,16 @@ public:
     JournalEntry(std::shared_ptr<TransactionRepository> repo, const Transaction & transaction);
 
     /**
+     * Initializes a journal entry for the existing transaction for duplication.
+     *
+     * @param[in] repo        Transaction repository
+     * @param[in] transaction Transaction to be modified
+     * @param[in] copy        Indicates to copy the existing transaction
+     */
+    JournalEntry(std::shared_ptr<TransactionRepository> repo, const Transaction & transaction,
+                 bool copy);
+
+    /**
      * Adds the given account transaction split to this journal entry.
      *
      * @param transaction Account transaction split

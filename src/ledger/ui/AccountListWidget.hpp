@@ -52,6 +52,13 @@ signals:
      */
     void modifyTransaction(const Transaction & transaction);
 
+    /**
+     * Emitted to indicate a request to duplicate a transaction.
+     *
+     * @param transaction Transaction to be duplicated
+     */
+    void duplicateTransaction(const Transaction & transaction);
+
 protected slots:
     /**
      * Prompts the user to confirm deletion of the requested account.
@@ -74,6 +81,13 @@ protected slots:
      * @param index Model index of the account transaction to be modified
      */
     void modifyAccountTransaction(const QModelIndex & index);
+
+    /**
+     * Determines which transaction is selected and fires the @c duplicateTransaction signal.
+     *
+     * @param index Model index of the account transaction to be duplicated
+     */
+    void duplicateAccountTransaction(const QModelIndex & index);
 
 private:
     /** Account model */

@@ -279,9 +279,10 @@ TEST_F(JournalEntryTest, ShouldUpdateEnvelopeSplits) {
 /** Verifies that new entries create transactions in the repository. */
 TEST_F(JournalEntryTest, ShouldCreateTransactionsInRepoWhenNewEntry) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(true));
-    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).WillOnce(Return(true));
-    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(true));
+    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(1));
+    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(1));
+    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).WillOnce(Return(1));
+    EXPECT_CALL(*repo, getTransaction(::testing::_));
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     JournalEntry entry(repo);
@@ -300,8 +301,9 @@ TEST_F(JournalEntryTest, ShouldCreateTransactionsInRepoWhenNewEntry) {
 /** Verifies that new entries are not created when error creating an account transaction. */
 TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingAccountTransaction) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(false));
-    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(true));
+    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(1));
+    EXPECT_CALL(*repo, getTransaction(1));
+    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(-1));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
@@ -321,9 +323,10 @@ TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingAccou
 /** Verifies that new entries are not created when error creating an envelope transaction. */
 TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingEnvelopeTransaction) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(true));
-    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).WillOnce(Return(false));
-    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(true));
+    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(1));
+    EXPECT_CALL(*repo, getTransaction(1));
+    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(1));
+    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).WillOnce(Return(-1));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
@@ -343,7 +346,7 @@ TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingEnvel
 /** Verifies that new entries are not created when error creating a double-entry transaction. */
 TEST_F(JournalEntryTest, ShouldNotCreateTransactionsInRepoWhenErrorCreatingDoubleEntryTransaction) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(false));
+    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(-1));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
@@ -418,6 +421,21 @@ TEST_F(JournalEntryTest, ShouldUpdateTransactionInRepoWhenModifyingExisting) {
     entry.save();
 }
 
+/** Verifies that the entry will duplicate an existing transaction in the repository. */
+TEST_F(JournalEntryTest, ShouldCreateTransactionInRepoWhenDuplicatingExisting) {
+    using namespace ::testing;
+    EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(3));
+    EXPECT_CALL(*repo, getTransaction(3));
+    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(2));
+    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).Times(2)
+        .WillRepeatedly(Return(4));
+    EXPECT_CALL(*repo, save()).WillOnce(Return(true));
+
+    populate();
+    JournalEntry entry(repo, Transaction(80), true);
+    entry.save();
+}
+
 /** Verifies that the entry is not saved if an error occurs updating an account transaction. */
 TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingAccountTransaction) {
     using namespace ::testing;
@@ -473,7 +491,7 @@ TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingDoubleEntryT
 TEST_F(JournalEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
     using namespace ::testing;
     EXPECT_CALL(*repo, create(A<const AccountTransaction &>()))
-            .WillOnce(Return(true));
+            .WillOnce(Return(2));
     EXPECT_CALL(*repo, remove(Matcher<const AccountTransaction &>(
                                   Property(&AccountTransaction::id, 3))))
             .WillOnce(Return(true));

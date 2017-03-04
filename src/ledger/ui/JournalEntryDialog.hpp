@@ -74,6 +74,13 @@ public slots:
      */
     void prepareForModification(const Transaction & transaction);
 
+    /**
+     * Updates and displays the dialog to allow duplicating an existing journal entry.
+     *
+     * @param transaction Transaction to be duplicated
+     */
+    void prepareForDuplication(const Transaction & transaction);
+
 private slots:
     /**
      * Updates the input widgets with the selected account split for modification.

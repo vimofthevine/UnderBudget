@@ -36,6 +36,13 @@ signals:
     void modifyItem(const QModelIndex & index);
 
     /**
+     * Emitted to indicate a request to duplicate the specified item.
+     *
+     * @param index Model index of the item to be modified
+     */
+    void duplicateItem(const QModelIndex & index);
+
+    /**
      * Emitted to indicate a request to delete the specified item.
      *
      * @param index Model index of the item to be deleted

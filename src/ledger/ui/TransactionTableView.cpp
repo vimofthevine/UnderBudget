@@ -48,6 +48,13 @@ void TransactionTableView::contextMenuEvent(QContextMenuEvent * event) {
             }
         });
 
+        auto dup = new QAction(tr("Duplicate"), this);
+        connect(dup, &QAction::triggered, this, [this] () {
+            if (currentIndex().isValid()) {
+                emit duplicateItem(filter_->mapToSource(currentIndex()));
+            }
+        });
+
         auto del = new QAction(tr("Delete"), this);
         connect(del, &QAction::triggered, this, [this] () {
             if (currentIndex().isValid()) {
@@ -57,6 +64,7 @@ void TransactionTableView::contextMenuEvent(QContextMenuEvent * event) {
 
         auto menu = new QMenu(this);
         menu->addAction(mod);
+        menu->addAction(dup);
         menu->addAction(del);
         menu->exec(event->globalPos());
     }
@@ -70,6 +78,8 @@ bool TransactionTableView::eventFilter(QObject * object, QEvent * event) {
 
             if ((key_event->key() == Qt::Key_Enter) or (key_event->key() == Qt::Key_Return)){
                 emit modifyItem(filter_->mapToSource(currentIndex()));
+            } else if (key_event->key() == Qt::Key_D) {
+                emit duplicateItem(filter_->mapToSource(currentIndex()));
             } else if (key_event->key() == Qt::Key_Delete) {
                 emit deleteItem(filter_->mapToSource(currentIndex()));
             }

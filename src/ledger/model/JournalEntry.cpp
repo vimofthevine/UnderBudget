@@ -27,6 +27,34 @@ JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
 }
 
 //--------------------------------------------------------------------------------------------------
+JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
+                         const Transaction & transaction, bool copy)
+        : transactions_(repo) {
+    auto trn = transactions_->getTransaction(transaction.id());
+    transaction_.setDate(trn.date());
+    transaction_.setPayee(trn.payee());
+
+    auto acct_splits = transactions_->getAccountTransactions(transaction);
+    for (auto acct_split : acct_splits) {
+        AccountTransaction split;
+        split.setAccount(acct_split.account());
+        split.setAmount(acct_split.amount());
+        split.setCleared(acct_split.isCleared());
+        split.setMemo(acct_split.memo());
+        account_splits_.push_back(split);
+    }
+
+    auto env_splits = transactions_->getEnvelopeTransactions(transaction);
+    for (auto env_split : env_splits) {
+        EnvelopeTransaction split;
+        split.setEnvelope(env_split.envelope());
+        split.setAmount(env_split.amount());
+        split.setMemo(env_split.memo());
+        envelope_splits_.push_back(split);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 void JournalEntry::addSplit(const AccountTransaction & transaction) {
     account_splits_.push_back(transaction);
 }
