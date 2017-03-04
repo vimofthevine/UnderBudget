@@ -9,6 +9,7 @@
 #include <ledger/ui/EnvelopeListWidget.hpp>
 #include <ledger/ui/EnvelopeModel.hpp>
 #include <ledger/ui/EnvelopeTransactionModel.hpp>
+#include <ledger/ui/JournalEntryDialog.hpp>
 #include "DatabaseFileChooser.hpp"
 #include "MainWindow.hpp"
 #include "MainWindowModel.hpp"
@@ -27,17 +28,25 @@ MainWindowModel::MainWindowModel(MainWindow *window)
           account_list_(new ledger::AccountListWidget(account_model_, account_transaction_model_,
                                                       window_)),
           envelope_list_(new ledger::EnvelopeListWidget(envelope_model_, envelope_transaction_model_,
-                                                        window_)) {
+                                                        window_)),
+          journal_entry_(new ledger::JournalEntryDialog(window_)){
     window_->contentWidget()->addWidget(account_list_);
     window_->contentWidget()->addWidget(envelope_list_);
 
+    journal_entry_->hide();
+    journal_entry_->setModal(true);
+
     auto menu = window_->menu();
     connect(menu, &MenuBar::openDatabase, this, &MainWindowModel::openDatabase);
+    connect(menu, &MenuBar::addTransaction,
+            journal_entry_, &ledger::JournalEntryDialog::prepareForNewEntry);
     connect(menu, &MenuBar::viewAccounts, this, &MainWindowModel::showAccounts);
     connect(menu, &MenuBar::viewEnvelopes, this, &MainWindowModel::showEnvelopes);
+
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error,
             this, &MainWindowModel::showError);
+
     connect(envelope_model_, &ledger::EnvelopeModel::error, this, &MainWindowModel::showError);
     connect(envelope_transaction_model_, &ledger::EnvelopeTransactionModel::error,
             this, &MainWindowModel::showError);
@@ -49,6 +58,7 @@ void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories
     account_transaction_model_->setRepository(repositories);
     envelope_model_->setRepository(repositories);
     envelope_transaction_model_->setRepository(repositories);
+    journal_entry_->setRepository(repositories);
 }
 
 //--------------------------------------------------------------------------------------------------

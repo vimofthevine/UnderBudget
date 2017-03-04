@@ -19,6 +19,11 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     exit->setStatusTip(tr("Quit the application"));
     connect(exit, &QAction::triggered, this, &MenuBar::exitApplication);
 
+    auto addtrn = new QAction(tr("&Add Transaction..."), this);
+    addtrn->setShortcut(QKeySequence::New);
+    addtrn->setStatusTip(tr("Create a new transaction"));
+    connect(addtrn, &QAction::triggered, this, &MenuBar::addTransaction);
+
     auto accounts = new QAction(tr("&Accounts"), this);
     accounts->setShortcut(QKeySequence(Qt::Key_F5));
     accounts->setStatusTip(tr("View Accounts"));
@@ -41,6 +46,9 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     file->addAction(open);
     file->addSeparator();
     file->addAction(exit);
+
+    auto edit = addMenu(tr("&Edit"));
+    edit->addAction(addtrn);
 
     auto view = addMenu(tr("&View"));
     view->addAction(accounts);

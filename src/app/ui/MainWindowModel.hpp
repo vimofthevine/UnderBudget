@@ -21,6 +21,7 @@ class AccountTransactionModel;
 class EnvelopeListWidget;
 class EnvelopeModel;
 class EnvelopeTransactionModel;
+class JournalEntryDialog;
 }
 
 /**
@@ -83,6 +84,8 @@ private:
     ledger::AccountListWidget *account_list_;
     /** Envelope list widget */
     ledger::EnvelopeListWidget * envelope_list_;
+    /** Journal entry dialog */
+    ledger::JournalEntryDialog * journal_entry_;
 };
 
 } // ub namespace

@@ -29,6 +29,9 @@ signals:
     /** Emitted when the exit menu action is triggered. */
     void exitApplication();
 
+    /** Emitted when the add-transaction menu action is triggered. */
+    void addTransaction();
+
     /** Emitted when the view-accounts menu action is triggered. */
     void viewAccounts();
 
