@@ -36,7 +36,9 @@ public:
      *
      * This will set up the transaction tables if they do not exist.
      *
-     * @param[in] db SQL database connection
+     * @param[in] db        SQL database connection
+     * @param[in] accounts  Account repository
+     * @param[in] envelopes Envelope repository
      * @throw std::runtime_error if any table could not be set up
      */
     SQLTransactionRepository(QSqlDatabase & db, std::shared_ptr<AccountRepository> accounts,

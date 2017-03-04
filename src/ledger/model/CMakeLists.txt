@@ -9,6 +9,7 @@ set(ledger_model_srcs
     EnvelopeTransaction.cpp
     JournalEntry.cpp
     Money.cpp
+    Reconciliation.cpp
     Transaction.cpp
 )
 

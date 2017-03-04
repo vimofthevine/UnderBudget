@@ -10,6 +10,7 @@ namespace ledger {
 class AccountRepository;
 class CurrencyRepository;
 class EnvelopeRepository;
+class ReconciliationRepository;
 class TransactionRepository;
 
 /**
@@ -40,6 +41,13 @@ public:
      * @return Envelope repository
      */
     virtual std::shared_ptr<EnvelopeRepository> envelopes() const = 0;
+
+    /**
+     * Returns a pointer to the reconciliation repository.
+     *
+     * @return Reconciliation repository
+     */
+    virtual std::shared_ptr<ReconciliationRepository> reconciliations() const = 0;
 
     /**
      * Returns a pointer to the transaction repository.

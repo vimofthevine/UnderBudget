@@ -24,7 +24,20 @@ namespace ledger {
 SQLTransactionRepository::SQLTransactionRepository(QSqlDatabase & db,
                                                    std::shared_ptr<AccountRepository> accounts,
                                                    std::shared_ptr<EnvelopeRepository> envelopes)
-    : db_(db), accounts_(accounts), envelopes_(envelopes), in_transaction_(false) {
+        : db_(db), accounts_(accounts), envelopes_(envelopes), in_transaction_(false) {
+    if (not db_.tables().contains("account")) {
+        last_error_ = QObject::tr("Account table does not exist");
+        throw std::runtime_error(last_error_.toStdString());
+    }
+    if (not db_.tables().contains("envelope")) {
+        last_error_ = QObject::tr("Envelope table does not exist");
+        throw std::runtime_error(last_error_.toStdString());
+    }
+    if (not db_.tables().contains("reconciliation")) {
+        last_error_ = QObject::tr("Reconciliation table does not exist");
+        throw std::runtime_error(last_error_.toStdString());
+    }
+
     QSqlQuery query(db);
     query.exec("PRAGMA foreign_keys = ON;");
     bool success = query.exec("CREATE TABLE IF NOT EXISTS transaction_entry("
@@ -45,9 +58,8 @@ SQLTransactionRepository::SQLTransactionRepository(QSqlDatabase & db,
                          "cleared BOOLEAN DEFAULT 0, "
                          "reconciliation_id INTEGER, "
                          "FOREIGN KEY(transaction_entry_id) REFERENCES transaction_entry(id) ON DELETE CASCADE, "
-                         "FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT)");
-                         //"FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT, "
-                         //"FOREIGN KEY(reconciliation_id) REFERENCES reconciliation(id) ON DELETE SET NULL);");
+                         "FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT, "
+                         "FOREIGN KEY(reconciliation_id) REFERENCES reconciliation(id) ON DELETE SET NULL);");
     if (not success) {
         throw std::runtime_error("Unable to create account_transaction table: " +
                                  query.lastError().text().toStdString());

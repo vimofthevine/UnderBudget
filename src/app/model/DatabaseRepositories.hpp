@@ -17,10 +17,12 @@ namespace ledger {
 class AccountRepository;
 class CurrencyRepository;
 class EnvelopeRepository;
+class ReconciliationRepository;
 class TransactionRepository;
 class SQLAccountRepository;
 class SQLCurrencyRepository;
 class SQLEnvelopeRepository;
+class SQLReconciliationRepository;
 class SQLTransactionRepository;
 }
 
@@ -56,6 +58,8 @@ public:
 
     std::shared_ptr<ledger::EnvelopeRepository> envelopes() const override;
 
+    std::shared_ptr<ledger::ReconciliationRepository> reconciliations() const override;
+
     std::shared_ptr<ledger::TransactionRepository> transactions() const override;
 
 private:
@@ -69,6 +73,8 @@ private:
     std::shared_ptr<ledger::SQLCurrencyRepository> currencies_;
     /** Envelope repository */
     std::shared_ptr<ledger::SQLEnvelopeRepository> envelopes_;
+    /** Reconciliation repository */
+    std::shared_ptr<ledger::SQLReconciliationRepository> reconciliations_;
     /** Transaction repository */
     std::shared_ptr<ledger::SQLTransactionRepository> transactions_;
 };
