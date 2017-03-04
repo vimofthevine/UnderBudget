@@ -33,8 +33,8 @@ public:
      * @param[in] transactions Envelope transaction model
      * @param[in] parent       Parent widget
      */
-    EnvelopeListWidget(EnvelopeModel *model, EnvelopeTransactionModel *transactions,
-                      QWidget *parent);
+    EnvelopeListWidget(EnvelopeModel * model, EnvelopeTransactionModel * transactions,
+                       QWidget * parent);
 
 signals:
     /**
@@ -43,7 +43,7 @@ signals:
      * @param[in] current  Model index of the currently selected envelope
      * @param[in] previous Model index of the previoiusly selected envelope
      */
-    void selectEnvelope(const QModelIndex &current, const QModelIndex &previous);
+    void selectEnvelope(const QModelIndex & current, const QModelIndex & previous);
 
     /**
      * Emitted to indicate a request to modify a transaction.
@@ -72,7 +72,7 @@ protected slots:
      *
      * @param index Model index of the envelope to be deleted
      */
-    void deleteEnvelope(const QModelIndex &index);
+    void deleteEnvelope(const QModelIndex & index);
 
     /**
      * Updates the envelope transactions model to display transactions for the selected envelope.
@@ -80,7 +80,7 @@ protected slots:
      * @param[in] current  Model index of the currently selected envelope
      * @param[in] previous Model index of the previoiusly selected envelope
      */
-    void setTransactionFilter(const QModelIndex &current, const QModelIndex &previous);
+    void setTransactionFilter(const QModelIndex & current, const QModelIndex & previous);
 
     /**
      * Determines which transaction is selected and fires the @c modifyTransaction signal.
@@ -105,14 +105,14 @@ protected slots:
 
 private:
     /** Envelope model */
-    EnvelopeModel *model_;
+    EnvelopeModel * model_;
     /** Envelope transaction model */
-    EnvelopeTransactionModel *transactions_;
+    EnvelopeTransactionModel * transactions_;
 
     /** Envelope details dialog */
-    EnvelopeDetailsDialog *details_;
+    EnvelopeDetailsDialog * details_;
     /** Envelope tree view */
-    TreeView *tree_;
+    TreeView * tree_;
     /** Envelope transactions list view */
     TransactionTableView * transaction_list_;
 };

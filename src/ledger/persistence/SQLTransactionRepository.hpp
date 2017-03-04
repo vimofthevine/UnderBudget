@@ -12,13 +12,13 @@
 
 // UnderBudget include(s)
 #include <ledger/model/Account.hpp>
+#include <ledger/model/AccountRepository.hpp>
 #include <ledger/model/AccountTransaction.hpp>
 #include <ledger/model/Envelope.hpp>
+#include <ledger/model/EnvelopeRepository.hpp>
 #include <ledger/model/EnvelopeTransaction.hpp>
 #include <ledger/model/Money.hpp>
 #include <ledger/model/Transaction.hpp>
-#include <ledger/model/AccountRepository.hpp>
-#include <ledger/model/EnvelopeRepository.hpp>
 #include <ledger/model/TransactionRepository.hpp>
 
 namespace ub {
@@ -85,8 +85,8 @@ public:
      * @param[in] transaction Double-entry transaction for which to retrieve account transactions
      * @return Account transactions in the specified transaction
      */
-    std::vector<AccountTransaction> getAccountTransactions(
-            const Transaction & transaction) override;
+    std::vector<AccountTransaction>
+    getAccountTransactions(const Transaction & transaction) override;
 
     /**
      * Retrieves the balance of the given account as of the specified date.
@@ -123,8 +123,8 @@ public:
      * @param[in] transaction Double-entry transaction for which to retrieve envelope transactions
      * @return Envelope transactions in the specified transaction
      */
-    std::vector<EnvelopeTransaction> getEnvelopeTransactions(
-            const Transaction & transaction) override;
+    std::vector<EnvelopeTransaction>
+    getEnvelopeTransactions(const Transaction & transaction) override;
 
     /**
      * Retrieves the reconciled balance of the given account as of the specified date.

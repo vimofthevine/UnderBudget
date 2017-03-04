@@ -34,7 +34,7 @@ public:
      *
      * @param[in] code ISO 4217 currency code
      */
-    //Currency(const QString & code);
+    // Currency(const QString & code);
 
     // Copy constructor
     Currency(const Currency & orig) = default;

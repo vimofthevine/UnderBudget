@@ -49,30 +49,32 @@ SQLTransactionRepository::SQLTransactionRepository(QSqlDatabase & db,
                                  query.lastError().text().toStdString());
     }
 
-    success = query.exec("CREATE TABLE IF NOT EXISTS account_transaction("
-                         "id INTEGER PRIMARY KEY, "
-                         "transaction_entry_id INTEGER NOT NULL, "
-                         "account_id INTEGER NOT NULL, "
-                         "amount INTEGER NOT NULL, "
-                         "memo VARCHAR, "
-                         "cleared BOOLEAN DEFAULT 0, "
-                         "reconciliation_id INTEGER, "
-                         "FOREIGN KEY(transaction_entry_id) REFERENCES transaction_entry(id) ON DELETE CASCADE, "
-                         "FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT, "
-                         "FOREIGN KEY(reconciliation_id) REFERENCES reconciliation(id) ON DELETE SET NULL);");
+    success = query.exec(
+        "CREATE TABLE IF NOT EXISTS account_transaction("
+        "id INTEGER PRIMARY KEY, "
+        "transaction_entry_id INTEGER NOT NULL, "
+        "account_id INTEGER NOT NULL, "
+        "amount INTEGER NOT NULL, "
+        "memo VARCHAR, "
+        "cleared BOOLEAN DEFAULT 0, "
+        "reconciliation_id INTEGER, "
+        "FOREIGN KEY(transaction_entry_id) REFERENCES transaction_entry(id) ON DELETE CASCADE, "
+        "FOREIGN KEY(account_id) REFERENCES account(id) ON DELETE RESTRICT, "
+        "FOREIGN KEY(reconciliation_id) REFERENCES reconciliation(id) ON DELETE SET NULL);");
     if (not success) {
         throw std::runtime_error("Unable to create account_transaction table: " +
                                  query.lastError().text().toStdString());
     }
 
-    success = query.exec("CREATE TABLE IF NOT EXISTS envelope_transaction("
-                         "id INTEGER PRIMARY KEY, "
-                         "transaction_entry_id INTEGER NOT NULL, "
-                         "envelope_id INTEGER NOT NULL, "
-                         "amount INTEGER NOT NULL, "
-                         "memo VARCHAR, "
-                         "FOREIGN KEY(transaction_entry_id) REFERENCES transaction_entry(id) ON DELETE CASCADE, "
-                         "FOREIGN KEY(envelope_id) REFERENCES envelope(id) ON DELETE RESTRICT);");
+    success = query.exec(
+        "CREATE TABLE IF NOT EXISTS envelope_transaction("
+        "id INTEGER PRIMARY KEY, "
+        "transaction_entry_id INTEGER NOT NULL, "
+        "envelope_id INTEGER NOT NULL, "
+        "amount INTEGER NOT NULL, "
+        "memo VARCHAR, "
+        "FOREIGN KEY(transaction_entry_id) REFERENCES transaction_entry(id) ON DELETE CASCADE, "
+        "FOREIGN KEY(envelope_id) REFERENCES envelope(id) ON DELETE RESTRICT);");
     if (not success) {
         throw std::runtime_error("Unable to create envelope_transaction table: " +
                                  query.lastError().text().toStdString());
@@ -95,7 +97,8 @@ int SQLTransactionRepository::create(const AccountTransaction & transaction) {
     query.bindValue(":memo", transaction.memo());
     query.bindValue(":cleared", transaction.isCleared());
     query.bindValue(":reconciliation", (transaction.reconciliation() > 0)
-                    ? transaction.reconciliation() : QVariant(QVariant::Int));
+                                           ? transaction.reconciliation()
+                                           : QVariant(QVariant::Int));
 
     if (not query.exec()) {
         last_error_ = query.lastError().text();
@@ -114,8 +117,9 @@ int SQLTransactionRepository::create(const EnvelopeTransaction & transaction) {
     }
 
     QSqlQuery query(db_);
-    query.prepare("INSERT INTO envelope_transaction(transaction_entry_id, envelope_id, amount, memo) "
-                  "VALUES(:transaction, :envelope, :amount, :memo);");
+    query.prepare(
+        "INSERT INTO envelope_transaction(transaction_entry_id, envelope_id, amount, memo) "
+        "VALUES(:transaction, :envelope, :amount, :memo);");
     query.bindValue(":transaction", transaction.transaction().id());
     query.bindValue(":envelope", transaction.envelope().id());
     query.bindValue(":amount", transaction.amount().scaled());
@@ -138,7 +142,8 @@ int SQLTransactionRepository::create(const Transaction & transaction) {
     }
 
     QSqlQuery query(db_);
-    query.prepare("INSERT INTO transaction_entry(date, payee) VALUES(strftime('%s', :date), :payee);");
+    query.prepare(
+        "INSERT INTO transaction_entry(date, payee) VALUES(strftime('%s', :date), :payee);");
     query.bindValue(":date", transaction.date().toString("yyyy-MM-dd"));
     query.bindValue(":payee", transaction.payee());
 
@@ -174,8 +179,8 @@ AccountTransaction SQLTransactionRepository::getAccountTransaction(int id) {
 }
 
 //--------------------------------------------------------------------------------------------------
-std::vector<AccountTransaction> SQLTransactionRepository::getAccountTransactions(
-        const Transaction & transaction) {
+std::vector<AccountTransaction>
+SQLTransactionRepository::getAccountTransactions(const Transaction & transaction) {
     std::vector<AccountTransaction> accounts;
     QSqlQuery query(db_);
     query.prepare("SELECT account_transaction.*, transaction_entry.payee, "
@@ -253,8 +258,8 @@ EnvelopeTransaction SQLTransactionRepository::getEnvelopeTransaction(int id) {
 }
 
 //--------------------------------------------------------------------------------------------------
-std::vector<EnvelopeTransaction> SQLTransactionRepository::getEnvelopeTransactions(
-        const Transaction & transaction) {
+std::vector<EnvelopeTransaction>
+SQLTransactionRepository::getEnvelopeTransactions(const Transaction & transaction) {
     std::vector<EnvelopeTransaction> envelopes;
     QSqlQuery query(db_);
     query.prepare("SELECT envelope_transaction.*, transaction_entry.payee, "
@@ -337,7 +342,8 @@ std::vector<AccountTransaction> SQLTransactionRepository::getTransactions(const 
 }
 
 //--------------------------------------------------------------------------------------------------
-std::vector<EnvelopeTransaction> SQLTransactionRepository::getTransactions(const Envelope & envelope) {
+std::vector<EnvelopeTransaction>
+SQLTransactionRepository::getTransactions(const Envelope & envelope) {
     std::vector<EnvelopeTransaction> envelopes;
     QSqlQuery query(db_);
     query.prepare("SELECT envelope_transaction.*, transaction_entry.payee, "
@@ -457,8 +463,8 @@ bool SQLTransactionRepository::update(const AccountTransaction & transaction) {
     query.bindValue(":amount", transaction.amount().scaled());
     query.bindValue(":memo", transaction.memo());
     query.bindValue(":cleared", transaction.isCleared());
-    query.bindValue(":reconciliation", (transaction.reconciliation() > 0)
-                    ? transaction.reconciliation() : QVariant());
+    query.bindValue(":reconciliation",
+                    (transaction.reconciliation() > 0) ? transaction.reconciliation() : QVariant());
     query.bindValue(":id", transaction.id());
     if (not query.exec()) {
         last_error_ = query.lastError().text();

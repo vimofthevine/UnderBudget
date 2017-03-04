@@ -34,7 +34,7 @@ public:
      * @param model  Envelope model
      * @param parent Parent widget
      */
-    EnvelopeDetailsDialog(EnvelopeModel *model, QWidget *parent);
+    EnvelopeDetailsDialog(EnvelopeModel * model, QWidget * parent);
 
 public slots:
     /**
@@ -42,28 +42,28 @@ public slots:
      *
      * @param[in] parent Model index of the parent envelope under which to create a new envelope
      */
-    void resetForNewEnvelope(const QModelIndex &parent);
+    void resetForNewEnvelope(const QModelIndex & parent);
 
     /**
      * Updates the form to modify an existing envelope.
      *
      * @param[in] index Model index of the envelope to be modified
      */
-    void showEnvelope(const QModelIndex &index);
+    void showEnvelope(const QModelIndex & index);
 
 protected slots:
     /**
      * Responds to a button click as appropriate.
      */
-    void clicked(QAbstractButton *button);
+    void clicked(QAbstractButton * button);
 
 private:
     /** Envelope model */
-    EnvelopeModel *model_;
+    EnvelopeModel * model_;
     /** Envelope name input widget */
-    QLineEdit *name_;
+    QLineEdit * name_;
     /** Button box */
-    QDialogButtonBox *buttons_;
+    QDialogButtonBox * buttons_;
 
     /** Parent model index */
     QModelIndex parent_index_;

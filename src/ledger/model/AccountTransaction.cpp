@@ -13,8 +13,7 @@ namespace ledger {
 AccountTransaction::AccountTransaction() : AccountTransaction(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-AccountTransaction::AccountTransaction(int id)
-    : cleared_(false), id_(id), reconciliation_(-1) {}
+AccountTransaction::AccountTransaction(int id) : cleared_(false), id_(id), reconciliation_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 Account AccountTransaction::account() const {

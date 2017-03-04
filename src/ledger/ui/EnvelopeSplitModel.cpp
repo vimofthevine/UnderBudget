@@ -26,7 +26,7 @@ void EnvelopeSplitModel::setJournalEntry(std::shared_ptr<JournalEntry> entry) {
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeSplitModel::columnCount(const QModelIndex &parent) const {
+int EnvelopeSplitModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
@@ -39,7 +39,7 @@ QVariant EnvelopeSplitModel::headerData(int section, Qt::Orientation orientation
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant EnvelopeSplitModel::data(const QModelIndex &index, int role) const {
+QVariant EnvelopeSplitModel::data(const QModelIndex & index, int role) const {
     if ((not entry_) or (not index.isValid()) or (role != Qt::DisplayRole)) {
         return QVariant();
     }

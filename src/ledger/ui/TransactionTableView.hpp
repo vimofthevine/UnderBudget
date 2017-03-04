@@ -50,9 +50,9 @@ signals:
     void deleteItem(const QModelIndex & index);
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent * event) override;
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+    bool eventFilter(QObject * object, QEvent * event) override;
 
 private:
     /** Sort/filter proxy model */

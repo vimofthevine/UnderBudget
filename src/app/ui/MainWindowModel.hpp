@@ -36,7 +36,7 @@ public:
      *
      * @param window Main window
      */
-    MainWindowModel(MainWindow *window);
+    MainWindowModel(MainWindow * window);
 
     /**
      * Updates the repositories used by the application.
@@ -66,22 +66,22 @@ protected slots:
      *
      * @param message Error message
      */
-    void showError(const QString &message);
+    void showError(const QString & message);
 
 private:
     /** Account model */
-    ledger::AccountModel *account_model_;
+    ledger::AccountModel * account_model_;
     /** Account transaction model */
-    ledger::AccountTransactionModel *account_transaction_model_;
+    ledger::AccountTransactionModel * account_transaction_model_;
     /** Envelope model */
     ledger::EnvelopeModel * envelope_model_;
     /** Envelope transaction model */
     ledger::EnvelopeTransactionModel * envelope_transaction_model_;
 
     /** Main window */
-    MainWindow *window_;
+    MainWindow * window_;
     /** Account list widget */
-    ledger::AccountListWidget *account_list_;
+    ledger::AccountListWidget * account_list_;
     /** Envelope list widget */
     ledger::EnvelopeListWidget * envelope_list_;
     /** Journal entry dialog */

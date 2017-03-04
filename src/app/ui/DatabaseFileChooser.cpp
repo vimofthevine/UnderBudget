@@ -25,10 +25,9 @@ QString DatabaseFileChooser::lastOpenedFile() {
 }
 
 //--------------------------------------------------------------------------------------------------
-QString DatabaseFileChooser::getFileToOpen(QWidget *parent) {
+QString DatabaseFileChooser::getFileToOpen(QWidget * parent) {
     QSettings settings;
-    QString name = QFileDialog::getOpenFileName(parent,
-                                                QObject::tr("Open Database File"),
+    QString name = QFileDialog::getOpenFileName(parent, QObject::tr("Open Database File"),
                                                 settings.value(LAST_USED_DIR).toString(),
                                                 QObject::tr(DB_FILE_FILTER));
     if (not name.isEmpty()) {

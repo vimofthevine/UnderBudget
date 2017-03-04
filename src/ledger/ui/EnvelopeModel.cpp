@@ -30,17 +30,16 @@ void EnvelopeModel::setRepository(std::shared_ptr<LedgerRepository> repository) 
 }
 
 //--------------------------------------------------------------------------------------------------
-Envelope EnvelopeModel::envelope(const QModelIndex &index) const {
+Envelope EnvelopeModel::envelope(const QModelIndex & index) const {
     if (not envelopes_) {
         return Envelope();
     }
 
-    return index.isValid() ?  envelopes_->getEnvelope(index.internalId())
-        : envelopes_->getRoot();
+    return index.isValid() ? envelopes_->getEnvelope(index.internalId()) : envelopes_->getRoot();
 }
 
 //--------------------------------------------------------------------------------------------------
-bool EnvelopeModel::create(const Envelope &envelope, const QModelIndex &parent) {
+bool EnvelopeModel::create(const Envelope & envelope, const QModelIndex & parent) {
     if (not envelopes_) {
         return false;
     }
@@ -58,16 +57,15 @@ bool EnvelopeModel::create(const Envelope &envelope, const QModelIndex &parent) 
 }
 
 //--------------------------------------------------------------------------------------------------
-bool EnvelopeModel::update(const Envelope &envelope, const QModelIndex &index) {
+bool EnvelopeModel::update(const Envelope & envelope, const QModelIndex & index) {
     if (not envelopes_) {
         return false;
     }
 
     bool success = envelopes_->update(envelope);
     if (success) {
-        emit dataChanged(
-            this->index(index.row(), 0, index.parent()),
-            this->index(index.row(), columnCount(index) - 1, index.parent()));
+        emit dataChanged(this->index(index.row(), 0, index.parent()),
+                         this->index(index.row(), columnCount(index) - 1, index.parent()));
     } else {
         emit error(envelopes_->lastError());
     }
@@ -76,7 +74,7 @@ bool EnvelopeModel::update(const Envelope &envelope, const QModelIndex &index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-bool EnvelopeModel::remove(const QModelIndex &index) {
+bool EnvelopeModel::remove(const QModelIndex & index) {
     if (not envelopes_) {
         return false;
     }
@@ -93,7 +91,7 @@ bool EnvelopeModel::remove(const QModelIndex &index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeModel::columnCount(const QModelIndex &parent) const {
+int EnvelopeModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
@@ -106,7 +104,7 @@ QVariant EnvelopeModel::headerData(int section, Qt::Orientation orientation, int
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant EnvelopeModel::data(const QModelIndex &index, int role) const {
+QVariant EnvelopeModel::data(const QModelIndex & index, int role) const {
     if (not envelopes_ or not index.isValid()) {
         return QVariant();
     }
@@ -136,7 +134,7 @@ QVariant EnvelopeModel::data(const QModelIndex &index, int role) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeModel::rowCount(const QModelIndex &parent) const {
+int EnvelopeModel::rowCount(const QModelIndex & parent) const {
     if (not envelopes_ or parent.column() > 0) {
         return 0;
     }
@@ -149,7 +147,7 @@ int EnvelopeModel::rowCount(const QModelIndex &parent) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-QModelIndex EnvelopeModel::index(int row, int column, const QModelIndex &parent) const {
+QModelIndex EnvelopeModel::index(int row, int column, const QModelIndex & parent) const {
     if (not envelopes_ or not hasIndex(row, column, parent)) {
         return QModelIndex();
     }
@@ -169,7 +167,7 @@ QModelIndex EnvelopeModel::index(int row, int column, const QModelIndex &parent)
 }
 
 //--------------------------------------------------------------------------------------------------
-QModelIndex EnvelopeModel::parent(const QModelIndex &child) const {
+QModelIndex EnvelopeModel::parent(const QModelIndex & child) const {
     if (not envelopes_ or not child.isValid()) {
         return QModelIndex();
     }

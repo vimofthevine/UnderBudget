@@ -25,7 +25,7 @@ public:
      * @return Location of the database file to be opened, or an empty string if
      *         the user did not select a file
      */
-    static QString getFileToOpen(QWidget *parent);
+    static QString getFileToOpen(QWidget * parent);
 };
 
 } // ub namespace

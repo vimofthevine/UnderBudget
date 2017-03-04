@@ -29,7 +29,7 @@ public:
      *
      * @param[in] id Envelope ID
      */
-     explicit Envelope(int id);
+    explicit Envelope(int id);
 
     // Copy constructor
     Envelope(const Envelope & orig) = default;

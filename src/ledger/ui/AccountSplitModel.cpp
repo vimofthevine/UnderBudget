@@ -26,7 +26,7 @@ void AccountSplitModel::setJournalEntry(std::shared_ptr<JournalEntry> entry) {
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountSplitModel::columnCount(const QModelIndex &parent) const {
+int AccountSplitModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
@@ -39,7 +39,7 @@ QVariant AccountSplitModel::headerData(int section, Qt::Orientation orientation,
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant AccountSplitModel::data(const QModelIndex &index, int role) const {
+QVariant AccountSplitModel::data(const QModelIndex & index, int role) const {
     if ((not entry_) or (not index.isValid()) or (role != Qt::DisplayRole)) {
         return QVariant();
     }

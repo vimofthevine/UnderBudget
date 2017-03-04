@@ -19,8 +19,8 @@ JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo) : transa
 
 //--------------------------------------------------------------------------------------------------
 JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
-                         const Transaction & transaction)
-    : transactions_(repo) {
+                           const Transaction & transaction)
+        : transactions_(repo) {
     transaction_ = transactions_->getTransaction(transaction.id());
     account_splits_ = transactions_->getAccountTransactions(transaction);
     envelope_splits_ = transactions_->getEnvelopeTransactions(transaction);
@@ -28,7 +28,7 @@ JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
 
 //--------------------------------------------------------------------------------------------------
 JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
-                         const Transaction & transaction, bool copy)
+                           const Transaction & transaction, bool copy)
         : transactions_(repo) {
     auto trn = transactions_->getTransaction(transaction.id());
     transaction_.setDate(trn.date());
@@ -124,10 +124,9 @@ QString JournalEntry::lastError() const {
 void JournalEntry::removeSplit(const AccountTransaction & transaction) {
     auto iter = account_splits_.begin();
     while (iter != account_splits_.end()) {
-        if ((transaction.id() == iter->id())
-                and (transaction.account().id() == iter->account().id())
-                and (transaction.amount() == iter->amount())
-                and (transaction.memo() == iter->memo())) {
+        if ((transaction.id() == iter->id()) and
+            (transaction.account().id() == iter->account().id()) and
+            (transaction.amount() == iter->amount()) and (transaction.memo() == iter->memo())) {
             break;
         }
         ++iter;
@@ -146,10 +145,9 @@ void JournalEntry::removeSplit(const AccountTransaction & transaction) {
 void JournalEntry::removeSplit(const EnvelopeTransaction & transaction) {
     auto iter = envelope_splits_.begin();
     while (iter != envelope_splits_.end()) {
-        if ((transaction.id() == iter->id())
-                and (transaction.envelope().id() == iter->envelope().id())
-                and (transaction.amount() == iter->amount())
-                and (transaction.memo() == iter->memo())) {
+        if ((transaction.id() == iter->id()) and
+            (transaction.envelope().id() == iter->envelope().id()) and
+            (transaction.amount() == iter->amount()) and (transaction.memo() == iter->memo())) {
             break;
         }
         ++iter;

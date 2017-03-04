@@ -20,29 +20,21 @@ namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
 JournalEntryDialog::JournalEntryDialog(QWidget * parent)
-        : QDialog(parent),
-          date_(new QDateEdit(this)),
-          payee_(new QLineEdit(this)),
-          account_(new QComboBox(this)),
-          account_amount_(new DoubleLineEdit(this)),
-          account_memo_(new QLineEdit(this)),
-          account_cleared_(new QCheckBox(this)),
+        : QDialog(parent), date_(new QDateEdit(this)), payee_(new QLineEdit(this)),
+          account_(new QComboBox(this)), account_amount_(new DoubleLineEdit(this)),
+          account_memo_(new QLineEdit(this)), account_cleared_(new QCheckBox(this)),
           account_split_add_(new QPushButton(tr("Save"))),
           account_split_clear_(new QPushButton(tr("Clear"))),
           account_split_delete_(new QPushButton(tr("Delete"))),
-          account_splits_(new AccountSplitModel(this)),
-          account_split_table_(new QTableView(this)),
-          envelope_(new QComboBox(this)),
-          envelope_amount_(new DoubleLineEdit(this)),
-          envelope_memo_(new QLineEdit(this)),
-          envelope_split_add_(new QPushButton(tr("Save"))),
+          account_splits_(new AccountSplitModel(this)), account_split_table_(new QTableView(this)),
+          envelope_(new QComboBox(this)), envelope_amount_(new DoubleLineEdit(this)),
+          envelope_memo_(new QLineEdit(this)), envelope_split_add_(new QPushButton(tr("Save"))),
           envelope_split_clear_(new QPushButton(tr("Clear"))),
           envelope_split_delete_(new QPushButton(tr("Delete"))),
           envelope_splits_(new EnvelopeSplitModel(this)),
           envelope_split_table_(new QTableView(this)),
-          buttons_(new QDialogButtonBox(QDialogButtonBox::Save
-                                        | QDialogButtonBox::Reset
-                                        | QDialogButtonBox::Cancel)) {
+          buttons_(new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
+                                        QDialogButtonBox::Cancel)) {
     date_->setCalendarPopup(true);
 
     account_split_table_->setModel(account_splits_);
@@ -59,21 +51,22 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
 
     connect(buttons_, &QDialogButtonBox::clicked, this, &JournalEntryDialog::clicked);
 
-    connect(account_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged,
-            this, &JournalEntryDialog::selectAccountSplit);
+    connect(account_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
+            &JournalEntryDialog::selectAccountSplit);
     connect(account_split_add_, &QPushButton::clicked, this, &JournalEntryDialog::saveAccountSplit);
-    connect(account_split_clear_, &QPushButton::clicked,
-            this, &JournalEntryDialog::clearAccountSplit);
-    connect(account_split_delete_, &QPushButton::clicked,
-            this, &JournalEntryDialog::deleteAccountSplit);
+    connect(account_split_clear_, &QPushButton::clicked, this,
+            &JournalEntryDialog::clearAccountSplit);
+    connect(account_split_delete_, &QPushButton::clicked, this,
+            &JournalEntryDialog::deleteAccountSplit);
 
-    connect(envelope_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged,
-            this, &JournalEntryDialog::selectEnvelopeSplit);
-    connect(envelope_split_add_, &QPushButton::clicked, this, &JournalEntryDialog::saveEnvelopeSplit);
-    connect(envelope_split_clear_, &QPushButton::clicked,
-            this, &JournalEntryDialog::clearEnvelopeSplit);
-    connect(envelope_split_delete_, &QPushButton::clicked,
-            this, &JournalEntryDialog::deleteEnvelopeSplit);
+    connect(envelope_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
+            &JournalEntryDialog::selectEnvelopeSplit);
+    connect(envelope_split_add_, &QPushButton::clicked, this,
+            &JournalEntryDialog::saveEnvelopeSplit);
+    connect(envelope_split_clear_, &QPushButton::clicked, this,
+            &JournalEntryDialog::clearEnvelopeSplit);
+    connect(envelope_split_delete_, &QPushButton::clicked, this,
+            &JournalEntryDialog::deleteEnvelopeSplit);
 
     QHBoxLayout * account_inputs = new QHBoxLayout;
     account_inputs->addWidget(account_);
@@ -188,9 +181,11 @@ void JournalEntryDialog::prepareForDuplication(const Transaction & transaction) 
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::deleteTransaction(const Transaction & transaction) {
     if (repository_) {
-        auto answer = QMessageBox::question(parentWidget(), tr("Delete Transaction?"),
-                                            tr("Are you sure you want to delete transaction %1 on %2")
-                                            .arg(transaction.payee()).arg(transaction.date().toString("yyyy-MM-dd")));
+        auto answer =
+            QMessageBox::question(parentWidget(), tr("Delete Transaction?"),
+                                  tr("Are you sure you want to delete transaction %1 on %2")
+                                      .arg(transaction.payee())
+                                      .arg(transaction.date().toString("yyyy-MM-dd")));
         if (answer == QMessageBox::Yes) {
             repository_->transactions()->remove(transaction);
             emit accepted();
@@ -199,7 +194,8 @@ void JournalEntryDialog::deleteTransaction(const Transaction & transaction) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void JournalEntryDialog::selectAccountSplit(const QModelIndex &current, const QModelIndex &previous) {
+void JournalEntryDialog::selectAccountSplit(const QModelIndex & current,
+                                            const QModelIndex & previous) {
     if (entry_ and current.isValid()) {
         int row = current.row();
         auto accts = entry_->getAccountSplits();
@@ -266,7 +262,8 @@ void JournalEntryDialog::deleteAccountSplit() {
 }
 
 //--------------------------------------------------------------------------------------------------
-void JournalEntryDialog::selectEnvelopeSplit(const QModelIndex &current, const QModelIndex &previous) {
+void JournalEntryDialog::selectEnvelopeSplit(const QModelIndex & current,
+                                             const QModelIndex & previous) {
     if (entry_) {
         int row = current.row();
         auto envelopes = entry_->getEnvelopeSplits();
@@ -286,7 +283,8 @@ void JournalEntryDialog::saveEnvelopeSplit() {
         int id = envelope_->currentData().toInt();
         Envelope env = repository_->envelopes()->getEnvelope(id);
         if (env.id() == -1) {
-            QMessageBox::warning(this, tr("Error"), tr("Select an envelope for the envelope split"));
+            QMessageBox::warning(this, tr("Error"),
+                                 tr("Select an envelope for the envelope split"));
             return;
         }
         Money amount = Money(envelope_amount_->value(), env.currency());
@@ -335,7 +333,8 @@ void JournalEntryDialog::clicked(QAbstractButton * button) {
         if (entry_) {
             QDate date = date_->date();
             if (not date.isValid()) {
-                QMessageBox::warning(this, tr("Error"), tr("Specify valid date for the journal entry"));
+                QMessageBox::warning(this, tr("Error"),
+                                     tr("Specify valid date for the journal entry"));
                 return;
             }
 

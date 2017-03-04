@@ -30,17 +30,16 @@ void AccountModel::setRepository(std::shared_ptr<LedgerRepository> repository) {
 }
 
 //--------------------------------------------------------------------------------------------------
-Account AccountModel::account(const QModelIndex &index) const {
+Account AccountModel::account(const QModelIndex & index) const {
     if (not accounts_) {
         return Account();
     }
 
-    return index.isValid() ?  accounts_->getAccount(index.internalId())
-        : accounts_->getRoot();
+    return index.isValid() ? accounts_->getAccount(index.internalId()) : accounts_->getRoot();
 }
 
 //--------------------------------------------------------------------------------------------------
-bool AccountModel::create(const Account &account, const QModelIndex &parent) {
+bool AccountModel::create(const Account & account, const QModelIndex & parent) {
     if (not accounts_) {
         return false;
     }
@@ -58,16 +57,15 @@ bool AccountModel::create(const Account &account, const QModelIndex &parent) {
 }
 
 //--------------------------------------------------------------------------------------------------
-bool AccountModel::update(const Account &account, const QModelIndex &index) {
+bool AccountModel::update(const Account & account, const QModelIndex & index) {
     if (not accounts_) {
         return false;
     }
 
     bool success = accounts_->update(account);
     if (success) {
-        emit dataChanged(
-            this->index(index.row(), 0, index.parent()),
-            this->index(index.row(), columnCount(index) - 1, index.parent()));
+        emit dataChanged(this->index(index.row(), 0, index.parent()),
+                         this->index(index.row(), columnCount(index) - 1, index.parent()));
     } else {
         emit error(accounts_->lastError());
     }
@@ -76,7 +74,7 @@ bool AccountModel::update(const Account &account, const QModelIndex &index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-bool AccountModel::remove(const QModelIndex &index) {
+bool AccountModel::remove(const QModelIndex & index) {
     if (not accounts_) {
         return false;
     }
@@ -93,7 +91,7 @@ bool AccountModel::remove(const QModelIndex &index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountModel::columnCount(const QModelIndex &parent) const {
+int AccountModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
@@ -106,7 +104,7 @@ QVariant AccountModel::headerData(int section, Qt::Orientation orientation, int 
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant AccountModel::data(const QModelIndex &index, int role) const {
+QVariant AccountModel::data(const QModelIndex & index, int role) const {
     if (not accounts_ or not index.isValid()) {
         return QVariant();
     }
@@ -136,7 +134,7 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountModel::rowCount(const QModelIndex &parent) const {
+int AccountModel::rowCount(const QModelIndex & parent) const {
     if (not accounts_ or parent.column() > 0) {
         return 0;
     }
@@ -149,7 +147,7 @@ int AccountModel::rowCount(const QModelIndex &parent) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-QModelIndex AccountModel::index(int row, int column, const QModelIndex &parent) const {
+QModelIndex AccountModel::index(int row, int column, const QModelIndex & parent) const {
     if (not accounts_ or not hasIndex(row, column, parent)) {
         return QModelIndex();
     }
@@ -169,7 +167,7 @@ QModelIndex AccountModel::index(int row, int column, const QModelIndex &parent) 
 }
 
 //--------------------------------------------------------------------------------------------------
-QModelIndex AccountModel::parent(const QModelIndex &child) const {
+QModelIndex AccountModel::parent(const QModelIndex & child) const {
     if (not accounts_ or not child.isValid()) {
         return QModelIndex();
     }

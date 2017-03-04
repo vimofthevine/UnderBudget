@@ -33,8 +33,8 @@ public:
      * @param[in] transactions Account transaction model
      * @param[in] parent       Parent widget
      */
-    AccountListWidget(AccountModel *model, AccountTransactionModel *transactions,
-                      QWidget *parent);
+    AccountListWidget(AccountModel * model, AccountTransactionModel * transactions,
+                      QWidget * parent);
 
 signals:
     /**
@@ -43,7 +43,7 @@ signals:
      * @param[in] current  Model index of the currently selected account
      * @param[in] previous Model index of the previoiusly selected account
      */
-    void selectAccount(const QModelIndex &current, const QModelIndex &previous);
+    void selectAccount(const QModelIndex & current, const QModelIndex & previous);
 
     /**
      * Emitted to indicate a request to modify a transaction.
@@ -72,7 +72,7 @@ protected slots:
      *
      * @param index Model index of the account to be deleted
      */
-    void deleteAccount(const QModelIndex &index);
+    void deleteAccount(const QModelIndex & index);
 
     /**
      * Updates the account transactions model to display transactions for the selected account.
@@ -80,7 +80,7 @@ protected slots:
      * @param[in] current  Model index of the currently selected account
      * @param[in] previous Model index of the previoiusly selected account
      */
-    void setTransactionFilter(const QModelIndex &current, const QModelIndex &previous);
+    void setTransactionFilter(const QModelIndex & current, const QModelIndex & previous);
 
     /**
      * Determines which transaction is selected and fires the @c modifyTransaction signal.
@@ -105,14 +105,14 @@ protected slots:
 
 private:
     /** Account model */
-    AccountModel *model_;
+    AccountModel * model_;
     /** Account transaction model */
-    AccountTransactionModel *transactions_;
+    AccountTransactionModel * transactions_;
 
     /** Account details dialog */
-    AccountDetailsDialog *details_;
+    AccountDetailsDialog * details_;
     /** Account tree view */
-    TreeView *tree_;
+    TreeView * tree_;
     /** Account transactions list view */
     TransactionTableView * transaction_list_;
 };

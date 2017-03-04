@@ -39,7 +39,7 @@ Transaction EnvelopeTransactionModel::transaction(const QModelIndex & index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void EnvelopeTransactionModel::filterForEnvelope(const Envelope &envelope) {
+void EnvelopeTransactionModel::filterForEnvelope(const Envelope & envelope) {
     beginResetModel();
     envelope_ = envelope;
     if (transactions_) {
@@ -54,12 +54,13 @@ void EnvelopeTransactionModel::refresh() {
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeTransactionModel::columnCount(const QModelIndex &parent) const {
+int EnvelopeTransactionModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant EnvelopeTransactionModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant EnvelopeTransactionModel::headerData(int section, Qt::Orientation orientation,
+                                              int role) const {
     if ((orientation == Qt::Horizontal) and (role == Qt::DisplayRole)) {
         return headers_.at(section);
     }
@@ -67,12 +68,12 @@ QVariant EnvelopeTransactionModel::headerData(int section, Qt::Orientation orien
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant EnvelopeTransactionModel::data(const QModelIndex &index, int role) const {
+QVariant EnvelopeTransactionModel::data(const QModelIndex & index, int role) const {
     if (not index.isValid()) {
         return QVariant();
     }
 
-    if ((role != Qt::DisplayRole) and (role != Qt::EditRole)){
+    if ((role != Qt::DisplayRole) and (role != Qt::EditRole)) {
         return QVariant();
     }
 
@@ -101,7 +102,7 @@ QVariant EnvelopeTransactionModel::data(const QModelIndex &index, int role) cons
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeTransactionModel::rowCount(const QModelIndex &parent) const {
+int EnvelopeTransactionModel::rowCount(const QModelIndex & parent) const {
     if (parent.column() > 0) {
         return 0;
     }
@@ -110,7 +111,7 @@ int EnvelopeTransactionModel::rowCount(const QModelIndex &parent) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-Qt::ItemFlags EnvelopeTransactionModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags EnvelopeTransactionModel::flags(const QModelIndex & index) const {
     return QAbstractTableModel::flags(index);
 }
 

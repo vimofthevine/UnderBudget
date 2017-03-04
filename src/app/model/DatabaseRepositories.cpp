@@ -6,17 +6,17 @@
 #include <QtSql>
 
 // UnderBudget include(s)
-#include "DatabaseRepositories.hpp"
 #include <ledger/persistence/SQLAccountRepository.hpp>
 #include <ledger/persistence/SQLCurrencyRepository.hpp>
 #include <ledger/persistence/SQLEnvelopeRepository.hpp>
 #include <ledger/persistence/SQLReconciliationRepository.hpp>
 #include <ledger/persistence/SQLTransactionRepository.hpp>
+#include "DatabaseRepositories.hpp"
 
 namespace ub {
 
 //--------------------------------------------------------------------------------------------------
-DatabaseRepositories::DatabaseRepositories(const QString &loc) : location_(loc) {
+DatabaseRepositories::DatabaseRepositories(const QString & loc) : location_(loc) {
     db_ = QSqlDatabase::addDatabase("QSQLITE", loc);
     db_.setDatabaseName(loc);
     if (not db_.open()) {

@@ -34,7 +34,7 @@ public:
      * @param model  Account model
      * @param parent Parent widget
      */
-    AccountDetailsDialog(AccountModel *model, QWidget *parent);
+    AccountDetailsDialog(AccountModel * model, QWidget * parent);
 
 public slots:
     /**
@@ -42,28 +42,28 @@ public slots:
      *
      * @param[in] parent Model index of the parent account under which to create a new account
      */
-    void resetForNewAccount(const QModelIndex &parent);
+    void resetForNewAccount(const QModelIndex & parent);
 
     /**
      * Updates the form to modify an existing account.
      *
      * @param[in] index Model index of the account to be modified
      */
-    void showAccount(const QModelIndex &index);
+    void showAccount(const QModelIndex & index);
 
 protected slots:
     /**
      * Responds to a button click as appropriate.
      */
-    void clicked(QAbstractButton *button);
+    void clicked(QAbstractButton * button);
 
 private:
     /** Account model */
-    AccountModel *model_;
+    AccountModel * model_;
     /** Account name input widget */
-    QLineEdit *name_;
+    QLineEdit * name_;
     /** Button box */
-    QDialogButtonBox *buttons_;
+    QDialogButtonBox * buttons_;
 
     /** Parent model index */
     QModelIndex parent_index_;

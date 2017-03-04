@@ -18,9 +18,10 @@ QString SQLCurrencyRepository::table_name_ = "currency";
 //--------------------------------------------------------------------------------------------------
 SQLCurrencyRepository::SQLCurrencyRepository(QSqlDatabase & db) : db_(db) {
     QSqlQuery query(db_);
-    bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
-                              "id INTEGER PRIMARY KEY, "
-                              "code VARCHAR);");
+    bool success =
+        query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
+                                                                 "id INTEGER PRIMARY KEY, "
+                                                                 "code VARCHAR);");
 
     if (not success) {
         last_error_ = query.lastError().text();

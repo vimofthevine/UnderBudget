@@ -10,17 +10,16 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-EnvelopeDetailsDialog::EnvelopeDetailsDialog(EnvelopeModel *model, QWidget *parent)
+EnvelopeDetailsDialog::EnvelopeDetailsDialog(EnvelopeModel * model, QWidget * parent)
         : QDialog(parent), model_(model) {
     name_ = new QLineEdit(this);
     name_->setPlaceholderText(tr("Envelope name"));
 
-    buttons_ = new QDialogButtonBox(QDialogButtonBox::Save
-                                    | QDialogButtonBox::Reset
-                                    | QDialogButtonBox::Cancel);
+    buttons_ = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
+                                    QDialogButtonBox::Cancel);
     connect(buttons_, &QDialogButtonBox::clicked, this, &EnvelopeDetailsDialog::clicked);
 
-    QFormLayout *form = new QFormLayout;
+    QFormLayout * form = new QFormLayout;
     form->addRow(tr("Name"), name_);
     form->addRow("", buttons_);
 
@@ -28,7 +27,7 @@ EnvelopeDetailsDialog::EnvelopeDetailsDialog(EnvelopeModel *model, QWidget *pare
 }
 
 //--------------------------------------------------------------------------------------------------
-void EnvelopeDetailsDialog::resetForNewEnvelope(const QModelIndex &parent) {
+void EnvelopeDetailsDialog::resetForNewEnvelope(const QModelIndex & parent) {
     parent_index_ = parent;
     envelope_index_ = QModelIndex();
     envelope_ = Envelope();
@@ -37,7 +36,7 @@ void EnvelopeDetailsDialog::resetForNewEnvelope(const QModelIndex &parent) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void EnvelopeDetailsDialog::showEnvelope(const QModelIndex &index) {
+void EnvelopeDetailsDialog::showEnvelope(const QModelIndex & index) {
     parent_index_ = model_->parent(index);
     envelope_index_ = index;
     envelope_ = model_->envelope(index);
@@ -46,7 +45,7 @@ void EnvelopeDetailsDialog::showEnvelope(const QModelIndex &index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void EnvelopeDetailsDialog::clicked(QAbstractButton *button) {
+void EnvelopeDetailsDialog::clicked(QAbstractButton * button) {
     if (button == buttons_->button(QDialogButtonBox::Save)) {
         Envelope envelope = envelope_;
         envelope.setName(name_->text());

@@ -10,14 +10,11 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-Money::Money(int scaled, const Currency & currency)
-    : amount_(scaled), currency_(currency)
-{ }
+Money::Money(int scaled, const Currency & currency) : amount_(scaled), currency_(currency) {}
 
 //--------------------------------------------------------------------------------------------------
 Money::Money(double amount, const Currency & currency)
-    : amount_(scale(amount)), currency_(currency)
-{ }
+        : amount_(scale(amount)), currency_(currency) {}
 
 //--------------------------------------------------------------------------------------------------
 double Money::amount() const {
@@ -25,7 +22,7 @@ double Money::amount() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-const Currency& Money::currency() const {
+const Currency & Money::currency() const {
     return currency_;
 }
 
@@ -62,7 +59,7 @@ const Money & Money::operator+=(const Money & addend) {
 }
 
 //--------------------------------------------------------------------------------------------------
-const Money & Money::operator-=(const Money& subtrahend) {
+const Money & Money::operator-=(const Money & subtrahend) {
     assertCurrency(subtrahend);
     amount_ -= subtrahend.amount_;
     return *this;
@@ -122,13 +119,12 @@ const Money operator*(double scalar, const Money & money) {
 
 //--------------------------------------------------------------------------------------------------
 bool operator!=(const Money & lhs, const Money & rhs) {
-    return ! (lhs == rhs);
+    return !(lhs == rhs);
 }
 
 //--------------------------------------------------------------------------------------------------
 bool operator==(const Money & lhs, const Money & rhs) {
-    return (lhs.amount_ == rhs.amount_)
-        && (lhs.currency_ == rhs.currency_);
+    return (lhs.amount_ == rhs.amount_) && (lhs.currency_ == rhs.currency_);
 }
 
 //--------------------------------------------------------------------------------------------------

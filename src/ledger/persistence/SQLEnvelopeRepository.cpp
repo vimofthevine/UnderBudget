@@ -27,7 +27,8 @@ SQLEnvelopeRepository::SQLEnvelopeRepository(QSqlDatabase & db) : db_(db) {
     }
 
     QSqlQuery query(db);
-    bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ +
+                              "("
                               "id INTEGER PRIMARY KEY, "
                               "name VARCHAR NOT NULL, "
                               "currency_id INTEGER DEFAULT 1, "
@@ -44,7 +45,8 @@ SQLEnvelopeRepository::SQLEnvelopeRepository(QSqlDatabase & db) : db_(db) {
 
     query.exec("SELECT id FROM " + table_name_ + " WHERE id=1;");
     if (not query.first() and not query.isValid()) {
-        query.prepare("INSERT INTO " + table_name_ + "(id, name, lft, rgt) VALUES(1, 'root', 1, 2);");
+        query.prepare("INSERT INTO " + table_name_ +
+                      "(id, name, lft, rgt) VALUES(1, 'root', 1, 2);");
         if (not query.exec()) {
             last_error_ = query.lastError().text();
             throw std::runtime_error(last_error_.toStdString());
@@ -60,8 +62,8 @@ void SQLEnvelopeRepository::cache() {
 
     QSqlQuery query(db_);
     query.exec("SELECT envelope.id,envelope.name,envelope.currency_id,currency.code,envelope.lft,"
-            "envelope.rgt FROM " + table_name_ +
-            " JOIN currency on envelope.currency_id=currency.id ORDER BY lft;");
+               "envelope.rgt FROM " +
+               table_name_ + " JOIN currency on envelope.currency_id=currency.id ORDER BY lft;");
 
     QSqlRecord record;
 
@@ -71,8 +73,8 @@ void SQLEnvelopeRepository::cache() {
 
         NestedSetEnvelope envelope(record.value("id").toInt());
         envelope.setName(record.value("name").toString());
-        envelope.setCurrency(Currency(record.value("currency_id").toInt(),
-                                      record.value("code").toString()));
+        envelope.setCurrency(
+            Currency(record.value("currency_id").toInt(), record.value("code").toString()));
         envelope.lft = record.value("lft").toInt();
         envelope.rgt = record.value("rgt").toInt();
 
@@ -124,7 +126,7 @@ int SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope & pa
     }
 
     query.prepare("INSERT INTO " + table_name_ + "(name, currency_id, lft, rgt) "
-            "VALUES(:name, :currency, :lft, :rgt);");
+                                                 "VALUES(:name, :currency, :lft, :rgt);");
     query.bindValue(":name", envelope.name());
     query.bindValue(":currency", envelope.currency().id());
     query.bindValue(":lft", rgt);
@@ -245,8 +247,9 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
 
     // Move subtree into that space
 
-    query.prepare("UPDATE " + table_name_ + " SET lft=lft+:distance, "
-            "rgt=rgt+:distance WHERE lft>=:pos AND rgt<:pos+:width");
+    query.prepare("UPDATE " + table_name_ +
+                  " SET lft=lft+:distance, "
+                  "rgt=rgt+:distance WHERE lft>=:pos AND rgt<:pos+:width");
     query.bindValue(":distance", distance);
     query.bindValue(":width", width);
     query.bindValue(":pos", tmppos);
@@ -334,7 +337,7 @@ bool SQLEnvelopeRepository::remove(const Envelope & envelope) {
 bool SQLEnvelopeRepository::update(const Envelope & envelope) {
     QSqlQuery query(db_);
     query.prepare("UPDATE " + table_name_ + " SET name=:name, "
-            "currency_id=:currency WHERE id=:id;");
+                                            "currency_id=:currency WHERE id=:id;");
     query.bindValue(":name", envelope.name());
     query.bindValue(":currency", envelope.currency().id());
     query.bindValue(":id", envelope.id());

@@ -46,7 +46,7 @@ int Reconciliation::id() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-void Reconciliation::setAccount(const Account &account) {
+void Reconciliation::setAccount(const Account & account) {
     account_ = account;
 }
 

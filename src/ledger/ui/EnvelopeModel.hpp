@@ -53,7 +53,7 @@ public:
      * @param index Model index of the envelope to be retrieved
      * @return Envelope located at the given index
      */
-    Envelope envelope(const QModelIndex &index) const;
+    Envelope envelope(const QModelIndex & index) const;
 
     /**
      * Creates a new envelope under the given parent envelope.
@@ -62,7 +62,7 @@ public:
      * @param parent Model index of the parent under which to create the envelope
      * @return @c true if successfully created
      */
-    bool create(const Envelope &envelope, const QModelIndex &parent);
+    bool create(const Envelope & envelope, const QModelIndex & parent);
 
     /**
      * Updates the envelope located at the specified index.
@@ -71,7 +71,7 @@ public:
      * @param index   Model index of the envelope to be updated
      * @return @c true if successfully updated
      */
-    bool update(const Envelope &envelope, const QModelIndex &index);
+    bool update(const Envelope & envelope, const QModelIndex & index);
 
     /**
      * Removes the envelope located at the specified index.
@@ -79,23 +79,23 @@ public:
      * @param index Model index of the envelope to be removed
      * @return @c true if successfully removed
      */
-    bool remove(const QModelIndex &index);
+    bool remove(const QModelIndex & index);
 
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex & parent = QModelIndex()) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    QVariant data(const QModelIndex &index, int role) const override;
+    QVariant data(const QModelIndex & index, int role) const override;
 
-    int rowCount(const QModelIndex &parent) const override;
+    int rowCount(const QModelIndex & parent) const override;
 
-    QModelIndex index(int row, int column, const QModelIndex &parent) const override;
+    QModelIndex index(int row, int column, const QModelIndex & parent) const override;
 
-    QModelIndex parent(const QModelIndex &child) const override;
+    QModelIndex parent(const QModelIndex & child) const override;
 
 signals:
     /** Emitted when an error has occurred. */
-    void error(const QString &message) const;
+    void error(const QString & message) const;
 
 private:
     /** Envelope repository */

@@ -34,12 +34,12 @@ MenuBar * MainWindow::menu() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-QStackedWidget *MainWindow::contentWidget() const {
+QStackedWidget * MainWindow::contentWidget() const {
     return content_;
 }
 
 //--------------------------------------------------------------------------------------------------
-void MainWindow::closeEvent(QCloseEvent *event) {
+void MainWindow::closeEvent(QCloseEvent * event) {
     saveSettings();
     QMainWindow::closeEvent(event);
 }
@@ -61,18 +61,14 @@ void MainWindow::restoreSettings() {
 //--------------------------------------------------------------------------------------------------
 void MainWindow::about() {
     QString title = tr("About %1").arg(qApp->applicationName());
-    QString about = QString("<html><b><p>%1</p></b>")
-        + "<p>"
-        + tr("Personal finance and budget manager.")
-        + "</p>"
-        + tr("Version") + ": %2<br>"
-        + tr("Authors") + ": Kyle Treubig<br>"
-        + tr("Homepage") + ": <a href=\"http://%3\">%3</a><br>"
-        + tr("License") + ": Apache License 2.0<br>"
-        + tr("Copyright") + " &copy; 2013, Kyle Treubig";
+    QString about = QString("<html><b><p>%1</p></b>") + "<p>" +
+                    tr("Personal finance and budget manager.") + "</p>" + tr("Version") +
+                    ": %2<br>" + tr("Authors") + ": Kyle Treubig<br>" + tr("Homepage") +
+                    ": <a href=\"http://%3\">%3</a><br>" + tr("License") +
+                    ": Apache License 2.0<br>" + tr("Copyright") + " &copy; 2013, Kyle Treubig";
     about = about.arg(qApp->applicationName())
-        .arg(qApp->applicationVersion())
-        .arg(qApp->organizationDomain());
+                .arg(qApp->applicationVersion())
+                .arg(qApp->organizationDomain());
 
     QMessageBox::about(this, title, about);
 }

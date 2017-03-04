@@ -73,8 +73,8 @@ public:
      * @param[in] transaction Double-entry transaction for which to retrieve account transactions
      * @return Account transactions in the specified transaction
      */
-    virtual std::vector<AccountTransaction> getAccountTransactions(
-            const Transaction & transaction) = 0;
+    virtual std::vector<AccountTransaction>
+    getAccountTransactions(const Transaction & transaction) = 0;
 
     /**
      * Retrieves the balance of the given account as of the specified date.
@@ -111,8 +111,8 @@ public:
      * @param[in] transaction Double-entry transaction for which to retrieve envelope transactions
      * @return Envelope transactions in the specified transaction
      */
-    virtual std::vector<EnvelopeTransaction> getEnvelopeTransactions(
-            const Transaction & transaction) = 0;
+    virtual std::vector<EnvelopeTransaction>
+    getEnvelopeTransactions(const Transaction & transaction) = 0;
 
     /**
      * Retrieves the reconciled balance of the given account as of the specified date.

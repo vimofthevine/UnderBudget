@@ -36,7 +36,7 @@ public:
      *
      * @param loc Database file location
      */
-    DatabaseRepositories(const QString &loc);
+    DatabaseRepositories(const QString & loc);
 
     /**
      * Closes the database.

@@ -10,17 +10,16 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-AccountDetailsDialog::AccountDetailsDialog(AccountModel *model, QWidget *parent)
+AccountDetailsDialog::AccountDetailsDialog(AccountModel * model, QWidget * parent)
         : QDialog(parent), model_(model) {
     name_ = new QLineEdit(this);
     name_->setPlaceholderText(tr("Account name"));
 
-    buttons_ = new QDialogButtonBox(QDialogButtonBox::Save
-                                    | QDialogButtonBox::Reset
-                                    | QDialogButtonBox::Cancel);
+    buttons_ = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
+                                    QDialogButtonBox::Cancel);
     connect(buttons_, &QDialogButtonBox::clicked, this, &AccountDetailsDialog::clicked);
 
-    QFormLayout *form = new QFormLayout;
+    QFormLayout * form = new QFormLayout;
     form->addRow(tr("Name"), name_);
     form->addRow("", buttons_);
 
@@ -28,7 +27,7 @@ AccountDetailsDialog::AccountDetailsDialog(AccountModel *model, QWidget *parent)
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountDetailsDialog::resetForNewAccount(const QModelIndex &parent) {
+void AccountDetailsDialog::resetForNewAccount(const QModelIndex & parent) {
     parent_index_ = parent;
     account_index_ = QModelIndex();
     account_ = Account();
@@ -37,7 +36,7 @@ void AccountDetailsDialog::resetForNewAccount(const QModelIndex &parent) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountDetailsDialog::showAccount(const QModelIndex &index) {
+void AccountDetailsDialog::showAccount(const QModelIndex & index) {
     parent_index_ = model_->parent(index);
     account_index_ = index;
     account_ = model_->account(index);
@@ -46,7 +45,7 @@ void AccountDetailsDialog::showAccount(const QModelIndex &index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountDetailsDialog::clicked(QAbstractButton *button) {
+void AccountDetailsDialog::clicked(QAbstractButton * button) {
     if (button == buttons_->button(QDialogButtonBox::Save)) {
         Account account = account_;
         account.setName(name_->text());

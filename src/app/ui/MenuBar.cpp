@@ -2,13 +2,13 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
-#include "icons.hpp"
 #include "MenuBar.hpp"
+#include "icons.hpp"
 
 namespace ub {
 
 //--------------------------------------------------------------------------------------------------
-MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
+MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
     auto open = new QAction(Icon::openDocument(), tr("&Open..."), this);
     open->setShortcut(QKeySequence::Open);
     open->setStatusTip(tr("Open database"));

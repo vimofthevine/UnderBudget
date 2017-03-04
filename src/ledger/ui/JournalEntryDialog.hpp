@@ -136,7 +136,7 @@ private slots:
     /**
      * Responds to a button click as appropriate.
      */
-    void clicked(QAbstractButton *button);
+    void clicked(QAbstractButton * button);
 
 private:
     /** Ledger repository */
@@ -184,7 +184,7 @@ private:
     QTableView * envelope_split_table_;
 
     /** Button box */
-    QDialogButtonBox *buttons_;
+    QDialogButtonBox * buttons_;
 
     /** Current journal entry */
     std::shared_ptr<JournalEntry> entry_;

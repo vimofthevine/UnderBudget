@@ -39,7 +39,7 @@ Transaction AccountTransactionModel::transaction(const QModelIndex & index) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransactionModel::filterForAccount(const Account &account) {
+void AccountTransactionModel::filterForAccount(const Account & account) {
     beginResetModel();
     account_ = account;
     if (transactions_) {
@@ -54,12 +54,13 @@ void AccountTransactionModel::refresh() {
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransactionModel::columnCount(const QModelIndex &parent) const {
+int AccountTransactionModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant AccountTransactionModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant AccountTransactionModel::headerData(int section, Qt::Orientation orientation,
+                                             int role) const {
     if ((orientation == Qt::Horizontal) and (role == Qt::DisplayRole)) {
         return headers_.at(section);
     }
@@ -67,12 +68,12 @@ QVariant AccountTransactionModel::headerData(int section, Qt::Orientation orient
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant AccountTransactionModel::data(const QModelIndex &index, int role) const {
+QVariant AccountTransactionModel::data(const QModelIndex & index, int role) const {
     if (not index.isValid()) {
         return QVariant();
     }
 
-    if ((role != Qt::DisplayRole) and (role != Qt::EditRole)){
+    if ((role != Qt::DisplayRole) and (role != Qt::EditRole)) {
         return QVariant();
     }
 
@@ -101,7 +102,7 @@ QVariant AccountTransactionModel::data(const QModelIndex &index, int role) const
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransactionModel::rowCount(const QModelIndex &parent) const {
+int AccountTransactionModel::rowCount(const QModelIndex & parent) const {
     if (parent.column() > 0) {
         return 0;
     }
@@ -110,7 +111,7 @@ int AccountTransactionModel::rowCount(const QModelIndex &parent) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-Qt::ItemFlags AccountTransactionModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags AccountTransactionModel::flags(const QModelIndex & index) const {
     return QAbstractTableModel::flags(index);
 }
 

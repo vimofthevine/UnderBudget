@@ -20,9 +20,9 @@ TransactionTableView::TransactionTableView(QWidget * parent)
 
     setAlternatingRowColors(true);
 
-    connect(this, &QTableView::doubleClicked, this, [this] (const QModelIndex & index) {
-                emit modifyItem(this->filter_->mapToSource(index));
-            });
+    connect(this, &QTableView::doubleClicked, this, [this](const QModelIndex & index) {
+        emit modifyItem(this->filter_->mapToSource(index));
+    });
 
     installEventFilter(this);
 }
@@ -42,21 +42,21 @@ void TransactionTableView::contextMenuEvent(QContextMenuEvent * event) {
     auto index = indexAt(event->pos());
     if (index.isValid()) {
         auto mod = new QAction(tr("Edit"), this);
-        connect(mod, &QAction::triggered, this, [this] () {
+        connect(mod, &QAction::triggered, this, [this]() {
             if (currentIndex().isValid()) {
                 emit modifyItem(filter_->mapToSource(currentIndex()));
             }
         });
 
         auto dup = new QAction(tr("Duplicate"), this);
-        connect(dup, &QAction::triggered, this, [this] () {
+        connect(dup, &QAction::triggered, this, [this]() {
             if (currentIndex().isValid()) {
                 emit duplicateItem(filter_->mapToSource(currentIndex()));
             }
         });
 
         auto del = new QAction(tr("Delete"), this);
-        connect(del, &QAction::triggered, this, [this] () {
+        connect(del, &QAction::triggered, this, [this]() {
             if (currentIndex().isValid()) {
                 emit deleteItem(filter_->mapToSource(currentIndex()));
             }
@@ -76,7 +76,7 @@ bool TransactionTableView::eventFilter(QObject * object, QEvent * event) {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent * key_event = static_cast<QKeyEvent *>(event);
 
-            if ((key_event->key() == Qt::Key_Enter) or (key_event->key() == Qt::Key_Return)){
+            if ((key_event->key() == Qt::Key_Enter) or (key_event->key() == Qt::Key_Return)) {
                 emit modifyItem(filter_->mapToSource(currentIndex()));
             } else if (key_event->key() == Qt::Key_D) {
                 emit duplicateItem(filter_->mapToSource(currentIndex()));

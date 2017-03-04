@@ -31,143 +31,143 @@ namespace Icon {
  * @param[in] name standard icon name
  * @return requested icon from the current theme
  */
-QIcon get(const QString &name) {
-	QIcon icon = QIcon::fromTheme(name);
+QIcon get(const QString & name) {
+    QIcon icon = QIcon::fromTheme(name);
     if (icon.isNull()) {
-		icon.addFile(QString(":/icons/tango/22x22/%1").arg(name), QSize(22,22));
-		icon.addFile(QString(":/icons/tango/48x48/%1").arg(name), QSize(48,48));
-	}
-	return icon;
+        icon.addFile(QString(":/icons/tango/22x22/%1").arg(name), QSize(22, 22));
+        icon.addFile(QString(":/icons/tango/48x48/%1").arg(name), QSize(48, 48));
+    }
+    return icon;
 }
 
 //------------------------------------------------------------------------------
 QIcon about() {
-	return get("help-about");
+    return get("help-about");
 }
 
 //------------------------------------------------------------------------------
 QIcon analysisSummary() {
-	return get("x-office-presentation");
+    return get("x-office-presentation");
 }
 
 //------------------------------------------------------------------------------
 QIcon assign() {
-	return get("assign-transactions");
+    return get("assign-transactions");
 }
 
 //------------------------------------------------------------------------------
 QIcon calculate() {
-	return get("accessories-calculator");
+    return get("accessories-calculator");
 }
 
 //------------------------------------------------------------------------------
 QIcon close() {
-	return get("window-close");
+    return get("window-close");
 }
 
 //------------------------------------------------------------------------------
 QIcon closeAll() {
-	return QIcon();
+    return QIcon();
 }
 
 //------------------------------------------------------------------------------
 QIcon editBudget() {
-	return get("edit-budget");
+    return get("edit-budget");
 }
 
 //------------------------------------------------------------------------------
 QIcon editEstimates() {
-	return get("edit-estimates");
+    return get("edit-estimates");
 }
 
 //------------------------------------------------------------------------------
 QIcon editRules() {
-	return get("edit-rules");
+    return get("edit-rules");
 }
 
 //------------------------------------------------------------------------------
 QIcon editPreferences() {
-	return get("preferences-system");
+    return get("preferences-system");
 }
 
 //------------------------------------------------------------------------------
 QIcon estimateImpact() {
-	return get("view-financial-forecast");
+    return get("view-financial-forecast");
 }
 
 //------------------------------------------------------------------------------
 QIcon estimateProgress() {
-	return get("x-office-spreadsheet");
+    return get("x-office-spreadsheet");
 }
 
 //------------------------------------------------------------------------------
 QIcon exit() {
-	return get("application-exit");
+    return get("application-exit");
 }
 
 //------------------------------------------------------------------------------
 QIcon exportFile() {
-	return get("document-export");
+    return get("document-export");
 }
 
 //------------------------------------------------------------------------------
 QIcon importedTransactions() {
-	return get("view-transactions");
+    return get("view-transactions");
 }
 
 //------------------------------------------------------------------------------
 QIcon importTransactions() {
-	return get("import-transactions");
+    return get("import-transactions");
 }
 
 //------------------------------------------------------------------------------
 QIcon importTransactionsFrom() {
-	return QIcon();
+    return QIcon();
 }
 
 //------------------------------------------------------------------------------
 QIcon newDocument() {
-	return get("document-new");
+    return get("document-new");
 }
 
 //------------------------------------------------------------------------------
 QIcon openDocument() {
-	return get("document-open");
+    return get("document-open");
 }
 
 //------------------------------------------------------------------------------
 QIcon redo() {
-	return get("edit-redo");
+    return get("edit-redo");
 }
 
 //------------------------------------------------------------------------------
 QIcon saveAs() {
-	return get("document-save-as");
+    return get("document-save-as");
 }
 
 //------------------------------------------------------------------------------
 QIcon saveAsTemplate() {
-	return get("document-edit-sign");
+    return get("document-edit-sign");
 }
 
 //------------------------------------------------------------------------------
 QIcon saveDocument() {
-	return get("document-save");
+    return get("document-save");
 }
 
 //------------------------------------------------------------------------------
 QIcon undo() {
-	return get("edit-undo");
+    return get("edit-undo");
 }
 
 //------------------------------------------------------------------------------
 QIcon windowCascade() {
-	return QIcon();
+    return QIcon();
 }
 
 //------------------------------------------------------------------------------
 QIcon windowTile() {
-	return QIcon();
+    return QIcon();
 }
 
 } // Icon namespace

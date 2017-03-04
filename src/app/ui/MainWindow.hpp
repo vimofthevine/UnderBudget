@@ -44,7 +44,7 @@ protected:
      *
      * @param[in] event window closing event
      */
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent * event);
 
 protected slots:
     /**
@@ -54,9 +54,9 @@ protected slots:
 
 private:
     /** Menu bar */
-    MenuBar *menu_;
+    MenuBar * menu_;
     /** Stacked content widget */
-    QStackedWidget *content_;
+    QStackedWidget * content_;
 
     /**
      * Stores current windows settings, such as size, geometry, etc.

@@ -20,7 +20,7 @@ public:
      *
      * @param parent Parent widget
      */
-    MenuBar(QWidget *parent);
+    MenuBar(QWidget * parent);
 
 signals:
     /** Emitted when the open menu action is triggered. */

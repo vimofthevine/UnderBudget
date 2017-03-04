@@ -27,7 +27,8 @@ SQLAccountRepository::SQLAccountRepository(QSqlDatabase & db) : db_(db) {
     }
 
     QSqlQuery query(db);
-    bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ +
+                              "("
                               "id INTEGER PRIMARY KEY, "
                               "name VARCHAR NOT NULL, "
                               "currency_id INTEGER DEFAULT 1, "
@@ -44,7 +45,8 @@ SQLAccountRepository::SQLAccountRepository(QSqlDatabase & db) : db_(db) {
 
     query.exec("SELECT id FROM " + table_name_ + " WHERE id=1;");
     if (not query.first() and not query.isValid()) {
-        query.prepare("INSERT INTO " + table_name_ + "(id, name, lft, rgt) VALUES(1, 'root', 1, 2);");
+        query.prepare("INSERT INTO " + table_name_ +
+                      "(id, name, lft, rgt) VALUES(1, 'root', 1, 2);");
         if (not query.exec()) {
             last_error_ = query.lastError().text();
             throw std::runtime_error(last_error_.toStdString());
@@ -60,8 +62,8 @@ void SQLAccountRepository::cache() {
 
     QSqlQuery query(db_);
     query.exec("SELECT account.id,account.name,account.currency_id,currency.code,account.lft,"
-            "account.rgt FROM " + table_name_ +
-            " JOIN currency on account.currency_id=currency.id ORDER BY lft;");
+               "account.rgt FROM " +
+               table_name_ + " JOIN currency on account.currency_id=currency.id ORDER BY lft;");
 
     QSqlRecord record;
 
@@ -71,8 +73,8 @@ void SQLAccountRepository::cache() {
 
         NestedSetAccount account(record.value("id").toInt());
         account.setName(record.value("name").toString());
-        account.setCurrency(Currency(record.value("currency_id").toInt(),
-                                     record.value("code").toString()));
+        account.setCurrency(
+            Currency(record.value("currency_id").toInt(), record.value("code").toString()));
         account.lft = record.value("lft").toInt();
         account.rgt = record.value("rgt").toInt();
 
@@ -124,7 +126,7 @@ int SQLAccountRepository::create(const Account & account, const Account & parent
     }
 
     query.prepare("INSERT INTO " + table_name_ + "(name, currency_id, lft, rgt) "
-            "VALUES(:name, :currency, :lft, :rgt);");
+                                                 "VALUES(:name, :currency, :lft, :rgt);");
     query.bindValue(":name", account.name());
     query.bindValue(":currency", account.currency().id());
     query.bindValue(":lft", rgt);
@@ -245,8 +247,9 @@ bool SQLAccountRepository::move(const Account & account, const Account & parent)
 
     // Move subtree into that space
 
-    query.prepare("UPDATE " + table_name_ + " SET lft=lft+:distance, "
-            "rgt=rgt+:distance WHERE lft>=:pos AND rgt<:pos+:width");
+    query.prepare("UPDATE " + table_name_ +
+                  " SET lft=lft+:distance, "
+                  "rgt=rgt+:distance WHERE lft>=:pos AND rgt<:pos+:width");
     query.bindValue(":distance", distance);
     query.bindValue(":width", width);
     query.bindValue(":pos", tmppos);
@@ -334,7 +337,7 @@ bool SQLAccountRepository::remove(const Account & account) {
 bool SQLAccountRepository::update(const Account & account) {
     QSqlQuery query(db_);
     query.prepare("UPDATE " + table_name_ + " SET name=:name, "
-            "currency_id=:currency WHERE id=:id;");
+                                            "currency_id=:currency WHERE id=:id;");
     query.bindValue(":name", account.name());
     query.bindValue(":currency", account.currency().id());
     query.bindValue(":id", account.id());

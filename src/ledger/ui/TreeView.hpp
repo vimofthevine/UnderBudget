@@ -28,7 +28,7 @@ public:
      */
     TreeView(QWidget * parent);
 
-    void setModel(QAbstractItemModel *model) override;
+    void setModel(QAbstractItemModel * model) override;
 
 signals:
     /**
@@ -37,37 +37,37 @@ signals:
      * @param[in] current  Model index of the currently selected item
      * @param[in] previous Model index of the previoiusly selected item
      */
-    void selectItem(const QModelIndex &current, const QModelIndex &previous);
+    void selectItem(const QModelIndex & current, const QModelIndex & previous);
 
     /**
      * Emitted to indicate a request to create a new item under the specified parent.
      *
      * @param parent Model index of the parent item under which to create a new item
      */
-    void createItem(const QModelIndex &parent);
+    void createItem(const QModelIndex & parent);
 
     /**
      * Emitted to indicate a request to modify the specified item.
      *
      * @param index Model index of the item to be modified
      */
-    void modifyItem(const QModelIndex &index);
+    void modifyItem(const QModelIndex & index);
 
     /**
      * Emitted to indicate a request to delete the specified item.
      *
      * @param index Model index of the item to be deleted
      */
-    void deleteItem(const QModelIndex &index);
+    void deleteItem(const QModelIndex & index);
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent * event) override;
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+    bool eventFilter(QObject * object, QEvent * event) override;
 
 private:
     /** Sort proxy model */
-    QSortFilterProxyModel *filter_;
+    QSortFilterProxyModel * filter_;
 };
 
 } // ledger namespace
