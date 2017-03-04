@@ -31,6 +31,9 @@ EnvelopeListWidget::EnvelopeListWidget(EnvelopeModel *model, EnvelopeTransaction
     connect(tree_, &TreeView::modifyItem, details_, &EnvelopeDetailsDialog::showEnvelope);
     connect(tree_, &TreeView::deleteItem, this, &EnvelopeListWidget::deleteEnvelope);
 
+    connect(transaction_list_, &TransactionTableView::modifyItem,
+            this, &EnvelopeListWidget::modifyEnvelopeTransaction);
+
     addWidget(tree_);
     addWidget(transaction_list_);
 
@@ -53,6 +56,11 @@ void EnvelopeListWidget::setTransactionFilter(const QModelIndex &current,
                                              const QModelIndex &previous) {
     auto acct = model_->envelope(current);
     transactions_->filterForEnvelope(acct);
+}
+
+//--------------------------------------------------------------------------------------------------
+void EnvelopeListWidget::modifyEnvelopeTransaction(const QModelIndex & index) {
+    emit modifyTransaction(transactions_->transaction(index));
 }
 
 } // ledger namespace

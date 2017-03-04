@@ -25,6 +25,20 @@ void EnvelopeTransactionModel::setRepository(std::shared_ptr<LedgerRepository> r
 }
 
 //--------------------------------------------------------------------------------------------------
+Transaction EnvelopeTransactionModel::transaction(const QModelIndex & index) {
+    if (not transactions_) {
+        return Transaction();
+    }
+
+    int row = index.row();
+    if ((row < 0) or (row >= cache_.size())) {
+        return Transaction();
+    }
+
+    return cache_.at(row).transaction();
+}
+
+//--------------------------------------------------------------------------------------------------
 void EnvelopeTransactionModel::filterForEnvelope(const Envelope &envelope) {
     beginResetModel();
     envelope_ = envelope;

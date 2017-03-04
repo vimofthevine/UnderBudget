@@ -31,6 +31,9 @@ AccountListWidget::AccountListWidget(AccountModel *model, AccountTransactionMode
     connect(tree_, &TreeView::modifyItem, details_, &AccountDetailsDialog::showAccount);
     connect(tree_, &TreeView::deleteItem, this, &AccountListWidget::deleteAccount);
 
+    connect(transaction_list_, &TransactionTableView::modifyItem,
+            this, &AccountListWidget::modifyAccountTransaction);
+
     addWidget(tree_);
     addWidget(transaction_list_);
 
@@ -53,6 +56,11 @@ void AccountListWidget::setTransactionFilter(const QModelIndex &current,
                                              const QModelIndex &previous) {
     auto acct = model_->account(current);
     transactions_->filterForAccount(acct);
+}
+
+//--------------------------------------------------------------------------------------------------
+void AccountListWidget::modifyAccountTransaction(const QModelIndex & index) {
+    emit modifyTransaction(transactions_->transaction(index));
 }
 
 } // ledger namespace

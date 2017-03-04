@@ -51,6 +51,7 @@ public:
      * Returns the envelope at the given model index.
      *
      * @param index Model index of the envelope to be retrieved
+     * @return Envelope located at the given index
      */
     Envelope envelope(const QModelIndex &index) const;
 

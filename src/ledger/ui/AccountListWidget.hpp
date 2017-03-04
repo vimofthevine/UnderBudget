@@ -13,6 +13,7 @@ namespace ledger {
 class AccountDetailsDialog;
 class AccountModel;
 class AccountTransactionModel;
+class Transaction;
 class TransactionTableView;
 class TreeView;
 
@@ -44,6 +45,13 @@ signals:
      */
     void selectAccount(const QModelIndex &current, const QModelIndex &previous);
 
+    /**
+     * Emitted to indicate a request to modify a transaction.
+     *
+     * @param transaction Transaction to be modified
+     */
+    void modifyTransaction(const Transaction & transaction);
+
 protected slots:
     /**
      * Prompts the user to confirm deletion of the requested account.
@@ -59,6 +67,13 @@ protected slots:
      * @param[in] previous Model index of the previoiusly selected account
      */
     void setTransactionFilter(const QModelIndex &current, const QModelIndex &previous);
+
+    /**
+     * Determines which transaction is selected and fires the @c modifyTransaction signal.
+     *
+     * @param index Model index of the account transaction to be modified
+     */
+    void modifyAccountTransaction(const QModelIndex & index);
 
 private:
     /** Account model */

@@ -14,6 +14,7 @@
 // UnderBudget include(s)
 #include <ledger/model/Envelope.hpp>
 #include <ledger/model/EnvelopeTransaction.hpp>
+#include <ledger/model/Transaction.hpp>
 
 namespace ub {
 namespace ledger {
@@ -46,6 +47,14 @@ public:
      * Initializes the envelope transaction view model.
      */
     EnvelopeTransactionModel();
+
+    /**
+     * Returns the transaction at the given envelope transaction model index.
+     *
+     * @param index Model index of the envelope transaction to be retrieved.
+     * @return Transaction located at the given envelope transaction index
+     */
+    Transaction transaction(const QModelIndex & index);
 
     /**
      * Updates the repositories used by the model.

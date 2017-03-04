@@ -14,6 +14,7 @@
 // UnderBudget include(s)
 #include <ledger/model/Account.hpp>
 #include <ledger/model/AccountTransaction.hpp>
+#include <ledger/model/Transaction.hpp>
 
 namespace ub {
 namespace ledger {
@@ -53,6 +54,14 @@ public:
      * @param repository Ledger repository
      */
     void setRepository(std::shared_ptr<LedgerRepository> repository);
+
+    /**
+     * Returns the transaction at the given account transaction model index.
+     *
+     * @param index Model index of the account transaction to be retrieved.
+     * @return Transaction located at the given account transaction index
+     */
+    Transaction transaction(const QModelIndex & index);
 
     int columnCount(const QModelIndex &parent) const override;
 

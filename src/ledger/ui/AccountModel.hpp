@@ -51,6 +51,7 @@ public:
      * Returns the account at the given model index.
      *
      * @param index Model index of the account to be retrieved
+     * @return Account located at the given index
      */
     Account account(const QModelIndex &index) const;
 

@@ -46,10 +46,14 @@ MainWindowModel::MainWindowModel(MainWindow *window)
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error,
             this, &MainWindowModel::showError);
+    connect(account_list_, &ledger::AccountListWidget::modifyTransaction,
+            journal_entry_, &ledger::JournalEntryDialog::prepareForModification);
 
     connect(envelope_model_, &ledger::EnvelopeModel::error, this, &MainWindowModel::showError);
     connect(envelope_transaction_model_, &ledger::EnvelopeTransactionModel::error,
             this, &MainWindowModel::showError);
+    connect(envelope_list_, &ledger::EnvelopeListWidget::modifyTransaction,
+            journal_entry_, &ledger::JournalEntryDialog::prepareForModification);
 }
 
 //--------------------------------------------------------------------------------------------------
