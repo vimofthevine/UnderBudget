@@ -12,6 +12,12 @@
 
 namespace ub {
 
+namespace budget {
+// Forward declaration(s)
+class ExpenseRepository;
+class SQLExpenseRepository;
+}
+
 namespace ledger {
 // Forward declaration(s)
 class AccountRepository;
@@ -62,6 +68,8 @@ public:
 
     std::shared_ptr<ledger::TransactionRepository> transactions() const override;
 
+    std::shared_ptr<budget::ExpenseRepository> expenses() const override;
+
 private:
     /** Database location */
     QString location_;
@@ -77,5 +85,7 @@ private:
     std::shared_ptr<ledger::SQLReconciliationRepository> reconciliations_;
     /** Transaction repository */
     std::shared_ptr<ledger::SQLTransactionRepository> transactions_;
+    /** Budgeted expense repository */
+    std::shared_ptr<budget::SQLExpenseRepository> expenses_;
 };
 } // ub namespace

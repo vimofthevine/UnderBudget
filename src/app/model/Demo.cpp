@@ -5,21 +5,21 @@
 #include <QDebug>
 
 // UnderBudget include(s)
+#include <app/model/Repositories.hpp>
+#include <budget/model/Expense.hpp>
+#include <budget/model/Recurrence.hpp>
 #include <ledger/model/Account.hpp>
-#include <ledger/model/AccountRepository.hpp>
 #include <ledger/model/Currency.hpp>
-#include <ledger/model/CurrencyRepository.hpp>
 #include <ledger/model/Envelope.hpp>
-#include <ledger/model/EnvelopeRepository.hpp>
 #include <ledger/model/JournalEntry.hpp>
 #include <ledger/model/Transaction.hpp>
-#include <ledger/model/TransactionRepository.hpp>
 #include "Demo.hpp"
 
 namespace ub {
 
 //--------------------------------------------------------------------------------------------------
 void Demo::populate(std::shared_ptr<Repositories> repos) {
+    using namespace ub::budget;
     using namespace ub::ledger;
 
     auto accounts = repos->accounts();
@@ -198,6 +198,106 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
                 qWarning() << "Transaction insertion error:" << entry4.lastError();
             }
         }
+
+        // -- Budgeted expenses
+
+        auto expenses = repos->expenses();
+
+        Recurrence r1;
+        r1.setPeriodicity(1);
+        r1.setScope(Recurrence::Weekly);
+        Expense exp1;
+        exp1.setAmount(100.0);
+        exp1.setBeginningDate(QDate(2016, 1, 1));
+        exp1.setDescription("Groceries");
+        exp1.setEnvelope(envelopes->getEnvelope(e1));
+        exp1.setRecurrence(r1);
+        expenses->create(exp1);
+
+        Recurrence r2;
+        r2.setMonth(6);
+        r2.setPeriodicity(1);
+        r2.setScope(Recurrence::Yearly);
+        Expense exp2;
+        exp2.setAmount(25.0);
+        exp2.setBeginningDate(QDate(2014, 6, 1));
+        exp2.setDescription("John's birthday");
+        exp2.setEnvelope(envelopes->getEnvelope(e3));
+        exp2.setRecurrence(r2);
+        expenses->create(exp2);
+
+        Recurrence r3;
+        r3.setDay(1);
+        r3.setPeriodicity(1);
+        r3.setScope(Recurrence::Monthly);
+        Expense exp3;
+        exp3.setAmount(110.0);
+        exp3.setBeginningDate(QDate(2014, 1, 1));
+        exp3.setEndingDate(QDate(2016, 12, 1));
+        exp3.setDescription("Rent");
+        exp3.setEnvelope(envelopes->getEnvelope(e2a));
+        exp3.setRecurrence(r3);
+        expenses->create(exp3);
+
+        Recurrence r4;
+        r4.setDay(1);
+        r4.setPeriodicity(1);
+        r4.setScope(Recurrence::Monthly);
+        Expense exp4;
+        exp4.setAmount(120.0);
+        exp4.setBeginningDate(QDate(2017, 1, 1));
+        exp4.setDescription("Rent");
+        exp4.setEnvelope(envelopes->getEnvelope(e2a));
+        exp4.setRecurrence(r4);
+        expenses->create(exp4);
+
+        for (int i = 1; i < 6; ++i) {
+            Recurrence r5;
+            r5.setMonth(i);
+            r5.setPeriodicity(1);
+            r5.setScope(Recurrence::Yearly);
+            Expense exp5;
+            exp5.setAmount(50.0);
+            exp5.setBeginningDate(QDate(2014, 1, 1));
+            exp5.setDescription("Winter electric bill");
+            exp5.setEnvelope(envelopes->getEnvelope(e2b));
+            exp5.setRecurrence(r5);
+            expenses->create(exp5);
+        }
+        for (int i = 6; i < 9; ++i) {
+            Recurrence r5;
+            r5.setMonth(i);
+            r5.setPeriodicity(1);
+            r5.setScope(Recurrence::Yearly);
+            Expense exp5;
+            exp5.setAmount(100.0);
+            exp5.setBeginningDate(QDate(2014, 1, 1));
+            exp5.setDescription("Summer electric bill");
+            exp5.setEnvelope(envelopes->getEnvelope(e2b));
+            exp5.setRecurrence(r5);
+            expenses->create(exp5);
+        }
+        for (int i = 9; i < 13; ++i) {
+            Recurrence r5;
+            r5.setMonth(i);
+            r5.setPeriodicity(1);
+            r5.setScope(Recurrence::Yearly);
+            Expense exp5;
+            exp5.setAmount(70.0);
+            exp5.setBeginningDate(QDate(2014, 1, 1));
+            exp5.setDescription("Fall electric bill");
+            exp5.setEnvelope(envelopes->getEnvelope(e2b));
+            exp5.setRecurrence(r5);
+            expenses->create(exp5);
+        }
+
+        Expense exp6;
+        exp6.setAmount(250.0);
+        exp6.setBeginningDate(QDate(2016, 8, 1));
+        exp6.setDescription("Parent's 10th anniversary");
+        exp6.setEndingDate(QDate(2016, 8, 31));
+        exp6.setEnvelope(envelopes->getEnvelope(e3));
+        expenses->create(exp6);
     }
 }
 

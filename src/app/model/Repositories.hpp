@@ -7,6 +7,7 @@
 #include <QString>
 
 // UnderBudget include(s)
+#include <budget/model/BudgetRepository.hpp>
 #include <ledger/model/LedgerRepository.hpp>
 
 namespace ub {
@@ -14,7 +15,7 @@ namespace ub {
 /**
  * Collection of repositories for the application.
  */
-class Repositories : public ledger::LedgerRepository {
+class Repositories : public budget::BudgetRepository, public ledger::LedgerRepository {
 public:
     // Virtual destructor
     virtual ~Repositories() {}

@@ -16,4 +16,4 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES Linux)
 # Build ledger UI library
 add_library(app_ui ${app_ui_srcs})
 qt5_use_modules(app_ui Core Widgets)
-target_link_libraries(app_ui app_model)
+target_link_libraries(app_ui app_model budget_ui ledger_ui)

@@ -3,11 +3,11 @@
 // Standard include(s)
 #include <memory>
 
+// UnderBudget include(s)
+#include "ExpenseRepository.hpp"
+
 namespace ub {
 namespace budget {
-
-// Forward declaration(s)
-class ExpenseRepository;
 
 /**
  * Repository of budget repositories.

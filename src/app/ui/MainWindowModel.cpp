@@ -3,6 +3,8 @@
 
 // UnderBudget include(s)
 #include <app/model/Repositories.hpp>
+#include <budget/ui/ExpenseListWidget.hpp>
+#include <budget/ui/ExpenseModel.hpp>
 #include <ledger/ui/AccountListWidget.hpp>
 #include <ledger/ui/AccountModel.hpp>
 #include <ledger/ui/AccountTransactionModel.hpp>
@@ -22,14 +24,17 @@ MainWindowModel::MainWindowModel(MainWindow * window)
         : QObject(window), account_model_(new ledger::AccountModel),
           account_transaction_model_(new ledger::AccountTransactionModel),
           envelope_model_(new ledger::EnvelopeModel),
-          envelope_transaction_model_(new ledger::EnvelopeTransactionModel), window_(window),
+          envelope_transaction_model_(new ledger::EnvelopeTransactionModel),
+          expense_model_(new budget::ExpenseModel), window_(window),
           account_list_(
               new ledger::AccountListWidget(account_model_, account_transaction_model_, window_)),
           envelope_list_(new ledger::EnvelopeListWidget(envelope_model_,
                                                         envelope_transaction_model_, window_)),
-          journal_entry_(new ledger::JournalEntryDialog(window_)) {
+          journal_entry_(new ledger::JournalEntryDialog(window_)),
+          expense_list_(new budget::ExpenseListWidget(envelope_model_, expense_model_, window_)){
     window_->contentWidget()->addWidget(account_list_);
     window_->contentWidget()->addWidget(envelope_list_);
+    window_->contentWidget()->addWidget(expense_list_);
 
     journal_entry_->hide();
     journal_entry_->setModal(true);
@@ -40,6 +45,7 @@ MainWindowModel::MainWindowModel(MainWindow * window)
             &ledger::JournalEntryDialog::prepareForNewEntry);
     connect(menu, &MenuBar::viewAccounts, this, &MainWindowModel::showAccounts);
     connect(menu, &MenuBar::viewEnvelopes, this, &MainWindowModel::showEnvelopes);
+    connect(menu, &MenuBar::viewBudgetedExpenses, this, &MainWindowModel::showBudgetedExpenses);
 
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error, this,
@@ -64,6 +70,8 @@ MainWindowModel::MainWindowModel(MainWindow * window)
             &ledger::JournalEntryDialog::deleteTransaction);
     connect(journal_entry_, &ledger::JournalEntryDialog::accepted, envelope_transaction_model_,
             &ledger::EnvelopeTransactionModel::refresh);
+
+    connect(expense_model_, &budget::ExpenseModel::error, this, &MainWindowModel::showError);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -73,6 +81,7 @@ void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories
     envelope_model_->setRepository(repositories);
     envelope_transaction_model_->setRepository(repositories);
     journal_entry_->setRepository(repositories);
+    expense_model_->setRepository(repositories);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -88,6 +97,11 @@ void MainWindowModel::showAccounts() {
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::showEnvelopes() {
     window_->contentWidget()->setCurrentWidget(envelope_list_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::showBudgetedExpenses() {
+    window_->contentWidget()->setCurrentWidget(expense_list_);
 }
 
 //--------------------------------------------------------------------------------------------------

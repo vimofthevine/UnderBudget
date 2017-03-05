@@ -13,6 +13,12 @@ namespace ub {
 class MainWindow;
 class Repositories;
 
+namespace budget {
+// Forward declaration(s)
+class ExpenseListWidget;
+class ExpenseModel;
+}
+
 namespace ledger {
 // Forward declaration(s)
 class AccountListWidget;
@@ -62,6 +68,11 @@ protected slots:
     void showEnvelopes();
 
     /**
+     * Displays the budgeted expenses list view.
+     */
+    void showBudgetedExpenses();
+
+    /**
      * Displays an error popup dialog with the given message.
      *
      * @param message Error message
@@ -77,6 +88,8 @@ private:
     ledger::EnvelopeModel * envelope_model_;
     /** Envelope transaction model */
     ledger::EnvelopeTransactionModel * envelope_transaction_model_;
+    /** Budgeted expense model */
+    budget::ExpenseModel * expense_model_;
 
     /** Main window */
     MainWindow * window_;
@@ -86,6 +99,8 @@ private:
     ledger::EnvelopeListWidget * envelope_list_;
     /** Journal entry dialog */
     ledger::JournalEntryDialog * journal_entry_;
+    /** Budgeted expense list widget */
+    budget::ExpenseListWidget * expense_list_;
 };
 
 } // ub namespace

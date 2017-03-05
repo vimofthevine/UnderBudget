@@ -3,15 +3,15 @@
 // Standard include(s)
 #include <memory>
 
+// UnderBudget include(s)
+#include "AccountRepository.hpp"
+#include "CurrencyRepository.hpp"
+#include "EnvelopeRepository.hpp"
+#include "ReconciliationRepository.hpp"
+#include "TransactionRepository.hpp"
+
 namespace ub {
 namespace ledger {
-
-// Forward declaration(s)
-class AccountRepository;
-class CurrencyRepository;
-class EnvelopeRepository;
-class ReconciliationRepository;
-class TransactionRepository;
 
 /**
  * Repository of ledger repositories.

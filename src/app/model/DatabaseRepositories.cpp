@@ -6,6 +6,7 @@
 #include <QtSql>
 
 // UnderBudget include(s)
+#include <budget/persistence/SQLExpenseRepository.hpp>
 #include <ledger/persistence/SQLAccountRepository.hpp>
 #include <ledger/persistence/SQLCurrencyRepository.hpp>
 #include <ledger/persistence/SQLEnvelopeRepository.hpp>
@@ -28,6 +29,7 @@ DatabaseRepositories::DatabaseRepositories(const QString & loc) : location_(loc)
         envelopes_.reset(new ledger::SQLEnvelopeRepository(db_));
         reconciliations_.reset(new ledger::SQLReconciliationRepository(db_, accounts_));
         transactions_.reset(new ledger::SQLTransactionRepository(db_, accounts_, envelopes_));
+        expenses_.reset(new budget::SQLExpenseRepository(db_, envelopes_));
     }
 }
 
@@ -71,6 +73,11 @@ std::shared_ptr<ledger::ReconciliationRepository> DatabaseRepositories::reconcil
 //--------------------------------------------------------------------------------------------------
 std::shared_ptr<ledger::TransactionRepository> DatabaseRepositories::transactions() const {
     return transactions_;
+}
+
+//--------------------------------------------------------------------------------------------------
+std::shared_ptr<budget::ExpenseRepository> DatabaseRepositories::expenses() const {
+    return expenses_;
 }
 
 } // ub namespace
