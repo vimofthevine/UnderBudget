@@ -41,7 +41,7 @@ void DoubleLineEdit::focusOutEvent(QFocusEvent * event) {
 //--------------------------------------------------------------------------------------------------
 void DoubleLineEdit::finished() {
     current_ = validator_->evaluate(text());
-    setText(QString::asprintf("%.2f", current_));
+    setText(QString::number(current_, 'f', 2));
 }
 
 } // ledger namespace

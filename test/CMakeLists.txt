@@ -1,6 +1,10 @@
 # UnderBudget test CMake configuration
 
 if (NOT SKIP_TESTS)
+	find_package(GTest REQUIRED)
+	_gtest_find_library(GMOCK_LIBRARY gmock-md gmock)
+	_gtest_find_library(GMOCK_LIBRARY_DEBUG gmock-mdd gmockd)
+	_gtest_append_debugs(GMOCK_LIBRARIES GMOCK_LIBRARY)
 
 	# Macro to build a QtTest unit test and add it to CTest
 	macro(build_test name libs)
@@ -12,11 +16,10 @@ if (NOT SKIP_TESTS)
 
 	# Macro to build a GoogleTest unit test and add it to CTest
 	macro(build_gtest name libs)
-		find_package(GTest)
 		include_directories(${GTEST_INCLUDE_DIRS})
 		add_executable(${name} ${name}.cpp)
                 qt5_use_modules(${name} Core Sql Widgets)
-                target_link_libraries(${name} ${libs} ${GTEST_BOTH_LIBRARIES} gmock pthread)
+				target_link_libraries(${name} ${libs} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES} pthread)
 		add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
 	endmacro(build_gtest)
 

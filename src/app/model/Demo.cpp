@@ -49,7 +49,7 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
         acct3.setName("Cash");
         auto a3 = accounts->create(acct3, accounts->getRoot());
 
-        qInfo() << "Account insertion error (if any):" << accounts->lastError();
+        qDebug() << "Account insertion error (if any):" << accounts->lastError();
 
         // --- Envelopes
 
@@ -79,7 +79,7 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
         env4.setName("Unallocated");
         auto e4 = envelopes->create(env4, envelopes->getRoot());
 
-        qInfo() << "Envelope insertion error (if any):" << envelopes->lastError();
+        qDebug() << "Envelope insertion error (if any):" << envelopes->lastError();
 
         // --- Transactions
 
