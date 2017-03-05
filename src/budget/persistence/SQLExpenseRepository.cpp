@@ -34,6 +34,7 @@ SQLExpenseRepository::SQLExpenseRepository(QSqlDatabase & db,
             query.exec(QString("CREATE TABLE IF NOT EXISTS %1 ("
                                "id INTEGER PRIMARY KEY, "
                                "amount INTEGER NOT NULL, "
+                               "description VARCHAR, "
                                "envelope_id INTEGER NOT NULL, "
                                "beginning_date DATE NOT NULL, "
                                "ending_date DATE, "
@@ -54,10 +55,12 @@ SQLExpenseRepository::SQLExpenseRepository(QSqlDatabase & db,
 int SQLExpenseRepository::create(const Expense & expense) {
     QSqlQuery query(db_);
     query.prepare(
-            QString("INSERT INTO %1(amount, envelope_id, beginning_date, ending_date, day, month, "
-                    "periodicity, scope, week) VALUES(:amount, :envelope, :start, :stop, :day, "
-                    ":month, :periodicity, :scope, :week);").arg(table_name_));
+            QString("INSERT INTO %1(amount, description, envelope_id, beginning_date, ending_date, "
+                    " day, month, periodicity, scope, week) VALUES(:amount, :description, "
+                    ":envelope, :start, :stop, :day, :month, :periodicity, :scope, :week);")
+                .arg(table_name_));
     query.bindValue(":amount", expense.amount().scaled());
+    query.bindValue(":description", expense.description());
     query.bindValue(":envelope", expense.envelope().id());
     query.bindValue(":start", expense.beginningDate().toString("yyyy-MM-dd"));
     query.bindValue(":stop", expense.endingDate().isValid()
@@ -157,6 +160,7 @@ Expense SQLExpenseRepository::toExpense(const QSqlRecord & record) {
 
     Expense expense(record.value("id").toInt());
     expense.setAmount(ledger::Money(record.value("amount").toInt(), envelope.currency()));
+    expense.setDescription(record.value("description").toString());
     expense.setEnvelope(envelope);
     expense.setBeginningDate(QDate::fromString(record.value("beginning_date").toString(), "yyyy-MM-dd"));
     expense.setEndingDate(QDate::fromString(record.value("ending_date").toString(), "yyyy-MM-dd"));

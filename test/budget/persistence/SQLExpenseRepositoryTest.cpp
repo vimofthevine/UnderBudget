@@ -95,6 +95,7 @@ protected:
     void populate() {
         Expense e1;
         e1.setAmount(Money(100.00));
+        e1.setDescription("Rent");
         e1.setEnvelope(Envelope(4));
         e1.setBeginningDate(QDate(2016, 2, 1));
         e1.setEndingDate(QDate(2017, 1, 11));
@@ -107,6 +108,7 @@ protected:
 
         Expense e2;
         e2.setAmount(Money(1200.00));
+        e2.setDescription("Bill");
         e2.setEnvelope(Envelope(2));
         e2.setBeginningDate(QDate(2016, 7, 1));
         e2.setEndingDate(QDate(2016, 7, 31));
@@ -114,6 +116,7 @@ protected:
 
         Expense e3;
         e3.setAmount(Money(110.00));
+        e3.setDescription("Rent");
         e3.setEnvelope(Envelope(4));
         e3.setBeginningDate(QDate(2017, 1, 11));
         e3.setRecurrence(r1);
@@ -162,6 +165,7 @@ TEST_F(SQLExpenseRepositoryTest, ShouldReturnValidExpenseWhenIDExists) {
     Expense record = repo->expense(3);
     EXPECT_EQ(3, record.id()) << repo->lastError().toStdString();
     EXPECT_EQ(Money(110.00, Currency(1, "USD")), record.amount());
+    EXPECT_EQ(QString("Rent"), record.description());
     EXPECT_EQ(4, record.envelope().id());
     EXPECT_EQ(QDate(2017, 1, 11), record.beginningDate());
     EXPECT_FALSE(record.endingDate().isValid());
@@ -181,6 +185,7 @@ TEST_F(SQLExpenseRepositoryTest, ShouldReturnValidOneTimeExpense) {
     Expense record = repo->expense(2);
     EXPECT_EQ(2, record.id());
     EXPECT_EQ(Money(1200.00, Currency(1, "USD")), record.amount());
+    EXPECT_EQ(QString("Bill"), record.description());
     EXPECT_EQ(2, record.envelope().id());
     EXPECT_EQ(QDate(2016, 7, 1), record.beginningDate());
     EXPECT_EQ(QDate(2016, 7, 31), record.endingDate());

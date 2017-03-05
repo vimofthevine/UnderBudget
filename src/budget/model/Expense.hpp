@@ -2,6 +2,7 @@
 
 // Qt include(s)
 #include <QDate>
+#include <QString>
 
 // UnderBudget include(s)
 #include <ledger/model/Envelope.hpp>
@@ -51,6 +52,13 @@ public:
     QDate beginningDate() const;
 
     /**
+     * Returns the description of this budgeted expense.
+     *
+     * @return Description of this budgeted expense
+     */
+    QString description() const;
+
+    /**
      * Returns the ending date for which this expense applies.
      *
      * @return Ending date for which this expense applies
@@ -93,6 +101,13 @@ public:
     void setBeginningDate(const QDate & date);
 
     /**
+     * Updates the description of this budgeted expense.
+     *
+     * @param description New description
+     */
+    void setDescription(const QString & description);
+
+    /**
      * Updates the ending date for which this expense applies.
      *
      * @param date New date
@@ -118,6 +133,8 @@ private:
     ledger::Money amount_;
     /** Beginning date */
     QDate beginning_date_;
+    /** Description */
+    QString description_;
     /** Ending date */
     QDate ending_date_;
     /** Envelope */

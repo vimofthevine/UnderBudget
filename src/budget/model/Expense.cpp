@@ -27,6 +27,11 @@ QDate Expense::beginningDate() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+QString Expense::description() const {
+    return description_;
+}
+
+//--------------------------------------------------------------------------------------------------
 QDate Expense::endingDate() const {
     return ending_date_;
 }
@@ -54,6 +59,11 @@ void Expense::setAmount(const ledger::Money & amount) {
 //--------------------------------------------------------------------------------------------------
 void Expense::setBeginningDate(const QDate & date) {
     beginning_date_ = date;
+}
+
+//--------------------------------------------------------------------------------------------------
+void Expense::setDescription(const QString & description) {
+    description_ = description;
 }
 
 //--------------------------------------------------------------------------------------------------
