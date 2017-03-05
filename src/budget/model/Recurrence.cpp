@@ -1,3 +1,6 @@
+// Qt include(s)
+#include <QtCore>
+
 // UnderBudget include(s)
 #include "Recurrence.hpp"
 
@@ -50,6 +53,11 @@ void Recurrence::setWeek(int week) {
 //--------------------------------------------------------------------------------------------------
 Recurrence::ScopeType Recurrence::scope() const {
     return scope_;
+}
+
+//--------------------------------------------------------------------------------------------------
+QString Recurrence::toString() const {
+    return "";
 }
 
 //--------------------------------------------------------------------------------------------------

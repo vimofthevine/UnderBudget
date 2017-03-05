@@ -1,5 +1,8 @@
 #pragma once
 
+// Qt include(s)
+#include <QString>
+
 namespace ub {
 namespace budget {
 
@@ -103,6 +106,13 @@ public:
      * @return Scope type of the recurrence
      */
     ScopeType scope() const;
+
+    /**
+     * Returns a string representation of this recurrence.
+     *
+     * @return String representation of this recurrence
+     */
+    QString toString() const;
 
     /**
      * Returns the week within the scope in which the recurrency occurs.
