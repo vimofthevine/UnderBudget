@@ -298,6 +298,17 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
         exp6.setEndingDate(QDate(2016, 8, 31));
         exp6.setEnvelope(envelopes->getEnvelope(e3));
         expenses->create(exp6);
+
+        Recurrence r7;
+        r7.setPeriodicity(2);
+        r7.setScope(Recurrence::Weekly);
+        Expense exp7;
+        exp7.setAmount(15.0);
+        exp7.setBeginningDate(QDate(2016, 11, 10));
+        exp7.setDescription("Dinner with friends");
+        exp7.setEnvelope(envelopes->getEnvelope(e1));
+        exp7.setRecurrence(r7);
+        expenses->create(exp7);
     }
 }
 
