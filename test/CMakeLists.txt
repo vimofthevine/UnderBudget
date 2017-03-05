@@ -24,8 +24,6 @@ if (NOT SKIP_TESTS)
 	endmacro(build_gtest)
 
 	# Add test sub-directories
-	add_subdirectory(accounting)
-	add_subdirectory(analysis)
 	add_subdirectory(budget)
 	add_subdirectory(ledger)
 
