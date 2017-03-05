@@ -2,7 +2,7 @@
 
 # Specify budget UI source files
 set(budget_ui_srcs
-    #BudgetTableView.cpp
+    BudgetTableView.cpp
     #ExpenseListWidget.cpp
     ExpenseModel.cpp
 )
