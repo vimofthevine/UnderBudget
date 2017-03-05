@@ -29,7 +29,7 @@ double DoubleLineEdit::value() const {
 //--------------------------------------------------------------------------------------------------
 void DoubleLineEdit::setValue(double value) {
     current_ = value;
-    setText(QString::number(current_));
+    setText(QString::number(current_, 'f', 2));
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -97,6 +97,12 @@ private slots:
     void selectAccountSplit(const QModelIndex & current, const QModelIndex & previous);
 
     /**
+     * Populates the account split amount field with the imbalance amount required to complete
+     * the journal entry.
+     */
+    void autoCalculateAccountSplitAmount();
+
+    /**
      * Saves the account split from the input form into the journal entry.
      */
     void saveAccountSplit();
@@ -117,6 +123,12 @@ private slots:
      * @param previous Model index of the previously selected envelope split
      */
     void selectEnvelopeSplit(const QModelIndex & current, const QModelIndex & previous);
+
+    /**
+     * Populates the envelope split amount field with the imbalance amount required to complete
+     * the journal entry.
+     */
+    void autoCalculateEnvelopeSplitAmount();
 
     /**
      * Saves the envelope split from the input form into the journal entry.
@@ -155,6 +167,8 @@ private:
     QLineEdit * account_memo_;
     /** Account transaction cleared input widget */
     QCheckBox * account_cleared_;
+    /** Auto-calculate account split amount button */
+    QPushButton * account_split_auto_calc_;
     /** Add/save account split button */
     QPushButton * account_split_add_;
     /** Clear account split button */
@@ -172,6 +186,8 @@ private:
     DoubleLineEdit * envelope_amount_;
     /** Envelope transaction memo input widget */
     QLineEdit * envelope_memo_;
+    /** Auto-calculate envelope split amount button */
+    QPushButton * envelope_split_auto_calc_;
     /** Add/save envelope split button */
     QPushButton * envelope_split_add_;
     /** Clear envelope split button */

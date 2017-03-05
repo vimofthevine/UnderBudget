@@ -23,12 +23,14 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
         : QDialog(parent), date_(new QDateEdit(this)), payee_(new QLineEdit(this)),
           account_(new QComboBox(this)), account_amount_(new DoubleLineEdit(this)),
           account_memo_(new QLineEdit(this)), account_cleared_(new QCheckBox(this)),
+          account_split_auto_calc_(new QPushButton(tr("Auto-calculate"))),
           account_split_add_(new QPushButton(tr("Save"))),
           account_split_clear_(new QPushButton(tr("Clear"))),
           account_split_delete_(new QPushButton(tr("Delete"))),
           account_splits_(new AccountSplitModel(this)), account_split_table_(new QTableView(this)),
           envelope_(new QComboBox(this)), envelope_amount_(new DoubleLineEdit(this)),
           envelope_memo_(new QLineEdit(this)), envelope_split_add_(new QPushButton(tr("Save"))),
+          envelope_split_auto_calc_(new QPushButton(tr("Auto-calculate"))),
           envelope_split_clear_(new QPushButton(tr("Clear"))),
           envelope_split_delete_(new QPushButton(tr("Delete"))),
           envelope_splits_(new EnvelopeSplitModel(this)),
@@ -53,6 +55,8 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
 
     connect(account_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
             &JournalEntryDialog::selectAccountSplit);
+    connect(account_split_auto_calc_, &QPushButton::clicked, this,
+            &JournalEntryDialog::autoCalculateAccountSplitAmount);
     connect(account_split_add_, &QPushButton::clicked, this, &JournalEntryDialog::saveAccountSplit);
     connect(account_split_clear_, &QPushButton::clicked, this,
             &JournalEntryDialog::clearAccountSplit);
@@ -61,6 +65,8 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
 
     connect(envelope_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
             &JournalEntryDialog::selectEnvelopeSplit);
+    connect(envelope_split_auto_calc_, &QPushButton::clicked, this,
+            &JournalEntryDialog::autoCalculateEnvelopeSplitAmount);
     connect(envelope_split_add_, &QPushButton::clicked, this,
             &JournalEntryDialog::saveEnvelopeSplit);
     connect(envelope_split_clear_, &QPushButton::clicked, this,
@@ -78,6 +84,7 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
     account_inputs->addWidget(account_cleared_);
 
     QHBoxLayout * account_buttons = new QHBoxLayout;
+    account_buttons->addWidget(account_split_auto_calc_);
     account_buttons->addStretch();
     account_buttons->addWidget(account_split_add_);
     account_buttons->addWidget(account_split_clear_);
@@ -96,6 +103,7 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
     envelope_inputs->addWidget(envelope_memo_);
 
     QHBoxLayout * envelope_buttons = new QHBoxLayout;
+    envelope_buttons->addWidget(envelope_split_auto_calc_);
     envelope_buttons->addStretch();
     envelope_buttons->addWidget(envelope_split_add_);
     envelope_buttons->addWidget(envelope_split_clear_);
@@ -211,6 +219,21 @@ void JournalEntryDialog::selectAccountSplit(const QModelIndex & current,
 }
 
 //--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::autoCalculateAccountSplitAmount() {
+    if (entry_) {
+        auto imbalance = entry_->accountImbalance();
+        if (account_split_table_->currentIndex().isValid()) {
+            int row = account_split_table_->currentIndex().row();
+            auto accts = entry_->getAccountSplits();
+            if ((row >= 0) and (row < accts.size())) {
+                imbalance += accts.at(row).amount();
+            }
+        }
+        account_amount_->setValue(imbalance.amount());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::saveAccountSplit() {
     if (entry_) {
         int id = account_->currentData().toInt();
@@ -248,8 +271,10 @@ void JournalEntryDialog::clearAccountSplit() {
     account_cleared_->setChecked(false);
     account_memo_->clear();
     account_split_ = AccountTransaction();
-    account_split_table_->clearSelection();
     account_split_delete_->setEnabled(false);
+    if (entry_) {
+        account_splits_->setJournalEntry(entry_);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -274,6 +299,21 @@ void JournalEntryDialog::selectEnvelopeSplit(const QModelIndex & current,
             envelope_memo_->setText(envelope_split_.memo());
             envelope_split_delete_->setEnabled(true);
         }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::autoCalculateEnvelopeSplitAmount() {
+    if (entry_) {
+        auto imbalance = entry_->envelopeImbalance();
+        if (envelope_split_table_->currentIndex().isValid()) {
+            int row = envelope_split_table_->currentIndex().row();
+            auto envs = entry_->getEnvelopeSplits();
+            if ((row >= 0) and (row < envs.size())) {
+                imbalance += envs.at(row).amount();
+            }
+        }
+        envelope_amount_->setValue(imbalance.amount());
     }
 }
 
@@ -314,8 +354,10 @@ void JournalEntryDialog::clearEnvelopeSplit() {
     envelope_amount_->clear();
     envelope_memo_->clear();
     envelope_split_ = EnvelopeTransaction();
-    envelope_split_table_->clearSelection();
     envelope_split_delete_->setEnabled(false);
+    if (entry_) {
+        envelope_splits_->setJournalEntry(entry_);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
