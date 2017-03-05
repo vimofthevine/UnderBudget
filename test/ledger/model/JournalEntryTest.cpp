@@ -549,5 +549,65 @@ TEST_F(JournalEntryTest, ShouldRemoveDeletedEnvelopeTransactionsFromRepository) 
     EXPECT_TRUE(entry.save()) << entry.lastError().toStdString();
 }
 
+/** Verifies that the account imbalance is the sum of envelope splits when no account splits. */
+TEST_F(JournalEntryTest, AccountImbalanceShouldEqualEnvelopeTotalWhenNoAccountSplitsAdded) {
+    JournalEntry entry(repo);
+
+    EnvelopeTransaction et1;
+    et1.setAmount(Money(-52.00, Currency(1, "USD")));
+    entry.addSplit(et1);
+    EXPECT_EQ(Money(-52.00, Currency(1, "USD")), entry.accountImbalance());
+
+    EnvelopeTransaction et2;
+    et2.setAmount(Money(1.25, Currency(1, "USD")));
+    entry.addSplit(et2);
+    EXPECT_EQ(Money(-50.75, Currency(1, "USD")), entry.accountImbalance());
+}
+
+/** Verifies that the account imbalance is the remainder when account splits exist. */
+TEST_F(JournalEntryTest, AccountImbalanceShouldBeRemainderWhenAccountSplitsAdded) {
+    JournalEntry entry(repo);
+
+    AccountTransaction at1;
+    at1.setAmount(Money(-52.32, Currency(1, "USD")));
+    entry.addSplit(at1);
+
+    EnvelopeTransaction et1;
+    et1.setAmount(Money(-52.00, Currency(1, "USD")));
+    entry.addSplit(et1);
+
+    EXPECT_EQ(Money(0.32, Currency(1, "USD")), entry.accountImbalance());
+}
+
+/** Verifies that the envelope imbalance is the sum of account splits when no envelopesplits. */
+TEST_F(JournalEntryTest, EnvelopeImbalanceShouldEqualAccountTotalWhenNoEnvelopeSplitsAdded) {
+    JournalEntry entry(repo);
+
+    AccountTransaction at1;
+    at1.setAmount(Money(-52.32, Currency(1, "USD")));
+    entry.addSplit(at1);
+    EXPECT_EQ(-52.32, entry.envelopeImbalance());
+
+    AccountTransaction at2;
+    at2.setAmount(Money(0.32, Currency(1, "USD")));
+    entry.addSplit(at2);
+    EXPECT_EQ(-52.0, entry.envelopeImbalance());
+}
+
+/** Verifies that the envelope imbalance is the remainder when envelope splits when exist. */
+TEST_F(JournalEntryTest, EnvelopeImbalanceShouldBeRemainderWhenEnvelopeSplitsAdded) {
+    JournalEntry entry(repo);
+
+    AccountTransaction at1;
+    at1.setAmount(Money(-52.32, Currency(1, "USD")));
+    entry.addSplit(at1);
+
+    EnvelopeTransaction et1;
+    et1.setAmount(Money(-52.00, Currency(1, "USD")));
+    entry.addSplit(et1);
+
+    EXPECT_EQ(Money(-0.32, Currency(1, "USD")), entry.envelopeImbalance());
+}
+
 } // ledger namespace
 } // ub namespace

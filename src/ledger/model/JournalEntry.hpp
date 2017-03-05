@@ -10,6 +10,7 @@
 // UnderBudget include(s)
 #include "AccountTransaction.hpp"
 #include "EnvelopeTransaction.hpp"
+#include "Money.hpp"
 #include "Transaction.hpp"
 #include "TransactionRepository.hpp"
 
@@ -53,6 +54,18 @@ public:
                  bool copy);
 
     /**
+     * Returns the amount of imbalance that remains in the account transactions of the journal entry.
+     *
+     * The value that is returned could be used as the amount of an account transaction to satisfy
+     * the zero-sum requirement of a journal entry.
+     *
+     * A zero value indicates that the journal entry is in a satisfied state with no imbalance.
+     *
+     * @return Account imbalance amount
+     */
+    Money accountImbalance() const;
+
+    /**
      * Adds the given account transaction split to this journal entry.
      *
      * @param transaction Account transaction split
@@ -65,6 +78,19 @@ public:
      * @param transaction Envelope transaction split
      */
     void addSplit(const EnvelopeTransaction & transaction);
+
+    /**
+     * Returns the amount of imbalance that remains in the envelope transactions of the journal
+     * entry.
+     *
+     * The value that is returned could be used as the amount of an envelope transaction to satisfy
+     * the zero-sum requirement of a journal entry.
+     *
+     * A zero value indicates that the journal entry is in a satisfied state with no imbalance.
+     *
+     * @return Envelope imbalance amount
+     */
+    Money envelopeImbalance() const;
 
     /**
      * Returns the list of account transaction splits in this journal entry.
@@ -157,6 +183,10 @@ private:
     std::vector<EnvelopeTransaction> envelope_splits_;
     /** Last error */
     mutable QString last_error_;
+    /** Current account total amount */
+    mutable Money account_total_;
+    /** Current envelope total amount */
+    mutable Money envelope_total_;
 
     /** Account transaction splits to be removed */
     std::vector<AccountTransaction> account_splits_to_remove_;

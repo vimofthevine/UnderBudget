@@ -55,6 +55,15 @@ JournalEntry::JournalEntry(std::shared_ptr<TransactionRepository> repo,
 }
 
 //--------------------------------------------------------------------------------------------------
+Money JournalEntry::accountImbalance() const {
+    if (isValid()) {
+        return Money();
+    } else {
+        return (envelope_total_ - account_total_);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 void JournalEntry::addSplit(const AccountTransaction & transaction) {
     account_splits_.push_back(transaction);
 }
@@ -62,6 +71,15 @@ void JournalEntry::addSplit(const AccountTransaction & transaction) {
 //--------------------------------------------------------------------------------------------------
 void JournalEntry::addSplit(const EnvelopeTransaction & transaction) {
     envelope_splits_.push_back(transaction);
+}
+
+//--------------------------------------------------------------------------------------------------
+Money JournalEntry::envelopeImbalance() const {
+    if (isValid()) {
+        return Money();
+    } else {
+        return (account_total_ - envelope_total_);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -91,23 +109,26 @@ bool JournalEntry::isValid() const {
         return false;
     }
 
-    Money total(0, account_splits_[0].amount().currency());
+    Currency currency = (account_splits_.empty() ? envelope_splits_[0].amount().currency()
+                                                 : account_splits_[0].amount().currency());
+    account_total_ = Money(0, currency);
+    envelope_total_ = Money(0, currency);
     for (AccountTransaction transaction : account_splits_) {
-        if (total.currency() != transaction.amount().currency()) {
+        if (currency != transaction.amount().currency()) {
             last_error_ = QObject::tr("Currency conversion would be required but is not supported");
             return false;
         }
-        total += transaction.amount();
+        account_total_ += transaction.amount();
     }
     for (EnvelopeTransaction transaction : envelope_splits_) {
-        if (total.currency() != transaction.amount().currency()) {
+        if (currency != transaction.amount().currency()) {
             last_error_ = QObject::tr("Currency conversion would be required but is not supported");
             return false;
         }
-        total -= transaction.amount();
+        envelope_total_ += transaction.amount();
     }
 
-    if (not total.isZero()) {
+    if (not (account_total_ - envelope_total_).isZero()) {
         last_error_ = QObject::tr("Account split sum less the envelope split sum must equal zero");
         return false;
     }
