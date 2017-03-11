@@ -57,4 +57,4 @@ before_script:
   - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then cmake . ; fi
 script:
   - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then make VERBOSE=1 -j 4; fi
-  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then xvfb-run make test; fi
+  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then xvfb-run make CTEST_OUTPUT_ON_FAILURE=1 test; fi
