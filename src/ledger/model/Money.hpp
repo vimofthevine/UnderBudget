@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <iostream>
 #include <stdexcept>
 
@@ -79,7 +80,7 @@ public:
      * @param[in] scaled   Monetary amount
      * @param[in] currency Monetary currency
      */
-    explicit Money(int scaled = 0, const Currency & currency = Currency());
+    explicit Money(int64_t scaled = 0, const Currency & currency = Currency());
 
     /**
      * Initializes a money value of the given amount in the given currency.
@@ -128,7 +129,7 @@ public:
      *
      * @return Scaled amount of this money value
      */
-    int scaled() const;
+    int64_t scaled() const;
 
     /**
      * Creates a string representation of this money value.
@@ -257,7 +258,7 @@ public:
 
 private:
     /** Scaled amount of money represented by this value */
-    int amount_;
+    int64_t amount_;
     /** Currency of this money value */
     Currency currency_;
 
@@ -278,7 +279,7 @@ private:
      * @param[in] value Original, unscaled monetary amount
      * @return Scaled monetary amount
      */
-    static int scale(double value);
+    static int64_t scale(double value);
 
     /**
      * De-scales the given value by a constant factor back to
@@ -287,7 +288,7 @@ private:
      * @param[in] value Scaled monetary amount
      * @return Unscaled monetary amount
      */
-    static double humanize(int value);
+    static double humanize(int64_t value);
 };
 
 /**

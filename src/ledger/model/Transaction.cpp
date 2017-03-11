@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QtCore>
 
@@ -27,7 +30,7 @@ namespace ledger {
 Transaction::Transaction() : id_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-Transaction::Transaction(int id) : id_(id) {}
+Transaction::Transaction(int64_t id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
 QDate Transaction::date() const {
@@ -35,7 +38,7 @@ QDate Transaction::date() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int Transaction::id() const {
+int64_t Transaction::id() const {
     return id_;
 }
 

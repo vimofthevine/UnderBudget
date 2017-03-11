@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <map>
 
 // Qt include(s)
@@ -56,7 +57,7 @@ public:
      * @param[in] parent  Account under which to create the new account
      * @return ID assigned to the newly created account
      */
-    int create(const Account & account, const Account & parent) override;
+    int64_t create(const Account & account, const Account & parent) override;
 
     /**
      * Retrieves an account from the repository with the given ID.
@@ -66,7 +67,7 @@ public:
      * @param[in] id Account ID to be retrieved
      * @return Account for the given ID
      */
-    Account getAccount(int id) override;
+    Account getAccount(int64_t id) override;
 
     /**
      * Retrieves all leaf accounts.
@@ -127,9 +128,9 @@ private:
     class NestedSetAccount : public Account {
     public:
         /** Left value */
-        int lft = 0;
+        int64_t lft = 0;
         /** Right value */
-        int rgt = 0;
+        int64_t rgt = 0;
 
         /**
          * Initializes an account with default parameters.
@@ -141,7 +142,7 @@ private:
          *
          * @param[in] id Account ID
          */
-        NestedSetAccount(int id) : Account(id) {}
+        NestedSetAccount(int64_t id) : Account(id) {}
     };
 
     /** Database connection */
@@ -149,7 +150,7 @@ private:
     /** Last error message */
     QString last_error_;
     /** Cached accounts */
-    std::map<int, NestedSetAccount> accounts_;
+    std::map<int64_t, NestedSetAccount> accounts_;
 
     /**
      * Populates the cache with all account content from the database.

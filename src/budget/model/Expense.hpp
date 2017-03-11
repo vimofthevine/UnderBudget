@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QDate>
 #include <QString>
@@ -45,7 +48,7 @@ public:
      *
      * @param id Expense ID
      */
-    Expense(int id);
+    Expense(int64_t id);
 
     // Copy constructor
     Expense(const Expense & orig) = default;
@@ -93,7 +96,7 @@ public:
      *
      * @return Expense ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns the recurrence of this expense.
@@ -156,7 +159,7 @@ private:
     /** Envelope */
     ledger::Envelope envelope_;
     /** Expense ID */
-    int id_;
+    int64_t id_;
     /** Budgeted expense recurrence */
     Recurrence recurrence_;
 };

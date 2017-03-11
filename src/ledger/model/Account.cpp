@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -30,7 +31,7 @@ namespace ledger {
 Account::Account() : Account(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-Account::Account(int id) : archived_(false), id_(id), parent_(-1) {}
+Account::Account(int64_t id) : archived_(false), id_(id), parent_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 bool Account::archived() const {
@@ -38,7 +39,7 @@ bool Account::archived() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-std::vector<int> Account::children() const {
+std::vector<int64_t> Account::children() const {
     return children_;
 }
 
@@ -48,7 +49,7 @@ Currency Account::currency() const {
 }
 
 //------------------------------------------------------------------------------
-int Account::id() const {
+int64_t Account::id() const {
     return id_;
 }
 
@@ -58,7 +59,7 @@ QString Account::name() const {
 }
 
 //------------------------------------------------------------------------------
-int Account::parent() const {
+int64_t Account::parent() const {
     return parent_;
 }
 
@@ -68,7 +69,7 @@ void Account::setArchived(bool archived) {
 }
 
 //------------------------------------------------------------------------------
-void Account::setChildren(const std::vector<int> & children) {
+void Account::setChildren(const std::vector<int64_t> & children) {
     children_ = children;
 }
 
@@ -83,7 +84,7 @@ void Account::setName(const QString & name) {
 }
 
 //------------------------------------------------------------------------------
-void Account::setParent(int id) {
+void Account::setParent(int64_t id) {
     parent_ = id;
 }
 

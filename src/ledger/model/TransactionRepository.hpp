@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -54,7 +55,7 @@ public:
      * @param[in] transaction Account transaction to be created
      * @return ID assigned to the newly created transaction
      */
-    virtual int create(const AccountTransaction & transaction) = 0;
+    virtual int64_t create(const AccountTransaction & transaction) = 0;
 
     /**
      * Creates a new envelope transaction.
@@ -62,7 +63,7 @@ public:
      * @param[in] transaction Envelope transaction to be created
      * @return ID assigned to the newly created transaction
      */
-    virtual int create(const EnvelopeTransaction & transaction) = 0;
+    virtual int64_t create(const EnvelopeTransaction & transaction) = 0;
 
     /**
      * Creates a new double-entry transaction.
@@ -70,7 +71,7 @@ public:
      * @param[in] transaction Transaction to be created
      * @return ID assigned to the newly created transaction
      */
-    virtual int create(const Transaction & transaction) = 0;
+    virtual int64_t create(const Transaction & transaction) = 0;
 
     /**
      * Retrieves an account transaction from the repository with the given ID.
@@ -81,7 +82,7 @@ public:
      * @param[in] id Account transaction ID to be retrieved
      * @return Account transaction for the given ID
      */
-    virtual AccountTransaction getAccountTransaction(int id) = 0;
+    virtual AccountTransaction getAccountTransaction(int64_t id) = 0;
 
     /**
      * Retrieves all account transactions as part of the given double-entry transaction.
@@ -119,7 +120,7 @@ public:
      * @param[in] id Envelope transaction ID to be retrieved
      * @return Envelope transaction for the given ID
      */
-    virtual EnvelopeTransaction getEnvelopeTransaction(int id) = 0;
+    virtual EnvelopeTransaction getEnvelopeTransaction(int64_t id) = 0;
 
     /**
      * Retrieves all envelope transactions as part of the given double-entry transaction.
@@ -147,7 +148,7 @@ public:
      * @param[in] id Transaction ID to be retrieved
      * @return Transaction for the given ID
      */
-    virtual Transaction getTransaction(int id) = 0;
+    virtual Transaction getTransaction(int64_t id) = 0;
 
     /**
      * Retrieves all transactions against the given account.

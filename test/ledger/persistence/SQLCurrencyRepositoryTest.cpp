@@ -18,68 +18,75 @@
 #include <QtCore>
 #include <QtSql>
 
+// Google include(s)
+#include <gtest/gtest.h>
+
 // UnderBudget include(s)
 #include <ledger/model/Currency.hpp>
 #include <ledger/persistence/SQLCurrencyRepository.hpp>
-#include "SQLCurrencyRepositoryTest.hpp"
-
-//--------------------------------------------------------------------------------------------------
-QTEST_MAIN(ub::ledger::SQLCurrencyRepositoryTest)
 
 namespace ub {
 namespace ledger {
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::dropAllTables() {
-    auto tables = db.tables();
-    QSqlQuery query(db);
-    for (auto table : tables) {
-        if (not query.exec("drop table " + table)) {
-            qWarning() << query.lastError();
+/** Test fixture */
+class SQLCurrencyRepositoryTest : public ::testing::Test {
+protected:
+    /** In-memory SQL database */
+    QSqlDatabase db;
+
+    /** Sets up the in-memory database */
+    void SetUp() override {
+        if (QSqlDatabase::contains()) {
+            db = QSqlDatabase::database();
+        } else {
+            db = QSqlDatabase::addDatabase("QSQLITE");
+            db.setDatabaseName(":memory:");
+            ASSERT_TRUE(db.open()) << "Unable to open database";
+        }
+
+        dropAllTables();
+
+        QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
+    }
+
+    /** Clears the in-memory database */
+    void TearDown() override {
+        dropAllTables();
+    }
+
+private:
+    /** Drops all tables in the database */
+    void dropAllTables() {
+        auto tables = db.tables();
+        QSqlQuery query(db);
+        for (auto table : tables) {
+            if (not query.exec("drop table " + table)) {
+                qWarning() << query.lastError();
+            }
         }
     }
-}
+};
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::cleanup() {
-    dropAllTables();
-}
-
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::init() {
-    if (QSqlDatabase::contains()) {
-        db = QSqlDatabase::database();
-    } else {
-        db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName(":memory:");
-        QVERIFY2(db.open(), "Unable to open database");
-    }
-
-    dropAllTables();
-
-    QLocale::setDefault(QLocale(QLocale::German, QLocale::Germany));
-}
-
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldCreateTableWhenItDoesNotAlreadyExist() {
+/** Verifies that the currency table is created when it does not already exist. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldCreateTableWhenItDoesNotAlreadyExist) {
     auto tables = db.tables();
-    QVERIFY(not tables.contains("currency"));
+    ASSERT_FALSE(tables.contains("currency"));
 
     SQLCurrencyRepository repo(db);
 
     tables = db.tables();
-    QVERIFY(tables.contains("currency"));
+    ASSERT_TRUE(tables.contains("currency"));
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldCreateDefaultCurrencyEntryWhenItDoesNotAlreadyExist() {
+/** Verifies that the default currency entry is created if it does not already exist. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldCreateDefaultCurrencyEntryWhenItDoesNotAlreadyExist) {
     {
         SQLCurrencyRepository repo(db);
         QSqlQuery query;
         query.exec("select count(id) from currency;");
         query.first();
         QSqlRecord record = query.record();
-        QCOMPARE(record.value(0).toInt(), 1);
+        EXPECT_EQ(record.value(0).toInt(), 1);
     }
 
     {
@@ -88,101 +95,101 @@ void SQLCurrencyRepositoryTest::shouldCreateDefaultCurrencyEntryWhenItDoesNotAlr
         query.exec("select count(id) from currency;");
         query.first();
         QSqlRecord record = query.record();
-        QCOMPARE(record.value(0).toInt(), 1);
+        EXPECT_EQ(record.value(0).toInt(), 1);
 
         query.exec("select * from currency where id=1;");
         query.first();
         record = query.record();
-        QCOMPARE(record.value("code"), QVariant("EUR"));
+        EXPECT_EQ(record.value("code"), QVariant("EUR"));
     }
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldInsertNewCurrencyIntoTable() {
+/** Verifies that new currencies are inserted into the table. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldInsertNewCurrencyIntoTable) {
     SQLCurrencyRepository repo(db);
     Currency currency(999, "USD");
-    QVERIFY(repo.create(currency) > 0);
+    ASSERT_GT(repo.create(currency), 0);
 
     QSqlQuery query;
     query.exec("select count(id) from currency;");
     query.first();
     QSqlRecord record = query.record();
-    QCOMPARE(record.value(0).toInt(), 2);
+    EXPECT_EQ(record.value(0).toInt(), 2);
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldReturnNewIDAfterInsertion() {
+/** Verifies that the currency ID is returned after insertion. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldReturnNewIDAfterInsertion) {
     SQLCurrencyRepository repo(db);
     Currency currency(999, "USD");
-    QCOMPARE(repo.create(currency), 2);
+    EXPECT_EQ(repo.create(currency), 2);
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldReturnExistingIDIfCodeAlreadyExists() {
+/** Verifies that existing ID is returned after insertion attempt. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldReturnExistingIDIfCodeAlreadyExists) {
     SQLCurrencyRepository repo(db);
 
     QSqlQuery query;
     query.exec("insert into currency(id, code) values(7, 'UAH');");
 
     Currency currency(999, "UAH");
-    QCOMPARE(repo.create(currency), 7);
+    EXPECT_EQ(repo.create(currency), 7);
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldSetAllFieldsInTableOnInsertion() {
+/** Verifies that all fields of the currency are inserted into the table. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldSetAllFieldsInTableOnInsertion) {
     SQLCurrencyRepository repo(db);
     Currency currency(999, "USD");
-    QCOMPARE(repo.create(currency), 2);
+    EXPECT_EQ(repo.create(currency), 2);
 
     QSqlQuery query("select * from currency where id=2;");
     query.first();
-    QVERIFY(query.isValid());
+    ASSERT_TRUE(query.isValid());
     QSqlRecord record = query.record();
-    QCOMPARE(record.value("id"), QVariant(2));
-    QCOMPARE(record.value("code"), QVariant("USD"));
+    EXPECT_EQ(record.value("id"), QVariant(2));
+    EXPECT_EQ(record.value("code"), QVariant("USD"));
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldRetrieveAllFieldsFromTable() {
+/** Verifies that all fields of the currency are retrieved. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldRetrieveAllFieldsFromTable) {
     SQLCurrencyRepository repo(db);
     QSqlQuery query("insert into currency(id, code) values(42, 'UAH');");
 
     Currency currency = repo.getCurrency(42);
-    QCOMPARE(currency.id(), 42);
-    QCOMPARE(currency.code(), QString("UAH"));
+    EXPECT_EQ(currency.id(), 42);
+    EXPECT_EQ(currency.code(), QString("UAH"));
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldThrowWhenUpdatingNonDefaultCurrency() {
+/** Verifies that exception is thrown when modifying a non-default currency. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldThrowWhenUpdatingNonDefaultCurrency) {
     QSqlQuery query("insert into currency(id, code) values(42, 'UAH');");
     SQLCurrencyRepository repo(db);
     Currency currency(42, "USD");
-    QVERIFY_EXCEPTION_THROWN(repo.update(currency), std::invalid_argument);
+    EXPECT_THROW(repo.update(currency), std::invalid_argument);
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldSetModifiedFieldsInTable() {
+/** Verifies that all fields of the currency are updated in the table after modification. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldSetModifiedFieldsInTable) {
     SQLCurrencyRepository repo(db);
     Currency currency(1, "USD");
-    QVERIFY(repo.update(currency));
+    ASSERT_TRUE(repo.update(currency));
 
     QSqlQuery query("select * from currency where id=1;");
     query.first();
-    QVERIFY(query.isValid());
+    ASSERT_TRUE(query.isValid());
     QSqlRecord record = query.record();
-    QCOMPARE(record.value("code"), QVariant("USD"));
+    EXPECT_EQ(record.value("code"), QVariant("USD"));
 }
 
-//--------------------------------------------------------------------------------------------------
-void SQLCurrencyRepositoryTest::shouldRemoveRowFromTable() {
+/** Verifies that the row is removed from the table after removal. */
+TEST_F(SQLCurrencyRepositoryTest, ShouldRemoveRowFromTable) {
     QSqlQuery query("insert into currency(id, code) values(42, 'UAH');");
     SQLCurrencyRepository repo(db);
     Currency currency(42, "EUR");
-    QVERIFY(repo.remove(currency));
+    ASSERT_TRUE(repo.remove(currency));
 
     query.exec("select * from currency where id=42;");
     query.first();
-    QVERIFY(not query.isValid());
+    ASSERT_FALSE(query.isValid());
 }
 
 } // ledger namespace

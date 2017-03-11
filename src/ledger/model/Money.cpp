@@ -16,6 +16,7 @@
 
 // std include(s)
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <stdexcept>
 
@@ -26,7 +27,7 @@ namespace ub {
 namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
-Money::Money(int scaled, const Currency & currency) : amount_(scaled), currency_(currency) {}
+Money::Money(int64_t scaled, const Currency & currency) : amount_(scaled), currency_(currency) {}
 
 //--------------------------------------------------------------------------------------------------
 Money::Money(double amount, const Currency & currency)
@@ -53,7 +54,7 @@ bool Money::isZero() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int Money::scaled() const {
+int64_t Money::scaled() const {
     return amount_;
 }
 
@@ -105,13 +106,13 @@ void Money::assertCurrency(const Money & that) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int Money::scale(double value) {
+int64_t Money::scale(double value) {
     return round(value * 10000);
 }
 
 //--------------------------------------------------------------------------------------------------
-double Money::humanize(int value) {
-    return (double) value / 10000;
+double Money::humanize(int64_t value) {
+    return (double) value / 10000.0;
 }
 
 //--------------------------------------------------------------------------------------------------

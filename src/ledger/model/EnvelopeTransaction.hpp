@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QString>
 
@@ -44,7 +47,7 @@ public:
      *
      * @param[in] id Envelope transaction ID
      */
-    explicit EnvelopeTransaction(int id);
+    explicit EnvelopeTransaction(int64_t id);
 
     // Copy constructor
     EnvelopeTransaction(const EnvelopeTransaction & orig) = default;
@@ -78,7 +81,7 @@ public:
      *
      * @return Envelope transaction ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns the memo of this envelope transaction.
@@ -137,7 +140,7 @@ private:
     /** Envelope balance after applying this transaction */
     Money balance_;
     /** Envelope transaction ID */
-    int id_;
+    int64_t id_;
     /** Memo */
     QString memo_;
     /** Transaction */

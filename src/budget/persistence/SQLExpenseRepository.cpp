@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <stdexcept>
 #include <vector>
 
@@ -47,19 +48,19 @@ SQLExpenseRepository::SQLExpenseRepository(QSqlDatabase & db,
 
     QSqlQuery query(db_);
     bool success =
-            query.exec(QString("CREATE TABLE IF NOT EXISTS %1 ("
-                               "id INTEGER PRIMARY KEY, "
-                               "amount INTEGER NOT NULL, "
-                               "description VARCHAR, "
-                               "envelope_id INTEGER NOT NULL, "
-                               "beginning_date DATE NOT NULL, "
-                               "ending_date DATE, "
-                               "day INTEGER DEFAULT 0, "
-                               "month INTEGER DEFAULT 0, "
-                               "periodicity INTEGER DEFAULT 0, "
-                               "scope INTEGER DEFAULT 0, "
-                               "week INTEGER DEFAULT 0, "
-                               "FOREIGN KEY(envelope_id) REFERENCES envelope(id) ON DELETE RESTRICT);")
+        query.exec(QString("CREATE TABLE IF NOT EXISTS %1 ("
+                           "id INTEGER PRIMARY KEY, "
+                           "amount INTEGER NOT NULL, "
+                           "description VARCHAR, "
+                           "envelope_id INTEGER NOT NULL, "
+                           "beginning_date DATE NOT NULL, "
+                           "ending_date DATE, "
+                           "day INTEGER DEFAULT 0, "
+                           "month INTEGER DEFAULT 0, "
+                           "periodicity INTEGER DEFAULT 0, "
+                           "scope INTEGER DEFAULT 0, "
+                           "week INTEGER DEFAULT 0, "
+                           "FOREIGN KEY(envelope_id) REFERENCES envelope(id) ON DELETE RESTRICT);")
                        .arg(table_name_));
     if (not success) {
         last_error_ = query.lastError().text();
@@ -68,40 +69,40 @@ SQLExpenseRepository::SQLExpenseRepository(QSqlDatabase & db,
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLExpenseRepository::create(const Expense & expense) {
+int64_t SQLExpenseRepository::create(const Expense & expense) {
     QSqlQuery query(db_);
     query.prepare(
-            QString("INSERT INTO %1(amount, description, envelope_id, beginning_date, ending_date, "
-                    " day, month, periodicity, scope, week) VALUES(:amount, :description, "
-                    ":envelope, :start, :stop, :day, :month, :periodicity, :scope, :week);")
-                .arg(table_name_));
-    query.bindValue(":amount", expense.amount().scaled());
+        QString("INSERT INTO %1(amount, description, envelope_id, beginning_date, ending_date, "
+                " day, month, periodicity, scope, week) VALUES(:amount, :description, "
+                ":envelope, :start, :stop, :day, :month, :periodicity, :scope, :week);")
+            .arg(table_name_));
+    query.bindValue(":amount", QVariant::fromValue(expense.amount().scaled()));
     query.bindValue(":description", expense.description());
-    query.bindValue(":envelope", expense.envelope().id());
+    query.bindValue(":envelope", QVariant::fromValue(expense.envelope().id()));
     query.bindValue(":start", expense.beginningDate().toString("yyyy-MM-dd"));
     query.bindValue(":stop", expense.endingDate().isValid()
-                    ? expense.endingDate().toString("yyyy-MM-dd")
-                    : QVariant(QDate()));
+                                 ? expense.endingDate().toString("yyyy-MM-dd")
+                                 : QVariant(QDate()));
     auto rec = expense.recurrence();
-    query.bindValue(":day", rec.day());
-    query.bindValue(":month", rec.month());
-    query.bindValue(":periodicity", rec.periodicity());
-    query.bindValue(":scope", static_cast<int>(rec.scope()));
-    query.bindValue(":week", rec.week());
+    query.bindValue(":day", QVariant::fromValue(rec.day()));
+    query.bindValue(":month", QVariant::fromValue(rec.month()));
+    query.bindValue(":periodicity", QVariant::fromValue(rec.periodicity()));
+    query.bindValue(":scope", QVariant::fromValue(static_cast<int32_t>(rec.scope())));
+    query.bindValue(":week", QVariant::fromValue(rec.week()));
 
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return -1;
     }
 
-    return query.lastInsertId().toInt();
+    return query.lastInsertId().value<int64_t>();
 }
 
 //--------------------------------------------------------------------------------------------------
-Expense SQLExpenseRepository::expense(int id) {
+Expense SQLExpenseRepository::expense(int64_t id) {
     QSqlQuery query(db_);
     query.prepare(QString("SELECT * from %1 WHERE id=:id;").arg(table_name_));
-    query.bindValue(":id", id);
+    query.bindValue(":id", QVariant::fromValue(id));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     } else if (not query.first()) {
@@ -117,7 +118,7 @@ std::vector<Expense> SQLExpenseRepository::expenses(const ledger::Envelope & env
     std::vector<Expense> expenses;
     QSqlQuery query(db_);
     query.prepare(QString("SELECT * from %1 WHERE envelope_id=:id;").arg(table_name_));
-    query.bindValue(":id", envelope.id());
+    query.bindValue(":id", QVariant::fromValue(envelope.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
@@ -136,7 +137,7 @@ QString SQLExpenseRepository::lastError() const {
 bool SQLExpenseRepository::remove(const Expense & expense) {
     QSqlQuery query(db_);
     query.prepare(QString("DELETE FROM %1 WHERE id=:id;").arg(table_name_));
-    query.bindValue(":id", expense.id());
+    query.bindValue(":id", QVariant::fromValue(expense.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -148,21 +149,22 @@ bool SQLExpenseRepository::remove(const Expense & expense) {
 bool SQLExpenseRepository::update(const Expense & expense) {
     QSqlQuery query(db_);
     query.prepare(
-            QString("UPDATE %1 SET amount=:amount, envelope_id=:envelope, "
-                    "beginning_date=strftime('%s', :start), ending_date=strftime('%s', :stop), "
-                    "day=:day, month=:month, periodicity=:periodicity, scope=:scope, week=:week "
-                    "WHERE id=:id;").arg(table_name_));
-    query.bindValue(":amount", expense.amount().scaled());
-    query.bindValue(":envelope", expense.envelope().id());
+        QString("UPDATE %1 SET amount=:amount, envelope_id=:envelope, "
+                "beginning_date=strftime('%s', :start), ending_date=strftime('%s', :stop), "
+                "day=:day, month=:month, periodicity=:periodicity, scope=:scope, week=:week "
+                "WHERE id=:id;")
+            .arg(table_name_));
+    query.bindValue(":amount", QVariant::fromValue(expense.amount().scaled()));
+    query.bindValue(":envelope", QVariant::fromValue(expense.envelope().id()));
     query.bindValue(":start", expense.beginningDate().toString("yyyy-MM-dd"));
     query.bindValue(":stop", expense.endingDate().toString("yyyy-MM-dd"));
     auto rec = expense.recurrence();
-    query.bindValue(":day", rec.day());
-    query.bindValue(":month", rec.month());
-    query.bindValue(":periodicity", rec.periodicity());
-    query.bindValue(":scope", static_cast<int>(rec.scope()));
-    query.bindValue(":week", rec.week());
-    query.bindValue(":id", expense.id());
+    query.bindValue(":day", QVariant::fromValue(rec.day()));
+    query.bindValue(":month", QVariant::fromValue(rec.month()));
+    query.bindValue(":periodicity", QVariant::fromValue(rec.periodicity()));
+    query.bindValue(":scope", QVariant::fromValue(static_cast<int32_t>(rec.scope())));
+    query.bindValue(":week", QVariant::fromValue(rec.week()));
+    query.bindValue(":id", QVariant::fromValue(expense.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -172,21 +174,22 @@ bool SQLExpenseRepository::update(const Expense & expense) {
 
 //--------------------------------------------------------------------------------------------------
 Expense SQLExpenseRepository::toExpense(const QSqlRecord & record) {
-    auto envelope = envelopes_->getEnvelope(record.value("envelope_id").toInt());
+    auto envelope = envelopes_->getEnvelope(record.value("envelope_id").value<int64_t>());
 
-    Expense expense(record.value("id").toInt());
-    expense.setAmount(ledger::Money(record.value("amount").toInt(), envelope.currency()));
+    Expense expense(record.value("id").value<int64_t>());
+    expense.setAmount(ledger::Money(record.value("amount").value<int64_t>(), envelope.currency()));
     expense.setDescription(record.value("description").toString());
     expense.setEnvelope(envelope);
-    expense.setBeginningDate(QDate::fromString(record.value("beginning_date").toString(), "yyyy-MM-dd"));
+    expense.setBeginningDate(
+        QDate::fromString(record.value("beginning_date").toString(), "yyyy-MM-dd"));
     expense.setEndingDate(QDate::fromString(record.value("ending_date").toString(), "yyyy-MM-dd"));
 
     Recurrence recurrence;
-    recurrence.setDay(record.value("day").toInt());
-    recurrence.setMonth(record.value("month").toInt());
-    recurrence.setPeriodicity(record.value("periodicity").toInt());
-    recurrence.setScope(static_cast<Recurrence::ScopeType>(record.value("scope").toInt()));
-    recurrence.setWeek(record.value("week").toInt());
+    recurrence.setDay(record.value("day").value<int32_t>());
+    recurrence.setMonth(record.value("month").value<int32_t>());
+    recurrence.setPeriodicity(record.value("periodicity").value<int32_t>());
+    recurrence.setScope(static_cast<Recurrence::ScopeType>(record.value("scope").value<int32_t>()));
+    recurrence.setWeek(record.value("week").value<int32_t>());
     expense.setRecurrence(recurrence);
 
     return expense;

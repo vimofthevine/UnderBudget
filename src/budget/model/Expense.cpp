@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QDate>
 
@@ -30,7 +33,7 @@ namespace budget {
 Expense::Expense() : Expense(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-Expense::Expense(int id) : id_(id) {}
+Expense::Expense(int64_t id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
 ledger::Money Expense::amount() const {
@@ -58,7 +61,7 @@ ledger::Envelope Expense::envelope() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int Expense::id() const {
+int64_t Expense::id() const {
     return id_;
 }
 

@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -52,9 +53,9 @@ public:
      */
     SQLExpenseRepository(QSqlDatabase & db, std::shared_ptr<ledger::EnvelopeRepository> envelopes);
 
-    int create(const Expense & expense) override;
+    int64_t create(const Expense & expense) override;
 
-    Expense expense(int id) override;
+    Expense expense(int64_t id) override;
 
     std::vector<Expense> expenses(const ledger::Envelope & account) override;
 

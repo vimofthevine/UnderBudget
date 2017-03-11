@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -30,9 +31,9 @@
 #include <budget/model/Expense.hpp>
 #include <budget/model/ExpenseRepository.hpp>
 #include <budget/persistence/SQLExpenseRepository.hpp>
+#include <ledger/model/Currency.hpp>
 #include <ledger/model/Envelope.hpp>
 #include <ledger/model/EnvelopeRepository.hpp>
-#include <ledger/model/Currency.hpp>
 #include <ledger/model/Money.hpp>
 
 namespace ub {
@@ -45,8 +46,8 @@ using ledger::Money;
 /** Mock envelope repository */
 class MockEnvelopeRepository : public ledger::EnvelopeRepository {
 public:
-    MOCK_METHOD2(create, int(const Envelope &, const Envelope &));
-    MOCK_METHOD1(getEnvelope, Envelope(int));
+    MOCK_METHOD2(create, int64_t(const Envelope &, const Envelope &));
+    MOCK_METHOD1(getEnvelope, Envelope(int64_t));
     MOCK_METHOD0(getLeafEnvelopes, std::vector<Envelope>());
     MOCK_METHOD0(getRoot, Envelope());
     MOCK_METHOD0(lastError, QString());

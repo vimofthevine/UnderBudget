@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -30,7 +31,7 @@ namespace ledger {
 Envelope::Envelope() : Envelope(-1) {}
 
 //------------------------------------------------------------------------------
-Envelope::Envelope(int id) : archived_(false), id_(id), parent_(-1) {}
+Envelope::Envelope(int64_t id) : archived_(false), id_(id), parent_(-1) {}
 
 //------------------------------------------------------------------------------
 bool Envelope::archived() const {
@@ -38,7 +39,7 @@ bool Envelope::archived() const {
 }
 
 //------------------------------------------------------------------------------
-std::vector<int> Envelope::children() const {
+std::vector<int64_t> Envelope::children() const {
     return children_;
 }
 
@@ -48,7 +49,7 @@ Currency Envelope::currency() const {
 }
 
 //------------------------------------------------------------------------------
-int Envelope::id() const {
+int64_t Envelope::id() const {
     return id_;
 }
 
@@ -58,7 +59,7 @@ QString Envelope::name() const {
 }
 
 //------------------------------------------------------------------------------
-int Envelope::parent() const {
+int64_t Envelope::parent() const {
     return parent_;
 }
 
@@ -68,7 +69,7 @@ void Envelope::setArchived(bool archived) {
 }
 
 //------------------------------------------------------------------------------
-void Envelope::setChildren(const std::vector<int> & children) {
+void Envelope::setChildren(const std::vector<int64_t> & children) {
     children_ = children;
 }
 
@@ -83,7 +84,7 @@ void Envelope::setName(const QString & name) {
 }
 
 //------------------------------------------------------------------------------
-void Envelope::setParent(int id) {
+void Envelope::setParent(int64_t id) {
     parent_ = id;
 }
 

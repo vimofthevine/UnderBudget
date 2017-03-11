@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -41,8 +42,8 @@ namespace ledger {
 /** Mock account repository */
 class MockAccountRepository : public AccountRepository {
 public:
-    MOCK_METHOD2(create, int(const Account &, const Account &));
-    MOCK_METHOD1(getAccount, Account(int));
+    MOCK_METHOD2(create, int64_t(const Account &, const Account &));
+    MOCK_METHOD1(getAccount, Account(int64_t));
     MOCK_METHOD0(getLeafAccounts, std::vector<Account>());
     MOCK_METHOD0(getRoot, Account());
     MOCK_CONST_METHOD0(lastError, QString());
@@ -54,8 +55,8 @@ public:
 /** Mock envelope repository */
 class MockEnvelopeRepository : public EnvelopeRepository {
 public:
-    MOCK_METHOD2(create, int(const Envelope &, const Envelope &));
-    MOCK_METHOD1(getEnvelope, Envelope(int));
+    MOCK_METHOD2(create, int64_t(const Envelope &, const Envelope &));
+    MOCK_METHOD1(getEnvelope, Envelope(int64_t));
     MOCK_METHOD0(getLeafEnvelopes, std::vector<Envelope>());
     MOCK_METHOD0(getRoot, Envelope());
     MOCK_METHOD0(lastError, QString());
@@ -116,7 +117,6 @@ protected:
         env5.setName("Envelope 5");
         env5.setCurrency(Currency(1, "USD"));
         ON_CALL(*envelopes.get(), getEnvelope(5)).WillByDefault(::testing::Return(env5));
-
     }
 
     /** Clears the in-memory database */

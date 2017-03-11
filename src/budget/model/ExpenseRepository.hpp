@@ -16,11 +16,12 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+#include <vector>
+
 // Qt include(s)
 #include <QString>
-
-// Standard include(s)
-#include <vector>
 
 // UnderBudget include(s)
 #include <ledger/model/Envelope.hpp>
@@ -45,7 +46,7 @@ public:
      * @param expense Budgeted expense to be created
      * @return ID assigned to the newly created budgeted expense
      */
-    virtual int create(const Expense & expense) = 0;
+    virtual int64_t create(const Expense & expense) = 0;
 
     /**
      * Retrieves a budgeted expense from the repository with the given ID.
@@ -55,7 +56,7 @@ public:
      * @param id Expense ID to be retrieved
      * @return Budgeted expense for the given ID
      */
-    virtual Expense expense(int id) = 0;
+    virtual Expense expense(int64_t id) = 0;
 
     /**
      * Retrieves all budgeted expenses for the given envelope.

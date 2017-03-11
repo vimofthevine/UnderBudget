@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <stdexcept>
 #include <vector>
 
@@ -61,17 +62,18 @@ SQLReconciliationRepository::SQLReconciliationRepository(
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLReconciliationRepository::create(const Reconciliation & reconciliation) {
+int64_t SQLReconciliationRepository::create(const Reconciliation & reconciliation) {
     QSqlQuery query(db_);
     query.prepare(
         QString("INSERT INTO %1(account_id, beginning_balance, beginning_date,"
                 " ending_balance, ending_date) VALUES(:account, :begin_balance, :begin_date,"
                 " :end_balance, :end_date);")
             .arg(table_name_));
-    query.bindValue(":account", reconciliation.account().id());
-    query.bindValue(":begin_balance", reconciliation.beginningBalance().scaled());
+    query.bindValue(":account", QVariant::fromValue(reconciliation.account().id()));
+    query.bindValue(":begin_balance",
+                    QVariant::fromValue(reconciliation.beginningBalance().scaled()));
     query.bindValue(":begin_date", reconciliation.beginningDate().toString("yyyy-MM-dd"));
-    query.bindValue(":end_balance", reconciliation.endingBalance().scaled());
+    query.bindValue(":end_balance", QVariant::fromValue(reconciliation.endingBalance().scaled()));
     query.bindValue(":end_date", reconciliation.endingDate().toString("yyyy-MM-dd"));
 
     if (not query.exec()) {
@@ -79,17 +81,17 @@ int SQLReconciliationRepository::create(const Reconciliation & reconciliation) {
         return -1;
     }
 
-    return query.lastInsertId().toInt();
+    return query.lastInsertId().value<int64_t>();
 }
 
 //--------------------------------------------------------------------------------------------------
-Reconciliation SQLReconciliationRepository::getReconciliation(int id) {
+Reconciliation SQLReconciliationRepository::getReconciliation(int64_t id) {
     QSqlQuery query(db_);
     query.prepare(QString("SELECT %1.*, date(%1.beginning_date, 'unixepoch') AS begin_date, "
                           "date(%1.ending_date, 'unixepoch') AS end_date FROM %1 "
                           "WHERE id=:id;")
                       .arg(table_name_));
-    query.bindValue(":id", id);
+    query.bindValue(":id", QVariant::fromValue(id));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     } else if (not query.first()) {
@@ -109,7 +111,7 @@ SQLReconciliationRepository::getReconciliations(const Account & account) {
                           "date(%1.ending_date, 'unixepoch') AS end_date FROM %1 "
                           "WHERE account_id=:id;")
                       .arg(table_name_));
-    query.bindValue(":id", account.id());
+    query.bindValue(":id", QVariant::fromValue(account.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
@@ -128,7 +130,7 @@ QString SQLReconciliationRepository::lastError() const {
 bool SQLReconciliationRepository::remove(const Reconciliation & reconciliation) {
     QSqlQuery query(db_);
     query.prepare(QString("DELETE FROM %1 WHERE id=:id;").arg(table_name_));
-    query.bindValue(":id", reconciliation.id());
+    query.bindValue(":id", QVariant::fromValue(reconciliation.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -144,12 +146,13 @@ bool SQLReconciliationRepository::update(const Reconciliation & reconciliation) 
                           " ending_balance=:end_balance, ending_date=strftime('%s', :end_date) "
                           " WHERE id=:id;")
                       .arg(table_name_));
-    query.bindValue(":account", reconciliation.account().id());
-    query.bindValue(":begin_balance", reconciliation.beginningBalance().scaled());
+    query.bindValue(":account", QVariant::fromValue(reconciliation.account().id()));
+    query.bindValue(":begin_balance",
+                    QVariant::fromValue(reconciliation.beginningBalance().scaled()));
     query.bindValue(":begin_date", reconciliation.beginningDate().toString("yyyy-MM-dd"));
-    query.bindValue(":end_balance", reconciliation.endingBalance().scaled());
+    query.bindValue(":end_balance", QVariant::fromValue(reconciliation.endingBalance().scaled()));
     query.bindValue(":end_date", reconciliation.endingDate().toString("yyyy-MM-dd"));
-    query.bindValue(":id", reconciliation.id());
+    query.bindValue(":id", QVariant::fromValue(reconciliation.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -159,16 +162,16 @@ bool SQLReconciliationRepository::update(const Reconciliation & reconciliation) 
 
 //--------------------------------------------------------------------------------------------------
 Reconciliation SQLReconciliationRepository::toReconciliation(const QSqlRecord & record) {
-    auto account = accounts_->getAccount(record.value("account_id").toInt());
+    auto account = accounts_->getAccount(record.value("account_id").value<int64_t>());
 
-    Reconciliation reconciliation(record.value("id").toInt());
+    Reconciliation reconciliation(record.value("id").value<int64_t>());
     reconciliation.setAccount(account);
     reconciliation.setBeginningBalance(
-        Money(record.value("beginning_balance").toInt(), account.currency()));
+        Money(record.value("beginning_balance").value<int64_t>(), account.currency()));
     reconciliation.setBeginningDate(
         QDate::fromString(record.value("beginning_date").toString(), "yyyy-MM-dd"));
     reconciliation.setEndingBalance(
-        Money(record.value("ending_balance").toInt(), account.currency()));
+        Money(record.value("ending_balance").value<int64_t>(), account.currency()));
     reconciliation.setEndingDate(
         QDate::fromString(record.value("ending_date").toString(), "yyyy-MM-dd"));
 

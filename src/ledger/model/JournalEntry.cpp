@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -127,8 +128,8 @@ bool JournalEntry::isValid() const {
 
     Currency currency = (account_splits_.empty() ? envelope_splits_[0].amount().currency()
                                                  : account_splits_[0].amount().currency());
-    account_total_ = Money(0, currency);
-    envelope_total_ = Money(0, currency);
+    account_total_ = Money(0.0, currency);
+    envelope_total_ = Money(0.0, currency);
     for (AccountTransaction transaction : account_splits_) {
         if (currency != transaction.amount().currency()) {
             last_error_ = QObject::tr("Currency conversion would be required but is not supported");
@@ -144,7 +145,7 @@ bool JournalEntry::isValid() const {
         envelope_total_ += transaction.amount();
     }
 
-    if (not (account_total_ - envelope_total_).isZero()) {
+    if (not(account_total_ - envelope_total_).isZero()) {
         last_error_ = QObject::tr("Account split sum less the envelope split sum must equal zero");
         return false;
     }
@@ -212,7 +213,7 @@ bool JournalEntry::save() {
             return false;
         }
     } else {
-        int id = transactions_->create(transaction_);
+        int64_t id = transactions_->create(transaction_);
         if (id <= 0) {
             last_error_ = "Transaction create error: " + transactions_->lastError();
             return false;

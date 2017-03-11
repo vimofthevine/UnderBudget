@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QDate>
 
@@ -44,7 +47,7 @@ public:
      *
      * @param id Reconciliation ID
      */
-    Reconciliation(int id);
+    Reconciliation(int64_t id);
 
     // Copy constructor
     Reconciliation(const Reconciliation & orig) = default;
@@ -92,7 +95,7 @@ public:
      *
      * @return Reconciliation ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Updates the account to which this reconciliation applies.
@@ -141,7 +144,7 @@ private:
     /** Ending date */
     QDate ending_date_;
     /** Reconciliation ID */
-    int id_;
+    int64_t id_;
 };
 
 } // ledger namespace

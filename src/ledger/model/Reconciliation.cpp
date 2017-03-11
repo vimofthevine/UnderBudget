@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QDate>
 
@@ -29,7 +32,7 @@ namespace ledger {
 Reconciliation::Reconciliation() : Reconciliation(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-Reconciliation::Reconciliation(int id) : id_(id) {}
+Reconciliation::Reconciliation(int64_t id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
 Account Reconciliation::account() const {
@@ -57,7 +60,7 @@ QDate Reconciliation::endingDate() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int Reconciliation::id() const {
+int64_t Reconciliation::id() const {
     return id_;
 }
 

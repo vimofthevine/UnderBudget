@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QString>
 
@@ -57,7 +60,7 @@ public:
      *
      * @return Day within the recurrency scope
      */
-    int day() const;
+    int32_t day() const;
 
     /**
      * Returns the month within the scope in which the recurrency occurs.
@@ -67,7 +70,7 @@ public:
      *
      * @return Month within the recurrency scope
      */
-    int month() const;
+    int32_t month() const;
 
     /**
      * Returns the periodicity at which the recurrence is applied.
@@ -79,28 +82,28 @@ public:
      *
      * @return Periodicity of the recurrence
      */
-    int periodicity() const;
+    int32_t periodicity() const;
 
     /**
      * Updates the day within the scope.
      *
      * @param day New day
      */
-    void setDay(int day);
+    void setDay(int32_t day);
 
     /**
      * Updates the month within the scope.
      *
      * @param month New month
      */
-    void setMonth(int month);
+    void setMonth(int32_t month);
 
     /**
      * Updates the recurrence periodicity.
      *
      * @param periodicity New periodicity
      */
-    void setPeriodicity(int periodicity);
+    void setPeriodicity(int32_t periodicity);
 
     /**
      * Updates the scope type of the recurrence.
@@ -114,7 +117,7 @@ public:
      *
      * @param week New week
      */
-    void setWeek(int week);
+    void setWeek(int32_t week);
 
     /**
      * Returns the scope type of the recurrence.
@@ -138,19 +141,19 @@ public:
      *
      * @return Week within the recurrency scope
      */
-    int week() const;
+    int32_t week() const;
 
 private:
     /** Day within the scope */
-    int day_;
+    int32_t day_;
     /** Month within the scope */
-    int month_;
+    int32_t month_;
     /** Recurrence periodicity */
-    int periodicity_;
+    int32_t periodicity_;
     /** Scope type */
     ScopeType scope_;
     /** Week within the scope */
-    int week_;
+    int32_t week_;
 };
 
 } // budget namespace

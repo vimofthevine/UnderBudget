@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -89,10 +90,11 @@ protected:
      * @param id       ID of the parent account
      * @param children List of expected children IDs
      */
-    void verifyChildren(SQLAccountRepository & repo, int id, const std::vector<int> & children) {
+    void verifyChildren(SQLAccountRepository & repo, int64_t id,
+                        const std::vector<int64_t> & children) {
         Account account = repo.getAccount(id);
         ASSERT_EQ(children.size(), account.children().size())
-                << "Wrong number of children under ID " << id;
+            << "Wrong number of children under ID " << id;
         for (size_t i = 0; i < children.size(); ++i) {
             EXPECT_EQ(children.at(i), account.children().at(i));
             EXPECT_EQ(id, repo.getAccount(children.at(i)).parent());
@@ -140,7 +142,8 @@ TEST_F(SQLAccountRepositoryTest, ShouldCreateRootAccountWhenItDoesNotAlreadyExis
         query.exec("select count(id) from account;");
         query.first();
         QSqlRecord record = query.record();
-        EXPECT_EQ(1, record.value(0).toInt()) << "No account should have been added the second time";
+        EXPECT_EQ(1, record.value(0).toInt())
+            << "No account should have been added the second time";
 
         query.exec("select * from account where id=1;");
         query.first();
@@ -204,7 +207,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
 
     SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(6), repo.getAccount(4)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3, 4});
@@ -220,7 +223,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveLeafTowardsFrontOfTree) {
 
     SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(5), repo.getAccount(3)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3, 4});
@@ -236,7 +239,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveSubtreeTowardsBackOfTree) {
 
     SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(3), repo.getAccount(1)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2, 3});
     verifyChildren(repo, 2, {4});
@@ -252,7 +255,7 @@ TEST_F(SQLAccountRepositoryTest, ShouldMoveSubtreeTowardsFrontOfTree) {
 
     SQLAccountRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getAccount(4), repo.getAccount(3)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3});

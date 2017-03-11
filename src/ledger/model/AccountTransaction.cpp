@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QtCore>
 
@@ -29,7 +32,8 @@ namespace ledger {
 AccountTransaction::AccountTransaction() : AccountTransaction(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-AccountTransaction::AccountTransaction(int id) : cleared_(false), id_(id), reconciliation_(-1) {}
+AccountTransaction::AccountTransaction(int64_t id)
+        : cleared_(false), id_(id), reconciliation_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
 Account AccountTransaction::account() const {
@@ -47,7 +51,7 @@ Money AccountTransaction::amount() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransaction::id() const {
+int64_t AccountTransaction::id() const {
     return id_;
 }
 
@@ -62,7 +66,7 @@ QString AccountTransaction::memo() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int AccountTransaction::reconciliation() const {
+int64_t AccountTransaction::reconciliation() const {
     return reconciliation_;
 }
 
@@ -92,7 +96,7 @@ void AccountTransaction::setMemo(const QString & memo) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void AccountTransaction::setReconciliation(int id) {
+void AccountTransaction::setReconciliation(int64_t id) {
     reconciliation_ = id;
 }
 

@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -45,7 +46,7 @@ public:
      * @param[in] parent  Account under which to create the new account
      * @return ID assigned to the newly created account
      */
-    virtual int create(const Account & account, const Account & parent) = 0;
+    virtual int64_t create(const Account & account, const Account & parent) = 0;
 
     /**
      * Retrieves an account from the repository with the given ID.
@@ -55,7 +56,7 @@ public:
      * @param[in] id Account ID to be retrieved
      * @return Account for the given ID
      */
-    virtual Account getAccount(int id) = 0;
+    virtual Account getAccount(int64_t id) = 0;
 
     /**
      * Retrieves all leaf accounts.

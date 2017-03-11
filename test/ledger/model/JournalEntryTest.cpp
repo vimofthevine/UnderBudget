@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -40,17 +41,17 @@ namespace ledger {
 /** Mock transaction repository */
 class MockTransactionRepository : public TransactionRepository {
 public:
-    MOCK_METHOD1(create, int(const AccountTransaction &));
-    MOCK_METHOD1(create, int(const EnvelopeTransaction &));
-    MOCK_METHOD1(create, int(const Transaction &));
-    MOCK_METHOD1(getAccountTransaction, AccountTransaction(int));
+    MOCK_METHOD1(create, int64_t(const AccountTransaction &));
+    MOCK_METHOD1(create, int64_t(const EnvelopeTransaction &));
+    MOCK_METHOD1(create, int64_t(const Transaction &));
+    MOCK_METHOD1(getAccountTransaction, AccountTransaction(int64_t));
     MOCK_METHOD1(getAccountTransactions, std::vector<AccountTransaction>(const Transaction &));
     MOCK_METHOD2(getBalance, Money(const QDate &, const Account &));
     MOCK_METHOD2(getBalance, Money(const QDate &, const Envelope &));
-    MOCK_METHOD1(getEnvelopeTransaction, EnvelopeTransaction(int));
+    MOCK_METHOD1(getEnvelopeTransaction, EnvelopeTransaction(int64_t));
     MOCK_METHOD1(getEnvelopeTransactions, std::vector<EnvelopeTransaction>(const Transaction &));
     MOCK_METHOD2(getReconciledBalance, Money(const QDate &, const Account &));
-    MOCK_METHOD1(getTransaction, Transaction(int));
+    MOCK_METHOD1(getTransaction, Transaction(int64_t));
     MOCK_METHOD1(getTransactions, std::vector<AccountTransaction>(const Account &));
     MOCK_METHOD1(getTransactions, std::vector<EnvelopeTransaction>(const Envelope &));
     MOCK_METHOD0(lastError, QString());
@@ -79,8 +80,7 @@ protected:
         Transaction transaction(80);
         transaction.setPayee("Grocer");
         transaction.setDate(QDate(2017, 1, 3));
-        EXPECT_CALL(*repo, getTransaction(80))
-            .WillOnce(::testing::Return(transaction));
+        EXPECT_CALL(*repo, getTransaction(80)).WillOnce(::testing::Return(transaction));
 
         AccountTransaction from(3);
         from.setMemo("From Bank");
@@ -214,8 +214,7 @@ TEST_F(JournalEntryTest, ShouldRemoveAccountSplitsFromEntry) {
 
     entry.removeSplit(from);
     ASSERT_EQ(1u, entry.getAccountSplits().size());
-    EXPECT_EQ(Money(12.35, Currency(1, "USD")),
-              entry.getAccountSplits()[0].amount());
+    EXPECT_EQ(Money(12.35, Currency(1, "USD")), entry.getAccountSplits()[0].amount());
 }
 
 /** Verifies that envelope splits can be removed from an entry. */
@@ -238,8 +237,7 @@ TEST_F(JournalEntryTest, ShouldRemoveEnvelopeSplitsFromEntry) {
 
     entry.removeSplit(to1);
     ASSERT_EQ(1u, entry.getEnvelopeSplits().size());
-    EXPECT_EQ(Money(-2.35, Currency(1, "USD")),
-              entry.getEnvelopeSplits()[0].amount());
+    EXPECT_EQ(Money(-2.35, Currency(1, "USD")), entry.getEnvelopeSplits()[0].amount());
 }
 
 /** Verifies that account splits can be updated in an entry. */
@@ -254,15 +252,12 @@ TEST_F(JournalEntryTest, ShouldUpdateAccountSplits) {
     to.setAmount(Money(12.35, Currency(1, "USD")));
     entry.addSplit(to);
 
-    EXPECT_EQ(Money(12.35, Currency(1, "USD")),
-              entry.getAccountSplits()[1].amount());
-
+    EXPECT_EQ(Money(12.35, Currency(1, "USD")), entry.getAccountSplits()[1].amount());
 
     to.setAmount(Money(22.35, Currency(1, "USD")));
     entry.updateSplit(to, 1);
 
-    EXPECT_EQ(Money(22.35, Currency(1, "USD")),
-              entry.getAccountSplits()[1].amount());
+    EXPECT_EQ(Money(22.35, Currency(1, "USD")), entry.getAccountSplits()[1].amount());
 }
 
 /** Verifies that envelope splits can be updated in an entry. */
@@ -281,15 +276,12 @@ TEST_F(JournalEntryTest, ShouldUpdateEnvelopeSplits) {
     to2.setAmount(Money(-2.35, Currency(1, "USD")));
     entry.addSplit(to2);
 
-    EXPECT_EQ(Money(-10.00, Currency(1, "USD")),
-              entry.getEnvelopeSplits()[0].amount());
-
+    EXPECT_EQ(Money(-10.00, Currency(1, "USD")), entry.getEnvelopeSplits()[0].amount());
 
     to1.setAmount(Money(-12.00, Currency(1, "USD")));
     entry.updateSplit(to1, 0);
 
-    EXPECT_EQ(Money(-12.00, Currency(1, "USD")),
-              entry.getEnvelopeSplits()[0].amount());
+    EXPECT_EQ(Money(-12.00, Currency(1, "USD")), entry.getEnvelopeSplits()[0].amount());
 }
 
 /** Verifies that new entries create transactions in the repository. */
@@ -394,25 +386,20 @@ TEST_F(JournalEntryTest, ShouldInitializeWithExistingTransaction) {
 TEST_F(JournalEntryTest, ShouldUpdateTransactionInRepoWhenModifyingExisting) {
     using namespace ::testing;
     EXPECT_CALL(*repo, update(Matcher<const AccountTransaction &>(
-                                  AllOf(
-                                      Property(&AccountTransaction::id, 3),
-                                      Property(&AccountTransaction::memo, "U1")))))
-            .WillOnce(Return(true));
+                           AllOf(Property(&AccountTransaction::id, 3),
+                                 Property(&AccountTransaction::memo, "U1")))))
+        .WillOnce(Return(true));
     EXPECT_CALL(*repo, update(Matcher<const EnvelopeTransaction &>(
-                                  AllOf(
-                                      Property(&EnvelopeTransaction::id, 6),
-                                      Property(&EnvelopeTransaction::memo, "U2")))))
-            .WillOnce(Return(true));
+                           AllOf(Property(&EnvelopeTransaction::id, 6),
+                                 Property(&EnvelopeTransaction::memo, "U2")))))
+        .WillOnce(Return(true));
     EXPECT_CALL(*repo, update(Matcher<const EnvelopeTransaction &>(
-                                  AllOf(
-                                      Property(&EnvelopeTransaction::id, 7),
-                                      Property(&EnvelopeTransaction::memo, "U3")))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
-                                  AllOf(
-                                      Property(&Transaction::id, 80),
-                                      Property(&Transaction::payee, "U4")))))
-            .WillOnce(Return(true));
+                           AllOf(Property(&EnvelopeTransaction::id, 7),
+                                 Property(&EnvelopeTransaction::memo, "U3")))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(AllOf(
+                           Property(&Transaction::id, 80), Property(&Transaction::payee, "U4")))))
+        .WillOnce(Return(true));
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();
@@ -443,8 +430,7 @@ TEST_F(JournalEntryTest, ShouldCreateTransactionInRepoWhenDuplicatingExisting) {
     EXPECT_CALL(*repo, create(A<const Transaction &>())).WillOnce(Return(3));
     EXPECT_CALL(*repo, getTransaction(3));
     EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(2));
-    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).Times(2)
-        .WillRepeatedly(Return(4));
+    EXPECT_CALL(*repo, create(A<const EnvelopeTransaction &>())).Times(2).WillRepeatedly(Return(4));
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();
@@ -455,12 +441,11 @@ TEST_F(JournalEntryTest, ShouldCreateTransactionInRepoWhenDuplicatingExisting) {
 /** Verifies that the entry is not saved if an error occurs updating an account transaction. */
 TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingAccountTransaction) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
-                                  Property(&Transaction::id, 80))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const AccountTransaction &>(
-                                  Property(&AccountTransaction::id, 3))))
-            .WillOnce(Return(false));
+    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(Property(&Transaction::id, 80))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const AccountTransaction &>(Property(&AccountTransaction::id, 3))))
+        .WillOnce(Return(false));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
@@ -472,15 +457,14 @@ TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingAccountTrans
 /** Verifies that the entry is not saved if an error occurs updating an envelope transaction. */
 TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingEnvelopeTransaction) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
-                                  Property(&Transaction::id, 80))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const AccountTransaction &>(
-                                      Property(&AccountTransaction::id, 3))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const EnvelopeTransaction &>(
-                                  Property(&EnvelopeTransaction::id, 6))))
-            .WillOnce(Return(false));
+    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(Property(&Transaction::id, 80))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const AccountTransaction &>(Property(&AccountTransaction::id, 3))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const EnvelopeTransaction &>(Property(&EnvelopeTransaction::id, 6))))
+        .WillOnce(Return(false));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
@@ -489,12 +473,12 @@ TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingEnvelopeTran
     entry.save();
 }
 
-/** Verifies that the entry is not saved if an error occurs updating the double-entry transaction. */
+/** Verifies that the entry is not saved if an error occurs updating the double-entry transaction.
+ */
 TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingDoubleEntryTransaction) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
-                                  Property(&Transaction::id, 80))))
-            .WillOnce(Return(false));
+    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(Property(&Transaction::id, 80))))
+        .WillOnce(Return(false));
     EXPECT_CALL(*repo, lastError()).WillOnce(Return("Error"));
     EXPECT_CALL(*repo, save()).Times(0);
 
@@ -506,20 +490,18 @@ TEST_F(JournalEntryTest, ShouldNotUpdateTransactionWhenErrorUpdatingDoubleEntryT
 /** Verifies that account transactions can be removed from transactions. */
 TEST_F(JournalEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, create(A<const AccountTransaction &>()))
-            .WillOnce(Return(2));
-    EXPECT_CALL(*repo, remove(Matcher<const AccountTransaction &>(
-                                  Property(&AccountTransaction::id, 3))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const EnvelopeTransaction &>(
-                                  Property(&EnvelopeTransaction::id, 6))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const EnvelopeTransaction &>(
-                                  Property(&EnvelopeTransaction::id, 7))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
-                                  Property(&Transaction::id, 80))))
-            .WillOnce(Return(true));
+    EXPECT_CALL(*repo, create(A<const AccountTransaction &>())).WillOnce(Return(2));
+    EXPECT_CALL(*repo,
+                remove(Matcher<const AccountTransaction &>(Property(&AccountTransaction::id, 3))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const EnvelopeTransaction &>(Property(&EnvelopeTransaction::id, 6))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const EnvelopeTransaction &>(Property(&EnvelopeTransaction::id, 7))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(Property(&Transaction::id, 80))))
+        .WillOnce(Return(true));
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();
@@ -538,18 +520,17 @@ TEST_F(JournalEntryTest, ShouldRemoveDeletedAccountTransactionsFromRepository) {
 /** Verifies that envelope transactions can be removed from transactions. */
 TEST_F(JournalEntryTest, ShouldRemoveDeletedEnvelopeTransactionsFromRepository) {
     using namespace ::testing;
-    EXPECT_CALL(*repo, update(Matcher<const AccountTransaction &>(
-                                  Property(&AccountTransaction::id, 3))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, remove(Matcher<const EnvelopeTransaction &>(
-                                  Property(&EnvelopeTransaction::id, 7))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const EnvelopeTransaction &>(
-                                  Property(&EnvelopeTransaction::id, 6))))
-            .WillOnce(Return(true));
-    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(
-                                  Property(&Transaction::id, 80))))
-            .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const AccountTransaction &>(Property(&AccountTransaction::id, 3))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                remove(Matcher<const EnvelopeTransaction &>(Property(&EnvelopeTransaction::id, 7))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo,
+                update(Matcher<const EnvelopeTransaction &>(Property(&EnvelopeTransaction::id, 6))))
+        .WillOnce(Return(true));
+    EXPECT_CALL(*repo, update(Matcher<const Transaction &>(Property(&Transaction::id, 80))))
+        .WillOnce(Return(true));
     EXPECT_CALL(*repo, save()).WillOnce(Return(true));
 
     populate();

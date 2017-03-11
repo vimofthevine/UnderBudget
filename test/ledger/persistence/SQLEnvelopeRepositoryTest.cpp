@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -88,10 +89,11 @@ protected:
      * @param id       ID of the parent envelope
      * @param children List of expected children IDs
      */
-    void verifyChildren(SQLEnvelopeRepository & repo, int id, const std::vector<int> & children) {
+    void verifyChildren(SQLEnvelopeRepository & repo, int64_t id,
+                        const std::vector<int64_t> & children) {
         Envelope envelope = repo.getEnvelope(id);
         ASSERT_EQ(children.size(), envelope.children().size())
-                << "Wrong number of children under ID " << id;
+            << "Wrong number of children under ID " << id;
         for (size_t i = 0; i < children.size(); ++i) {
             EXPECT_EQ(children.at(i), envelope.children().at(i));
             EXPECT_EQ(id, repo.getEnvelope(children.at(i)).parent());
@@ -139,7 +141,8 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldCreateRootEnvelopeWhenItDoesNotAlreadyEx
         query.exec("select count(id) from envelope;");
         query.first();
         QSqlRecord record = query.record();
-        EXPECT_EQ(1, record.value(0).toInt()) << "No envelope should have been added the second time";
+        EXPECT_EQ(1, record.value(0).toInt())
+            << "No envelope should have been added the second time";
 
         query.exec("select * from envelope where id=1;");
         query.first();
@@ -203,7 +206,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveLeafTowardsBackOfTree) {
 
     SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(6), repo.getEnvelope(4)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3, 4});
@@ -219,7 +222,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveLeafTowardsFrontOfTree) {
 
     SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(5), repo.getEnvelope(3)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3, 4});
@@ -235,7 +238,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveSubtreeTowardsBackOfTree) {
 
     SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(3), repo.getEnvelope(1)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2, 3});
     verifyChildren(repo, 2, {4});
@@ -251,7 +254,7 @@ TEST_F(SQLEnvelopeRepositoryTest, ShouldMoveSubtreeTowardsFrontOfTree) {
 
     SQLEnvelopeRepository repo(db);
     ASSERT_TRUE(repo.move(repo.getEnvelope(4), repo.getEnvelope(3)))
-            << repo.lastError().toStdString();
+        << repo.lastError().toStdString();
 
     verifyChildren(repo, 1, {2});
     verifyChildren(repo, 2, {3});

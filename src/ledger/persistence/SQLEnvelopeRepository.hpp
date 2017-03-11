@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <map>
 
 // Qt include(s)
@@ -56,7 +57,7 @@ public:
      * @param[in] parent   Envelope under which to create the new envelope
      * @return ID assigned to the newly created envelope
      */
-    int create(const Envelope & envelope, const Envelope & parent) override;
+    int64_t create(const Envelope & envelope, const Envelope & parent) override;
 
     /**
      * Retrieves an envelope from the repository with the given ID.
@@ -66,7 +67,7 @@ public:
      * @param[in] id Envelope ID to be retrieved
      * @return Envelope for the given ID
      */
-    Envelope getEnvelope(int id) override;
+    Envelope getEnvelope(int64_t id) override;
 
     /**
      * Retrieves all leaf envelopes.
@@ -127,9 +128,9 @@ private:
     class NestedSetEnvelope : public Envelope {
     public:
         /** Left value */
-        int lft = 0;
+        int64_t lft = 0;
         /** Right value */
-        int rgt = 0;
+        int64_t rgt = 0;
 
         /**
          * Initializes an envelope with default parameters.
@@ -141,7 +142,7 @@ private:
          *
          * @param[in] id Envelope ID
          */
-        NestedSetEnvelope(int id) : Envelope(id) {}
+        NestedSetEnvelope(int64_t id) : Envelope(id) {}
     };
 
     /** Database connection */
@@ -149,7 +150,7 @@ private:
     /** Last error message */
     QString last_error_;
     /** Cached envelopes */
-    std::map<int, NestedSetEnvelope> envelopes_;
+    std::map<int64_t, NestedSetEnvelope> envelopes_;
 
     /**
      * Populates the cache with all envelope content from the database.

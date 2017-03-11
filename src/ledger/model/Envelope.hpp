@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -45,7 +46,7 @@ public:
      *
      * @param[in] id Envelope ID
      */
-    explicit Envelope(int id);
+    explicit Envelope(int64_t id);
 
     // Copy constructor
     Envelope(const Envelope & orig) = default;
@@ -65,7 +66,7 @@ public:
      *
      * @return Children envelope IDs
      */
-    std::vector<int> children() const;
+    std::vector<int64_t> children() const;
 
     /**
      * Returns the currency of this envelope.
@@ -79,7 +80,7 @@ public:
      *
      * @return Envelope ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns the name of this envelope.
@@ -93,7 +94,7 @@ public:
      *
      * @return Parent envelope ID
      */
-    int parent() const;
+    int64_t parent() const;
 
     /**
      * Updates the archive state of this envelope.
@@ -107,7 +108,7 @@ public:
      *
      * @param[in] children New children IDs
      */
-    void setChildren(const std::vector<int> & children);
+    void setChildren(const std::vector<int64_t> & children);
 
     /**
      * Updates the currency of this envelope.
@@ -128,21 +129,21 @@ public:
      *
      * @param[in] id New parent ID
      */
-    void setParent(int id);
+    void setParent(int64_t id);
 
 private:
     /** Is archived */
     bool archived_;
     /** Child IDs */
-    std::vector<int> children_;
+    std::vector<int64_t> children_;
     /** Currency */
     Currency currency_;
     /** Envelope ID */
-    int id_;
+    int64_t id_;
     /** Envelope name */
     QString name_;
     /** Parent ID */
-    int parent_;
+    int64_t parent_;
 };
 
 } // ledger namespace

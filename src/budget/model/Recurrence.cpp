@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
-#include <QtCore>
 #include <QStringBuilder>
+#include <QtCore>
 
 // UnderBudget include(s)
 #include "Recurrence.hpp"
@@ -28,32 +31,32 @@ namespace budget {
 Recurrence::Recurrence() : day_(0), month_(0), periodicity_(0), scope_(Yearly), week_(0) {}
 
 //--------------------------------------------------------------------------------------------------
-int Recurrence::day() const {
+int32_t Recurrence::day() const {
     return day_;
 }
 
 //--------------------------------------------------------------------------------------------------
-int Recurrence::month() const {
+int32_t Recurrence::month() const {
     return month_;
 }
 
 //--------------------------------------------------------------------------------------------------
-int Recurrence::periodicity() const {
+int32_t Recurrence::periodicity() const {
     return periodicity_;
 }
 
 //--------------------------------------------------------------------------------------------------
-void Recurrence::setDay(int day) {
+void Recurrence::setDay(int32_t day) {
     day_ = day;
 }
 
 //--------------------------------------------------------------------------------------------------
-void Recurrence::setMonth(int month) {
+void Recurrence::setMonth(int32_t month) {
     month_ = month;
 }
 
 //--------------------------------------------------------------------------------------------------
-void Recurrence::setPeriodicity(int periodicity) {
+void Recurrence::setPeriodicity(int32_t periodicity) {
     periodicity_ = periodicity;
 }
 
@@ -63,7 +66,7 @@ void Recurrence::setScope(ScopeType scope) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void Recurrence::setWeek(int week) {
+void Recurrence::setWeek(int32_t week) {
     week_ = week;
 }
 
@@ -90,8 +93,7 @@ QString Recurrence::toString() const {
     QLocale locale;
 
     switch (scope_) {
-    case Yearly:
-    {
+    case Yearly: {
         if (periodicity_ > 1) {
             str = str % QObject::tr("years");
         } else {
@@ -112,13 +114,12 @@ QString Recurrence::toString() const {
         }
 
         if (has_month) {
-           str = str % " " % QObject::tr("in") % " " % locale.monthName(month_);
+            str = str % " " % QObject::tr("in") % " " % locale.monthName(month_);
         }
 
         break;
     }
-    case Monthly:
-    {
+    case Monthly: {
         if (periodicity_ > 1) {
             str = str % QObject::tr("months");
         } else {
@@ -140,8 +141,7 @@ QString Recurrence::toString() const {
 
         break;
     }
-    case Weekly:
-    {
+    case Weekly: {
         if (periodicity_ > 1) {
             str = str % QObject::tr("weeks");
         } else {
@@ -162,7 +162,7 @@ QString Recurrence::toString() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int Recurrence::week() const {
+int32_t Recurrence::week() const {
     return week_;
 }
 

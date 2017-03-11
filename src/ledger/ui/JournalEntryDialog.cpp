@@ -252,7 +252,7 @@ void JournalEntryDialog::autoCalculateAccountSplitAmount() {
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::saveAccountSplit() {
     if (entry_) {
-        int id = account_->currentData().toInt();
+        int64_t id = account_->currentData().value<int64_t>();
         Account acct = repository_->accounts()->getAccount(id);
         if (acct.id() == -1) {
             QMessageBox::warning(this, tr("Error"), tr("Select an account for the account split"));
@@ -336,7 +336,7 @@ void JournalEntryDialog::autoCalculateEnvelopeSplitAmount() {
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::saveEnvelopeSplit() {
     if (entry_) {
-        int id = envelope_->currentData().toInt();
+        int64_t id = envelope_->currentData().value<int64_t>();
         Envelope env = repository_->envelopes()->getEnvelope(id);
         if (env.id() == -1) {
             QMessageBox::warning(this, tr("Error"),
@@ -429,7 +429,7 @@ void JournalEntryDialog::populateAccountComboBox() {
     account_->clear();
     auto accounts = repository_->accounts()->getLeafAccounts();
     for (auto account : accounts) {
-        account_->addItem(account.name(), account.id());
+        account_->addItem(account.name(), QVariant::fromValue(account.id()));
     }
 }
 
@@ -438,7 +438,7 @@ void JournalEntryDialog::populateEnvelopeComboBox() {
     envelope_->clear();
     auto envelopes = repository_->envelopes()->getLeafEnvelopes();
     for (auto envelope : envelopes) {
-        envelope_->addItem(envelope.name(), envelope.id());
+        envelope_->addItem(envelope.name(), QVariant::fromValue(envelope.id()));
     }
 }
 

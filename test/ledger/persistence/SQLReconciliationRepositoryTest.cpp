@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -41,8 +42,8 @@ namespace ledger {
 /** Mock account repository */
 class MockAccountRepository : public AccountRepository {
 public:
-    MOCK_METHOD2(create, int(const Account &, const Account &));
-    MOCK_METHOD1(getAccount, Account(int));
+    MOCK_METHOD2(create, int64_t(const Account &, const Account &));
+    MOCK_METHOD1(getAccount, Account(int64_t));
     MOCK_METHOD0(getLeafAccounts, std::vector<Account>());
     MOCK_METHOD0(getRoot, Account());
     MOCK_CONST_METHOD0(lastError, QString());

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QtCore>
 
@@ -29,7 +32,7 @@ namespace ledger {
 EnvelopeTransaction::EnvelopeTransaction() : id_(-1) {}
 
 //--------------------------------------------------------------------------------------------------
-EnvelopeTransaction::EnvelopeTransaction(int id) : id_(id) {}
+EnvelopeTransaction::EnvelopeTransaction(int64_t id) : id_(id) {}
 
 //--------------------------------------------------------------------------------------------------
 Money EnvelopeTransaction::amount() const {
@@ -47,7 +50,7 @@ Envelope EnvelopeTransaction::envelope() const {
 }
 
 //--------------------------------------------------------------------------------------------------
-int EnvelopeTransaction::id() const {
+int64_t EnvelopeTransaction::id() const {
     return id_;
 }
 

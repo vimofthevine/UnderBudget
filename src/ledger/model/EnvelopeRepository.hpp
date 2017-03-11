@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -45,7 +46,7 @@ public:
      * @param[in] parent   Envelope under which to create the new envelope
      * @return ID assigned to the newly created envelope
      */
-    virtual int create(const Envelope & envelope, const Envelope & parent) = 0;
+    virtual int64_t create(const Envelope & envelope, const Envelope & parent) = 0;
 
     /**
      * Retrieves an envelope from the repository with the given ID.
@@ -55,7 +56,7 @@ public:
      * @param[in] id Envelope ID to be retrieved
      * @return Envelope for the given ID
      */
-    virtual Envelope getEnvelope(int id) = 0;
+    virtual Envelope getEnvelope(int64_t id) = 0;
 
     /**
      * Retrieves all leaf envelopes.

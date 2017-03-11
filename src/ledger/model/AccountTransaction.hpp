@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QString>
 
@@ -44,7 +47,7 @@ public:
      *
      * @param[in] id Account transaction ID
      */
-    explicit AccountTransaction(int id);
+    explicit AccountTransaction(int64_t id);
 
     // Copy constructor
     AccountTransaction(const AccountTransaction & orig) = default;
@@ -78,7 +81,7 @@ public:
      *
      * @return Account transaction ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns whether the transaction has been marked cleared.
@@ -99,7 +102,7 @@ public:
      *
      * @return Reconciliation ID, or -1 if not associated with a reconciliation
      */
-    int reconciliation() const;
+    int64_t reconciliation() const;
 
     /**
      * Updates the account to which this transaction applies.
@@ -141,7 +144,7 @@ public:
      *
      * @param[in] id New reconciliation ID
      */
-    void setReconciliation(int id);
+    void setReconciliation(int64_t id);
 
     /**
      * Updates the double-entry transaction associated with this account transaction.
@@ -167,11 +170,11 @@ private:
     /** Cleared */
     bool cleared_;
     /** Account transaction ID */
-    int id_;
+    int64_t id_;
     /** Memo */
     QString memo_;
     /** Reconciliation ID */
-    int reconciliation_;
+    int64_t reconciliation_;
     /** Transaction */
     Transaction transaction_;
 };

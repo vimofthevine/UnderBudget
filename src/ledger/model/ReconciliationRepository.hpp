@@ -16,11 +16,12 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+#include <vector>
+
 // Qt include(s)
 #include <QString>
-
-// Standard include(s)
-#include <vector>
 
 // UnderBudget include(s)
 #include "Account.hpp"
@@ -45,7 +46,7 @@ public:
      * @param reconciliation Reconciliation record to be created
      * @return ID assigned to the newly created reconciliation record
      */
-    virtual int create(const Reconciliation & reconciliation) = 0;
+    virtual int64_t create(const Reconciliation & reconciliation) = 0;
 
     /**
      * Retrieves a reconciliation record from the repository with the given ID.
@@ -55,7 +56,7 @@ public:
      * @param[in] id Reconciliation ID to be retrieved
      * @return Reconciliation for the given ID
      */
-    virtual Reconciliation getReconciliation(int id) = 0;
+    virtual Reconciliation getReconciliation(int64_t id) = 0;
 
     /**
      * Retrieves all reconciliation records for the given account.

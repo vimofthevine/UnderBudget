@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -66,7 +67,7 @@ public:
      * @param[in] transaction Account transaction to be created
      * @return ID assigned to the newly created transaction
      */
-    int create(const AccountTransaction & transaction) override;
+    int64_t create(const AccountTransaction & transaction) override;
 
     /**
      * Creates a new envelope transaction.
@@ -74,7 +75,7 @@ public:
      * @param[in] transaction Envelope transaction to be created
      * @return ID assigned to the newly created transaction
      */
-    int create(const EnvelopeTransaction & transaction) override;
+    int64_t create(const EnvelopeTransaction & transaction) override;
 
     /**
      * Creates a new double-entry transaction.
@@ -82,7 +83,7 @@ public:
      * @param[in] transaction Transaction to be created
      * @return ID assigned to the newly created transaction
      */
-    int create(const Transaction & transaction) override;
+    int64_t create(const Transaction & transaction) override;
 
     /**
      * Retrieves an account transaction from the repository with the given ID.
@@ -93,7 +94,7 @@ public:
      * @param[in] id Account transaction ID to be retrieved
      * @return Account transaction for the given ID
      */
-    AccountTransaction getAccountTransaction(int id) override;
+    AccountTransaction getAccountTransaction(int64_t id) override;
 
     /**
      * Retrieves all account transactions as part of the given double-entry transaction.
@@ -131,7 +132,7 @@ public:
      * @param[in] id Envelope transaction ID to be retrieved
      * @return Envelope transaction for the given ID
      */
-    EnvelopeTransaction getEnvelopeTransaction(int id) override;
+    EnvelopeTransaction getEnvelopeTransaction(int64_t id) override;
 
     /**
      * Retrieves all envelope transactions as part of the given double-entry transaction.
@@ -159,7 +160,7 @@ public:
      * @param[in] id Transaction ID to be retrieved
      * @return Transaction for the given ID
      */
-    Transaction getTransaction(int id) override;
+    Transaction getTransaction(int64_t id) override;
 
     /**
      * Retrieves all transactions against the given account.

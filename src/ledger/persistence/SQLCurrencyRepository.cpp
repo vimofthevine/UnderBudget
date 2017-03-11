@@ -57,7 +57,7 @@ SQLCurrencyRepository::SQLCurrencyRepository(QSqlDatabase & db) : db_(db) {
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLCurrencyRepository::create(const Currency & currency) {
+int64_t SQLCurrencyRepository::create(const Currency & currency) {
     {
         // First check if a non-default entry exists for the currency code
         QSqlQuery query(db_);
@@ -65,7 +65,7 @@ int SQLCurrencyRepository::create(const Currency & currency) {
         query.bindValue(":code", currency.code());
         if (query.exec() && query.first()) {
             QSqlRecord record = query.record();
-            int id = record.value("id").toInt();
+            int64_t id = record.value("id").value<int64_t>();
             if (id > 1) {
                 return id;
             }
@@ -78,7 +78,7 @@ int SQLCurrencyRepository::create(const Currency & currency) {
         query.bindValue(":code", currency.code());
 
         if (query.exec()) {
-            return query.lastInsertId().toInt();
+            return query.lastInsertId().value<int64_t>();
         }
 
         last_error_ = query.lastError().text();
@@ -88,13 +88,13 @@ int SQLCurrencyRepository::create(const Currency & currency) {
 }
 
 //--------------------------------------------------------------------------------------------------
-Currency SQLCurrencyRepository::getCurrency(int id) {
+Currency SQLCurrencyRepository::getCurrency(int64_t id) {
     QSqlQuery query(db_);
     query.prepare("SELECT * FROM " + table_name_ + " WHERE id=:id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", QVariant::fromValue(id));
     if (query.exec() && query.first()) {
         QSqlRecord record = query.record();
-        return Currency(record.value("id").toInt(), record.value("code").toString());
+        return Currency(record.value("id").value<int64_t>(), record.value("code").toString());
     }
     last_error_ = query.lastError().text();
     throw std::invalid_argument(last_error_.toStdString());
@@ -109,7 +109,7 @@ QString SQLCurrencyRepository::lastError() {
 bool SQLCurrencyRepository::remove(const Currency & currency) {
     QSqlQuery query(db_);
     query.prepare("DELETE FROM " + table_name_ + " WHERE id=:id;");
-    query.bindValue(":id", currency.id());
+    query.bindValue(":id", QVariant::fromValue(currency.id()));
     if (query.exec()) {
         return true;
     }

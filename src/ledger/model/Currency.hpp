@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QMetaType>
 #include <QString>
@@ -41,7 +44,7 @@ public:
      * @param[in] id   Currency ID
      * @param[in] code ISO 4217 currency code
      */
-    Currency(int id, const QString & code);
+    Currency(int64_t id, const QString & code);
 
     /**
      * Initializes a currency with the given ISO 4217 code.
@@ -93,7 +96,7 @@ public:
      *
      * @return Currency ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns the UTF symbol for this currency.
@@ -104,7 +107,7 @@ public:
 
 private:
     /** Currency ID */
-    int id_;
+    int64_t id_;
     /** ISO 4217 currency code */
     QString iso4217_;
 };

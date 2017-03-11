@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -54,9 +55,9 @@ public:
      */
     SQLReconciliationRepository(QSqlDatabase & db, std::shared_ptr<AccountRepository> accounts);
 
-    int create(const Reconciliation & reconciliation) override;
+    int64_t create(const Reconciliation & reconciliation) override;
 
-    Reconciliation getReconciliation(int id) override;
+    Reconciliation getReconciliation(int64_t id) override;
 
     std::vector<Reconciliation> getReconciliations(const Account & account) override;
 

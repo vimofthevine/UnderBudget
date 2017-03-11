@@ -16,6 +16,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QString>
 
@@ -41,7 +44,7 @@ public:
      * @param[in] currency Currency to be created
      * @return ID assigned to the newly created currency
      */
-    virtual int create(const Currency & currency) = 0;
+    virtual int64_t create(const Currency & currency) = 0;
 
     /**
      * Retrieves a currency from the repository with the given ID.
@@ -50,7 +53,7 @@ public:
      * @return Currency for the given ID
      * @throw std::invalid_argument if no currency exists for the given ID
      */
-    virtual Currency getCurrency(int id) = 0;
+    virtual Currency getCurrency(int64_t id) = 0;
 
     /**
      * Returns the message of the last error to have occurred.

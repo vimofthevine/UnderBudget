@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -48,7 +49,7 @@ public:
      *
      * @param[in] id Account ID
      */
-    explicit Account(int id);
+    explicit Account(int64_t id);
 
     // Copy constructor
     Account(const Account & orig) = default;
@@ -68,7 +69,7 @@ public:
      *
      * @return Children account IDs
      */
-    std::vector<int> children() const;
+    std::vector<int64_t> children() const;
 
     /**
      * Returns the currency of this account.
@@ -82,7 +83,7 @@ public:
      *
      * @return Account ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns the name of this account.
@@ -96,7 +97,7 @@ public:
      *
      * @return Parent account ID
      */
-    int parent() const;
+    int64_t parent() const;
 
     /**
      * Updates the archive state of this account.
@@ -110,7 +111,7 @@ public:
      *
      * @param[in] children New children IDs
      */
-    void setChildren(const std::vector<int> & children);
+    void setChildren(const std::vector<int64_t> & children);
 
     /**
      * Updates the currency of this account.
@@ -131,7 +132,7 @@ public:
      *
      * @param[in] id New parent ID
      */
-    void setParent(int id);
+    void setParent(int64_t id);
 
 private:
     /** Name of this account */
@@ -139,13 +140,13 @@ private:
     /** Is archived */
     bool archived_;
     /** Child IDs */
-    std::vector<int> children_;
+    std::vector<int64_t> children_;
     /** Currency */
     Currency currency_;
     /** Account ID */
-    int id_;
+    int64_t id_;
     /** Parent ID */
-    int parent_;
+    int64_t parent_;
 };
 
 } // ledger namespace

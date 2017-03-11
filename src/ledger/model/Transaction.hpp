@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <vector>
 
 // Qt include(s)
@@ -43,7 +44,7 @@ public:
      *
      * @param[in] id Transaction ID
      */
-    explicit Transaction(int id);
+    explicit Transaction(int64_t id);
 
     // Copy constructor
     Transaction(const Transaction & orig) = default;
@@ -63,7 +64,7 @@ public:
      *
      * @return Transaction ID
      */
-    int id() const;
+    int64_t id() const;
 
     /**
      * Returns the payee to which this transction applies.
@@ -90,7 +91,7 @@ private:
     /** Transaction Date */
     QDate date_;
     /** Transaction ID */
-    int id_;
+    int64_t id_;
     /** Payee */
     QString payee_;
 };

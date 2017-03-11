@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <iostream>
 #include <map>
 #include <stack>
@@ -87,12 +88,12 @@ void SQLEnvelopeRepository::cache() {
     while (query.next()) {
         record = query.record();
 
-        NestedSetEnvelope envelope(record.value("id").toInt());
+        NestedSetEnvelope envelope(record.value("id").value<int64_t>());
         envelope.setName(record.value("name").toString());
-        envelope.setCurrency(
-            Currency(record.value("currency_id").toInt(), record.value("code").toString()));
-        envelope.lft = record.value("lft").toInt();
-        envelope.rgt = record.value("rgt").toInt();
+        envelope.setCurrency(Currency(record.value("currency_id").value<int64_t>(),
+                                      record.value("code").toString()));
+        envelope.lft = record.value("lft").value<int64_t>();
+        envelope.rgt = record.value("rgt").value<int64_t>();
 
         // If not the root
         if (envelope.id() > 1) {
@@ -114,19 +115,19 @@ void SQLEnvelopeRepository::cache() {
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope & parent) {
+int64_t SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope & parent) {
     auto iter = envelopes_.find(parent.id());
     if (iter == envelopes_.end()) {
         last_error_ = QObject::tr("No parent envelope found with ID %1").arg(parent.id());
         return -1;
     }
-    int rgt = iter->second.rgt;
+    int64_t rgt = iter->second.rgt;
 
     db_.transaction();
     QSqlQuery query(db_);
 
     query.prepare("UPDATE " + table_name_ + " SET lft=lft+2 WHERE lft>=:lft;");
-    query.bindValue(":lft", rgt);
+    query.bindValue(":lft", QVariant::fromValue(rgt));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -134,7 +135,7 @@ int SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope & pa
     }
 
     query.prepare("UPDATE " + table_name_ + " SET rgt=rgt+2 WHERE rgt>=:rgt;");
-    query.bindValue(":rgt", rgt);
+    query.bindValue(":rgt", QVariant::fromValue(rgt));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -144,9 +145,9 @@ int SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope & pa
     query.prepare("INSERT INTO " + table_name_ + "(name, currency_id, lft, rgt) "
                                                  "VALUES(:name, :currency, :lft, :rgt);");
     query.bindValue(":name", envelope.name());
-    query.bindValue(":currency", envelope.currency().id());
-    query.bindValue(":lft", rgt);
-    query.bindValue(":rgt", rgt + 1);
+    query.bindValue(":currency", QVariant::fromValue(envelope.currency().id()));
+    query.bindValue(":lft", QVariant::fromValue(rgt));
+    query.bindValue(":rgt", QVariant::fromValue(rgt + 1));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -155,11 +156,11 @@ int SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope & pa
 
     db_.commit();
     cache();
-    return query.lastInsertId().toInt();
+    return query.lastInsertId().value<int64_t>();
 }
 
 //--------------------------------------------------------------------------------------------------
-Envelope SQLEnvelopeRepository::getEnvelope(int id) {
+Envelope SQLEnvelopeRepository::getEnvelope(int64_t id) {
     auto iter = envelopes_.find(id);
     if (iter != envelopes_.end()) {
         return iter->second;
@@ -179,7 +180,7 @@ std::vector<Envelope> SQLEnvelopeRepository::getLeafEnvelopes() {
         last_error_ = query.lastError().text();
     }
     while (query.next()) {
-        int id = query.record().value("id").toInt();
+        int64_t id = query.record().value("id").value<int64_t>();
         // Don't ever include the root envelope
         if (id == 1) {
             continue;
@@ -227,10 +228,10 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
     auto nparent = iter->second;
 
     // Using algorithm from https://rogerkeays.com/how-to-move-a-node-in-nested-sets-with-sql
-    int newlft = nparent.rgt;
-    int width = acct.rgt - acct.lft + 1;
-    int distance = newlft - acct.lft;
-    int tmppos = acct.lft;
+    int64_t newlft = nparent.rgt;
+    int64_t width = acct.rgt - acct.lft + 1;
+    int64_t distance = newlft - acct.lft;
+    int64_t tmppos = acct.lft;
 
     // Account for new space when moving backwards
     if (distance < 0) {
@@ -244,8 +245,8 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
     // First make space for the subtree
 
     query.prepare("UPDATE " + table_name_ + " SET lft=lft+:width WHERE lft>=:lft;");
-    query.bindValue(":width", width);
-    query.bindValue(":lft", newlft);
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":lft", QVariant::fromValue(newlft));
     if (not query.exec()) {
         last_error_ = "Unable to update lft to make space: " + query.lastError().text();
         db_.rollback();
@@ -253,8 +254,8 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
     }
 
     query.prepare("UPDATE " + table_name_ + " SET rgt=rgt+:width WHERE rgt>=:rgt;");
-    query.bindValue(":width", width);
-    query.bindValue(":rgt", newlft);
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":rgt", QVariant::fromValue(newlft));
     if (not query.exec()) {
         last_error_ = "Unable to update rgt to make space: " + query.lastError().text();
         db_.rollback();
@@ -266,9 +267,9 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
     query.prepare("UPDATE " + table_name_ +
                   " SET lft=lft+:distance, "
                   "rgt=rgt+:distance WHERE lft>=:pos AND rgt<:pos+:width");
-    query.bindValue(":distance", distance);
-    query.bindValue(":width", width);
-    query.bindValue(":pos", tmppos);
+    query.bindValue(":distance", QVariant::fromValue(distance));
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":pos", QVariant::fromValue(tmppos));
     if (not query.exec()) {
         last_error_ = "Unable to move subtree: " + query.lastError().text();
         db_.rollback();
@@ -278,8 +279,8 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
     // Remove old space
 
     query.prepare("UPDATE " + table_name_ + " SET lft=lft-:width WHERE lft>:lft;");
-    query.bindValue(":width", width);
-    query.bindValue(":lft", acct.rgt);
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":lft", QVariant::fromValue(acct.rgt));
     if (not query.exec()) {
         last_error_ = "Unable to update lft to remove space: " + query.lastError().text();
         db_.rollback();
@@ -287,8 +288,8 @@ bool SQLEnvelopeRepository::move(const Envelope & envelope, const Envelope & par
     }
 
     query.prepare("UPDATE " + table_name_ + " SET rgt=rgt-:width WHERE rgt>:rgt;");
-    query.bindValue(":width", width);
-    query.bindValue(":rgt", acct.rgt);
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":rgt", QVariant::fromValue(acct.rgt));
     if (not query.exec()) {
         last_error_ = "Unable to update rgt to remove space: " + query.lastError().text();
         db_.rollback();
@@ -307,17 +308,17 @@ bool SQLEnvelopeRepository::remove(const Envelope & envelope) {
         last_error_ = QObject::tr("No envelope found with ID %1").arg(envelope.id());
         return false;
     }
-    int lft = iter->second.lft;
-    int rgt = iter->second.rgt;
-    int width = rgt - lft + 1;
+    int64_t lft = iter->second.lft;
+    int64_t rgt = iter->second.rgt;
+    int64_t width = rgt - lft + 1;
 
     db_.transaction();
     QSqlQuery query(db_);
 
     // Delete the subtree
     query.prepare("DELETE FROM " + table_name_ + " WHERE lft>=:lft AND rgt<=:rgt");
-    query.bindValue(":lft", lft);
-    query.bindValue(":rgt", rgt);
+    query.bindValue(":lft", QVariant::fromValue(lft));
+    query.bindValue(":rgt", QVariant::fromValue(rgt));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -327,8 +328,8 @@ bool SQLEnvelopeRepository::remove(const Envelope & envelope) {
     // Remove old space
 
     query.prepare("UPDATE " + table_name_ + " SET lft=lft-:width WHERE lft>:lft;");
-    query.bindValue(":width", width);
-    query.bindValue(":lft", rgt);
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":lft", QVariant::fromValue(rgt));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -336,8 +337,8 @@ bool SQLEnvelopeRepository::remove(const Envelope & envelope) {
     }
 
     query.prepare("UPDATE " + table_name_ + " SET rgt=rgt-:width WHERE rgt>:rgt;");
-    query.bindValue(":width", width);
-    query.bindValue(":rgt", rgt);
+    query.bindValue(":width", QVariant::fromValue(width));
+    query.bindValue(":rgt", QVariant::fromValue(rgt));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -355,8 +356,8 @@ bool SQLEnvelopeRepository::update(const Envelope & envelope) {
     query.prepare("UPDATE " + table_name_ + " SET name=:name, "
                                             "currency_id=:currency WHERE id=:id;");
     query.bindValue(":name", envelope.name());
-    query.bindValue(":currency", envelope.currency().id());
-    query.bindValue(":id", envelope.id());
+    query.bindValue(":currency", QVariant::fromValue(envelope.currency().id()));
+    query.bindValue(":id", QVariant::fromValue(envelope.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;

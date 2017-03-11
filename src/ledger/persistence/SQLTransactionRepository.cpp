@@ -15,6 +15,7 @@
  */
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 #include <stdexcept>
 
@@ -98,7 +99,7 @@ SQLTransactionRepository::SQLTransactionRepository(QSqlDatabase & db,
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLTransactionRepository::create(const AccountTransaction & transaction) {
+int64_t SQLTransactionRepository::create(const AccountTransaction & transaction) {
     if (not in_transaction_) {
         in_transaction_ = db_.transaction();
     }
@@ -107,13 +108,13 @@ int SQLTransactionRepository::create(const AccountTransaction & transaction) {
     query.prepare("INSERT INTO account_transaction(transaction_entry_id, account_id, amount, memo, "
                   "cleared, reconciliation_id) VALUES(:transaction, :account, :amount, :memo, "
                   ":cleared, :reconciliation);");
-    query.bindValue(":transaction", transaction.transaction().id());
-    query.bindValue(":account", transaction.account().id());
-    query.bindValue(":amount", transaction.amount().scaled());
+    query.bindValue(":transaction", QVariant::fromValue(transaction.transaction().id()));
+    query.bindValue(":account", QVariant::fromValue(transaction.account().id()));
+    query.bindValue(":amount", QVariant::fromValue(transaction.amount().scaled()));
     query.bindValue(":memo", transaction.memo());
     query.bindValue(":cleared", transaction.isCleared());
     query.bindValue(":reconciliation", (transaction.reconciliation() > 0)
-                                           ? transaction.reconciliation()
+                                           ? QVariant::fromValue(transaction.reconciliation())
                                            : QVariant(QVariant::Int));
 
     if (not query.exec()) {
@@ -123,11 +124,11 @@ int SQLTransactionRepository::create(const AccountTransaction & transaction) {
         return -1;
     }
 
-    return query.lastInsertId().toInt();
+    return query.lastInsertId().value<int64_t>();
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLTransactionRepository::create(const EnvelopeTransaction & transaction) {
+int64_t SQLTransactionRepository::create(const EnvelopeTransaction & transaction) {
     if (not in_transaction_) {
         in_transaction_ = db_.transaction();
     }
@@ -136,9 +137,9 @@ int SQLTransactionRepository::create(const EnvelopeTransaction & transaction) {
     query.prepare(
         "INSERT INTO envelope_transaction(transaction_entry_id, envelope_id, amount, memo) "
         "VALUES(:transaction, :envelope, :amount, :memo);");
-    query.bindValue(":transaction", transaction.transaction().id());
-    query.bindValue(":envelope", transaction.envelope().id());
-    query.bindValue(":amount", transaction.amount().scaled());
+    query.bindValue(":transaction", QVariant::fromValue(transaction.transaction().id()));
+    query.bindValue(":envelope", QVariant::fromValue(transaction.envelope().id()));
+    query.bindValue(":amount", QVariant::fromValue(transaction.amount().scaled()));
     query.bindValue(":memo", transaction.memo());
 
     if (not query.exec()) {
@@ -148,11 +149,11 @@ int SQLTransactionRepository::create(const EnvelopeTransaction & transaction) {
         return -1;
     }
 
-    return query.lastInsertId().toInt();
+    return query.lastInsertId().value<int64_t>();
 }
 
 //--------------------------------------------------------------------------------------------------
-int SQLTransactionRepository::create(const Transaction & transaction) {
+int64_t SQLTransactionRepository::create(const Transaction & transaction) {
     if (not in_transaction_) {
         in_transaction_ = db_.transaction();
     }
@@ -170,18 +171,18 @@ int SQLTransactionRepository::create(const Transaction & transaction) {
         return -1;
     }
 
-    return query.lastInsertId().toInt();
+    return query.lastInsertId().value<int64_t>();
 }
 
 //--------------------------------------------------------------------------------------------------
-AccountTransaction SQLTransactionRepository::getAccountTransaction(int id) {
+AccountTransaction SQLTransactionRepository::getAccountTransaction(int64_t id) {
     QSqlQuery query(db_);
     query.prepare("SELECT account_transaction.*, transaction_entry.payee, "
                   "date(transaction_entry.date, 'unixepoch') AS date "
                   "FROM account_transaction JOIN transaction_entry ON "
                   "account_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE account_transaction.id=:id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", QVariant::fromValue(id));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     } else if (not query.first()) {
@@ -204,7 +205,7 @@ SQLTransactionRepository::getAccountTransactions(const Transaction & transaction
                   "FROM account_transaction JOIN transaction_entry ON "
                   "account_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE account_transaction.transaction_entry_id=:id;");
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
@@ -224,12 +225,12 @@ Money SQLTransactionRepository::getBalance(const QDate & date, const Account & a
                   "account_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE account_transaction.account_id=:account AND "
                   "transaction_entry.date<=strftime('%s', :date);");
-    query.bindValue(":account", account.id());
+    query.bindValue(":account", QVariant::fromValue(account.id()));
     query.bindValue(":date", date.toString("yyyy-MM-dd"));
     if (not query.exec() or not query.first()) {
         last_error_ = query.lastError().text();
     } else {
-        return Money(query.value("balance").toInt(), account.currency());
+        return Money(query.value("balance").value<int64_t>(), account.currency());
     }
     return Money();
 }
@@ -242,25 +243,25 @@ Money SQLTransactionRepository::getBalance(const QDate & date, const Envelope & 
                   "envelope_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE envelope_transaction.envelope_id=:envelope AND "
                   "transaction_entry.date<=strftime('%s', :date);");
-    query.bindValue(":envelope", envelope.id());
+    query.bindValue(":envelope", QVariant::fromValue(envelope.id()));
     query.bindValue(":date", date.toString("yyyy-MM-dd"));
     if (not query.exec() or not query.first()) {
         last_error_ = query.lastError().text();
     } else {
-        return Money(query.value("balance").toInt(), envelope.currency());
+        return Money(query.value("balance").value<int64_t>(), envelope.currency());
     }
     return Money();
 }
 
 //--------------------------------------------------------------------------------------------------
-EnvelopeTransaction SQLTransactionRepository::getEnvelopeTransaction(int id) {
+EnvelopeTransaction SQLTransactionRepository::getEnvelopeTransaction(int64_t id) {
     QSqlQuery query(db_);
     query.prepare("SELECT envelope_transaction.*, transaction_entry.payee, "
                   "date(transaction_entry.date, 'unixepoch') AS date "
                   "FROM envelope_transaction JOIN transaction_entry ON "
                   "envelope_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE envelope_transaction.id=:id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", QVariant::fromValue(id));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     } else if (not query.first()) {
@@ -283,7 +284,7 @@ SQLTransactionRepository::getEnvelopeTransactions(const Transaction & transactio
                   "FROM envelope_transaction JOIN transaction_entry ON "
                   "envelope_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE envelope_transaction.transaction_entry_id=:id;");
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
@@ -304,28 +305,28 @@ Money SQLTransactionRepository::getReconciledBalance(const QDate & date, const A
                   "WHERE account_transaction.account_id=:account AND "
                   "account_transaction.reconciliation_id>0 AND "
                   "transaction_entry.date<=strftime('%s', :date);");
-    query.bindValue(":account", account.id());
+    query.bindValue(":account", QVariant::fromValue(account.id()));
     query.bindValue(":date", date.toString("yyyy-MM-dd"));
     if (not query.exec() or not query.first()) {
         last_error_ = query.lastError().text();
     } else {
-        return Money(query.value("balance").toInt(), account.currency());
+        return Money(query.value("balance").value<int64_t>(), account.currency());
     }
     return Money();
 }
 
 //--------------------------------------------------------------------------------------------------
-Transaction SQLTransactionRepository::getTransaction(int id) {
+Transaction SQLTransactionRepository::getTransaction(int64_t id) {
     QSqlQuery query(db_);
     query.prepare("SELECT id, date(transaction_entry.date, 'unixepoch') AS date, payee "
                   "FROM transaction_entry WHERE id=:id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", QVariant::fromValue(id));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     } else if (not query.first()) {
         last_error_ = QObject::tr("No transaction found for ID %1").arg(id);
     } else {
-        Transaction transaction(query.value("id").toInt());
+        Transaction transaction(query.value("id").value<int64_t>());
         transaction.setDate(QDate::fromString(query.value("date").toString(), "yyyy-MM-dd"));
         transaction.setPayee(query.value("payee").toString());
 
@@ -343,11 +344,11 @@ std::vector<AccountTransaction> SQLTransactionRepository::getTransactions(const 
                   "FROM account_transaction JOIN transaction_entry ON "
                   "account_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE account_transaction.account_id=:id ORDER BY transaction_entry.date ASC;");
-    query.bindValue(":id", account.id());
+    query.bindValue(":id", QVariant::fromValue(account.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
-    Money balance(0, account.currency());
+    Money balance(0.0, account.currency());
     while (query.next()) {
         auto trn = toAccountTransaction(query.record());
         trn.setBalance(balance + trn.amount());
@@ -368,11 +369,11 @@ SQLTransactionRepository::getTransactions(const Envelope & envelope) {
                   "envelope_transaction.transaction_entry_id=transaction_entry.id "
                   "WHERE envelope_transaction.envelope_id=:id "
                   "ORDER BY transaction_entry.date ASC;");
-    query.bindValue(":id", envelope.id());
+    query.bindValue(":id", QVariant::fromValue(envelope.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
     }
-    Money balance(0, envelope.currency());
+    Money balance(0.0, envelope.currency());
     while (query.next()) {
         auto trn = toEnvelopeTransaction(query.record());
         trn.setBalance(balance + trn.amount());
@@ -395,7 +396,7 @@ bool SQLTransactionRepository::remove(const Transaction & transaction) {
 
     QSqlQuery query(db_);
     query.prepare("DELETE FROM transaction_entry WHERE id=:id;");
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -411,7 +412,7 @@ bool SQLTransactionRepository::remove(const AccountTransaction & transaction) {
 
     QSqlQuery query(db_);
     query.prepare("DELETE FROM account_transaction WHERE id=:id;");
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -427,7 +428,7 @@ bool SQLTransactionRepository::remove(const EnvelopeTransaction & transaction) {
 
     QSqlQuery query(db_);
     query.prepare("DELETE FROM envelope_transaction WHERE id=:id;");
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -456,7 +457,7 @@ bool SQLTransactionRepository::update(const Transaction & transaction) {
                   " WHERE id=:id;");
     query.bindValue(":date", transaction.date().toString("yyyy-MM-dd"));
     query.bindValue(":payee", transaction.payee());
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -474,14 +475,15 @@ bool SQLTransactionRepository::update(const AccountTransaction & transaction) {
     query.prepare("UPDATE account_transaction SET account_id=:account, amount=:amount, "
                   "memo=:memo, cleared=:cleared, reconciliation_id=:reconciliation "
                   "WHERE id=:id;");
-    query.bindValue(":transaction", transaction.transaction().id());
-    query.bindValue(":account", transaction.account().id());
-    query.bindValue(":amount", transaction.amount().scaled());
+    query.bindValue(":transaction", QVariant::fromValue(transaction.transaction().id()));
+    query.bindValue(":account", QVariant::fromValue(transaction.account().id()));
+    query.bindValue(":amount", QVariant::fromValue(transaction.amount().scaled()));
     query.bindValue(":memo", transaction.memo());
     query.bindValue(":cleared", transaction.isCleared());
-    query.bindValue(":reconciliation",
-                    (transaction.reconciliation() > 0) ? transaction.reconciliation() : QVariant());
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":reconciliation", (transaction.reconciliation() > 0)
+                                           ? QVariant::fromValue(transaction.reconciliation())
+                                           : QVariant(QVariant::Int));
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -498,11 +500,11 @@ bool SQLTransactionRepository::update(const EnvelopeTransaction & transaction) {
     QSqlQuery query(db_);
     query.prepare("UPDATE envelope_transaction SET envelope_id=:envelope, amount=:amount, "
                   "memo=:memo WHERE id=:id;");
-    query.bindValue(":transaction", transaction.transaction().id());
-    query.bindValue(":envelope", transaction.envelope().id());
-    query.bindValue(":amount", transaction.amount().scaled());
+    query.bindValue(":transaction", QVariant::fromValue(transaction.transaction().id()));
+    query.bindValue(":envelope", QVariant::fromValue(transaction.envelope().id()));
+    query.bindValue(":amount", QVariant::fromValue(transaction.amount().scaled()));
     query.bindValue(":memo", transaction.memo());
-    query.bindValue(":id", transaction.id());
+    query.bindValue(":id", QVariant::fromValue(transaction.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         return false;
@@ -512,20 +514,20 @@ bool SQLTransactionRepository::update(const EnvelopeTransaction & transaction) {
 
 //--------------------------------------------------------------------------------------------------
 AccountTransaction SQLTransactionRepository::toAccountTransaction(const QSqlRecord & record) {
-    auto account = accounts_->getAccount(record.value("account_id").toInt());
+    auto account = accounts_->getAccount(record.value("account_id").value<int64_t>());
 
-    Transaction transaction(record.value("transaction_entry_id").toInt());
+    Transaction transaction(record.value("transaction_entry_id").value<int64_t>());
     transaction.setDate(QDate::fromString(record.value("date").toString(), "yyyy-MM-dd"));
     transaction.setPayee(record.value("payee").toString());
 
-    AccountTransaction split(record.value("id").toInt());
+    AccountTransaction split(record.value("id").value<int64_t>());
     split.setAccount(account);
-    split.setAmount(Money(record.value("amount").toInt(), account.currency()));
+    split.setAmount(Money(record.value("amount").value<int64_t>(), account.currency()));
     split.setCleared(record.value("cleared").toBool());
     split.setMemo(record.value("memo").toString());
     auto rec = record.value("reconciliation_id");
     if (not rec.isNull()) {
-        split.setReconciliation(rec.toInt());
+        split.setReconciliation(rec.value<int64_t>());
     }
     split.setTransaction(transaction);
 
@@ -534,15 +536,15 @@ AccountTransaction SQLTransactionRepository::toAccountTransaction(const QSqlReco
 
 //--------------------------------------------------------------------------------------------------
 EnvelopeTransaction SQLTransactionRepository::toEnvelopeTransaction(const QSqlRecord & record) {
-    auto envelope = envelopes_->getEnvelope(record.value("envelope_id").toInt());
+    auto envelope = envelopes_->getEnvelope(record.value("envelope_id").value<int64_t>());
 
-    Transaction transaction(record.value("transaction_entry_id").toInt());
+    Transaction transaction(record.value("transaction_entry_id").value<int64_t>());
     transaction.setDate(QDate::fromString(record.value("date").toString(), "yyyy-MM-dd"));
     transaction.setPayee(record.value("payee").toString());
 
-    EnvelopeTransaction split(record.value("id").toInt());
+    EnvelopeTransaction split(record.value("id").value<int64_t>());
     split.setEnvelope(envelope);
-    split.setAmount(Money(record.value("amount").toInt(), envelope.currency()));
+    split.setAmount(Money(record.value("amount").value<int64_t>(), envelope.currency()));
     split.setMemo(record.value("memo").toString());
     split.setTransaction(transaction);
 
