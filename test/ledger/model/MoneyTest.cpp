@@ -191,7 +191,13 @@ void MoneyTest::additionShouldAddMoniesWhenSameCurrency() {
 void MoneyTest::additionShouldThrowWhenDifferentCurrency() {
     Money usd(1.0, Currency(0, "USD"));
     Money uah(8.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd + uah, std::invalid_argument);
+    try {
+        usd + uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -229,7 +235,13 @@ void MoneyTest::subtractionShouldSubtractMoniesWhenSameCurrency() {
 void MoneyTest::subtractionShouldThrowWhenDifferentCurrency() {
     Money usd(2.0, Currency(0, "USD"));
     Money uah(8.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd - uah, std::invalid_argument);
+    try {
+        usd - uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -290,7 +302,13 @@ void MoneyTest::divisionShouldDivideMoniesWhenSameCurrency() {
 void MoneyTest::divisionShouldThrowWhenDifferentCurrency() {
     Money usd(1.0, Currency(0, "USD"));
     Money uah(16.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd / uah, std::invalid_argument);
+    try {
+        usd / uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -406,7 +424,13 @@ void MoneyTest::greaterThanShouldCompareMoniesWhenSameCurrency() {
 void MoneyTest::greaterThanShouldThrowWhenDifferentCurrency() {
     Money usd(2.0, Currency(0, "USD"));
     Money uah(8.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd > uah, std::invalid_argument);
+    try {
+        usd > uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -441,7 +465,13 @@ void MoneyTest::greaterThanOrEqualShouldCompareMoniesWhenSameCurrency() {
 void MoneyTest::greaterThanOrEqualShouldThrowWhenDifferentCurrency() {
     Money usd(2.0, Currency(0, "USD"));
     Money uah(8.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd >= uah, std::invalid_argument);
+    try {
+        usd >= uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -476,7 +506,13 @@ void MoneyTest::lesserThanShouldCompareMoniesWhenSameCurrency() {
 void MoneyTest::lesserThanShouldThrowWhenDifferentCurrency() {
     Money usd(2.0, Currency(0, "USD"));
     Money uah(8.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd < uah, std::invalid_argument);
+    try {
+        usd < uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -511,7 +547,13 @@ void MoneyTest::lesserThanOrEqualShouldCompareMoniesWhenSameCurrency() {
 void MoneyTest::lesserThanOrEqualShouldThrowWhenDifferentCurrency() {
     Money usd(2.0, Currency(0, "USD"));
     Money uah(8.0, Currency(0, "UAH"));
-    QVERIFY_EXCEPTION_THROWN(usd <= uah, std::invalid_argument);
+    try {
+        usd <= uah;
+        QFAIL("Should have thrown");
+    } catch (std::invalid_argument) {
+    } catch (...) {
+        QFAIL("Should have thrown std::invalid_argument");
+    }
 }
 
 //------------------------------------------------------------------------------
