@@ -54,6 +54,9 @@ signals:
     /** Emitted when the view-envelopes menu action is triggered. */
     void viewEnvelopes();
 
+    /** Emitted when the view-incomes menu action is triggered. */
+    void viewBudgetedIncomes();
+
     /** Emitted when the view-expenses menu action is triggered. */
     void viewBudgetedExpenses();
 

@@ -6,6 +6,9 @@ set(budget_ui_srcs
     ExpenseDetailsDialog.cpp
     ExpenseListWidget.cpp
     ExpenseModel.cpp
+    IncomeDetailsDialog.cpp
+    IncomeListWidget.cpp
+    IncomeModel.cpp
     RecurrenceEditWidget.cpp
 )
 

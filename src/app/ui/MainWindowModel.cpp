@@ -21,6 +21,8 @@
 #include <app/model/Repositories.hpp>
 #include <budget/ui/ExpenseListWidget.hpp>
 #include <budget/ui/ExpenseModel.hpp>
+#include <budget/ui/IncomeListWidget.hpp>
+#include <budget/ui/IncomeModel.hpp>
 #include <ledger/ui/AccountListWidget.hpp>
 #include <ledger/ui/AccountModel.hpp>
 #include <ledger/ui/AccountTransactionModel.hpp>
@@ -41,15 +43,18 @@ MainWindowModel::MainWindowModel(MainWindow * window)
           account_transaction_model_(new ledger::AccountTransactionModel),
           envelope_model_(new ledger::EnvelopeModel),
           envelope_transaction_model_(new ledger::EnvelopeTransactionModel),
+          income_model_(new budget::IncomeModel),
           expense_model_(new budget::ExpenseModel), window_(window),
           account_list_(
               new ledger::AccountListWidget(account_model_, account_transaction_model_, window_)),
           envelope_list_(new ledger::EnvelopeListWidget(envelope_model_,
                                                         envelope_transaction_model_, window_)),
           journal_entry_(new ledger::JournalEntryDialog(window_)),
-          expense_list_(new budget::ExpenseListWidget(envelope_model_, expense_model_, window_)){
+          income_list_(new budget::IncomeListWidget(account_model_, income_model_, window_)),
+          expense_list_(new budget::ExpenseListWidget(envelope_model_, expense_model_, window_)) {
     window_->contentWidget()->addWidget(account_list_);
     window_->contentWidget()->addWidget(envelope_list_);
+    window_->contentWidget()->addWidget(income_list_);
     window_->contentWidget()->addWidget(expense_list_);
 
     journal_entry_->hide();
@@ -61,6 +66,7 @@ MainWindowModel::MainWindowModel(MainWindow * window)
             &ledger::JournalEntryDialog::prepareForNewEntry);
     connect(menu, &MenuBar::viewAccounts, this, &MainWindowModel::showAccounts);
     connect(menu, &MenuBar::viewEnvelopes, this, &MainWindowModel::showEnvelopes);
+    connect(menu, &MenuBar::viewBudgetedIncomes, this, &MainWindowModel::showBudgetedIncomes);
     connect(menu, &MenuBar::viewBudgetedExpenses, this, &MainWindowModel::showBudgetedExpenses);
 
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
@@ -97,6 +103,7 @@ void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories
     envelope_model_->setRepository(repositories);
     envelope_transaction_model_->setRepository(repositories);
     journal_entry_->setRepository(repositories);
+    income_model_->setRepository(repositories);
     expense_model_->setRepository(repositories);
 }
 
@@ -113,6 +120,11 @@ void MainWindowModel::showAccounts() {
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::showEnvelopes() {
     window_->contentWidget()->setCurrentWidget(envelope_list_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::showBudgetedIncomes() {
+    window_->contentWidget()->setCurrentWidget(income_list_);
 }
 
 //--------------------------------------------------------------------------------------------------

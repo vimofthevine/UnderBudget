@@ -50,6 +50,11 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
     envelopes->setStatusTip(tr("View envelopes"));
     connect(envelopes, &QAction::triggered, this, &MenuBar::viewEnvelopes);
 
+    auto incomes = new QAction(tr("Budgeted &Incomes"), this);
+    incomes->setShortcut(QKeySequence(Qt::Key_F7));
+    incomes->setStatusTip(tr("View budgeted incomes"));
+    connect(incomes, &QAction::triggered, this, &MenuBar::viewBudgetedIncomes);
+
     auto expenses = new QAction(tr("Budgeted E&xpenses"), this);
     expenses->setShortcut(QKeySequence(Qt::Key_F8));
     expenses->setStatusTip(tr("View budgeted expenses"));
@@ -74,6 +79,7 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
     auto view = addMenu(tr("&View"));
     view->addAction(accounts);
     view->addAction(envelopes);
+    view->addAction(incomes);
     view->addAction(expenses);
 
     addSeparator();

@@ -23,6 +23,7 @@
 
 // UnderBudget include(s)
 #include <budget/persistence/SQLExpenseRepository.hpp>
+#include <budget/persistence/SQLIncomeRepository.hpp>
 #include <ledger/persistence/SQLAccountRepository.hpp>
 #include <ledger/persistence/SQLCurrencyRepository.hpp>
 #include <ledger/persistence/SQLEnvelopeRepository.hpp>
@@ -46,6 +47,7 @@ DatabaseRepositories::DatabaseRepositories(const QString & loc) : location_(loc)
         reconciliations_.reset(new ledger::SQLReconciliationRepository(db_, accounts_));
         transactions_.reset(new ledger::SQLTransactionRepository(db_, accounts_, envelopes_));
         expenses_.reset(new budget::SQLExpenseRepository(db_, envelopes_));
+        incomes_.reset(new budget::SQLIncomeRepository(db_, accounts_));
     }
 }
 
@@ -94,6 +96,11 @@ std::shared_ptr<ledger::TransactionRepository> DatabaseRepositories::transaction
 //--------------------------------------------------------------------------------------------------
 std::shared_ptr<budget::ExpenseRepository> DatabaseRepositories::expenses() const {
     return expenses_;
+}
+
+//--------------------------------------------------------------------------------------------------
+std::shared_ptr<budget::IncomeRepository> DatabaseRepositories::incomes() const {
+    return incomes_;
 }
 
 } // ub namespace

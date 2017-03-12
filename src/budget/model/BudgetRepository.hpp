@@ -21,6 +21,7 @@
 
 // UnderBudget include(s)
 #include "ExpenseRepository.hpp"
+#include "IncomeRepository.hpp"
 
 namespace ub {
 namespace budget {
@@ -39,6 +40,13 @@ public:
      * @return Expense repository
      */
     virtual std::shared_ptr<ExpenseRepository> expenses() const = 0;
+
+    /**
+     * Returns a pointer to the income repository.
+     *
+     * @return Income repository
+     */
+    virtual std::shared_ptr<IncomeRepository> incomes() const = 0;
 };
 
 } // budget namespace

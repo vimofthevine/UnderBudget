@@ -94,6 +94,7 @@ RecurrenceEditWidget::RecurrenceEditWidget(QWidget * parent)
 
     QWidget * recurring_widget = new QWidget(this);
     recurring_widget->setLayout(recurring_layout);
+    recurring_widget->setVisible(false);
     connect(recurring_, &QCheckBox::toggled, recurring_widget, &QWidget::setVisible);
 
     QVBoxLayout * layout = new QVBoxLayout;

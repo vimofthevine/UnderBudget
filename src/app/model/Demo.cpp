@@ -23,6 +23,7 @@
 // UnderBudget include(s)
 #include <app/model/Repositories.hpp>
 #include <budget/model/Expense.hpp>
+#include <budget/model/Income.hpp>
 #include <budget/model/Recurrence.hpp>
 #include <ledger/model/Account.hpp>
 #include <ledger/model/Currency.hpp>
@@ -325,6 +326,22 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
         exp7.setEnvelope(envelopes->getEnvelope(e1));
         exp7.setRecurrence(r7);
         expenses->create(exp7);
+
+        // -- Budgeted incomes
+
+        auto incomes = repos->incomes();
+
+        Recurrence r8;
+        r8.setPeriodicity(2);
+        r8.setScope(Recurrence::Weekly);
+        r8.setDay(5);
+        Income inc1;
+        inc1.setAccount(accounts->getAccount(a2));
+        inc1.setAmount(350.0);
+        inc1.setBeginningDate(QDate(2012, 7, 21));
+        inc1.setDescription("Payday");
+        inc1.setRecurrence(r8);
+        incomes->create(inc1);
     }
 }
 

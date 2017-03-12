@@ -33,6 +33,8 @@ namespace budget {
 // Forward declaration(s)
 class ExpenseListWidget;
 class ExpenseModel;
+class IncomeListWidget;
+class IncomeModel;
 }
 
 namespace ledger {
@@ -84,6 +86,11 @@ protected slots:
     void showEnvelopes();
 
     /**
+     * Displays the budgeted incomes list view.
+     */
+    void showBudgetedIncomes();
+
+    /**
      * Displays the budgeted expenses list view.
      */
     void showBudgetedExpenses();
@@ -104,6 +111,8 @@ private:
     ledger::EnvelopeModel * envelope_model_;
     /** Envelope transaction model */
     ledger::EnvelopeTransactionModel * envelope_transaction_model_;
+    /** Budgeted income model */
+    budget::IncomeModel * income_model_;
     /** Budgeted expense model */
     budget::ExpenseModel * expense_model_;
 
@@ -115,6 +124,8 @@ private:
     ledger::EnvelopeListWidget * envelope_list_;
     /** Journal entry dialog */
     ledger::JournalEntryDialog * journal_entry_;
+    /** Budgeted income list widget */
+    budget::IncomeListWidget * income_list_;
     /** Budgeted expense list widget */
     budget::ExpenseListWidget * expense_list_;
 };

@@ -3,6 +3,7 @@
 # Specify budget persistence source files
 set(budget_persistence_srcs
     SQLExpenseRepository.cpp
+    SQLIncomeRepository.cpp
 )
 
 # Build budget persistence library
