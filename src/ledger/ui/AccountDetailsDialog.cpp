@@ -40,6 +40,7 @@ AccountDetailsDialog::AccountDetailsDialog(AccountModel * model, QWidget * paren
     form->addRow("", buttons_);
 
     setLayout(form);
+    setWindowTitle(tr("Account"));
 }
 
 //--------------------------------------------------------------------------------------------------

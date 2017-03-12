@@ -62,7 +62,7 @@ bool EnvelopeModel::create(const Envelope & envelope, const QModelIndex & parent
 
     int rows = rowCount(parent);
     beginInsertRows(parent, rows, rows);
-    int id = envelopes_->create(envelope, this->envelope(parent));
+    auto id = envelopes_->create(envelope, this->envelope(parent));
     endInsertRows();
 
     if (id <= 0) {

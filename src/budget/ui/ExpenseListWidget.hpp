@@ -22,6 +22,9 @@
 // Forward declaration(s)
 class QWidget;
 
+// UnderBudget include(s)
+#include <ledger/model/Envelope.hpp>
+
 namespace ub {
 
 namespace ledger {
@@ -34,6 +37,7 @@ class TreeView;
 namespace budget {
 // Forward declaration(s)
 class BudgetTableView;
+class ExpenseDetailsDialog;
 class ExpenseModel;
 
 /**
@@ -81,18 +85,9 @@ protected slots:
     void setExpenseFilter(const QModelIndex & current, const QModelIndex & previous);
 
     /**
-     * Displays the expense details dialog to allow modification of the requested expense.
-     *
-     * @param index Model index of the budgeted expense to be modified
+     * Opens the expense details dialog for a new expense.
      */
-    void modifyExpense(const QModelIndex & index);
-
-    /**
-     * Displays the expense details dialog to allow duplication of the requested expense.
-     *
-     * @param index Model index of the budgeted expense to be duplicated
-     */
-    void duplicateExpense(const QModelIndex & index);
+    void createExpense();
 
     /**
      * Prompts the user to confirm deletion of the requested budgeted expense.
@@ -108,11 +103,16 @@ private:
     ExpenseModel * expenses_;
 
     /** Envelope details dialog */
-    ledger::EnvelopeDetailsDialog * details_;
+    ledger::EnvelopeDetailsDialog * envelope_details_;
+    /** Expense details dialog */
+    ExpenseDetailsDialog * expense_details_;
     /** Envelope tree view */
     ledger::TreeView * tree_;
     /** Budgeted expense table view */
     BudgetTableView * table_;
+
+    /** Currently selected envelope */
+    ledger::Envelope envelope_;
 };
 
 } // budget namespace

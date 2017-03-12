@@ -40,6 +40,7 @@ EnvelopeDetailsDialog::EnvelopeDetailsDialog(EnvelopeModel * model, QWidget * pa
     form->addRow("", buttons_);
 
     setLayout(form);
+    setWindowTitle(tr("Envelope"));
 }
 
 //--------------------------------------------------------------------------------------------------

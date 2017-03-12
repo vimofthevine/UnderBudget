@@ -20,6 +20,7 @@
 #include <cstdint>
 
 // Qt include(s)
+#include <QMetaType>
 #include <QString>
 
 namespace ub {
@@ -158,3 +159,6 @@ private:
 
 } // budget namespace
 } // ub namespace
+
+// Make Recurrence::ScopeType known to QMetaType
+Q_DECLARE_METATYPE(ub::budget::Recurrence::ScopeType)

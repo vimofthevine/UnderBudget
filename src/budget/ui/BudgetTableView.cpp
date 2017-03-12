@@ -83,15 +83,26 @@ void BudgetTableView::contextMenuEvent(QContextMenuEvent * event) {
         menu->addAction(dup);
         menu->addAction(del);
         menu->exec(event->globalPos());
+    } else {
+        auto add = new QAction(tr("Add"), this);
+        connect(add, &QAction::triggered, this, [this] () {
+            emit createItem();
+        });
+
+        auto menu = new QMenu(this);
+        menu->addAction(add);
+        menu->exec(event->globalPos());
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 bool BudgetTableView::eventFilter(QObject * object, QEvent * event) {
-    if (currentIndex().isValid()) {
-        if (event->type() == QEvent::KeyPress) {
-            QKeyEvent * key_event = static_cast<QKeyEvent *>(event);
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent * key_event = static_cast<QKeyEvent *>(event);
 
+        if (key_event->key() == Qt::Key_A) {
+            emit createItem();
+        } else if (currentIndex().isValid()) {
             if ((key_event->key() == Qt::Key_Enter) or (key_event->key() == Qt::Key_Return)) {
                 emit modifyItem(filter_->mapToSource(currentIndex()));
             } else if (key_event->key() == Qt::Key_D) {

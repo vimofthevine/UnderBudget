@@ -3,8 +3,10 @@
 # Specify budget UI source files
 set(budget_ui_srcs
     BudgetTableView.cpp
+    ExpenseDetailsDialog.cpp
     ExpenseListWidget.cpp
     ExpenseModel.cpp
+    RecurrenceEditWidget.cpp
 )
 
 # Build budget UI library

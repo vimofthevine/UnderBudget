@@ -45,6 +45,11 @@ public:
 
 signals:
     /**
+     * Emitted to indicate a request to create a new item.
+     */
+    void createItem();
+
+    /**
      * Emitted to indicate a request to modify the specified item.
      *
      * @param index Model index of the item to be modified

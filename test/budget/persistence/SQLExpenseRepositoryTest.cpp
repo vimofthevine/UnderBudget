@@ -262,6 +262,8 @@ TEST_F(SQLExpenseRepositoryTest, ShouldUpdateExpensesInDatabase) {
     auto mod = repo->expense(3);
     EXPECT_EQ(2, mod.envelope().id());
     EXPECT_EQ(Money(999.99, Currency(1, "USD")), mod.amount());
+    EXPECT_EQ(QDate(2017, 1, 1), mod.beginningDate());
+    EXPECT_EQ(QDate(2017, 1, 31), mod.endingDate());
     EXPECT_EQ(Recurrence::Weekly, mod.recurrence().scope());
 }
 

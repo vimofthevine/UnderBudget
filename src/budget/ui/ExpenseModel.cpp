@@ -56,6 +56,58 @@ Expense ExpenseModel::expense(const QModelIndex & index) {
 }
 
 //--------------------------------------------------------------------------------------------------
+bool ExpenseModel::create(const Expense & expense) {
+    if (not expenses_) {
+        return false;
+    }
+
+    beginResetModel();
+    auto id = expenses_->create(expense);
+    cache_ = expenses_->expenses(envelope_);
+    endResetModel();
+
+    if (id <= 0) {
+        emit error(expenses_->lastError());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+bool ExpenseModel::update(const Expense & expense, const QModelIndex & index) {
+    if (not expenses_ or not index.isValid()) {
+        return false;
+    }
+
+    beginResetModel();
+    bool success = expenses_->update(expense);
+    cache_ = expenses_->expenses(envelope_);
+    endResetModel();
+
+    if (not success) {
+        emit error(expenses_->lastError());
+    }
+
+    return success;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool ExpenseModel::remove(const QModelIndex & index) {
+    if (not expenses_ or not index.isValid()) {
+        return false;
+    }
+
+    beginResetModel();
+    bool success = expenses_->remove(this->expense(index));
+    cache_ = expenses_->expenses(envelope_);
+    endResetModel();
+
+    if (not success) {
+        emit error(expenses_->lastError());
+    }
+
+    return success;
+}
+
+//--------------------------------------------------------------------------------------------------
 void ExpenseModel::filterForEnvelope(const ledger::Envelope & envelope) {
     beginResetModel();
     envelope_ = envelope;

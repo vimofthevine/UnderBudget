@@ -22,6 +22,7 @@
 #include <ledger/ui/EnvelopeModel.hpp>
 #include <ledger/ui/TreeView.hpp>
 #include "BudgetTableView.hpp"
+#include "ExpenseDetailsDialog.hpp"
 #include "ExpenseListWidget.hpp"
 #include "ExpenseModel.hpp"
 
@@ -32,26 +33,31 @@ namespace budget {
 ExpenseListWidget::ExpenseListWidget(ledger::EnvelopeModel * envelopes,
                                      ExpenseModel * expenses, QWidget * parent)
         : QSplitter(Qt::Horizontal, parent), envelopes_(envelopes), expenses_(expenses),
-          details_(new ledger::EnvelopeDetailsDialog(envelopes_, parent)),
+          envelope_details_(new ledger::EnvelopeDetailsDialog(envelopes_, parent)),
+          expense_details_(new ExpenseDetailsDialog(expenses_, parent)),
           tree_(new ledger::TreeView(this)), table_(new BudgetTableView(this)) {
     tree_->setModel(envelopes_);
     table_->setModel(expenses_);
 
-    details_->hide();
-    details_->setModal(true);
+    envelope_details_->hide();
+    envelope_details_->setModal(true);
+
+    expense_details_->hide();
+    expense_details_->setModal(true);
 
     connect(tree_, &ledger::TreeView::selectItem, this, &ExpenseListWidget::selectEnvelope);
     connect(tree_, &ledger::TreeView::selectItem, this, &ExpenseListWidget::setExpenseFilter);
-    connect(tree_, &ledger::TreeView::createItem, details_,
+    connect(tree_, &ledger::TreeView::createItem, envelope_details_,
             &ledger::EnvelopeDetailsDialog::resetForNewEnvelope);
-    connect(tree_, &ledger::TreeView::modifyItem, details_,
+    connect(tree_, &ledger::TreeView::modifyItem, envelope_details_,
             &ledger::EnvelopeDetailsDialog::showEnvelope);
     connect(tree_, &ledger::TreeView::deleteItem, this, &ExpenseListWidget::deleteEnvelope);
 
-    connect(table_, &BudgetTableView::modifyItem, this,
-            &ExpenseListWidget::modifyExpense);
-    connect(table_, &BudgetTableView::duplicateItem, this,
-            &ExpenseListWidget::duplicateExpense);
+    connect(table_, &BudgetTableView::createItem, this, &ExpenseListWidget::createExpense);
+    connect(table_, &BudgetTableView::modifyItem, expense_details_,
+            &ExpenseDetailsDialog::showExpense);
+    connect(table_, &BudgetTableView::duplicateItem, expense_details_,
+            &ExpenseDetailsDialog::duplicateExpense);
     connect(table_, &BudgetTableView::deleteItem, this,
             &ExpenseListWidget::deleteExpense);
 
@@ -76,23 +82,26 @@ void ExpenseListWidget::deleteEnvelope(const QModelIndex & index) {
 //--------------------------------------------------------------------------------------------------
 void ExpenseListWidget::setExpenseFilter(const QModelIndex & current,
                                               const QModelIndex & previous) {
-    auto acct = envelopes_->envelope(current);
-    expenses_->filterForEnvelope(acct);
+    envelope_ = envelopes_->envelope(current);
+    expenses_->filterForEnvelope(envelope_);
 }
 
 //--------------------------------------------------------------------------------------------------
-void ExpenseListWidget::modifyExpense(const QModelIndex & index) {
-    qDebug() << "modify expense";
-}
-
-//--------------------------------------------------------------------------------------------------
-void ExpenseListWidget::duplicateExpense(const QModelIndex & index) {
-    qDebug() << "duplicate expense";
+void ExpenseListWidget::createExpense() {
+    if (envelope_.id() > 0) {
+        expense_details_->resetForNewExpense(envelope_);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
 void ExpenseListWidget::deleteExpense(const QModelIndex & index) {
-    qDebug() << "delete expense";
+    Expense expense = expenses_->expense(index);
+    auto answer =
+            QMessageBox::question(this->parentWidget(), tr("Delete Budgeted Expense?"),
+                                  tr("Are you sure you want to delete %0?").arg(expense.description()));
+    if (answer == QMessageBox::Yes) {
+        expenses_->remove(index);
+    }
 }
 
 } // budget namespace

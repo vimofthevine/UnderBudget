@@ -79,6 +79,31 @@ public:
      */
     Expense expense(const QModelIndex & index);
 
+    /**
+     * Creates a new budgeted expense.
+     *
+     * @param expense Expense to be created
+     * @return @c true if successfully created
+     */
+    bool create(const Expense & expense);
+
+    /**
+     * Updates the expense located at the specified index.
+     *
+     * @param expense Expense to be updated
+     * @param index   Model index of the expense to be updated
+     * @return @c true if successfully updated
+     */
+    bool update(const Expense & expense, const QModelIndex & index);
+
+    /**
+     * Removes the budgeted expense located at the specified index.
+     *
+     * @param index Model index of the expense to be removed
+     * @return @c true if successfully removed
+     */
+    bool remove(const QModelIndex & index);
+
     int columnCount(const QModelIndex & parent) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
