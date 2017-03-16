@@ -18,6 +18,7 @@
 #include <cstdint>
 
 // Qt include(s)
+#include <QDate>
 #include <QStringBuilder>
 #include <QtCore>
 
@@ -38,6 +39,84 @@ int32_t Recurrence::day() const {
 //--------------------------------------------------------------------------------------------------
 int32_t Recurrence::month() const {
     return month_;
+}
+
+//--------------------------------------------------------------------------------------------------
+QDate Recurrence::nextOccurrence(const QDate & date) const {
+    QDate next;
+    if (periodicity_ >= 1) {
+        switch (scope_) {
+        case Yearly: {
+            int year = date.year();
+            while (true) {
+                next = QDate(year, 1, 1);
+                // Go to month of the year
+                if ((month_ > 0) and (month_ < 13)) {
+                    next = next.addMonths(month_ - 1);
+                }
+                next = goToDayOfMonth(next);
+
+                if (next > date) {
+                    return next;
+                } else {
+                    year += periodicity_;
+                }
+            }
+            break;
+        }
+        case Monthly: {
+            QDate iter(date.year(), date.month(), 1);
+            while (true) {
+                next = QDate(iter.year(), iter.month(), 1);
+                next = goToDayOfMonth(next);
+
+                if (next > date) {
+                    return next;
+                } else {
+                    // Let Qt handle the year rollover for us
+                    iter = iter.addMonths(periodicity_);
+                }
+            }
+            break;
+        }
+        case Weekly: {
+            next = goToDayOfWeek(date);
+            if (next > date) {
+                return next;
+            } else {
+                return next.addDays(7 * periodicity_);
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return next;
+}
+
+//--------------------------------------------------------------------------------------------------
+QDate Recurrence::goToDayOfMonth(const QDate & date) const {
+    if ((week_ > 0) and (week_ < 53)) {
+        auto next = date.addDays((week_ - 1) * 7);
+        return goToDayOfWeek(next);
+    } else if ((day_ > 0) and (day_ < 32)) {
+        return date.addDays(day_ - 1);
+    } else { // No week or day defined, stay at first of the month
+        return date;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+QDate Recurrence::goToDayOfWeek(const QDate & date) const {
+    // Go to beginning of week if no day was defined
+    int day = ((day_ > 0) and (day_ < 8)) ? day_ : 1;
+    int diff = day - date.dayOfWeek();
+    if (diff >= 0) {
+        return date.addDays(diff);
+    } else {
+        return date.addDays(7 + diff);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

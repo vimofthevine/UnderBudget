@@ -20,6 +20,7 @@
 #include <cstdint>
 
 // Qt include(s)
+#include <QDate>
 #include <QMetaType>
 #include <QString>
 
@@ -72,6 +73,15 @@ public:
      * @return Month within the recurrency scope
      */
     int32_t month() const;
+
+    /**
+     * Determines the first date after the given date on which this occurrence will occur.
+     *
+     * @param date Date after which to determine the next occurrence
+     * @return Date of next occurrence, or an invalid date if no occurence would occur after
+     *         the given date
+     */
+    QDate nextOccurrence(const QDate & date) const;
 
     /**
      * Returns the periodicity at which the recurrence is applied.
@@ -155,6 +165,24 @@ private:
     ScopeType scope_;
     /** Week within the scope */
     int32_t week_;
+
+    /**
+     * Returns the date in the given month that satisfies the day
+     * of the month requirements of this recurrence.
+     *
+     * @param date First date of the month in which to start
+     * @return
+     */
+    QDate goToDayOfMonth(const QDate & date) const;
+
+    /**
+     * Returns the next date after the given date that satisfies the day
+     * of the week requirements of this recurrence.
+     *
+     * @param date Date from which to start
+     * @return Next date on the correct day of the week
+     */
+    QDate goToDayOfWeek(const QDate & date) const;
 };
 
 } // budget namespace
