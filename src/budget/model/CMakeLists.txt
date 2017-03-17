@@ -2,7 +2,9 @@
 
 # Specify budget model source files
 set(budget_model_srcs
+    Budget.cpp
     Expense.cpp
+    Impact.cpp
     Income.cpp
     Recurrence.cpp
 )

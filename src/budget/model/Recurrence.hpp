@@ -48,6 +48,11 @@ public:
      */
     Recurrence();
 
+    /**
+     * Initializes a recurrence with the given values.
+     */
+    Recurrence(int day, int month, int periodicity, ScopeType scope, int week);
+
     // Copy constructor
     Recurrence(const Recurrence & orig) = default;
 

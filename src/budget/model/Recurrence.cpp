@@ -32,6 +32,10 @@ namespace budget {
 Recurrence::Recurrence() : day_(0), month_(0), periodicity_(0), scope_(Yearly), week_(0) {}
 
 //--------------------------------------------------------------------------------------------------
+Recurrence::Recurrence(int day, int month, int periodicity, ScopeType scope, int week)
+        : day_(day), month_(month), periodicity_(periodicity), scope_(scope), week_(week) {}
+
+//--------------------------------------------------------------------------------------------------
 int32_t Recurrence::day() const {
     return day_;
 }
