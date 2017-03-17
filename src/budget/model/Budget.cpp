@@ -80,10 +80,11 @@ void Budget::add(const Income & income) {
 //--------------------------------------------------------------------------------------------------
 Impact Budget::impact(const QDate & date, const Expense & expense) {
     Impact impact;
-    impact.setAmount(-expense.amount());
+    impact.setAmount(expense.amount());
     impact.setCategory(expense.envelope().name());
     impact.setDate(date);
     impact.setDescription(expense.description());
+    impact.setType(Impact::Expense);
     return impact;
 }
 
@@ -94,7 +95,13 @@ Impact Budget::impact(const QDate & date, const Income & income) {
     impact.setCategory(income.account().name());
     impact.setDate(date);
     impact.setDescription(income.description());
+    impact.setType(Impact::Income);
     return impact;
+}
+
+//--------------------------------------------------------------------------------------------------
+std::vector<Impact> Budget::impacts() const {
+    return impacts_;
 }
 
 //--------------------------------------------------------------------------------------------------

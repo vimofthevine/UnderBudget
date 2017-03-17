@@ -65,5 +65,15 @@ void Impact::setDescription(const QString & description) {
     description_ = description;
 }
 
+//--------------------------------------------------------------------------------------------------
+void Impact::setType(ImpactType type) {
+    type_ = type;
+}
+
+//--------------------------------------------------------------------------------------------------
+Impact::ImpactType Impact::type() const {
+    return type_;
+}
+
 } // budget namespace
 } // ub namespace

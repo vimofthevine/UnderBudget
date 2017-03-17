@@ -46,6 +46,13 @@ public:
     Budget() = default;
 
     /**
+     * Returns the individual budgeted balance impacts.
+     *
+     * @return Budgeted balance impacts
+     */
+    std::vector<Impact> impacts() const;
+
+    /**
      * Returns the amount of net change that is budgeted to occur.
      *
      * @return Budgeted net change

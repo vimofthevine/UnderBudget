@@ -207,5 +207,14 @@ TEST_F(BudgetTest, NetChangeShouldBeDifferenceOfNetIncreaseAndNetDecrease) {
     EXPECT_EQ(ledger::Money(65.44), budget.netChange());
 }
 
+/** Verifies that all individual impacts are added to the impact list */
+TEST_F(BudgetTest, AllImpactsShouldBeRecordedInImpactList) {
+    budget.add(expense(1.0, QDate(2017, 4, 1), QDate(),
+                       Recurrence(6, 0, 1, Recurrence::Weekly, 0)));
+    budget.add(income(1.0, QDate(2017, 1, 1), QDate(),
+                       Recurrence(7, 0, 3, Recurrence::Weekly, 0)));
+    EXPECT_EQ(12u, budget.impacts().size());
+}
+
 } // budget namespace
 } // ub namespace

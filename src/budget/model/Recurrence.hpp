@@ -34,6 +34,7 @@ namespace budget {
  */
 class Recurrence {
 public:
+    /** Scope of the recurrence */
     enum ScopeType {
         /** Once-in-a-year scope */
         Yearly,

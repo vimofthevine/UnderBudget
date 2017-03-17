@@ -35,6 +35,14 @@ namespace budget {
  */
 class Impact {
 public:
+    /** Type of the impact */
+    enum ImpactType {
+        /** Budgeted expense type */
+        Expense,
+        /** Budgeted income type */
+        Income
+    };
+
     /**
      * Initializes an impact with default values.
      */
@@ -96,6 +104,20 @@ public:
      */
     void setDescription(const QString & description);
 
+    /**
+     * Updates the type of this impact.
+     *
+     * @param type New impact type
+     */
+    void setType(ImpactType type);
+
+    /**
+     * Returns the type of this impact.
+     *
+     * @return Impact type
+     */
+    ImpactType type() const;
+
 private:
     /** Impact amount (negative amounts are debits) */
     ledger::Money amount_;
@@ -105,6 +127,8 @@ private:
     QDate date_;
     /** Impact description */
     QString description_;
+    /** Impact type */
+    ImpactType type_;
 };
 
 } // budget namespace
