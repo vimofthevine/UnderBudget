@@ -60,6 +60,9 @@ signals:
     /** Emitted when the view-expenses menu action is triggered. */
     void viewBudgetedExpenses();
 
+    /** Emitted when the view-reports menu action is triggered. */
+    void viewReports();
+
     /** Emitted when the about-app menu action is triggered. */
     void aboutApplication();
 

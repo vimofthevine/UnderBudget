@@ -93,9 +93,7 @@ void TreeView::contextMenuEvent(QContextMenuEvent * event) {
     } else {
         auto add = new QAction(tr("Add top-level item"), this);
         connect(add, &QAction::triggered, this, [this]() {
-            if (currentIndex().isValid()) {
-                emit createItem(QModelIndex());
-            }
+            emit createItem(QModelIndex());
         });
         menu->addAction(add);
     }

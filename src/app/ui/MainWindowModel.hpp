@@ -48,6 +48,11 @@ class EnvelopeTransactionModel;
 class JournalEntryDialog;
 }
 
+namespace report {
+// Forward declaration(s)
+class ReportWidget;
+}
+
 /**
  * Main application window model.
  */
@@ -96,6 +101,11 @@ protected slots:
     void showBudgetedExpenses();
 
     /**
+     * Displays the reports view.
+     */
+    void showReports();
+
+    /**
      * Displays an error popup dialog with the given message.
      *
      * @param message Error message
@@ -128,6 +138,8 @@ private:
     budget::IncomeListWidget * income_list_;
     /** Budgeted expense list widget */
     budget::ExpenseListWidget * expense_list_;
+    /** Report widget */
+    report::ReportWidget * reports_;
 };
 
 } // ub namespace

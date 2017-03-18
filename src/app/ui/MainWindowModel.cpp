@@ -30,6 +30,7 @@
 #include <ledger/ui/EnvelopeModel.hpp>
 #include <ledger/ui/EnvelopeTransactionModel.hpp>
 #include <ledger/ui/JournalEntryDialog.hpp>
+#include <report/ui/ReportWidget.hpp>
 #include "DatabaseFileChooser.hpp"
 #include "MainWindow.hpp"
 #include "MainWindowModel.hpp"
@@ -51,11 +52,13 @@ MainWindowModel::MainWindowModel(MainWindow * window)
                                                         envelope_transaction_model_, window_)),
           journal_entry_(new ledger::JournalEntryDialog(window_)),
           income_list_(new budget::IncomeListWidget(account_model_, income_model_, window_)),
-          expense_list_(new budget::ExpenseListWidget(envelope_model_, expense_model_, window_)) {
+          expense_list_(new budget::ExpenseListWidget(envelope_model_, expense_model_, window_)),
+          reports_(new report::ReportWidget(window_)) {
     window_->contentWidget()->addWidget(account_list_);
     window_->contentWidget()->addWidget(envelope_list_);
     window_->contentWidget()->addWidget(income_list_);
     window_->contentWidget()->addWidget(expense_list_);
+    window_->contentWidget()->addWidget(reports_);
 
     journal_entry_->hide();
     journal_entry_->setModal(true);
@@ -68,6 +71,7 @@ MainWindowModel::MainWindowModel(MainWindow * window)
     connect(menu, &MenuBar::viewEnvelopes, this, &MainWindowModel::showEnvelopes);
     connect(menu, &MenuBar::viewBudgetedIncomes, this, &MainWindowModel::showBudgetedIncomes);
     connect(menu, &MenuBar::viewBudgetedExpenses, this, &MainWindowModel::showBudgetedExpenses);
+    connect(menu, &MenuBar::viewReports, this, &MainWindowModel::showReports);
 
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error, this,
@@ -94,6 +98,7 @@ MainWindowModel::MainWindowModel(MainWindow * window)
             &ledger::EnvelopeTransactionModel::refresh);
 
     connect(expense_model_, &budget::ExpenseModel::error, this, &MainWindowModel::showError);
+    connect(reports_, &report::ReportWidget::error, this, &MainWindowModel::showError);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -105,6 +110,7 @@ void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories
     journal_entry_->setRepository(repositories);
     income_model_->setRepository(repositories);
     expense_model_->setRepository(repositories);
+    reports_->setRepository(repositories);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -130,6 +136,11 @@ void MainWindowModel::showBudgetedIncomes() {
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::showBudgetedExpenses() {
     window_->contentWidget()->setCurrentWidget(expense_list_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::showReports() {
+    window_->contentWidget()->setCurrentWidget(reports_);
 }
 
 //--------------------------------------------------------------------------------------------------
