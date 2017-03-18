@@ -134,6 +134,26 @@ std::vector<Expense> SQLExpenseRepository::expenses(const ledger::Envelope & env
 }
 
 //--------------------------------------------------------------------------------------------------
+std::vector<Expense> SQLExpenseRepository::expenses(const QDate & start, const QDate & stop) {
+    std::vector<Expense> expenses;
+    QSqlQuery query(db_);
+    query.prepare(QString("SELECT *, date(beginning_date, 'unixepoch') AS start, "
+                          "date(ending_date, 'unixepoch') AS stop from %1 WHERE "
+                          "beginning_date<=strftime('%s', :end) AND "
+                          "(ending_date IS NULL OR ending_date>=strftime('%s', :begin));")
+                  .arg(table_name_));
+    query.bindValue(":begin", start.toString("yyyy-MM-dd"));
+    query.bindValue(":end", stop.toString("yyyy-MM-dd"));
+    if (not query.exec()) {
+        last_error_ = query.lastError().text();
+    }
+    while (query.next()) {
+        expenses.push_back(toExpense(query.record()));
+    }
+    return expenses;
+}
+
+//--------------------------------------------------------------------------------------------------
 QString SQLExpenseRepository::lastError() const {
     return last_error_;
 }

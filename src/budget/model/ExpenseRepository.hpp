@@ -21,6 +21,7 @@
 #include <vector>
 
 // Qt include(s)
+#include <QDate>
 #include <QString>
 
 // UnderBudget include(s)
@@ -65,6 +66,15 @@ public:
      * @return List of budgeted expenses for the given envelope
      */
     virtual std::vector<Expense> expenses(const ledger::Envelope & envelope) = 0;
+
+    /**
+     * Retrieves all budgeted expenses valid for the given date range.
+     *
+     * @param start Beginning date
+     * @param stop  Ending date
+     * @return List of budgeted expenses for the given date range
+     */
+    virtual std::vector<Expense> expenses(const QDate & start, const QDate & stop) = 0;
 
     /**
      * Returns the message of the last error to have occurred.

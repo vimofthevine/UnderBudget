@@ -21,6 +21,7 @@
 #include <vector>
 
 // Qt include(s)
+#include <QDate>
 #include <QString>
 
 // UnderBudget include(s)
@@ -65,6 +66,15 @@ public:
      * @return List of budgeted incomes for the given account
      */
     virtual std::vector<Income> incomes(const ledger::Account & account) = 0;
+
+    /**
+     * Retrieves all budgeted incomes valid for the given date range.
+     *
+     * @param start Beginning date
+     * @param stop  Ending date
+     * @return List of budgeted incomes for the given date range
+     */
+    virtual std::vector<Income> incomes(const QDate & start, const QDate & stop) = 0;
 
     /**
      * Returns the message of the last error to have occurred.

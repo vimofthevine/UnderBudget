@@ -115,7 +115,7 @@ protected:
         e1.setAmount(Money(100.00));
         e1.setDescription("Rent");
         e1.setBeginningDate(QDate(2016, 2, 1));
-        e1.setEndingDate(QDate(2017, 1, 11));
+        e1.setEndingDate(QDate(2017, 1, 9));
         Recurrence r1;
         r1.setDay(5);
         r1.setPeriodicity(1);
@@ -265,6 +265,42 @@ TEST_F(SQLIncomeRepositoryTest, ShouldUpdateIncomesInDatabase) {
     EXPECT_EQ(QDate(2017, 1, 1), mod.beginningDate());
     EXPECT_EQ(QDate(2017, 1, 31), mod.endingDate());
     EXPECT_EQ(Recurrence::Weekly, mod.recurrence().scope());
+}
+
+/** Verifies that an empty list is returned when no incomes match the given date range */
+TEST_F(SQLIncomeRepositoryTest, ShouldReturnEmptyListWhenNoIncomesOccurInDateRange) {
+    createRepo();
+    populate();
+    auto list = repo->incomes(QDate(2010, 1, 1), QDate(2011, 1, 1));
+    EXPECT_TRUE(list.empty());
+}
+
+/** Verifies that incomes are returned that begin before the date range */
+TEST_F(SQLIncomeRepositoryTest, ShouldReturnIncomesThatBeginBeforeDateRange) {
+    createRepo();
+    populate();
+    auto list = repo->incomes(QDate(2016, 4, 1), QDate(2016, 5, 1));
+    EXPECT_EQ(1u, list.size());
+    EXPECT_EQ(1, list[0].id());
+}
+
+/** Verifies that incomes are returned that begin and end within the date range */
+TEST_F(SQLIncomeRepositoryTest, ShouldReturnIncomesThatBeginAndEndWithinDateRange) {
+    createRepo();
+    populate();
+    auto list = repo->incomes(QDate(2016, 6, 1), QDate(2016, 8, 1));
+    EXPECT_EQ(2u, list.size());
+    EXPECT_EQ(1, list[0].id());
+    EXPECT_EQ(2, list[1].id());
+}
+
+/** Verifies that incomes are returned that have no ending date */
+TEST_F(SQLIncomeRepositoryTest, ShouldReturnIncomesThatHaveNoEndingDate) {
+    createRepo();
+    populate();
+    auto list = repo->incomes(QDate(2017, 1, 10), QDate(2017, 2, 1));
+    EXPECT_EQ(1u, list.size());
+    EXPECT_EQ(3, list[0].id());
 }
 
 } // budget namespace

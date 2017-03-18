@@ -218,6 +218,22 @@ SQLTransactionRepository::getAccountTransactions(const Transaction & transaction
 }
 
 //--------------------------------------------------------------------------------------------------
+Money SQLTransactionRepository::getBalance(const QDate & date, const Currency & currency) {
+    QSqlQuery query(db_);
+    query.prepare("SELECT TOTAL(amount) AS balance "
+                  "FROM account_transaction JOIN transaction_entry ON "
+                  "account_transaction.transaction_entry_id=transaction_entry.id "
+                  "WHERE transaction_entry.date<=strftime('%s', :date);");
+    query.bindValue(":date", date.toString("yyyy-MM-dd"));
+    if (not query.exec() or not query.first()) {
+        last_error_ = query.lastError().text();
+    } else {
+        return Money(query.value("balance").value<int64_t>(), currency);
+    }
+    return Money();
+}
+
+//--------------------------------------------------------------------------------------------------
 Money SQLTransactionRepository::getBalance(const QDate & date, const Account & account) {
     QSqlQuery query(db_);
     query.prepare("SELECT TOTAL(amount) AS balance "

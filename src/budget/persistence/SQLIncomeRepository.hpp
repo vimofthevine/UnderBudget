@@ -22,6 +22,7 @@
 #include <vector>
 
 // Qt include(s)
+#include <QDate>
 #include <QSqlDatabase>
 #include <QSqlRecord>
 #include <QString>
@@ -58,6 +59,8 @@ public:
     Income income(int64_t id) override;
 
     std::vector<Income> incomes(const ledger::Account & account) override;
+
+    std::vector<Income> incomes(const QDate & start, const QDate & stop) override;
 
     QString lastError() const override;
 

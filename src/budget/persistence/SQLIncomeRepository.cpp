@@ -134,6 +134,26 @@ std::vector<Income> SQLIncomeRepository::incomes(const ledger::Account & account
 }
 
 //--------------------------------------------------------------------------------------------------
+std::vector<Income> SQLIncomeRepository::incomes(const QDate & start, const QDate & stop) {
+    std::vector<Income> incomes;
+    QSqlQuery query(db_);
+    query.prepare(QString("SELECT *, date(beginning_date, 'unixepoch') AS start, "
+                          "date(ending_date, 'unixepoch') AS stop from %1 WHERE "
+                          "beginning_date<=strftime('%s', :end) AND "
+                          "(ending_date IS NULL OR ending_date>=strftime('%s', :begin));")
+                  .arg(table_name_));
+    query.bindValue(":begin", start.toString("yyyy-MM-dd"));
+    query.bindValue(":end", stop.toString("yyyy-MM-dd"));
+    if (not query.exec()) {
+        last_error_ = query.lastError().text();
+    }
+    while (query.next()) {
+        incomes.push_back(toIncome(query.record()));
+    }
+    return incomes;
+}
+
+//--------------------------------------------------------------------------------------------------
 QString SQLIncomeRepository::lastError() const {
     return last_error_;
 }

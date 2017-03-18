@@ -550,6 +550,26 @@ TEST_F(SQLTransactionRepositoryTest, ShouldUpdateEnvelopeTransaction) {
     EXPECT_EQ(5, mod.transaction().id());
 }
 
+/** Verifies that total balances can be retrieved. */
+TEST_F(SQLTransactionRepositoryTest, ShouldCalculateTotalBalances) {
+    createRepo();
+    populate();
+
+    Currency c(1, "USD");
+    Account a2(2);
+    a2.setCurrency(c);
+    Account a4(4);
+    a4.setCurrency(c);
+
+    EXPECT_EQ(Money(0.0, c), repo->getBalance(QDate(2016, 11, 1), c));
+    EXPECT_EQ(Money(100.0, c), repo->getBalance(QDate(2016, 11, 2), c));
+    EXPECT_EQ(Money(75.25, c), repo->getBalance(QDate(2016, 12, 24), c));
+    EXPECT_EQ(Money(75.25, c), repo->getBalance(QDate(2017, 1, 15), c)); // Transfer
+    EXPECT_EQ(Money(42.72, c), repo->getBalance(QDate(2017, 2, 28), c));
+    EXPECT_EQ(Money(47.72, c), repo->getBalance(QDate(2017, 12, 7), c));
+    EXPECT_EQ(Money(47.72, c), repo->getBalance(QDate(2017, 12, 8), c));
+}
+
 /** Verifies that account balances can be retrieved. */
 TEST_F(SQLTransactionRepositoryTest, ShouldCalculateAccountBalances) {
     createRepo();

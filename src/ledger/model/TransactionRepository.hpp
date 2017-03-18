@@ -94,6 +94,15 @@ public:
     getAccountTransactions(const Transaction & transaction) = 0;
 
     /**
+     * Retrieves the total cash balance as of the specified date.
+     *
+     * @param[in] date     Date for which to calculate the balance
+     * @param[in] currency Currency to be used for the balance
+     * @return Total cash balance as of the specified date
+     */
+    virtual Money getBalance(const QDate & date, const Currency & currence) = 0;
+
+    /**
      * Retrieves the balance of the given account as of the specified date.
      *
      * @param[in] date    Date for which to calculate the balance

@@ -22,6 +22,7 @@
 #include <vector>
 
 // Qt include(s)
+#include <QDate>
 #include <QSqlDatabase>
 #include <QSqlRecord>
 #include <QString>
@@ -58,6 +59,8 @@ public:
     Expense expense(int64_t id) override;
 
     std::vector<Expense> expenses(const ledger::Envelope & account) override;
+
+    std::vector<Expense> expenses(const QDate & start, const QDate & stop) override;
 
     QString lastError() const override;
 
