@@ -28,6 +28,7 @@
 #include <budget/model/Expense.hpp>
 #include <budget/model/Impact.hpp>
 #include <budget/model/Recurrence.hpp>
+#include "ImpactModel.hpp"
 #include "ReportWidget.hpp"
 
 using namespace QtCharts;
@@ -42,12 +43,13 @@ ReportWidget::ReportWidget(QWidget * parent)
           actual_beginning_balance_(new QLineEdit(this)),
           actual_ending_balance_(new QLineEdit(this)),
           budgeted_ending_balance_(new QLineEdit(this)),
-          cash_flow_(new QChart) {
+          cash_flow_(new QChart), impacts_(new ImpactModel),
+          impact_filter_(new QSortFilterProxyModel) {
     auto today = QDate::currentDate();
     beginning_date_->setCalendarPopup(true);
     beginning_date_->setDate(QDate(today.year(), today.month(), 1));
     ending_date_->setCalendarPopup(true);
-    ending_date_->setDate(QDate(today.year(), today.month(), 1).addMonths(1));
+    ending_date_->setDate(QDate(today.year(), today.month(), 1).addMonths(1).addDays(-1));
 
     scope_->addItem(tr("Weekly"), QVariant::fromValue(budget::Recurrence::Weekly));
     scope_->addItem(tr("Monthly"), QVariant::fromValue(budget::Recurrence::Monthly));
@@ -61,7 +63,25 @@ ReportWidget::ReportWidget(QWidget * parent)
     cash_flow_->setAnimationOptions(QChart::SeriesAnimations);
     auto cash_flow =  new QChartView(cash_flow_);
     cash_flow->setRenderHint(QPainter::Antialiasing, true);
+
+    impact_filter_->setSourceModel(impacts_);
+    auto projected = new QTableView;
+    projected->setModel(impact_filter_);
+    projected->sortByColumn(ImpactModel::DATE, Qt::AscendingOrder);
+    projected->setSelectionBehavior(QTableView::SelectRows);
+    projected->setAlternatingRowColors(true);
+    projected->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    projected->horizontalHeader()->setSectionResizeMode(ImpactModel::CATEGORY, QHeaderView::Stretch);
+    projected->horizontalHeader()->setSectionResizeMode(ImpactModel::DESCRIPTION, QHeaderView::Stretch);
+
     content_->addWidget(cash_flow);
+    content_->addWidget(projected);
+
+    auto report = new QComboBox;
+    connect(report, QOverload<int>::of(&QComboBox::currentIndexChanged), content_,
+            &QStackedWidget::setCurrentIndex);
+    report->addItem(tr("Cash Flow Report"));
+    report->addItem(tr("Projected Expenses and Incomes"));
 
     auto refresh = new QPushButton(tr("Refresh"));
     connect(refresh, &QPushButton::clicked, this, &ReportWidget::refresh);
@@ -73,6 +93,7 @@ ReportWidget::ReportWidget(QWidget * parent)
     params->addWidget(ending_date_);
     params->addWidget(scope_);
     params->addStretch();
+    params->addWidget(report);
     params->addWidget(refresh);
 
     auto highlights = new QGridLayout;
@@ -136,6 +157,7 @@ void ReportWidget::refresh() {
     }
 
     compiler_.compile(start, stop, recurrence, budget_.impacts());
+    impacts_->setImpacts(budget_.impacts());
 
     actual_beginning_balance_->setText(compiler_.beginningBalance().toString());
     actual_ending_balance_->setText(compiler_.endingBalance().toString());

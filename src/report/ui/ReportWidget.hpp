@@ -33,6 +33,7 @@
 class QDateEdit;
 class QComboBox;
 class QLineEdit;
+class QSortFilterProxyModel;
 class QStackedWidget;
 
 namespace QtCharts {
@@ -46,6 +47,9 @@ namespace ub {
 class Repositories;
 
 namespace report {
+
+// Forward declaration(s)
+class ImpactModel;
 
 /**
  * Widget for displaying reports.
@@ -107,6 +111,11 @@ private:
 
     /** Cash flow chart */
     QtCharts::QChart * cash_flow_;
+
+    /** Budgeted impacts model */
+    ImpactModel * impacts_;
+    /** Budgeted impact filter model */
+    QSortFilterProxyModel * impact_filter_;
 
     /**
      * Populates the cash flow chart report.

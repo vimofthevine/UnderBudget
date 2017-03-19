@@ -2,6 +2,7 @@
 
 # Specify report UI source files
 set(report_ui_srcs
+    ImpactModel.cpp
     ReportWidget.cpp
 )
 
