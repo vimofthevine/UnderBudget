@@ -51,11 +51,8 @@ void Compiler::budgetedBalances(QXYSeries * series) {
     auto balance = beginningBalance();
     // Add an initial point at the historical balance to get a nicer-looking graph
     if (not balance.isZero()) {
-        auto first = impacts_by_date_.begin();
-        if (first != impacts_by_date_.end()) {
-            QDateTime time(first->first);
-            series->append(time.toMSecsSinceEpoch(), balance.amount());
-        }
+        QDateTime time(beginning_date_.addDays(-1));
+        series->append(time.toMSecsSinceEpoch(), balance.amount());
     }
     for (auto & entry : impacts_by_date_) {
         for (auto & impact : entry.second) {
@@ -66,7 +63,6 @@ void Compiler::budgetedBalances(QXYSeries * series) {
             }
         }
         QDateTime time(entry.first);
-        time = time.addSecs(60);
         series->append(time.toMSecsSinceEpoch(), balance.amount());
     }
 }
@@ -75,17 +71,33 @@ void Compiler::budgetedBalances(QXYSeries * series) {
 void Compiler::compile(const QDate & start, const QDate & stop,
                        const budget::Recurrence & recurrence,
                        const std::vector<budget::Impact> & impacts) {
+    beginning_date_ = start;
+    ending_date_ = stop;
     impacts_by_date_.clear();
     balance_by_date_.clear();
+
     std::set<QDate> dates;
-    // First get all the historical balances
+    // Add an initial point with the balance as of the day prior to the beginning date
+    auto prev = start.addDays(-1);
+    if (transactions_) {
+        balance_by_date_[prev] = transactions_->getBalance(prev, ledger::Currency());
+    }
+    // Get all the historical balances
     auto date = start;
     while (date <= stop) {
         dates.insert(date);
         if (transactions_) {
             balance_by_date_[date] = transactions_->getBalance(date, ledger::Currency());
         }
+        prev = date;
         date = recurrence.nextOccurrence(date);
+    }
+    // If we didn't happen to land on the ending date, add the ending date specifically
+    if (prev < stop) {
+        dates.insert(stop);
+        if (transactions_) {
+            balance_by_date_[stop] = transactions_->getBalance(stop, ledger::Currency());
+        }
     }
     for (auto & impact : impacts) {
         date = start;
