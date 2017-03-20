@@ -52,8 +52,10 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
           envelope_splits_(new EnvelopeSplitModel(this)),
           envelope_split_table_(new QTableView(this)),
           buttons_(new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
-                                        QDialogButtonBox::Cancel)) {
+                                        QDialogButtonBox::Cancel)),
+          selected_account_id_(0), selected_envelope_id_(0) {
     date_->setCalendarPopup(true);
+    date_->setDate(QDate::currentDate());
 
     account_split_table_->setModel(account_splits_);
     account_split_table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -148,7 +150,8 @@ void JournalEntryDialog::setRepository(std::shared_ptr<LedgerRepository> reposit
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::prepareForNewEntry() {
     if (repository_) {
-        date_->setDate(QDate::currentDate());
+        // Leave the date alone for easier entry of multiple entries on the same day
+        // date_->setDate(QDate::currentDate());
         payee_->clear();
         populateAccountComboBox();
         populateEnvelopeComboBox();
@@ -428,8 +431,13 @@ void JournalEntryDialog::clicked(QAbstractButton * button) {
 void JournalEntryDialog::populateAccountComboBox() {
     account_->clear();
     auto accounts = repository_->accounts()->getLeafAccounts();
+    int index = 0;
     for (auto account : accounts) {
         account_->addItem(account.name(), QVariant::fromValue(account.id()));
+        if (account.id() == selected_account_id_) {
+            account_->setCurrentIndex(index);
+        }
+        ++index;
     }
 }
 
@@ -437,9 +445,24 @@ void JournalEntryDialog::populateAccountComboBox() {
 void JournalEntryDialog::populateEnvelopeComboBox() {
     envelope_->clear();
     auto envelopes = repository_->envelopes()->getLeafEnvelopes();
+    int index = 0;
     for (auto envelope : envelopes) {
         envelope_->addItem(envelope.name(), QVariant::fromValue(envelope.id()));
+        if (envelope.id() == selected_envelope_id_) {
+            envelope_->setCurrentIndex(index);
+        }
+        ++index;
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::setSelectedAccount(const Account & account) {
+    selected_account_id_ = account.id();
+}
+
+//--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::setSelectedEnvelope(const Envelope & envelope) {
+    selected_envelope_id_ = envelope.id();
 }
 
 } // ledger namespace

@@ -19,6 +19,9 @@
 // Qt include(s)
 #include <QSplitter>
 
+// UnderBudget include(s)
+#include <ledger/model/Envelope.hpp>
+
 // Forward declaration(s)
 class QWidget;
 
@@ -56,10 +59,9 @@ signals:
     /**
      * Emitted to indicate the currently selected envelope.
      *
-     * @param[in] current  Model index of the currently selected envelope
-     * @param[in] previous Model index of the previoiusly selected envelope
+     * @param envelope Currently selected envelope
      */
-    void selectEnvelope(const QModelIndex & current, const QModelIndex & previous);
+    void envelopeSelected(const Envelope & envelope);
 
     /**
      * Emitted to indicate a request to modify a transaction.
@@ -82,7 +84,7 @@ signals:
      */
     void deleteTransaction(const Transaction & transaction);
 
-protected slots:
+private slots:
     /**
      * Prompts the user to confirm deletion of the requested envelope.
      *

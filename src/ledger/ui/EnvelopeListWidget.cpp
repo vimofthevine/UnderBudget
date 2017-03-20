@@ -40,7 +40,6 @@ EnvelopeListWidget::EnvelopeListWidget(EnvelopeModel * model,
     details_->hide();
     details_->setModal(true);
 
-    connect(tree_, &TreeView::selectItem, this, &EnvelopeListWidget::selectEnvelope);
     connect(tree_, &TreeView::selectItem, this, &EnvelopeListWidget::setTransactionFilter);
     connect(tree_, &TreeView::createItem, details_, &EnvelopeDetailsDialog::resetForNewEnvelope);
     connect(tree_, &TreeView::modifyItem, details_, &EnvelopeDetailsDialog::showEnvelope);
@@ -76,6 +75,7 @@ void EnvelopeListWidget::setTransactionFilter(const QModelIndex & current,
                                               const QModelIndex & previous) {
     auto acct = model_->envelope(current);
     transactions_->filterForEnvelope(acct);
+    emit envelopeSelected(model_->envelope(current));
 }
 
 //--------------------------------------------------------------------------------------------------

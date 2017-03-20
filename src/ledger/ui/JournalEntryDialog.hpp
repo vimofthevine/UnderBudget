@@ -17,6 +17,7 @@
 #pragma once
 
 // Standard include(s)
+#include <cstdint>
 #include <memory>
 
 // Qt include(s)
@@ -43,8 +44,10 @@ namespace ub {
 namespace ledger {
 
 // Forward declaration(s)
+class Account;
 class AccountSplitModel;
 class DoubleLineEdit;
+class Envelope;
 class EnvelopeSplitModel;
 class LedgerRepository;
 
@@ -79,16 +82,11 @@ signals:
 
 public slots:
     /**
-     * Clears and displays the dialog to allow defining a new journal entry.
-     */
-    void prepareForNewEntry();
-
-    /**
-     * Updates and displays the dialog to allow modifying an existing journal entry.
+     * Prompts the user to confirm deletion of the requested transaction.
      *
-     * @param transaction Transaction to be modified
+     * @param transaction Transaction to be deleted
      */
-    void prepareForModification(const Transaction & transaction);
+    void deleteTransaction(const Transaction & transaction);
 
     /**
      * Updates and displays the dialog to allow duplicating an existing journal entry.
@@ -98,11 +96,30 @@ public slots:
     void prepareForDuplication(const Transaction & transaction);
 
     /**
-     * Prompts the user to confirm deletion of the requested transaction.
+     * Updates and displays the dialog to allow modifying an existing journal entry.
      *
-     * @param transaction Transaction to be deleted
+     * @param transaction Transaction to be modified
      */
-    void deleteTransaction(const Transaction & transaction);
+    void prepareForModification(const Transaction & transaction);
+
+    /**
+     * Clears and displays the dialog to allow defining a new journal entry.
+     */
+    void prepareForNewEntry();
+
+    /**
+     * Updates the selection for the account in the form.
+     *
+     * @param account Selected account
+     */
+    void setSelectedAccount(const Account & account);
+
+    /**
+     * Updates the selection for the envelope in the form.
+     *
+     * @param account Selected envelope
+     */
+    void setSelectedEnvelope(const Envelope & envelope);
 
 private slots:
     /**
@@ -218,6 +235,10 @@ private:
     /** Button box */
     QDialogButtonBox * buttons_;
 
+    /** Default selected account ID */
+    int64_t selected_account_id_;
+    /** Default selected envelope ID */
+    int64_t selected_envelope_id_;
     /** Current journal entry */
     std::shared_ptr<JournalEntry> entry_;
     /** Transaction */

@@ -40,7 +40,6 @@ AccountListWidget::AccountListWidget(AccountModel * model, AccountTransactionMod
     details_->hide();
     details_->setModal(true);
 
-    connect(tree_, &TreeView::selectItem, this, &AccountListWidget::selectAccount);
     connect(tree_, &TreeView::selectItem, this, &AccountListWidget::setTransactionFilter);
     connect(tree_, &TreeView::createItem, details_, &AccountDetailsDialog::resetForNewAccount);
     connect(tree_, &TreeView::modifyItem, details_, &AccountDetailsDialog::showAccount);
@@ -76,6 +75,7 @@ void AccountListWidget::setTransactionFilter(const QModelIndex & current,
                                              const QModelIndex & previous) {
     auto acct = model_->account(current);
     transactions_->filterForAccount(acct);
+    emit accountSelected(model_->account(current));
 }
 
 //--------------------------------------------------------------------------------------------------

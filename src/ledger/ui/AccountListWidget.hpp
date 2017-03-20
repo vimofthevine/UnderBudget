@@ -19,6 +19,9 @@
 // Qt include(s)
 #include <QSplitter>
 
+// UnderBudget include(s)
+#include <ledger/model/Account.hpp>
+
 // Forward declaration(s)
 class QWidget;
 
@@ -56,10 +59,9 @@ signals:
     /**
      * Emitted to indicate the currently selected account.
      *
-     * @param[in] current  Model index of the currently selected account
-     * @param[in] previous Model index of the previoiusly selected account
+     * @param account Currently selected account
      */
-    void selectAccount(const QModelIndex & current, const QModelIndex & previous);
+    void accountSelected(const Account & account);
 
     /**
      * Emitted to indicate a request to modify a transaction.
@@ -82,7 +84,7 @@ signals:
      */
     void deleteTransaction(const Transaction & transaction);
 
-protected slots:
+private slots:
     /**
      * Prompts the user to confirm deletion of the requested account.
      *

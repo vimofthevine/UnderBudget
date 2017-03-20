@@ -76,24 +76,28 @@ MainWindowModel::MainWindowModel(MainWindow * window)
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error, this,
             &MainWindowModel::showError);
-    connect(account_list_, &ledger::AccountListWidget::modifyTransaction, journal_entry_,
-            &ledger::JournalEntryDialog::prepareForModification);
-    connect(account_list_, &ledger::AccountListWidget::duplicateTransaction, journal_entry_,
-            &ledger::JournalEntryDialog::prepareForDuplication);
+    connect(account_list_, &ledger::AccountListWidget::accountSelected, journal_entry_,
+            &ledger::JournalEntryDialog::setSelectedAccount);
     connect(account_list_, &ledger::AccountListWidget::deleteTransaction, journal_entry_,
             &ledger::JournalEntryDialog::deleteTransaction);
+    connect(account_list_, &ledger::AccountListWidget::duplicateTransaction, journal_entry_,
+            &ledger::JournalEntryDialog::prepareForDuplication);
+    connect(account_list_, &ledger::AccountListWidget::modifyTransaction, journal_entry_,
+            &ledger::JournalEntryDialog::prepareForModification);
     connect(journal_entry_, &ledger::JournalEntryDialog::accepted, account_transaction_model_,
             &ledger::AccountTransactionModel::refresh);
 
     connect(envelope_model_, &ledger::EnvelopeModel::error, this, &MainWindowModel::showError);
     connect(envelope_transaction_model_, &ledger::EnvelopeTransactionModel::error, this,
             &MainWindowModel::showError);
-    connect(envelope_list_, &ledger::EnvelopeListWidget::modifyTransaction, journal_entry_,
-            &ledger::JournalEntryDialog::prepareForModification);
-    connect(envelope_list_, &ledger::EnvelopeListWidget::duplicateTransaction, journal_entry_,
-            &ledger::JournalEntryDialog::prepareForDuplication);
     connect(envelope_list_, &ledger::EnvelopeListWidget::deleteTransaction, journal_entry_,
             &ledger::JournalEntryDialog::deleteTransaction);
+    connect(envelope_list_, &ledger::EnvelopeListWidget::duplicateTransaction, journal_entry_,
+            &ledger::JournalEntryDialog::prepareForDuplication);
+    connect(envelope_list_, &ledger::EnvelopeListWidget::envelopeSelected, journal_entry_,
+            &ledger::JournalEntryDialog::setSelectedEnvelope);
+    connect(envelope_list_, &ledger::EnvelopeListWidget::modifyTransaction, journal_entry_,
+            &ledger::JournalEntryDialog::prepareForModification);
     connect(journal_entry_, &ledger::JournalEntryDialog::accepted, envelope_transaction_model_,
             &ledger::EnvelopeTransactionModel::refresh);
 
