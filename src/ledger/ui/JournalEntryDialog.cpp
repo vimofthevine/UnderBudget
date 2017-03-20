@@ -40,12 +40,13 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
           account_(new QComboBox(this)), account_amount_(new DoubleLineEdit(this)),
           account_memo_(new QLineEdit(this)), account_cleared_(new QCheckBox(this)),
           account_split_auto_calc_(new QPushButton(tr("Auto-calculate"))),
-          account_split_add_(new QPushButton(tr("Save"))),
+          account_split_add_(new QPushButton(tr("Save Split"))),
           account_split_clear_(new QPushButton(tr("Clear"))),
           account_split_delete_(new QPushButton(tr("Delete"))),
           account_splits_(new AccountSplitModel(this)), account_split_table_(new QTableView(this)),
           envelope_(new QComboBox(this)), envelope_amount_(new DoubleLineEdit(this)),
-          envelope_memo_(new QLineEdit(this)), envelope_split_add_(new QPushButton(tr("Save"))),
+          envelope_memo_(new QLineEdit(this)),
+          envelope_split_add_(new QPushButton(tr("Save Split"))),
           envelope_split_auto_calc_(new QPushButton(tr("Auto-calculate"))),
           envelope_split_clear_(new QPushButton(tr("Clear"))),
           envelope_split_delete_(new QPushButton(tr("Delete"))),
@@ -240,6 +241,9 @@ void JournalEntryDialog::selectAccountSplit(const QModelIndex & current,
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::autoCalculateAccountSplitAmount() {
     if (entry_) {
+        if (envelope_amount_->value() != 0.0) {
+            saveEnvelopeSplit();
+        }
         auto imbalance = entry_->accountImbalance();
         if (account_split_table_->currentIndex().isValid()) {
             int row = account_split_table_->currentIndex().row();
@@ -280,6 +284,7 @@ void JournalEntryDialog::saveAccountSplit() {
         account_splits_->setJournalEntry(entry_);
 
         clearAccountSplit();
+        autoCalculateEnvelopeSplitAmount();
     }
 }
 
@@ -324,6 +329,9 @@ void JournalEntryDialog::selectEnvelopeSplit(const QModelIndex & current,
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::autoCalculateEnvelopeSplitAmount() {
     if (entry_) {
+        if (account_amount_->value() != 0.0) {
+            saveAccountSplit();
+        }
         auto imbalance = entry_->envelopeImbalance();
         if (envelope_split_table_->currentIndex().isValid()) {
             int row = envelope_split_table_->currentIndex().row();
@@ -364,6 +372,7 @@ void JournalEntryDialog::saveEnvelopeSplit() {
         envelope_splits_->setJournalEntry(entry_);
 
         clearEnvelopeSplit();
+        autoCalculateAccountSplitAmount();
     }
 }
 
@@ -403,6 +412,13 @@ void JournalEntryDialog::clicked(QAbstractButton * button) {
             if (payee.isEmpty()) {
                 QMessageBox::warning(this, tr("Error"), tr("Specify payee for the journal entry"));
                 return;
+            }
+
+            if (account_amount_->value() != 0.0) {
+                saveAccountSplit();
+            }
+            if (envelope_amount_->value() != 0.0) {
+                saveEnvelopeSplit();
             }
 
             if (not entry_->isValid()) {
