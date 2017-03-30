@@ -232,6 +232,8 @@ private:
     /** Envelope transactions table */
     QTableView * envelope_split_table_;
 
+    /// Add-multiple button */
+    QPushButton * add_multiple_;
     /** Button box */
     QDialogButtonBox * buttons_;
 

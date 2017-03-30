@@ -52,6 +52,7 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
           envelope_split_delete_(new QPushButton(tr("Delete"))),
           envelope_splits_(new EnvelopeSplitModel(this)),
           envelope_split_table_(new QTableView(this)),
+          add_multiple_(new QPushButton(tr("Add Multiple"))),
           buttons_(new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
                                         QDialogButtonBox::Cancel)),
           selected_account_id_(0), selected_envelope_id_(0) {
@@ -70,6 +71,8 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
 
     setWindowTitle(tr("Journal Entry"));
 
+    add_multiple_->setCheckable(true);
+    buttons_->addButton(add_multiple_, QDialogButtonBox::YesRole);
     connect(buttons_, &QDialogButtonBox::clicked, this, &JournalEntryDialog::clicked);
 
     connect(account_split_table_->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
@@ -154,7 +157,8 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
     setTabOrder(envelope_split_auto_calc_, envelope_split_add_);
     setTabOrder(envelope_split_add_, envelope_split_clear_);
     setTabOrder(envelope_split_clear_, envelope_split_delete_);
-    setTabOrder(envelope_split_delete_, buttons_->button(QDialogButtonBox::Save));
+    setTabOrder(envelope_split_delete_, add_multiple_);
+    setTabOrder(add_multiple_, buttons_->button(QDialogButtonBox::Save));
     setTabOrder(buttons_->button(QDialogButtonBox::Save), buttons_->button(QDialogButtonBox::Cancel));
     setTabOrder(buttons_->button(QDialogButtonBox::Cancel), buttons_->button(QDialogButtonBox::Reset));
 }
@@ -452,7 +456,11 @@ void JournalEntryDialog::clicked(QAbstractButton * button) {
             if (not entry_->save()) {
                 QMessageBox::warning(this, tr("Error"), entry_->lastError());
             } else {
-                emit accept();
+                if (add_multiple_->isChecked()) {
+                    prepareForNewEntry();
+                } else {
+                    emit accept();
+                }
             }
         }
     } else if (button == buttons_->button(QDialogButtonBox::Reset)) {
