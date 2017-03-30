@@ -141,6 +141,22 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
     form->addRow("", buttons_);
 
     setLayout(form);
+
+    // Fix tab ordering of the buttons, by default they are all grouped after the input widgets
+    setTabOrder(account_cleared_, account_split_auto_calc_);
+    setTabOrder(account_split_auto_calc_, account_split_add_);
+    setTabOrder(account_split_add_, account_split_clear_);
+    setTabOrder(account_split_clear_, account_split_delete_);
+    setTabOrder(account_split_delete_, envelope_);
+    setTabOrder(envelope_, envelope_amount_);
+    setTabOrder(envelope_amount_, envelope_memo_);
+    setTabOrder(envelope_memo_, envelope_split_auto_calc_);
+    setTabOrder(envelope_split_auto_calc_, envelope_split_add_);
+    setTabOrder(envelope_split_add_, envelope_split_clear_);
+    setTabOrder(envelope_split_clear_, envelope_split_delete_);
+    setTabOrder(envelope_split_delete_, buttons_->button(QDialogButtonBox::Save));
+    setTabOrder(buttons_->button(QDialogButtonBox::Save), buttons_->button(QDialogButtonBox::Cancel));
+    setTabOrder(buttons_->button(QDialogButtonBox::Cancel), buttons_->button(QDialogButtonBox::Reset));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -162,6 +178,7 @@ void JournalEntryDialog::prepareForNewEntry() {
         entry_.reset(new JournalEntry(repository_->transactions()));
         account_splits_->setJournalEntry(entry_);
         envelope_splits_->setJournalEntry(entry_);
+        date_->setFocus();
         show();
     } else {
         qWarning() << "No ledger repository has been given to the journal entry dialog";
@@ -181,6 +198,7 @@ void JournalEntryDialog::prepareForModification(const Transaction & transaction)
         payee_->setText(transaction_.payee());
         account_splits_->setJournalEntry(entry_);
         envelope_splits_->setJournalEntry(entry_);
+        date_->setFocus();
         show();
     } else {
         qWarning() << "No ledger repository has been given to the journal entry dialog";
@@ -200,6 +218,7 @@ void JournalEntryDialog::prepareForDuplication(const Transaction & transaction) 
         payee_->setText(transaction_.payee());
         account_splits_->setJournalEntry(entry_);
         envelope_splits_->setJournalEntry(entry_);
+        date_->setFocus();
         show();
     } else {
         qWarning() << "No ledger repository has been given to the journal entry dialog";
