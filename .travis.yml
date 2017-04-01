@@ -52,6 +52,7 @@ install:
   - cd "${TRAVIS_BUILD_DIR}"
 before_script:
   - export GTEST_ROOT=${TRAVIS_BUILD_DIR}/deps/gtest-1.8.0
+  - source $(find /opt -name "qt*-env.sh")
   - if [[ "${CXX_COMPILER}" != "" ]]; then export CXX=${CXX_COMPILER}; fi
   - if [[ "${C_COMPILER}" != "" ]]; then export CC=${C_COMPILER}; fi
   - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then cmake . ; fi
