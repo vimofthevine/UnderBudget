@@ -17,6 +17,7 @@ addons:
       - libsqlite3-dev
       - mesa-common-dev
       - qt58base
+      - qt58charts-no-lgpl
       - qt58script
       - qt58xmlpatterns
       - xvfb
