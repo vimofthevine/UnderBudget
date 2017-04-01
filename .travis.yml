@@ -15,9 +15,9 @@ addons:
     packages:
       - g++-6
       - libsqlite3-dev
-      - qtbase58-dev
-      - qtscript58-dev
-      - libqt5xmlpatterns58-dev
+      - qt58base
+      - qt58script
+      - qt58xmlpatterns
       - xvfb
     sources:
       - ubuntu-sdk-team
