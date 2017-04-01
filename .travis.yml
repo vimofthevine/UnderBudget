@@ -22,7 +22,7 @@ addons:
     sources:
       - ubuntu-sdk-team
       - ubuntu-toolchain-r-test
-      - sourceline ppa:beineri/opt-qt58-trusty
+      - sourceline: 'ppa:beineri/opt-qt58-trusty'
   coverity_scan:
     project:
       name: "vimofthevine/UnderBudget"
