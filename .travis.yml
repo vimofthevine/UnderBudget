@@ -1,6 +1,5 @@
 language: c++
 dist: trusty
-sudo: false
 
 cache:
   directories:
@@ -16,13 +15,14 @@ addons:
     packages:
       - g++-6
       - libsqlite3-dev
-      - qtbase5-dev
-      - qtscript5-dev
-      - libqt5xmlpatterns5-dev
+      - qtbase58-dev
+      - qtscript58-dev
+      - libqt5xmlpatterns58-dev
       - xvfb
     sources:
       - ubuntu-sdk-team
       - ubuntu-toolchain-r-test
+      - sourceline ppa:beineri/opt-qt58-trusty
   coverity_scan:
     project:
       name: "vimofthevine/UnderBudget"
