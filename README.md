@@ -48,7 +48,11 @@ Contributions are welcome in all forms.
 
 ## License
 
-UnderBudget is written by Kyle Treubig and released under the [Apache 2.0 license][apache].
+UnderBudget is written by Kyle Treubig and released under the [GNU General Public License,
+version 3][gplv3].
+
+Versions prior to 4.0 were released under the [Apache 2.0 license][apache]. However, as
+the QtCharts module is licensed under GPLv3 and not LGPLv3, the license was changed to comply.
 
 [github]: https://github.com/vimofthevine/UnderBudget
 [source]: https://bitbucket.org/vimofthevine/underbudget/src
@@ -64,3 +68,4 @@ UnderBudget is written by Kyle Treubig and released under the [Apache 2.0 licens
 [download]: https://bitbucket.org/vimofthevine/underbudget/downloads
 [travis]: http://travis-ci.org/vimofthevine/UnderBudget
 [apache]: http://www.apache.org/licenses/LICENSE-2.0.html
+[gplv3]: http://www.gnu.org/licenses/gpl.html

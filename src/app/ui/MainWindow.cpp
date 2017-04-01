@@ -65,7 +65,7 @@ void MainWindow::about() {
                     tr("Personal finance and budget manager.") + "</p>" + tr("Version") +
                     ": %2<br>" + tr("Authors") + ": Kyle Treubig<br>" + tr("Homepage") +
                     ": <a href=\"http://%3\">%3</a><br>" + tr("License") +
-                    ": Apache License 2.0<br>" + tr("Copyright") + " &copy; 2013, Kyle Treubig";
+                    ": GNU General Public License, version 3<br>" + tr("Copyright") + " &copy; 2017, Kyle Treubig";
     about = about.arg(qApp->applicationName())
                 .arg(qApp->applicationVersion())
                 .arg(qApp->organizationDomain());

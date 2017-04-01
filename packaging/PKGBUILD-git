@@ -7,7 +7,7 @@ pkgrel=1
 pkgdesc="Advanced personal budget analysis"
 arch=('any')
 url=('http://underbudget.vimofthevine.com')
-license=('Apache')
+license=('GPL3')
 depends=('qt5-base qt5-imageformats zlib')
 makedepends=('git' 'cmake' 'make')
 
