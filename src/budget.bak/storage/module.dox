@@ -1,5 +1,0 @@
-/**
- * @defgroup budget_storage Budget Storage
- * @brief Data types and functions to support retrieval and storage of
- * budgets in persistent data formats.
- */

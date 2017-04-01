@@ -21,6 +21,8 @@ if (NOT SKIP_TESTS)
                 qt5_use_modules(${name} Core Sql Widgets)
 				target_link_libraries(${name} ${libs} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES} pthread)
 		add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
+		# Not sure whether tests should run automatically after being built
+		#add_custom_command(TARGET ${name} POST_BUILD COMMAND ${name})
 	endmacro(build_gtest)
 
 	# Add test sub-directories
