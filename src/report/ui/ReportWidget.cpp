@@ -28,8 +28,9 @@
 #include <budget/model/Expense.hpp>
 #include <budget/model/Impact.hpp>
 #include <budget/model/Recurrence.hpp>
-#include "CondensedImpactModel.hpp"
 #include "ImpactModel.hpp"
+#include "ProjectedExpenseModel.hpp"
+#include "ProjectedIncomeModel.hpp"
 #include "ReportWidget.hpp"
 
 using namespace QtCharts;
@@ -44,7 +45,8 @@ ReportWidget::ReportWidget(QWidget * parent)
           actual_beginning_balance_(new QLineEdit(this)),
           actual_ending_balance_(new QLineEdit(this)),
           budgeted_ending_balance_(new QLineEdit(this)), cash_flow_(new QChart),
-          condensed_impacts_(new CondensedImpactModel), expanded_impacts_(new ImpactModel),
+          projected_expenses_(new ProjectedExpenseModel),
+          projected_incomes_(new ProjectedIncomeModel), expanded_impacts_(new ImpactModel),
           expanded_impact_filter_(new QSortFilterProxyModel) {
 
     auto today = QDate::currentDate();
@@ -66,14 +68,24 @@ ReportWidget::ReportWidget(QWidget * parent)
     auto cash_flow = new QChartView(cash_flow_);
     cash_flow->setRenderHint(QPainter::Antialiasing, true);
 
-    auto condensed_projected = new QTreeView;
-    condensed_projected->setModel(condensed_impacts_);
-    condensed_projected->setSelectionBehavior(QTableView::SelectRows);
-    condensed_projected->setAlternatingRowColors(true);
-    condensed_projected->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    condensed_projected->header()->setSectionResizeMode(CondensedImpactModel::NAME,
-                                                        QHeaderView::Stretch);
-    connect(condensed_impacts_, &QAbstractItemModel::modelReset, condensed_projected,
+    auto projected_expenses = new QTreeView;
+    projected_expenses->setModel(projected_expenses_);
+    projected_expenses->setSelectionBehavior(QTableView::SelectRows);
+    projected_expenses->setAlternatingRowColors(true);
+    projected_expenses->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    projected_expenses->header()->setSectionResizeMode(ProjectedExpenseModel::NAME,
+                                                       QHeaderView::Stretch);
+    connect(projected_expenses_, &QAbstractItemModel::modelReset, projected_expenses,
+            &QTreeView::expandAll);
+
+    auto projected_incomes = new QTreeView;
+    projected_incomes->setModel(projected_incomes_);
+    projected_incomes->setSelectionBehavior(QTableView::SelectRows);
+    projected_incomes->setAlternatingRowColors(true);
+    projected_incomes->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    projected_incomes->header()->setSectionResizeMode(ProjectedExpenseModel::NAME,
+                                                      QHeaderView::Stretch);
+    connect(projected_incomes_, &QAbstractItemModel::modelReset, projected_incomes,
             &QTreeView::expandAll);
 
     expanded_impact_filter_->setSourceModel(expanded_impacts_);
@@ -89,7 +101,8 @@ ReportWidget::ReportWidget(QWidget * parent)
                                                         QHeaderView::Stretch);
 
     content_->addWidget(cash_flow);
-    content_->addWidget(condensed_projected);
+    content_->addWidget(projected_expenses);
+    content_->addWidget(projected_incomes);
     content_->addWidget(projected);
 
     auto report = new QComboBox;
@@ -97,6 +110,7 @@ ReportWidget::ReportWidget(QWidget * parent)
             &QStackedWidget::setCurrentIndex);
     report->addItem(tr("Cash Flow Report"));
     report->addItem(tr("Projected Expenses by Envelope"));
+    report->addItem(tr("Projected Incomes by Account"));
     report->addItem(tr("Projected Expenses and Incomes by Date"));
 
     auto refresh = new QPushButton(tr("Refresh"));
@@ -173,7 +187,8 @@ void ReportWidget::refresh() {
     }
 
     compiler_.compile(start, stop, recurrence, budget_.impacts());
-    condensed_impacts_->setImpacts(budget_.impacts());
+    projected_expenses_->setImpacts(budget_.impacts());
+    projected_incomes_->setImpacts(budget_.impacts());
     expanded_impacts_->setImpacts(budget_.impacts());
 
     actual_beginning_balance_->setText(compiler_.beginningBalance().toString());
@@ -222,7 +237,8 @@ void ReportWidget::populateCashFlowChart() {
 void ReportWidget::setRepository(std::shared_ptr<Repositories> repositories) {
     repos_ = repositories;
     compiler_.setRepository(repos_->transactions());
-    condensed_impacts_->setRepository(repositories);
+    projected_expenses_->setRepository(repositories);
+    projected_incomes_->setRepository(repositories);
     refresh();
 }
 

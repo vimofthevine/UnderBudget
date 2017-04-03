@@ -41,7 +41,7 @@ class LedgerRepository;
 
 namespace report {
 
-class CondensedImpactModel : public ledger::EnvelopeModel {
+class ProjectedExpenseModel : public ledger::EnvelopeModel {
     Q_OBJECT
 
 public:
@@ -49,9 +49,9 @@ public:
     static const int IMPACT = 1;
 
     /**
-     * Initializes the condensed impact view model.
+     * Initializes the projected expense view model.
      */
-    CondensedImpactModel();
+    ProjectedExpenseModel();
 
     /**
      * Updates the impacts to be represented by the model.

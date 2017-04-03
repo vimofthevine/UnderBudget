@@ -49,8 +49,9 @@ class Repositories;
 namespace report {
 
 // Forward declaration(s)
-class CondensedImpactModel;
 class ImpactModel;
+class ProjectedExpenseModel;
+class ProjectedIncomeModel;
 
 /**
  * Widget for displaying reports.
@@ -113,8 +114,10 @@ private:
     /** Cash flow chart */
     QtCharts::QChart * cash_flow_;
 
-    /** Condensed budgeted impacts model */
-    CondensedImpactModel * condensed_impacts_;
+    /** Projected expenses model */
+    ProjectedExpenseModel * projected_expenses_;
+    /** Projected incomes model */
+    ProjectedIncomeModel * projected_incomes_;
     /** Expanded budgeted impacts model */
     ImpactModel * expanded_impacts_;
     /** Expanded budgeted impact filter model */

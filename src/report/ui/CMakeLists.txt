@@ -2,8 +2,9 @@
 
 # Specify report UI source files
 set(report_ui_srcs
-    CondensedImpactModel.cpp
     ImpactModel.cpp
+    ProjectedExpenseModel.cpp
+    ProjectedIncomeModel.cpp
     ReportWidget.cpp
 )
 

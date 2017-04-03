@@ -24,26 +24,26 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include <ledger/model/AccountRepository.hpp>
 #include <budget/model/Impact.hpp>
-#include <ledger/model/EnvelopeRepository.hpp>
 #include <ledger/model/LedgerRepository.hpp>
-#include <ledger/ui/EnvelopeModel.hpp>
-#include "CondensedImpactModel.hpp"
+#include <ledger/ui/AccountModel.hpp>
+#include "ProjectedIncomeModel.hpp"
 
 namespace ub {
 namespace report {
 
 //--------------------------------------------------------------------------------------------------
-CondensedImpactModel::CondensedImpactModel() {
+ProjectedIncomeModel::ProjectedIncomeModel() {
     headers_ << tr("Name") << tr("Amount");
 }
 
 //--------------------------------------------------------------------------------------------------
-void CondensedImpactModel::setImpacts(const std::vector<budget::Impact> & impacts) {
+void ProjectedIncomeModel::setImpacts(const std::vector<budget::Impact> & impacts) {
     beginResetModel();
     impacts_.clear();
     for (auto & impact : impacts) {
-        if (impact.type() == budget::Impact::Expense) {
+        if (impact.type() == budget::Impact::Income) {
             impacts_[impact.categoryID()] += impact.amount();
         }
     }
@@ -51,20 +51,20 @@ void CondensedImpactModel::setImpacts(const std::vector<budget::Impact> & impact
 }
 
 //--------------------------------------------------------------------------------------------------
-void CondensedImpactModel::setRepository(std::shared_ptr<ledger::LedgerRepository> repository) {
+void ProjectedIncomeModel::setRepository(std::shared_ptr<ledger::LedgerRepository> repository) {
     beginResetModel();
-    envelopes_ = repository->envelopes();
-    EnvelopeModel::setRepository(repository);
+    accounts_ = repository->accounts();
+    AccountModel::setRepository(repository);
     endResetModel();
 }
 
 //--------------------------------------------------------------------------------------------------
-int CondensedImpactModel::columnCount(const QModelIndex & parent) const {
+int ProjectedIncomeModel::columnCount(const QModelIndex & parent) const {
     return headers_.size();
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant CondensedImpactModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant ProjectedIncomeModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (orientation == Qt::Horizontal and role == Qt::DisplayRole) {
         return headers_.at(section);
     }
@@ -72,8 +72,8 @@ QVariant CondensedImpactModel::headerData(int section, Qt::Orientation orientati
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant CondensedImpactModel::data(const QModelIndex & index, int role) const {
-    if (not envelopes_ or not index.isValid()) {
+QVariant ProjectedIncomeModel::data(const QModelIndex & index, int role) const {
+    if (not accounts_ or not index.isValid()) {
         return QVariant();
     }
 
@@ -81,18 +81,18 @@ QVariant CondensedImpactModel::data(const QModelIndex & index, int role) const {
         return QVariant();
     }
 
-    auto envelope = envelopes_->getEnvelope(index.internalId());
-    if (envelope.id() == -1) {
-        emit error(envelopes_->lastError());
+    auto account = accounts_->getAccount(index.internalId());
+    if (account.id() == -1) {
+        emit error(accounts_->lastError());
         return QVariant();
     }
 
     switch (index.column()) {
     case NAME:
-        return envelope.name();
+        return account.name();
     case IMPACT:
-        if (envelope.children().size() == 0u) {
-            auto iter = impacts_.find(envelope.id());
+        if (account.children().size() == 0u) {
+            auto iter = impacts_.find(account.id());
             if (iter != impacts_.end()) {
                 return iter->second.toString();
             }
