@@ -18,6 +18,9 @@
 
 #pragma once
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QDate>
 #include <QString>
@@ -65,6 +68,16 @@ public:
     QString category() const;
 
     /**
+     * Returns the category ID to which this impact applies.
+     *
+     * This is the ID of either the account or envelope to which this
+     * impact applies.
+     *
+     * @return Category ID to which this impact applies
+     */
+    int64_t categoryID() const;
+
+    /**
      * Returns the date on which this impact applies.
      *
      * @return Date on which this impact applies
@@ -91,6 +104,13 @@ public:
      * @param category New category
      */
     void setCategory(const QString & category);
+
+    /**
+     * Updates the category ID to which this impact applies.
+     *
+     * @param id New category ID
+     */
+    void setCategoryID(int64_t id);
 
     /**
      * Updates the date on which this impact applies.
@@ -125,6 +145,8 @@ private:
     ledger::Money amount_;
     /** Impact category */
     QString category_;
+    /** Associated account or envelope ID */
+    int64_t category_id_;
     /** Impact date */
     QDate date_;
     /** Impact description */

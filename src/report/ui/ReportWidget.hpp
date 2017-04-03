@@ -49,6 +49,7 @@ class Repositories;
 namespace report {
 
 // Forward declaration(s)
+class CondensedImpactModel;
 class ImpactModel;
 
 /**
@@ -112,10 +113,12 @@ private:
     /** Cash flow chart */
     QtCharts::QChart * cash_flow_;
 
-    /** Budgeted impacts model */
-    ImpactModel * impacts_;
-    /** Budgeted impact filter model */
-    QSortFilterProxyModel * impact_filter_;
+    /** Condensed budgeted impacts model */
+    CondensedImpactModel * condensed_impacts_;
+    /** Expanded budgeted impacts model */
+    ImpactModel * expanded_impacts_;
+    /** Expanded budgeted impact filter model */
+    QSortFilterProxyModel * expanded_impact_filter_;
 
     /**
      * Populates the cash flow chart report.

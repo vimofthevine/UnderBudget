@@ -16,6 +16,9 @@
  * along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Standard include(s)
+#include <cstdint>
+
 // Qt include(s)
 #include <QDate>
 #include <QString>
@@ -38,6 +41,11 @@ QString Impact::category() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+int64_t Impact::categoryID() const {
+    return category_id_;
+}
+
+//--------------------------------------------------------------------------------------------------
 QDate Impact::date() const {
     return date_;
 }
@@ -55,6 +63,11 @@ void Impact::setAmount(const ledger::Money & amount) {
 //--------------------------------------------------------------------------------------------------
 void Impact::setCategory(const QString & category) {
     category_ = category;
+}
+
+//--------------------------------------------------------------------------------------------------
+void Impact::setCategoryID(int64_t id) {
+    category_id_ = id;
 }
 
 //--------------------------------------------------------------------------------------------------

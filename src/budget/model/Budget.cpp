@@ -84,6 +84,7 @@ Impact Budget::impact(const QDate & date, const Expense & expense) {
     Impact impact;
     impact.setAmount(expense.amount());
     impact.setCategory(expense.envelope().name());
+    impact.setCategoryID(expense.envelope().id());
     impact.setDate(date);
     impact.setDescription(expense.description());
     impact.setType(Impact::Expense);
@@ -95,6 +96,7 @@ Impact Budget::impact(const QDate & date, const Income & income) {
     Impact impact;
     impact.setAmount(income.amount());
     impact.setCategory(income.account().name());
+    impact.setCategoryID(income.account().id());
     impact.setDate(date);
     impact.setDescription(income.description());
     impact.setType(Impact::Income);
