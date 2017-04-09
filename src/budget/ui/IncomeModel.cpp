@@ -157,10 +157,9 @@ QVariant IncomeModel::data(const QModelIndex & index, int role) const {
     case DESCRIPTION:
         return income.description();
     case BEGINNING_DATE:
-        return income.beginningDate().toString("M/d/yy");
+        return income.beginningDate();
     case ENDING_DATE:
-        return (income.endingDate().isValid() ? income.endingDate().toString("M/dd/yy")
-                                               : tr("Never"));
+        return income.endingDate();
     case RECURRENCE:
         return income.recurrence().toString();
     case AMOUNT:

@@ -157,10 +157,9 @@ QVariant ExpenseModel::data(const QModelIndex & index, int role) const {
     case DESCRIPTION:
         return expense.description();
     case BEGINNING_DATE:
-        return expense.beginningDate().toString("M/d/yy");
+        return expense.beginningDate();
     case ENDING_DATE:
-        return (expense.endingDate().isValid() ? expense.endingDate().toString("M/dd/yy")
-                                               : tr("Never"));
+        return expense.endingDate();
     case RECURRENCE:
         return expense.recurrence().toString();
     case AMOUNT:
