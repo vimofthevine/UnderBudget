@@ -32,6 +32,7 @@
 // UnderBudget include(s)
 #include <budget/model/Expense.hpp>
 #include <budget/model/ExpenseRepository.hpp>
+#include <ledger/model/AccountRepository.hpp>
 #include <ledger/model/Envelope.hpp>
 #include <ledger/model/EnvelopeRepository.hpp>
 
@@ -51,10 +52,12 @@ public:
      * This will set up the budget_expense table.
      *
      * @param db        SQL database connection
+     * @param accounts  Account repository
      * @param envelopes Envelope repository
      * @throw std::runtime_error if the database table could not be set up
      */
-    SQLExpenseRepository(QSqlDatabase & db, std::shared_ptr<ledger::EnvelopeRepository> envelopes);
+    SQLExpenseRepository(QSqlDatabase & db, std::shared_ptr<ledger::AccountRepository> accounts_,
+                         std::shared_ptr<ledger::EnvelopeRepository> envelopes);
 
     int64_t create(const Expense & expense) override;
 
@@ -78,6 +81,8 @@ private:
     QSqlDatabase db_;
     /** Last error message */
     QString last_error_;
+    /** Account repository */
+    std::shared_ptr<ledger::AccountRepository> accounts_;
     /** Envelope repository */
     std::shared_ptr<ledger::EnvelopeRepository> envelopes_;
 

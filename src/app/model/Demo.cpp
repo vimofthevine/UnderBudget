@@ -329,6 +329,8 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
         exp7.setRecurrence(r7);
         expenses->create(exp7);
 
+        qDebug() << "Budgeted expense insertion error (if any):" << expenses->lastError();
+
         // -- Budgeted incomes
 
         auto incomes = repos->incomes();
@@ -344,6 +346,8 @@ void Demo::populate(std::shared_ptr<Repositories> repos) {
         inc1.setDescription("Payday");
         inc1.setRecurrence(r8);
         incomes->create(inc1);
+
+        qDebug() << "Budgeted income insertion error (if any):" << incomes->lastError();
     }
 }
 

@@ -26,6 +26,7 @@
 #include <QString>
 
 // UnderBudget include(s)
+#include <ledger/model/Account.hpp>
 #include <ledger/model/Envelope.hpp>
 #include <ledger/model/Money.hpp>
 #include "Recurrence.hpp"
@@ -57,6 +58,13 @@ public:
 
     // Assignment operator
     Expense & operator=(const Expense & orig) = default;
+
+    /**
+     * Returns the account to which this expense applies.
+     *
+     * @return Account to which this expense applies
+     */
+    ledger::Account account() const;
 
     /**
      * Returns the amount of the budgeted expense.
@@ -108,6 +116,13 @@ public:
     Recurrence recurrence() const;
 
     /**
+     * Updates the account to which this expense applies.
+     *
+     * @param account New account
+     */
+    void setAccount(const ledger::Account & account);
+
+    /**
      * Updates the amount of the budgeted expense.
      *
      * @param amount New amount
@@ -150,6 +165,8 @@ public:
     void setRecurrence(const Recurrence & recurrence);
 
 private:
+    /** Account */
+    ledger::Account account_;
     /** Budgeted expense amount */
     ledger::Money amount_;
     /** Beginning date */

@@ -33,6 +33,8 @@
 #include <budget/model/Expense.hpp>
 #include <budget/model/ExpenseRepository.hpp>
 #include <budget/persistence/SQLExpenseRepository.hpp>
+#include <ledger/model/Account.hpp>
+#include <ledger/model/AccountRepository.hpp>
 #include <ledger/model/Currency.hpp>
 #include <ledger/model/Envelope.hpp>
 #include <ledger/model/EnvelopeRepository.hpp>
@@ -41,9 +43,23 @@
 namespace ub {
 namespace budget {
 
+using ledger::Account;
 using ledger::Currency;
 using ledger::Envelope;
 using ledger::Money;
+
+/** Mock account repository */
+class MockAccountRepository : public ledger::AccountRepository {
+public:
+    MOCK_METHOD2(create, int64_t(const Account &, const Account &));
+    MOCK_METHOD1(getAccount, Account(int64_t));
+    MOCK_METHOD0(getLeafAccounts, std::vector<Account>());
+    MOCK_METHOD0(getRoot, Account());
+    MOCK_CONST_METHOD0(lastError, QString());
+    MOCK_METHOD2(move, bool(const Account &, const Account &));
+    MOCK_METHOD1(remove, bool(const Account &));
+    MOCK_METHOD1(update, bool(const Account &));
+};
 
 /** Mock envelope repository */
 class MockEnvelopeRepository : public ledger::EnvelopeRepository {
@@ -63,6 +79,8 @@ class SQLExpenseRepositoryTest : public ::testing::Test {
 protected:
     /** In-memory SQL database */
     QSqlDatabase db;
+    /** Mock account repository */
+    std::shared_ptr<MockAccountRepository> accounts;
     /** Mock envelope repository */
     std::shared_ptr<MockEnvelopeRepository> envelopes;
     /** Expense repository */
@@ -76,11 +94,19 @@ protected:
         ASSERT_TRUE(db.open()) << "Unable to open database";
 
         QSqlQuery query(db);
+        query.exec("create table account(id integer primary key);");
+        query.exec("insert into account(id) values(7);");
         query.exec("create table envelope(id integer primary key);");
         query.exec("insert into envelope(id) values(2);");
         query.exec("insert into envelope(id) values(4);");
 
+        accounts.reset(new ::testing::NiceMock<MockAccountRepository>());
         envelopes.reset(new ::testing::NiceMock<MockEnvelopeRepository>());
+
+        Account acct7(7);
+        acct7.setName("Acct 7");
+        acct7.setCurrency(Currency(1, "USD"));
+        ON_CALL(*accounts.get(), getAccount(7)).WillByDefault(::testing::Return(acct7));
 
         Envelope env2(2);
         env2.setName("Env 2");
@@ -104,7 +130,7 @@ protected:
     /** Sets up the expense repository */
     void createRepo() {
         try {
-            repo.reset(new SQLExpenseRepository(db, envelopes));
+            repo.reset(new SQLExpenseRepository(db, accounts, envelopes));
         } catch (std::exception & e) {
             FAIL() << "Exception thrown: " << e.what();
         }
@@ -128,6 +154,7 @@ protected:
         Expense e2;
         e2.setAmount(Money(1200.00));
         e2.setDescription("Bill");
+        e2.setAccount(Account(7));
         e2.setEnvelope(Envelope(2));
         e2.setBeginningDate(QDate(2016, 7, 1));
         e2.setEndingDate(QDate(2016, 7, 31));
@@ -185,6 +212,7 @@ TEST_F(SQLExpenseRepositoryTest, ShouldReturnValidExpenseWhenIDExists) {
     EXPECT_EQ(3, record.id()) << repo->lastError().toStdString();
     EXPECT_EQ(Money(110.00, Currency(1, "USD")), record.amount());
     EXPECT_EQ(QString("Rent"), record.description());
+    EXPECT_EQ(-1, record.account().id());
     EXPECT_EQ(4, record.envelope().id());
     EXPECT_EQ(QDate(2017, 1, 11), record.beginningDate());
     EXPECT_FALSE(record.endingDate().isValid());
@@ -205,6 +233,7 @@ TEST_F(SQLExpenseRepositoryTest, ShouldReturnValidOneTimeExpense) {
     EXPECT_EQ(2, record.id());
     EXPECT_EQ(Money(1200.00, Currency(1, "USD")), record.amount());
     EXPECT_EQ(QString("Bill"), record.description());
+    EXPECT_EQ(7, record.account().id());
     EXPECT_EQ(2, record.envelope().id());
     EXPECT_EQ(QDate(2016, 7, 1), record.beginningDate());
     EXPECT_EQ(QDate(2016, 7, 31), record.endingDate());

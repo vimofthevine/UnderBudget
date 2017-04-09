@@ -48,7 +48,7 @@ DatabaseRepositories::DatabaseRepositories(const QString & loc) : location_(loc)
         envelopes_.reset(new ledger::SQLEnvelopeRepository(db_));
         reconciliations_.reset(new ledger::SQLReconciliationRepository(db_, accounts_));
         transactions_.reset(new ledger::SQLTransactionRepository(db_, accounts_, envelopes_));
-        expenses_.reset(new budget::SQLExpenseRepository(db_, envelopes_));
+        expenses_.reset(new budget::SQLExpenseRepository(db_, accounts_, envelopes_));
         incomes_.reset(new budget::SQLIncomeRepository(db_, accounts_));
     }
 }
