@@ -32,6 +32,7 @@
 #include <ledger/model/Transaction.hpp>
 
 // Forward declaration(s)
+class QAbstractButton;
 class QCheckBox;
 class QComboBox;
 class QDateEdit;
@@ -138,11 +139,6 @@ private slots:
     void autoCalculateAccountSplitAmount();
 
     /**
-     * Saves the account split from the input form into the journal entry.
-     */
-    void saveAccountSplit();
-
-    /**
      * Clears the account split input form.
      */
     void clearAccountSplit();
@@ -164,11 +160,6 @@ private slots:
      * the journal entry.
      */
     void autoCalculateEnvelopeSplitAmount();
-
-    /**
-     * Saves the envelope split from the input form into the journal entry.
-     */
-    void saveEnvelopeSplit();
 
     /**
      * Clears the envelope split input form.
@@ -251,6 +242,16 @@ private:
     AccountTransaction account_split_;
     /** Current envelope split */
     EnvelopeTransaction envelope_split_;
+    /** Currently editing multiple account splits */
+    bool multiple_account_splits_;
+    /** Currently editing multiple envelope splits */
+    bool multiple_envelope_splits_;
+
+    /**
+     * Adjusts the properties of all widgets according to the current state of the journal entry's
+     * account and envelope splits.
+     */
+    void adjustSplitDisplay();
 
     /**
      * Populates the account selection widget.
@@ -261,6 +262,16 @@ private:
      * Populates the envelope selection widget.
      */
     void populateEnvelopeComboBox();
+
+    /**
+     * Saves the envelope split from the input form into the journal entry.
+     */
+    void saveEnvelopeSplit();
+
+    /**
+     * Saves the account split from the input form into the journal entry.
+     */
+    void saveAccountSplit();
 };
 
 } // ledger namespace

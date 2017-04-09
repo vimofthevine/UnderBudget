@@ -42,14 +42,14 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
           account_(new QComboBox(this)), account_amount_(new DoubleLineEdit(this)),
           account_memo_(new QLineEdit(this)), account_cleared_(new QCheckBox(this)),
           account_split_auto_calc_(new QPushButton(tr("Auto-calculate"))),
-          account_split_add_(new QPushButton(tr("Save Split"))),
+          account_split_add_(new QPushButton(tr("Add Split"))),
           account_split_clear_(new QPushButton(tr("Clear"))),
           account_split_delete_(new QPushButton(tr("Delete"))),
           account_splits_(new AccountSplitModel(this)), account_split_table_(new QTableView(this)),
           envelope_(new QComboBox(this)), envelope_amount_(new DoubleLineEdit(this)),
           envelope_memo_(new QLineEdit(this)),
-          envelope_split_add_(new QPushButton(tr("Save Split"))),
           envelope_split_auto_calc_(new QPushButton(tr("Auto-calculate"))),
+          envelope_split_add_(new QPushButton(tr("Add Split"))),
           envelope_split_clear_(new QPushButton(tr("Clear"))),
           envelope_split_delete_(new QPushButton(tr("Delete"))),
           envelope_splits_(new EnvelopeSplitModel(this)),
@@ -57,9 +57,12 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
           add_multiple_(new QPushButton(tr("Add Multiple"))),
           buttons_(new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
                                         QDialogButtonBox::Cancel)),
-          selected_account_id_(0), selected_envelope_id_(0) {
+          selected_account_id_(0), selected_envelope_id_(0),
+          multiple_account_splits_(false), multiple_envelope_splits_(false) {
     date_->setCalendarPopup(true);
     date_->setDate(QDate::currentDate());
+
+    envelope_amount_->setPlaceholderText(tr("auto"));
 
     account_split_table_->setModel(account_splits_);
     account_split_table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -81,7 +84,10 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
             &JournalEntryDialog::selectAccountSplit);
     connect(account_split_auto_calc_, &QPushButton::clicked, this,
             &JournalEntryDialog::autoCalculateAccountSplitAmount);
-    connect(account_split_add_, &QPushButton::clicked, this, &JournalEntryDialog::saveAccountSplit);
+    connect(account_split_add_, &QPushButton::clicked, this, [this] () {
+        multiple_account_splits_ = true;
+        saveAccountSplit();
+    });
     connect(account_split_clear_, &QPushButton::clicked, this,
             &JournalEntryDialog::clearAccountSplit);
     connect(account_split_delete_, &QPushButton::clicked, this,
@@ -91,8 +97,10 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
             &JournalEntryDialog::selectEnvelopeSplit);
     connect(envelope_split_auto_calc_, &QPushButton::clicked, this,
             &JournalEntryDialog::autoCalculateEnvelopeSplitAmount);
-    connect(envelope_split_add_, &QPushButton::clicked, this,
-            &JournalEntryDialog::saveEnvelopeSplit);
+    connect(envelope_split_add_, &QPushButton::clicked, this, [this] () {
+        multiple_envelope_splits_ = true;
+        saveEnvelopeSplit();
+    });
     connect(envelope_split_clear_, &QPushButton::clicked, this,
             &JournalEntryDialog::clearEnvelopeSplit);
     connect(envelope_split_delete_, &QPushButton::clicked, this,
@@ -184,6 +192,9 @@ void JournalEntryDialog::prepareForNewEntry() {
         entry_.reset(new JournalEntry(repository_->transactions()));
         account_splits_->setJournalEntry(entry_);
         envelope_splits_->setJournalEntry(entry_);
+        multiple_account_splits_ = false;
+        multiple_envelope_splits_ = false;
+        adjustSplitDisplay();
         date_->setFocus();
         show();
     } else {
@@ -204,6 +215,9 @@ void JournalEntryDialog::prepareForModification(const Transaction & transaction)
         payee_->setText(transaction_.payee());
         account_splits_->setJournalEntry(entry_);
         envelope_splits_->setJournalEntry(entry_);
+        multiple_account_splits_ = (entry_->getAccountSplits().size() > 1u);
+        multiple_envelope_splits_ = (entry_->getEnvelopeSplits().size() > 1u);
+        adjustSplitDisplay();
         date_->setFocus();
         show();
     } else {
@@ -224,6 +238,9 @@ void JournalEntryDialog::prepareForDuplication(const Transaction & transaction) 
         payee_->setText(transaction_.payee());
         account_splits_->setJournalEntry(entry_);
         envelope_splits_->setJournalEntry(entry_);
+        multiple_account_splits_ = (entry_->getAccountSplits().size() > 1u);
+        multiple_envelope_splits_ = (entry_->getEnvelopeSplits().size() > 1u);
+        adjustSplitDisplay();
         date_->setFocus();
         show();
     } else {
@@ -266,7 +283,7 @@ void JournalEntryDialog::selectAccountSplit(const QModelIndex & current,
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::autoCalculateAccountSplitAmount() {
     if (entry_) {
-        if (envelope_amount_->value() != 0.0) {
+        if (envelope_amount_->value() != envelope_split_.amount().amount()) {
             saveEnvelopeSplit();
         }
         auto imbalance = entry_->accountImbalance();
@@ -309,7 +326,10 @@ void JournalEntryDialog::saveAccountSplit() {
         account_splits_->setJournalEntry(entry_);
 
         clearAccountSplit();
-        autoCalculateEnvelopeSplitAmount();
+        adjustSplitDisplay();
+        if (multiple_account_splits_) {
+            autoCalculateAccountSplitAmount();
+        }
     }
 }
 
@@ -332,6 +352,10 @@ void JournalEntryDialog::deleteAccountSplit() {
         entry_->removeSplit(account_split_);
         account_splits_->setJournalEntry(entry_);
         clearAccountSplit();
+        adjustSplitDisplay();
+        if (multiple_account_splits_) {
+            autoCalculateAccountSplitAmount();
+        }
     }
 }
 
@@ -354,7 +378,7 @@ void JournalEntryDialog::selectEnvelopeSplit(const QModelIndex & current,
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::autoCalculateEnvelopeSplitAmount() {
     if (entry_) {
-        if (account_amount_->value() != 0.0) {
+        if (account_amount_->value() != account_split_.amount().amount()) {
             saveAccountSplit();
         }
         auto imbalance = entry_->envelopeImbalance();
@@ -397,7 +421,10 @@ void JournalEntryDialog::saveEnvelopeSplit() {
         envelope_splits_->setJournalEntry(entry_);
 
         clearEnvelopeSplit();
-        autoCalculateAccountSplitAmount();
+        adjustSplitDisplay();
+        if (multiple_envelope_splits_) {
+            autoCalculateEnvelopeSplitAmount();
+        }
     }
 }
 
@@ -419,6 +446,10 @@ void JournalEntryDialog::deleteEnvelopeSplit() {
         entry_->removeSplit(envelope_split_);
         envelope_splits_->setJournalEntry(entry_);
         clearAccountSplit();
+        adjustSplitDisplay();
+        if (multiple_envelope_splits_) {
+            autoCalculateEnvelopeSplitAmount();
+        }
     }
 }
 
@@ -441,6 +472,10 @@ void JournalEntryDialog::clicked(QAbstractButton * button) {
 
             if (account_amount_->value() != 0.0) {
                 saveAccountSplit();
+            }
+            // Allow auto-filling of the envelope amount if it's empty
+            if (envelope_amount_->value() == 0.0) {
+                autoCalculateEnvelopeSplitAmount();
             }
             if (envelope_amount_->value() != 0.0) {
                 saveEnvelopeSplit();
@@ -508,6 +543,63 @@ void JournalEntryDialog::setSelectedAccount(const Account & account) {
 //--------------------------------------------------------------------------------------------------
 void JournalEntryDialog::setSelectedEnvelope(const Envelope & envelope) {
     selected_envelope_id_ = envelope.id();
+}
+
+//--------------------------------------------------------------------------------------------------
+void JournalEntryDialog::adjustSplitDisplay() {
+    if (entry_) {
+        // If adding account splits (accounts = true) or there are already multiple account splits
+        if (multiple_account_splits_ or (entry_->getAccountSplits().size() > 1u)) {
+            // Show the account split controls
+            account_split_auto_calc_->show();
+            account_split_add_->setText(tr("Save Split"));
+            account_split_delete_->show();
+            account_split_table_->show();
+
+            // Disable adding of envelope splits
+            envelope_split_add_->hide();
+        } else {
+            // Hide the account split controls
+            account_split_auto_calc_->hide();
+            account_split_add_->setText(tr("Add Split"));
+            account_split_delete_->hide();
+            account_split_table_->hide();
+
+            // Enable adding of envelope splits
+            envelope_split_add_->show();
+
+            // Show the only account split in the edit widgets
+            if (entry_->getAccountSplits().size() == 1u) {
+                account_split_table_->selectRow(0);
+            }
+        }
+
+        // If adding envelope splits (envelopes = true) or there are already multiple envelope splits
+        if (multiple_envelope_splits_ or (entry_->getEnvelopeSplits().size() > 1u)) {
+            // Show the envelope split controls
+            envelope_split_auto_calc_->show();
+            envelope_split_add_->setText(tr("Save Split"));
+            envelope_split_delete_->show();
+            envelope_split_table_->show();
+
+            // Disable adding of account splits
+            account_split_add_->hide();
+        } else {
+            // Hide the envelope split controls
+            envelope_split_auto_calc_->hide();
+            envelope_split_add_->setText(tr("Add Split"));
+            envelope_split_delete_->hide();
+            envelope_split_table_->hide();
+
+            // Enable adding of account splits
+            account_split_add_->show();
+
+            // Show the only envelope split in the edit widgets
+            if (entry_->getEnvelopeSplits().size() == 1u) {
+                envelope_split_table_->selectRow(0);
+            }
+        }
+    }
 }
 
 } // ledger namespace
