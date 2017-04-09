@@ -69,7 +69,10 @@ ReportWidget::ReportWidget(QWidget * parent)
     cash_flow->setRenderHint(QPainter::Antialiasing, true);
 
     auto projected_expenses = new QTreeView;
-    projected_expenses->setModel(projected_expenses_);
+    auto projected_expenses_filter = new QSortFilterProxyModel;
+    projected_expenses_filter->setSourceModel(projected_expenses_);
+    projected_expenses_filter->sort(0);
+    projected_expenses->setModel(projected_expenses_filter);
     projected_expenses->setSelectionBehavior(QTableView::SelectRows);
     projected_expenses->setAlternatingRowColors(true);
     projected_expenses->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
