@@ -74,9 +74,10 @@ void EnvelopeListWidget::deleteEnvelope(const QModelIndex & index) {
 
 //--------------------------------------------------------------------------------------------------
 void EnvelopeListWidget::setTransactionFilter(const QModelIndex & current,
-                                              const QModelIndex & previous) {
+                                              const QModelIndex & /* previous */) {
     auto acct = model_->envelope(current);
     transactions_->filterForEnvelope(acct);
+    transaction_list_->scrollToBottom();
     emit envelopeSelected(model_->envelope(current));
 }
 

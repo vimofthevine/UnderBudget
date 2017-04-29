@@ -88,6 +88,8 @@ MainWindowModel::MainWindowModel(MainWindow * window)
             &ledger::JournalEntryDialog::prepareForModification);
     connect(journal_entry_, &ledger::JournalEntryDialog::accepted, account_transaction_model_,
             &ledger::AccountTransactionModel::refresh);
+    connect(journal_entry_, &ledger::JournalEntryDialog::rejected, account_transaction_model_,
+            &ledger::AccountTransactionModel::refresh);
 
     connect(envelope_model_, &ledger::EnvelopeModel::error, this, &MainWindowModel::showError);
     connect(envelope_transaction_model_, &ledger::EnvelopeTransactionModel::error, this,
@@ -101,6 +103,8 @@ MainWindowModel::MainWindowModel(MainWindow * window)
     connect(envelope_list_, &ledger::EnvelopeListWidget::modifyTransaction, journal_entry_,
             &ledger::JournalEntryDialog::prepareForModification);
     connect(journal_entry_, &ledger::JournalEntryDialog::accepted, envelope_transaction_model_,
+            &ledger::EnvelopeTransactionModel::refresh);
+    connect(journal_entry_, &ledger::JournalEntryDialog::rejected, envelope_transaction_model_,
             &ledger::EnvelopeTransactionModel::refresh);
 
     connect(expense_model_, &budget::ExpenseModel::error, this, &MainWindowModel::showError);

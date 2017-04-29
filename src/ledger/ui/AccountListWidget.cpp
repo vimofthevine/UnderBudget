@@ -74,9 +74,10 @@ void AccountListWidget::deleteAccount(const QModelIndex & index) {
 
 //--------------------------------------------------------------------------------------------------
 void AccountListWidget::setTransactionFilter(const QModelIndex & current,
-                                             const QModelIndex & previous) {
+                                             const QModelIndex & /* previous */) {
     auto acct = model_->account(current);
     transactions_->filterForAccount(acct);
+    transaction_list_->scrollToBottom();
     emit accountSelected(model_->account(current));
 }
 
