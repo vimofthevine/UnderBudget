@@ -4,6 +4,7 @@
 // UnderBudget include(s)
 #include "MainWindow.hpp"
 #include "MenuBar.hpp"
+#include "ToolBar.hpp"
 
 namespace ub {
 
@@ -12,7 +13,9 @@ const QString MAIN_WINDOW_SIZE = "MainWindowSize";
 const QString MAIN_WINDOW_STATE = "MainWindowState";
 
 //--------------------------------------------------------------------------------------------------
-MainWindow::MainWindow() : menu_(new MenuBar(this)), content_(new QStackedWidget(this)) {
+MainWindow::MainWindow()
+        : menu_(new MenuBar(this)), toolbar_(new ToolBar(this)),
+          content_(new QStackedWidget(this)) {
     restoreSettings();
 
     setWindowTitle(qApp->applicationName());
@@ -24,6 +27,7 @@ MainWindow::MainWindow() : menu_(new MenuBar(this)), content_(new QStackedWidget
     connect(menu_, &MenuBar::aboutApplication, this, &MainWindow::about);
     connect(menu_, &MenuBar::aboutQt, qApp, QApplication::aboutQt);
     setMenuBar(menu_);
+    addToolBar(toolbar_);
 
     setCentralWidget(content_);
 }
@@ -65,7 +69,8 @@ void MainWindow::about() {
                     tr("Personal finance and budget manager.") + "</p>" + tr("Version") +
                     ": %2<br>" + tr("Authors") + ": Kyle Treubig<br>" + tr("Homepage") +
                     ": <a href=\"http://%3\">%3</a><br>" + tr("License") +
-                    ": GNU General Public License, version 3<br>" + tr("Copyright") + " &copy; 2017, Kyle Treubig";
+                    ": GNU General Public License, version 3<br>" + tr("Copyright") +
+                    " &copy; 2017, Kyle Treubig";
     about = about.arg(qApp->applicationName())
                 .arg(qApp->applicationVersion())
                 .arg(qApp->organizationDomain());

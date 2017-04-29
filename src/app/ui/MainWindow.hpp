@@ -29,6 +29,7 @@ namespace ub {
 
 // Forward declaration(s)
 class MenuBar;
+class ToolBar;
 
 /**
  * Main application window.
@@ -73,6 +74,8 @@ protected slots:
 private:
     /** Menu bar */
     MenuBar * menu_;
+    /** Toolbar */
+    ToolBar * toolbar_;
     /** Stacked content widget */
     QStackedWidget * content_;
 

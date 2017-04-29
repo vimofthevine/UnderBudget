@@ -42,6 +42,20 @@ namespace Icon {
 QIcon about();
 
 /**
+ * Creates an icon for a view-accounts action.
+ *
+ * @return view-accounts action
+ */
+QIcon accounts();
+
+/**
+ * Creates an icon for an add action.
+ *
+ * @return add action icon
+ */
+QIcon add();
+
+/**
  * Creates an icon for an analysis summary action.
  *
  * @return analysis summary action icon
@@ -105,6 +119,13 @@ QIcon editRules();
 QIcon editPreferences();
 
 /**
+ * Creates an icon for a view-envelopes action.
+ *
+ * @return view-envelopes action icon
+ */
+QIcon envelopes();
+
+/**
  * Creates an icon for an estimate impact action.
  *
  * @return estimate impact action icon
@@ -124,6 +145,13 @@ QIcon estimateProgress();
  * @return exit actioin icon
  */
 QIcon exit();
+
+/**
+ * Creates an icon for a view-expenses action.
+ *
+ * @return view-expenses action icon
+ */
+QIcon expenses();
 
 /**
  * Creates an icon for an export file action.
@@ -154,6 +182,13 @@ QIcon importTransactions();
 QIcon importTransactionsFrom();
 
 /**
+ * Creates an icon for a view-incomes action.
+ *
+ * @return view-incomes action icon
+ */
+QIcon incomes();
+
+/**
  * Creates an icon for a new document action.
  *
  * @return new document action icon
@@ -173,6 +208,13 @@ QIcon openDocument();
  * @return redo action icon
  */
 QIcon redo();
+
+/**
+ * Creates an icon for a view-reports action.
+ *
+ * @return view-reports action icon
+ */
+QIcon reports();
 
 /**
  * Creates an icon for a save-as document action.

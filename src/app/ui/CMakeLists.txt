@@ -6,6 +6,7 @@ set(app_ui_srcs
     MainWindow.cpp
     MainWindowModel.cpp
     MenuBar.cpp
+    ToolBar.cpp
 )
 
 # Platform-specific look-and-feel resources
