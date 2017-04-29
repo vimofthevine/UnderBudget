@@ -56,10 +56,12 @@ public:
     static const int PAYEE = 1;
     /** Transaction memo column */
     static const int MEMO = 2;
-    /** Transaction amount column */
-    static const int AMOUNT = 3;
+    /** Transaction debit amount column */
+    static const int DEBIT = 3;
+    /** Transaction credit amount column */
+    static const int CREDIT = 4;
     /** Envelope balance column */
-    static const int BALANCE = 4;
+    static const int BALANCE = 5;
 
     /**
      * Initializes the envelope transaction view model.

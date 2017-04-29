@@ -30,7 +30,8 @@ namespace ledger {
 
 //--------------------------------------------------------------------------------------------------
 AccountTransactionModel::AccountTransactionModel() {
-    headers_ << tr("Date") << tr("Payee") << tr("Memo") << tr("Amount") << tr("Balance");
+    headers_ << tr("Date") << tr("Payee") << tr("Memo") << tr("Debit") << tr("Credit")
+             << tr("Balance");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -108,9 +109,20 @@ QVariant AccountTransactionModel::data(const QModelIndex & index, int role) cons
         return transaction.transaction().payee();
     case MEMO:
         return transaction.memo();
-    case AMOUNT:
-        return (role == Qt::DisplayRole) ? transaction.amount().toString()
-                                         : QVariant::fromValue(transaction.amount());
+    case DEBIT:
+        if (not transaction.amount().isNegative()) {
+            return (role == Qt::DisplayRole) ? transaction.amount().toString()
+                                             : QVariant::fromValue(transaction.amount());
+        } else {
+            return QVariant();
+        }
+    case CREDIT:
+        if (transaction.amount().isNegative()) {
+            return (role == Qt::DisplayRole) ? (-transaction.amount()).toString()
+                                             : QVariant::fromValue(transaction.amount());
+        } else {
+            return QVariant();
+        }
     case BALANCE:
         return (role == Qt::DisplayRole) ? transaction.balance().toString()
                                          : QVariant::fromValue(transaction.balance());
