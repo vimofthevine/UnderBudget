@@ -37,6 +37,7 @@
 #include "MainWindow.hpp"
 #include "MainWindowModel.hpp"
 #include "MenuBar.hpp"
+#include "ToolBar.hpp"
 
 namespace ub {
 
@@ -74,6 +75,15 @@ MainWindowModel::MainWindowModel(MainWindow * window)
     connect(menu, &MenuBar::viewBudgetedIncomes, this, &MainWindowModel::showBudgetedIncomes);
     connect(menu, &MenuBar::viewBudgetedExpenses, this, &MainWindowModel::showBudgetedExpenses);
     connect(menu, &MenuBar::viewReports, this, &MainWindowModel::showReports);
+
+    auto toolbar = window_->toolBar();
+    connect(toolbar, &ToolBar::addTransaction, journal_entry_,
+            &ledger::JournalEntryDialog::prepareForNewEntry);
+    connect(toolbar, &ToolBar::viewAccounts, this, &MainWindowModel::showAccounts);
+    connect(toolbar, &ToolBar::viewEnvelopes, this, &MainWindowModel::showEnvelopes);
+    connect(toolbar, &ToolBar::viewBudgetedIncomes, this, &MainWindowModel::showBudgetedIncomes);
+    connect(toolbar, &ToolBar::viewBudgetedExpenses, this, &MainWindowModel::showBudgetedExpenses);
+    connect(toolbar, &ToolBar::viewReports, this, &MainWindowModel::showReports);
 
     connect(account_model_, &ledger::AccountModel::error, this, &MainWindowModel::showError);
     connect(account_transaction_model_, &ledger::AccountTransactionModel::error, this,

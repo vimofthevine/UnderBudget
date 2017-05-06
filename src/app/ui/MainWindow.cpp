@@ -38,6 +38,11 @@ MenuBar * MainWindow::menu() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+ToolBar * MainWindow::toolBar() const {
+    return toolbar_;
+}
+
+//--------------------------------------------------------------------------------------------------
 QStackedWidget * MainWindow::contentWidget() const {
     return content_;
 }

@@ -51,6 +51,13 @@ public:
     MenuBar * menu() const;
 
     /**
+     * Returns the main window toolbar.
+     *
+     * @return Main window toolbar
+     */
+    ToolBar * toolBar() const;
+
+    /**
      * Returns the stacked widget containing the central content of the main window.
      *
      * @return Main window content stacked widget
