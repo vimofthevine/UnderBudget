@@ -47,10 +47,9 @@ MainWindowModel::MainWindowModel(MainWindow * window)
           account_transaction_model_(new ledger::AccountTransactionModel),
           envelope_model_(new ledger::EnvelopeModel),
           envelope_transaction_model_(new ledger::EnvelopeTransactionModel),
-          income_model_(new budget::IncomeModel),
-          expense_model_(new budget::ExpenseModel), window_(window),
-          account_list_(
-              new ledger::AccountListWidget(account_model_, account_transaction_model_, window_)),
+          income_model_(new budget::IncomeModel), expense_model_(new budget::ExpenseModel),
+          window_(window), account_list_(new ledger::AccountListWidget(
+                               account_model_, account_transaction_model_, window_)),
           envelope_list_(new ledger::EnvelopeListWidget(envelope_model_,
                                                         envelope_transaction_model_, window_)),
           journal_entry_(new ledger::JournalEntryDialog(window_)),
@@ -116,6 +115,13 @@ MainWindowModel::MainWindowModel(MainWindow * window)
             &ledger::EnvelopeTransactionModel::refresh);
     connect(journal_entry_, &ledger::JournalEntryDialog::rejected, envelope_transaction_model_,
             &ledger::EnvelopeTransactionModel::refresh);
+
+    connect(reports_, &report::ReportWidget::showAccountIncomes, income_list_,
+            &budget::IncomeListWidget::showAccount);
+    connect(reports_, &report::ReportWidget::showAccountIncomes, this, &MainWindowModel::showBudgetedIncomes);
+    connect(reports_, &report::ReportWidget::showEnvelopeExpenses, expense_list_,
+            &budget::ExpenseListWidget::showEnvelope);
+    connect(reports_, &report::ReportWidget::showEnvelopeExpenses, this, &MainWindowModel::showBudgetedExpenses);
 
     connect(expense_model_, &budget::ExpenseModel::error, this, &MainWindowModel::showError);
     connect(reports_, &report::ReportWidget::error, this, &MainWindowModel::showError);

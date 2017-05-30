@@ -57,6 +57,18 @@ Account AccountModel::account(const QModelIndex & index) const {
 }
 
 //--------------------------------------------------------------------------------------------------
+QModelIndex AccountModel::index(const Account & account) const {
+    auto indexes =
+        match(index(0, 0, QModelIndex()), Qt::DisplayRole, account.name(), -1, Qt::MatchRecursive);
+    for (auto & i : indexes) {
+        if (i.internalId() == account.id()) {
+            return i;
+        }
+    }
+    return QModelIndex();
+}
+
+//--------------------------------------------------------------------------------------------------
 bool AccountModel::create(const Account & account, const QModelIndex & parent) {
     if (not accounts_) {
         return false;

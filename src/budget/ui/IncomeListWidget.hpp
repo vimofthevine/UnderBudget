@@ -70,6 +70,14 @@ signals:
      */
     void selectAccount(const QModelIndex & current, const QModelIndex & previous);
 
+public slots:
+    /**
+     * Selects the given account.
+     *
+     * @param account Account to be shown
+     */
+    void showAccount(const ledger::Account & account);
+
 protected slots:
     /**
      * Prompts the user to confirm deletion of the requested account.

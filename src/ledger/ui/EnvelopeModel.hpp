@@ -74,6 +74,14 @@ public:
     Envelope envelope(const QModelIndex & index) const;
 
     /**
+     * Returns the index to the given envelope.
+     *
+     * @param envelope Envelope for which to acquire an index
+     * @return Index to the envelope
+     */
+    QModelIndex index(const Envelope & envelope) const;
+
+    /**
      * Creates a new envelope under the given parent envelope.
      *
      * @param envelope Envelope to be created

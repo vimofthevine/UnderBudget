@@ -71,6 +71,11 @@ IncomeListWidget::IncomeListWidget(ledger::AccountModel * accounts,
 }
 
 //--------------------------------------------------------------------------------------------------
+void IncomeListWidget::showAccount(const ledger::Account & account) {
+    tree_->select(accounts_->index(account));
+}
+
+//--------------------------------------------------------------------------------------------------
 void IncomeListWidget::deleteAccount(const QModelIndex & index) {
     ledger::Account account = accounts_->account(index);
     auto answer =

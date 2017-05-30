@@ -29,6 +29,7 @@
 
 // UnderBudget include(s)
 #include <budget/model/Impact.hpp>
+#include <ledger/model/Envelope.hpp>
 #include <ledger/model/Money.hpp>
 #include <ledger/ui/EnvelopeModel.hpp>
 
@@ -52,6 +53,14 @@ public:
      * Initializes the projected expense view model.
      */
     ProjectedExpenseModel();
+
+    /**
+     * Retrieves the envelope represented by the given model index.
+     *
+     * @param index Model index
+     * @return Envelope located at the given index
+     */
+    ledger::Envelope envelope(const QModelIndex & index) const;
 
     /**
      * Updates the impacts to be represented by the model.

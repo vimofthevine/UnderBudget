@@ -70,6 +70,14 @@ signals:
      */
     void selectEnvelope(const QModelIndex & current, const QModelIndex & previous);
 
+public slots:
+    /**
+     * Selects the given envelope.
+     *
+     * @param envelope Envelope to be shown
+     */
+    void showEnvelope(const ledger::Envelope & envelope);
+
 protected slots:
     /**
      * Prompts the user to confirm deletion of the requested envelope.

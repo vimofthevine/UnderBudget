@@ -46,6 +46,12 @@ namespace ub {
 // Forward declaration(s)
 class Repositories;
 
+namespace ledger {
+// Forward declaration(s)
+class Account;
+class Envelope;
+}
+
 namespace report {
 
 // Forward declaration(s)
@@ -79,6 +85,20 @@ public:
 signals:
     /** Emitted when an error has occurred. */
     void error(const QString & message) const;
+
+    /**
+     * Emitted to display the incomes for the given account.
+     *
+     * @param account Account to be shown
+     */
+    void showAccountIncomes(const ledger::Account & account);
+
+    /**
+     * Emitted to display the expenses for the given envelope.
+     *
+     * @param envelope Envelope to be shown
+     */
+    void showEnvelopeExpenses(const ledger::Envelope & envelope);
 
 private slots:
     /**
@@ -116,6 +136,8 @@ private:
 
     /** Projected expenses model */
     ProjectedExpenseModel * projected_expenses_;
+    /** Sorted projected expenses model */
+    QSortFilterProxyModel * projected_expenses_filter_;
     /** Projected incomes model */
     ProjectedIncomeModel * projected_incomes_;
     /** Expanded budgeted impacts model */

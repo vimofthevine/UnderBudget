@@ -32,8 +32,8 @@ namespace ub {
 namespace budget {
 
 //--------------------------------------------------------------------------------------------------
-ExpenseListWidget::ExpenseListWidget(ledger::EnvelopeModel * envelopes,
-                                     ExpenseModel * expenses, QWidget * parent)
+ExpenseListWidget::ExpenseListWidget(ledger::EnvelopeModel * envelopes, ExpenseModel * expenses,
+                                     QWidget * parent)
         : QSplitter(Qt::Horizontal, parent), envelopes_(envelopes), expenses_(expenses),
           envelope_details_(new ledger::EnvelopeDetailsDialog(envelopes_, parent)),
           expense_details_(new ExpenseDetailsDialog(expenses_, parent)),
@@ -60,14 +60,18 @@ ExpenseListWidget::ExpenseListWidget(ledger::EnvelopeModel * envelopes,
             &ExpenseDetailsDialog::showExpense);
     connect(table_, &BudgetTableView::duplicateItem, expense_details_,
             &ExpenseDetailsDialog::duplicateExpense);
-    connect(table_, &BudgetTableView::deleteItem, this,
-            &ExpenseListWidget::deleteExpense);
+    connect(table_, &BudgetTableView::deleteItem, this, &ExpenseListWidget::deleteExpense);
 
     addWidget(tree_);
     addWidget(table_);
 
     // Give expense list stretch priority
     setStretchFactor(1, 1);
+}
+
+//--------------------------------------------------------------------------------------------------
+void ExpenseListWidget::showEnvelope(const ledger::Envelope & envelope) {
+    tree_->select(envelopes_->index(envelope));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -83,7 +87,7 @@ void ExpenseListWidget::deleteEnvelope(const QModelIndex & index) {
 
 //--------------------------------------------------------------------------------------------------
 void ExpenseListWidget::setExpenseFilter(const QModelIndex & current,
-                                              const QModelIndex & previous) {
+                                         const QModelIndex & /* previous */) {
     envelope_ = envelopes_->envelope(current);
     expenses_->filterForEnvelope(envelope_);
 }
@@ -99,8 +103,8 @@ void ExpenseListWidget::createExpense() {
 void ExpenseListWidget::deleteExpense(const QModelIndex & index) {
     Expense expense = expenses_->expense(index);
     auto answer =
-            QMessageBox::question(this->parentWidget(), tr("Delete Budgeted Expense?"),
-                                  tr("Are you sure you want to delete %0?").arg(expense.description()));
+        QMessageBox::question(this->parentWidget(), tr("Delete Budgeted Expense?"),
+                              tr("Are you sure you want to delete %0?").arg(expense.description()));
     if (answer == QMessageBox::Yes) {
         expenses_->remove(index);
     }

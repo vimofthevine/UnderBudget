@@ -24,6 +24,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include <ledger/model/Account.hpp>
 #include <ledger/model/AccountRepository.hpp>
 #include <budget/model/Impact.hpp>
 #include <ledger/model/LedgerRepository.hpp>
@@ -37,6 +38,16 @@ namespace report {
 ProjectedIncomeModel::ProjectedIncomeModel() {
     headers_ << tr("Name") << tr("Amount");
 }
+
+//--------------------------------------------------------------------------------------------------
+ledger::Account ProjectedIncomeModel::account(const QModelIndex & index) const {
+    if (not accounts_ or not index.isValid()) {
+        return ledger::Account();
+    }
+
+    return accounts_->getAccount(index.internalId());
+}
+
 
 //--------------------------------------------------------------------------------------------------
 void ProjectedIncomeModel::setImpacts(const std::vector<budget::Impact> & impacts) {

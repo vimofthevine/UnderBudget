@@ -74,6 +74,14 @@ public:
     Account account(const QModelIndex & index) const;
 
     /**
+     * Returns the index to the given account.
+     *
+     * @param account Account for which to acquire an index
+     * @return Index to the account
+     */
+    QModelIndex index(const Account & account) const;
+
+    /**
      * Creates a new account under the given parent account.
      *
      * @param account Account to be created

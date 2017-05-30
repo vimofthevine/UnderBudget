@@ -44,6 +44,12 @@ TreeView::TreeView(QWidget * parent) : QTreeView(parent), filter_(new QSortFilte
 }
 
 //--------------------------------------------------------------------------------------------------
+void TreeView::select(const QModelIndex & index) {
+    selectionModel()->setCurrentIndex(filter_->mapFromSource(index),
+                                      QItemSelectionModel::SelectCurrent);
+}
+
+//--------------------------------------------------------------------------------------------------
 void TreeView::setModel(QAbstractItemModel * model) {
     filter_->setSourceModel(model);
 
@@ -94,9 +100,7 @@ void TreeView::contextMenuEvent(QContextMenuEvent * event) {
         menu->addAction(del);
     } else {
         auto add = new QAction(tr("Add top-level item"), this);
-        connect(add, &QAction::triggered, this, [this]() {
-            emit createItem(QModelIndex());
-        });
+        connect(add, &QAction::triggered, this, [this]() { emit createItem(QModelIndex()); });
         menu->addAction(add);
     }
 

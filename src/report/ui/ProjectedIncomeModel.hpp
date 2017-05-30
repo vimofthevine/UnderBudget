@@ -54,6 +54,14 @@ public:
     ProjectedIncomeModel();
 
     /**
+     * Retrieves the account represented by the given model idnex.
+     *
+     * @param index Model index
+     * @return Account located at the given index
+     */
+    ledger::Account account(const QModelIndex & index) const;
+
+    /**
      * Updates the impacts to be represented by the model.
      *
      * @param impacts Impacts list

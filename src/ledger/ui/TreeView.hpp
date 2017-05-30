@@ -46,6 +46,11 @@ public:
      */
     TreeView(QWidget * parent);
 
+    /**
+     * Sets the source model for the tree view.
+     *
+     * @param model Source model
+     */
     void setModel(QAbstractItemModel * model) override;
 
 signals:
@@ -77,6 +82,14 @@ signals:
      * @param index Model index of the item to be deleted
      */
     void deleteItem(const QModelIndex & index);
+
+public slots:
+    /**
+     * Selects the given index, replacing the current selection.
+     *
+     * @param index Index to be selected
+     */
+    void select(const QModelIndex & index);
 
 protected:
     void contextMenuEvent(QContextMenuEvent * event) override;

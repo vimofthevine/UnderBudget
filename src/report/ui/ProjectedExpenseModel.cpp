@@ -25,6 +25,7 @@
 
 // UnderBudget include(s)
 #include <budget/model/Impact.hpp>
+#include <ledger/model/Envelope.hpp>
 #include <ledger/model/EnvelopeRepository.hpp>
 #include <ledger/model/LedgerRepository.hpp>
 #include <ledger/ui/EnvelopeModel.hpp>
@@ -36,6 +37,15 @@ namespace report {
 //--------------------------------------------------------------------------------------------------
 ProjectedExpenseModel::ProjectedExpenseModel() {
     headers_ << tr("Name") << tr("Amount");
+}
+
+//--------------------------------------------------------------------------------------------------
+ledger::Envelope ProjectedExpenseModel::envelope(const QModelIndex & index) const {
+    if (not envelopes_ or not index.isValid()) {
+        return ledger::Envelope();
+    }
+
+    return envelopes_->getEnvelope(index.internalId());
 }
 
 //--------------------------------------------------------------------------------------------------

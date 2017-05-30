@@ -46,6 +46,7 @@ ReportWidget::ReportWidget(QWidget * parent)
           actual_ending_balance_(new QLineEdit(this)),
           budgeted_ending_balance_(new QLineEdit(this)), cash_flow_(new QChart),
           projected_expenses_(new ProjectedExpenseModel),
+          projected_expenses_filter_(new QSortFilterProxyModel),
           projected_incomes_(new ProjectedIncomeModel), expanded_impacts_(new ImpactModel),
           expanded_impact_filter_(new QSortFilterProxyModel) {
 
@@ -69,10 +70,9 @@ ReportWidget::ReportWidget(QWidget * parent)
     cash_flow->setRenderHint(QPainter::Antialiasing, true);
 
     auto projected_expenses = new QTreeView;
-    auto projected_expenses_filter = new QSortFilterProxyModel;
-    projected_expenses_filter->setSourceModel(projected_expenses_);
-    projected_expenses_filter->sort(0);
-    projected_expenses->setModel(projected_expenses_filter);
+    projected_expenses_filter_->setSourceModel(projected_expenses_);
+    projected_expenses_filter_->sort(0);
+    projected_expenses->setModel(projected_expenses_filter_);
     projected_expenses->setSelectionBehavior(QTableView::SelectRows);
     projected_expenses->setAlternatingRowColors(true);
     projected_expenses->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -80,6 +80,10 @@ ReportWidget::ReportWidget(QWidget * parent)
                                                        QHeaderView::Stretch);
     connect(projected_expenses_, &QAbstractItemModel::modelReset, projected_expenses,
             &QTreeView::expandAll);
+    connect(projected_expenses, &QTreeView::doubleClicked, this, [this](const QModelIndex & index) {
+        emit showEnvelopeExpenses(
+            projected_expenses_->envelope(projected_expenses_filter_->mapToSource(index)));
+    });
 
     auto projected_incomes = new QTreeView;
     projected_incomes->setModel(projected_incomes_);
@@ -90,6 +94,9 @@ ReportWidget::ReportWidget(QWidget * parent)
                                                       QHeaderView::Stretch);
     connect(projected_incomes_, &QAbstractItemModel::modelReset, projected_incomes,
             &QTreeView::expandAll);
+    connect(projected_incomes, &QTreeView::doubleClicked, this, [this](const QModelIndex & index) {
+        emit showAccountIncomes(projected_incomes_->account(index));
+    });
 
     expanded_impact_filter_->setSourceModel(expanded_impacts_);
     auto projected = new QTableView;

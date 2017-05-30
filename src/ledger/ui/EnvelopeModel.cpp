@@ -57,6 +57,18 @@ Envelope EnvelopeModel::envelope(const QModelIndex & index) const {
 }
 
 //--------------------------------------------------------------------------------------------------
+QModelIndex EnvelopeModel::index(const Envelope & envelope) const {
+    auto indexes =
+        match(index(0, 0, QModelIndex()), Qt::DisplayRole, envelope.name(), -1, Qt::MatchRecursive);
+    for (auto & i : indexes) {
+        if (i.internalId() == envelope.id()) {
+            return i;
+        }
+    }
+    return QModelIndex();
+}
+
+//--------------------------------------------------------------------------------------------------
 bool EnvelopeModel::create(const Envelope & envelope, const QModelIndex & parent) {
     if (not envelopes_) {
         return false;
