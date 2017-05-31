@@ -37,32 +37,32 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
     exit->setStatusTip(tr("Quit the application"));
     connect(exit, &QAction::triggered, this, &MenuBar::exitApplication);
 
-    auto addtrn = new QAction(tr("&Add Transaction..."), this);
+    auto addtrn = new QAction(Icon::add(), tr("&Add Transaction..."), this);
     addtrn->setShortcut(QKeySequence::New);
     addtrn->setStatusTip(tr("Create a new transaction"));
     connect(addtrn, &QAction::triggered, this, &MenuBar::addTransaction);
 
-    auto accounts = new QAction(tr("&Accounts"), this);
+    auto accounts = new QAction(Icon::accounts(), tr("&Accounts"), this);
     accounts->setShortcut(QKeySequence(Qt::Key_F5));
     accounts->setStatusTip(tr("View accounts"));
     connect(accounts, &QAction::triggered, this, &MenuBar::viewAccounts);
 
-    auto envelopes = new QAction(tr("&Envelopes"), this);
+    auto envelopes = new QAction(Icon::envelopes(), tr("&Envelopes"), this);
     envelopes->setShortcut(QKeySequence(Qt::Key_F6));
     envelopes->setStatusTip(tr("View envelopes"));
     connect(envelopes, &QAction::triggered, this, &MenuBar::viewEnvelopes);
 
-    auto incomes = new QAction(tr("Budgeted &Incomes"), this);
+    auto incomes = new QAction(Icon::incomes(), tr("Budgeted &Incomes"), this);
     incomes->setShortcut(QKeySequence(Qt::Key_F7));
     incomes->setStatusTip(tr("View budgeted incomes"));
     connect(incomes, &QAction::triggered, this, &MenuBar::viewBudgetedIncomes);
 
-    auto expenses = new QAction(tr("Budgeted E&xpenses"), this);
+    auto expenses = new QAction(Icon::expenses(), tr("Budgeted E&xpenses"), this);
     expenses->setShortcut(QKeySequence(Qt::Key_F8));
     expenses->setStatusTip(tr("View budgeted expenses"));
     connect(expenses, &QAction::triggered, this, &MenuBar::viewBudgetedExpenses);
 
-    auto reports = new QAction(tr("&Reports"), this);
+    auto reports = new QAction(Icon::reports(), tr("&Reports"), this);
     reports->setShortcut(QKeySequence(Qt::Key_F9));
     reports->setStatusTip(tr("View reports"));
     connect(reports, &QAction::triggered, this, &MenuBar::viewReports);

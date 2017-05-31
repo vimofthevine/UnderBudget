@@ -56,60 +56,11 @@ QIcon accounts();
 QIcon add();
 
 /**
- * Creates an icon for an analysis summary action.
+ * Creates an icon for an edit action.
  *
- * @return analysis summary action icon
+ * @return edit action icon
  */
-QIcon analysisSummary();
-
-/**
- * Creates an icon for an assign action.
- *
- * @return assign action icon
- */
-QIcon assign();
-
-/**
- * Creates an icon for a calculate action.
- *
- * @return calculate action icon
- */
-QIcon calculate();
-
-/**
- * Creates an icon for a close action.
- *
- * @return close action icon
- */
-QIcon close();
-
-/**
- * Creates an icon for a close-all action.
- *
- * @return close-all action icon
- */
-QIcon closeAll();
-
-/**
- * Creates an icon for an edit-budget action.
- *
- * @return edit-budget action icon
- */
-QIcon editBudget();
-
-/**
- * Creates an icon for an edit-estimates action.
- *
- * @return edit-estimates action icon
- */
-QIcon editEstimates();
-
-/**
- * Creates an icon for an edit-rules action.
- *
- * @return edit-rules action icon
- */
-QIcon editRules();
+QIcon edit();
 
 /**
  * Creates an icon for an edit-preferences action.
@@ -126,20 +77,6 @@ QIcon editPreferences();
 QIcon envelopes();
 
 /**
- * Creates an icon for an estimate impact action.
- *
- * @return estimate impact action icon
- */
-QIcon estimateImpact();
-
-/**
- * Creates an icon for an estimate progress action.
- *
- * @return estimate progress action icon
- */
-QIcon estimateProgress();
-
-/**
  * Creates an icon for an exit action.
  *
  * @return exit actioin icon
@@ -154,46 +91,11 @@ QIcon exit();
 QIcon expenses();
 
 /**
- * Creates an icon for an export file action.
- *
- * @return export file action icon
- */
-QIcon exportFile();
-
-/**
- * Creates an icon for an imported transactions action.
- *
- * @return imported transactions action icon
- */
-QIcon importedTransactions();
-
-/**
- * Creates an icon for an import-transactions action.
- *
- * @return import-transactions action icon
- */
-QIcon importTransactions();
-
-/**
- * Creates an icon for an import-transactions-from action.
- *
- * @return import-transactions-from action icon
- */
-QIcon importTransactionsFrom();
-
-/**
  * Creates an icon for a view-incomes action.
  *
  * @return view-incomes action icon
  */
 QIcon incomes();
-
-/**
- * Creates an icon for a new document action.
- *
- * @return new document action icon
- */
-QIcon newDocument();
 
 /**
  * Creates an icon for a open document action.
@@ -203,11 +105,11 @@ QIcon newDocument();
 QIcon openDocument();
 
 /**
- * Creates an icon for a redo action.
+ * Creates an icon for a delete/remove action.
  *
- * @return redo action icon
+ * @return remove action icon
  */
-QIcon redo();
+QIcon remove();
 
 /**
  * Creates an icon for a view-reports action.
@@ -215,48 +117,6 @@ QIcon redo();
  * @return view-reports action icon
  */
 QIcon reports();
-
-/**
- * Creates an icon for a save-as document action.
- *
- * @return save-as document action icon
- */
-QIcon saveAs();
-
-/**
- * Creates an icon for a save-as-template document action.
- *
- * @return save-as-template document action icon
- */
-QIcon saveAsTemplate();
-
-/**
- * Creates an icon for a save document action.
- *
- * @return save document action icon
- */
-QIcon saveDocument();
-
-/**
- * Creates an icon for an undo action.
- *
- * @return undo action icon
- */
-QIcon undo();
-
-/**
- * Creates an icon for a window cascade action.
- *
- * @return window cascade action icon
- */
-QIcon windowCascade();
-
-/**
- * Creates an icon for a window tile action.
- *
- * @return window tile action icon
- */
-QIcon windowTile();
 
 } // Icon namespace
 } // ub namespace

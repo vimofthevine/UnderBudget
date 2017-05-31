@@ -70,12 +70,13 @@ void MainWindow::restoreSettings() {
 //--------------------------------------------------------------------------------------------------
 void MainWindow::about() {
     QString title = tr("About %1").arg(qApp->applicationName());
-    QString about = QString("<html><b><p>%1</p></b>") + "<p>" +
-                    tr("Personal finance and budget manager.") + "</p>" + tr("Version") +
-                    ": %2<br>" + tr("Authors") + ": Kyle Treubig<br>" + tr("Homepage") +
-                    ": <a href=\"http://%3\">%3</a><br>" + tr("License") +
-                    ": GNU General Public License, version 3<br>" + tr("Copyright") +
-                    " &copy; 2017, Kyle Treubig";
+    QString about =
+        QString("<html><b><p>%1</p></b>") + "<p>" + tr("Personal finance and budget manager.") +
+        "</p>" + tr("Version") + ": %2<br>" + tr("Authors") + ": Kyle Treubig<br>" +
+        tr("Homepage") + ": <a href=\"http://%3\">%3</a><br>" + tr("License") +
+        ": GNU General Public License, version 3<br>" + tr("Copyright") +
+        " &copy; 2017, Kyle Treubig<br><br>" + tr("Icons") + ": IcoMoon " + tr("free icon pack") +
+        " (<a href=\"https://creativecommons.org/licenses/by/4.0\">CC by 4.0</a>)";
     about = about.arg(qApp->applicationName())
                 .arg(qApp->applicationVersion())
                 .arg(qApp->organizationDomain());

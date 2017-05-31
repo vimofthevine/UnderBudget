@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/icomoon/006-pencil.svg</file>
+        <file>icons/icomoon/059-cart.svg</file>
+        <file>icons/icomoon/060-coin-dollar.svg</file>
+        <file>icons/icomoon/064-credit-card.svg</file>
+        <file>icons/icomoon/070-envelop.svg</file>
+        <file>icons/icomoon/101-database.svg</file>
+        <file>icons/icomoon/156-stats-dots.svg</file>
+        <file>icons/icomoon/173-bin.svg</file>
+        <file>icons/icomoon/267-plus.svg</file>
+        <file>icons/icomoon/269-info.svg</file>
+        <file>icons/icomoon/277-exit.svg</file>
+        <file alias="logo">icons/logo.png</file>
+        <file alias="icons/aboutQt">icons/Qt.png</file>
+    </qresource>
+</RCC>
