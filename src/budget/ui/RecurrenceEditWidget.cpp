@@ -30,8 +30,8 @@ namespace budget {
 RecurrenceEditWidget::RecurrenceEditWidget(QWidget * parent)
         : QWidget(parent), recurring_(new QCheckBox(tr("Recurring?"), this)),
           periodicity_(new QSpinBox(this)), scope_(new QComboBox(this)),
-          month_(new QComboBox(this)), week_(new QSpinBox(this)),
-          day_(new QSpinBox(this)), enable_month_(new QCheckBox(tr("Specific month?"), this)),
+          month_(new QComboBox(this)), week_(new QSpinBox(this)), day_(new QSpinBox(this)),
+          enable_month_(new QCheckBox(tr("Specific month?"), this)),
           enable_week_(new QCheckBox(tr("Specific week?"), this)),
           enable_day_(new QCheckBox(tr("Specific day?"), this)) {
     periodicity_->setMinimum(1);
@@ -98,6 +98,7 @@ RecurrenceEditWidget::RecurrenceEditWidget(QWidget * parent)
     recurring_widget->setLayout(recurring_layout);
     recurring_widget->setVisible(false);
     connect(recurring_, &QCheckBox::toggled, recurring_widget, &QWidget::setVisible);
+    connect(recurring_, &QCheckBox::toggled, this, &RecurrenceEditWidget::isRecurring);
 
     QVBoxLayout * layout = new QVBoxLayout;
     layout->addWidget(recurring_);

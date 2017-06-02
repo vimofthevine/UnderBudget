@@ -25,8 +25,8 @@
 #include <ledger/model/Account.hpp>
 #include <ledger/model/Money.hpp>
 #include <ledger/ui/DoubleLineEdit.hpp>
-#include "IncomeModel.hpp"
 #include "IncomeDetailsDialog.hpp"
+#include "IncomeModel.hpp"
 #include "RecurrenceEditWidget.hpp"
 
 namespace ub {
@@ -47,23 +47,29 @@ IncomeDetailsDialog::IncomeDetailsDialog(IncomeModel * model, QWidget * parent)
     connect(buttons_, &QDialogButtonBox::clicked, this, &IncomeDetailsDialog::clicked);
 
     auto start_today = new QPushButton(tr("Today"), this);
-    connect(start_today, &QPushButton::clicked, this, [this] () {
-        beginning_date_->setDate(QDate::currentDate());
-    });
+    connect(start_today, &QPushButton::clicked, this,
+            [this]() { beginning_date_->setDate(QDate::currentDate()); });
 
     QHBoxLayout * start = new QHBoxLayout;
     start->addWidget(beginning_date_);
     start->addWidget(start_today);
 
     auto stop_today = new QPushButton(tr("Today"), this);
-    connect(stop_today, &QPushButton::clicked, this, [this] () {
-        ending_date_->setDate(QDate::currentDate());
-    });
+    connect(stop_today, &QPushButton::clicked, this,
+            [this]() { ending_date_->setDate(QDate::currentDate()); });
 
     auto stop_never = new QPushButton(tr("Never"), this);
-    connect(stop_never, &QPushButton::clicked, this, [this] () {
-        ending_date_->setDate(ending_date_->minimumDate());
-    });
+    connect(stop_never, &QPushButton::clicked, this,
+            [this]() { ending_date_->setDate(ending_date_->minimumDate()); });
+
+    connect(recurrence_, &RecurrenceEditWidget::isRecurring, ending_date_, &QDateEdit::setEnabled);
+    connect(recurrence_, &RecurrenceEditWidget::isRecurring, stop_today, &QPushButton::setEnabled);
+    connect(recurrence_, &RecurrenceEditWidget::isRecurring, stop_never, &QPushButton::setEnabled);
+
+    bool recurring = (recurrence_->recurrence().periodicity() > 0);
+    ending_date_->setEnabled(recurring);
+    stop_today->setEnabled(recurring);
+    stop_never->setEnabled(recurring);
 
     QHBoxLayout * stop = new QHBoxLayout;
     stop->addWidget(ending_date_);

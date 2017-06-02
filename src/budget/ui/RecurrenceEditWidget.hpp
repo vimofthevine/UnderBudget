@@ -61,6 +61,14 @@ public:
      */
     void clear();
 
+signals:
+    /**
+     * Emitted when the user has enabled recurrence.
+     *
+     * @param recurring @c true if recurrence has been selected
+     */
+    void isRecurring(bool recurring);
+
 public slots:
     /**
      * Updates the contents of the widget to represent the given recurrence value.
