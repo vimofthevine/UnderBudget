@@ -57,8 +57,8 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
           add_multiple_(new QPushButton(tr("Add Multiple"))),
           buttons_(new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Reset |
                                         QDialogButtonBox::Cancel)),
-          selected_account_id_(0), selected_envelope_id_(0),
-          multiple_account_splits_(false), multiple_envelope_splits_(false) {
+          selected_account_id_(0), selected_envelope_id_(0), multiple_account_splits_(false),
+          multiple_envelope_splits_(false) {
     date_->setCalendarPopup(true);
     date_->setDate(QDate::currentDate());
 
@@ -84,9 +84,10 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
             &JournalEntryDialog::selectAccountSplit);
     connect(account_split_auto_calc_, &QPushButton::clicked, this,
             &JournalEntryDialog::autoCalculateAccountSplitAmount);
-    connect(account_split_add_, &QPushButton::clicked, this, [this] () {
+    connect(account_split_add_, &QPushButton::clicked, this, [this]() {
         multiple_account_splits_ = true;
         saveAccountSplit();
+        account_->setFocus();
     });
     connect(account_split_clear_, &QPushButton::clicked, this,
             &JournalEntryDialog::clearAccountSplit);
@@ -97,9 +98,10 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
             &JournalEntryDialog::selectEnvelopeSplit);
     connect(envelope_split_auto_calc_, &QPushButton::clicked, this,
             &JournalEntryDialog::autoCalculateEnvelopeSplitAmount);
-    connect(envelope_split_add_, &QPushButton::clicked, this, [this] () {
+    connect(envelope_split_add_, &QPushButton::clicked, this, [this]() {
         multiple_envelope_splits_ = true;
         saveEnvelopeSplit();
+        envelope_->setFocus();
     });
     connect(envelope_split_clear_, &QPushButton::clicked, this,
             &JournalEntryDialog::clearEnvelopeSplit);
@@ -169,8 +171,10 @@ JournalEntryDialog::JournalEntryDialog(QWidget * parent)
     setTabOrder(envelope_split_clear_, envelope_split_delete_);
     setTabOrder(envelope_split_delete_, add_multiple_);
     setTabOrder(add_multiple_, buttons_->button(QDialogButtonBox::Save));
-    setTabOrder(buttons_->button(QDialogButtonBox::Save), buttons_->button(QDialogButtonBox::Cancel));
-    setTabOrder(buttons_->button(QDialogButtonBox::Cancel), buttons_->button(QDialogButtonBox::Reset));
+    setTabOrder(buttons_->button(QDialogButtonBox::Save),
+                buttons_->button(QDialogButtonBox::Cancel));
+    setTabOrder(buttons_->button(QDialogButtonBox::Cancel),
+                buttons_->button(QDialogButtonBox::Reset));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -574,7 +578,8 @@ void JournalEntryDialog::adjustSplitDisplay() {
             }
         }
 
-        // If adding envelope splits (envelopes = true) or there are already multiple envelope splits
+        // If adding envelope splits (envelopes = true) or there are already multiple envelope
+        // splits
         if (multiple_envelope_splits_ or (entry_->getEnvelopeSplits().size() > 1u)) {
             // Show the envelope split controls
             envelope_split_auto_calc_->show();
