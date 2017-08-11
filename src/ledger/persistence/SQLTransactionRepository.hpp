@@ -108,6 +108,16 @@ public:
     getAccountTransactions(const Transaction & transaction) override;
 
     /**
+     * Retrieves all account transactions from the repository between the given dates.
+     *
+     * @param start Earliest date for which to retrieve transactions
+     * @param stop  Latest date for which to retrieve transactions
+     * @return Account transactions between the given dates
+     */
+    std::vector<AccountTransaction> getAccountTransactions(const QDate & start,
+                                                           const QDate & stop) override;
+
+    /**
      * Retrieves the total cash balance as of the specified date.
      *
      * @param[in] date     Date for which to calculate the balance
@@ -153,6 +163,16 @@ public:
      */
     std::vector<EnvelopeTransaction>
     getEnvelopeTransactions(const Transaction & transaction) override;
+
+    /**
+     * Retrieves all envelope transactions from the repository between the given dates.
+     *
+     * @param start Earliest date for which to retrieve transactions
+     * @param stop  Latest date for which to retrieve transactions
+     * @return Envelope transactions between the given dates
+     */
+    std::vector<EnvelopeTransaction> getEnvelopeTransactions(const QDate & start,
+                                                             const QDate & stop) override;
 
     /**
      * Retrieves the reconciled balance of the given account as of the specified date.

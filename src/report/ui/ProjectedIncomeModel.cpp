@@ -24,9 +24,10 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include <budget/model/Impact.hpp>
 #include <ledger/model/Account.hpp>
 #include <ledger/model/AccountRepository.hpp>
-#include <budget/model/Impact.hpp>
+#include <ledger/model/AccountTransaction.hpp>
 #include <ledger/model/LedgerRepository.hpp>
 #include <ledger/ui/AccountModel.hpp>
 #include "ProjectedIncomeModel.hpp"
@@ -36,7 +37,7 @@ namespace report {
 
 //--------------------------------------------------------------------------------------------------
 ProjectedIncomeModel::ProjectedIncomeModel() {
-    headers_ << tr("Name") << tr("Amount");
+    headers_ << tr("Account") << tr("Projected") << tr("Actual") << tr("Difference");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -48,14 +49,35 @@ ledger::Account ProjectedIncomeModel::account(const QModelIndex & index) const {
     return accounts_->getAccount(index.internalId());
 }
 
+//--------------------------------------------------------------------------------------------------
+void ProjectedIncomeModel::reset() {
+    difference_.clear();
+}
 
 //--------------------------------------------------------------------------------------------------
-void ProjectedIncomeModel::setImpacts(const std::vector<budget::Impact> & impacts) {
+void ProjectedIncomeModel::setActualIncomes(
+    const std::vector<ledger::AccountTransaction> & incomes) {
     beginResetModel();
-    impacts_.clear();
+    actual_.clear();
+    for (auto & income : incomes) {
+        if (not income.amount().isNegative()) {
+            auto id = income.account().id();
+            actual_[id] = income.amount();
+            difference_[id] = projected_[id] - actual_[id];
+        }
+    }
+    endResetModel();
+}
+
+//--------------------------------------------------------------------------------------------------
+void ProjectedIncomeModel::setProjectedImpacts(const std::vector<budget::Impact> & impacts) {
+    beginResetModel();
+    projected_.clear();
     for (auto & impact : impacts) {
         if (impact.type() == budget::Impact::Income) {
-            impacts_[impact.categoryID()] += impact.amount();
+            auto id = impact.categoryID();
+            projected_[id] += impact.amount();
+            difference_[id] = projected_[id] - actual_[id];
         }
     }
     endResetModel();
@@ -75,7 +97,8 @@ int ProjectedIncomeModel::columnCount(const QModelIndex & parent) const {
 }
 
 //--------------------------------------------------------------------------------------------------
-QVariant ProjectedIncomeModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant ProjectedIncomeModel::headerData(int section, Qt::Orientation orientation,
+                                          int role) const {
     if (orientation == Qt::Horizontal and role == Qt::DisplayRole) {
         return headers_.at(section);
     }
@@ -88,30 +111,55 @@ QVariant ProjectedIncomeModel::data(const QModelIndex & index, int role) const {
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole) {
-        return QVariant();
-    }
-
     auto account = accounts_->getAccount(index.internalId());
     if (account.id() == -1) {
         emit error(accounts_->lastError());
         return QVariant();
     }
 
-    switch (index.column()) {
-    case NAME:
-        return account.name();
-    case IMPACT:
-        if (account.children().size() == 0u) {
-            auto iter = impacts_.find(account.id());
-            if (iter != impacts_.end()) {
-                return iter->second.toString();
+    if (role == Qt::DisplayRole) {
+        switch (index.column()) {
+        case NAME:
+            return account.name();
+        case PROJECTED:
+            if (account.children().empty()) {
+                auto iter = projected_.find(account.id());
+                if (iter != projected_.end()) {
+                    return iter->second.toString();
+                }
+            }
+            return QVariant();
+        case ACTUAL:
+            if (account.children().empty()) {
+                auto iter = actual_.find(account.id());
+                if (iter != actual_.end()) {
+                    return iter->second.toString();
+                }
+            }
+            return QVariant();
+        case DIFFERENCE:
+            if (account.children().empty()) {
+                auto iter = difference_.find(account.id());
+                if (iter != difference_.end()) {
+                    return iter->second.toString();
+                }
+            }
+            return QVariant();
+        default:
+            return QVariant();
+        }
+    }
+
+    if ((role == Qt::ForegroundRole) and (index.column() == DIFFERENCE)) {
+        if (account.children().empty()) {
+            auto iter = difference_.find(account.id());
+            if ((iter != difference_.end()) and (not iter->second.isNegative())) {
+                return QColor(Qt::red);
             }
         }
-        return QVariant();
-    default:
-        return QVariant();
     }
+
+    return QVariant();
 }
 
 } // report namespace

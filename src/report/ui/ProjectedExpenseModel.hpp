@@ -30,6 +30,7 @@
 // UnderBudget include(s)
 #include <budget/model/Impact.hpp>
 #include <ledger/model/Envelope.hpp>
+#include <ledger/model/EnvelopeTransaction.hpp>
 #include <ledger/model/Money.hpp>
 #include <ledger/ui/EnvelopeModel.hpp>
 
@@ -46,8 +47,12 @@ class ProjectedExpenseModel : public ledger::EnvelopeModel {
     Q_OBJECT
 
 public:
-    /** Envelope budgeted impact column */
-    static const int IMPACT = 1;
+    /** Projected impact column */
+    static const int PROJECTED = 1;
+    /** Actual expense column */
+    static const int ACTUAL = 2;
+    /** Difference column */
+    static const int DIFFERENCE = 3;
 
     /**
      * Initializes the projected expense view model.
@@ -63,11 +68,23 @@ public:
     ledger::Envelope envelope(const QModelIndex & index) const;
 
     /**
-     * Updates the impacts to be represented by the model.
-     *
-     * @param impacts Impacts list
+     * Resets the model for new data.
      */
-    void setImpacts(const std::vector<budget::Impact> & impacts);
+    void reset();
+
+    /**
+     * Updates the projected impacts to be represented by the model.
+     *
+     * @param impacts Projected impacts list
+     */
+    void setProjectedImpacts(const std::vector<budget::Impact> & impacts);
+
+    /**
+     * Updates the actual expenses to be represented by the model.
+     *
+     * @param expenses Actual expenses list
+     */
+    void setActualExpenses(const std::vector<ledger::EnvelopeTransaction> & expenses);
 
     /**
      * Updates the repositories used by the model.
@@ -87,8 +104,12 @@ private:
     QList<QString> headers_;
     /** Envelope repository */
     std::shared_ptr<ledger::EnvelopeRepository> envelopes_;
-    /** Impacts per envelope */
-    std::map<int64_t, ledger::Money> impacts_;
+    /** Projected impact per envelope */
+    std::map<int64_t, ledger::Money> projected_;
+    /** Actual impact per envelope */
+    std::map<int64_t, ledger::Money> actual_;
+    /** Differences per envelope */
+    std::map<int64_t, ledger::Money> difference_;
 };
 
 } // report namespace

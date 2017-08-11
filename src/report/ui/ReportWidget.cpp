@@ -78,6 +78,7 @@ ReportWidget::ReportWidget(QWidget * parent)
     projected_expenses->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     projected_expenses->header()->setSectionResizeMode(ProjectedExpenseModel::NAME,
                                                        QHeaderView::Stretch);
+    projected_expenses->header()->setStretchLastSection(false);
     connect(projected_expenses_, &QAbstractItemModel::modelReset, projected_expenses,
             &QTreeView::expandAll);
     connect(projected_expenses, &QTreeView::doubleClicked, this, [this](const QModelIndex & index) {
@@ -92,6 +93,7 @@ ReportWidget::ReportWidget(QWidget * parent)
     projected_incomes->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     projected_incomes->header()->setSectionResizeMode(ProjectedExpenseModel::NAME,
                                                       QHeaderView::Stretch);
+    projected_incomes->header()->setStretchLastSection(false);
     connect(projected_incomes_, &QAbstractItemModel::modelReset, projected_incomes,
             &QTreeView::expandAll);
     connect(projected_incomes, &QTreeView::doubleClicked, this, [this](const QModelIndex & index) {
@@ -119,8 +121,8 @@ ReportWidget::ReportWidget(QWidget * parent)
     connect(report, QOverload<int>::of(&QComboBox::currentIndexChanged), content_,
             &QStackedWidget::setCurrentIndex);
     report->addItem(tr("Cash Flow Report"));
-    report->addItem(tr("Projected Expenses by Envelope"));
-    report->addItem(tr("Projected Incomes by Account"));
+    report->addItem(tr("Expenses by Envelope"));
+    report->addItem(tr("Incomes by Account"));
     report->addItem(tr("Projected Expenses and Incomes by Date"));
 
     auto refresh = new QPushButton(tr("Refresh"));
@@ -175,6 +177,8 @@ void ReportWidget::refresh() {
         emit error(tr("Invalid dates selected, ending date must be later than beginning date"));
     }
 
+    projected_expenses_->reset();
+    projected_incomes_->reset();
     budget_.reset(start, stop);
 
     auto expense_repo = repos_->expenses();
@@ -189,6 +193,10 @@ void ReportWidget::refresh() {
         budget_.add(income);
     }
 
+    auto transaction_repo = repos_->transactions();
+    auto account_splits = transaction_repo->getAccountTransactions(start, stop);
+    auto envelope_splits = transaction_repo->getEnvelopeTransactions(start, stop);
+
     budget::Recurrence recurrence;
     recurrence.setPeriodicity(1);
     recurrence.setScope(scope_->currentData().value<budget::Recurrence::ScopeType>());
@@ -197,14 +205,21 @@ void ReportWidget::refresh() {
     }
 
     compiler_.compile(start, stop, recurrence, budget_.impacts());
-    projected_expenses_->setImpacts(budget_.impacts());
-    projected_incomes_->setImpacts(budget_.impacts());
+    projected_expenses_->setActualExpenses(envelope_splits);
+    projected_expenses_->setProjectedImpacts(budget_.impacts());
+    projected_incomes_->setActualIncomes(account_splits);
+    projected_incomes_->setProjectedImpacts(budget_.impacts());
     expanded_impacts_->setImpacts(budget_.impacts());
 
     actual_beginning_balance_->setText(compiler_.beginningBalance().toString());
     actual_ending_balance_->setText(compiler_.endingBalance().toString());
-    budgeted_ending_balance_->setText(
-        (compiler_.beginningBalance() + budget_.netChange()).toString());
+    auto budgeted_ending = compiler_.beginningBalance() + budget_.netChange();
+    budgeted_ending_balance_->setText(budgeted_ending.toString());
+    if (budgeted_ending < compiler_.beginningBalance()) {
+        budgeted_ending_balance_->setStyleSheet("color: red;");
+    } else {
+        budgeted_ending_balance_->setStyleSheet("");
+    }
 
     populateCashFlowChart();
 }

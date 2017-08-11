@@ -682,6 +682,19 @@ TEST_F(SQLTransactionRepositoryTest, ShouldRetrieveAccountSplitsForATransaction)
     EXPECT_EQ(4, splits.at(1).id());
 }
 
+/** Verifies that account transactions can be retrieved with a date range. */
+TEST_F(SQLTransactionRepositoryTest, ShouldRetrieveAccountSplitsForDateRange) {
+    createRepo();
+    populate();
+
+    auto splits = repo->getAccountTransactions(QDate(2016, 12, 1), QDate(2017, 2, 28));
+    ASSERT_EQ(4u, splits.size());
+    EXPECT_EQ(2, splits.at(0).id());
+    EXPECT_EQ(3, splits.at(1).id());
+    EXPECT_EQ(4, splits.at(2).id());
+    EXPECT_EQ(5, splits.at(3).id());
+}
+
 /** Verifies that envelope transactions can be retrieved for a transaction. */
 TEST_F(SQLTransactionRepositoryTest, ShouldRetrieveEnvelopeSplitsForATransaction) {
     createRepo();
@@ -691,6 +704,18 @@ TEST_F(SQLTransactionRepositoryTest, ShouldRetrieveEnvelopeSplitsForATransaction
     ASSERT_EQ(2u, splits.size());
     EXPECT_EQ(3, splits.at(0).id());
     EXPECT_EQ(4, splits.at(1).id());
+}
+
+/** Verifies that envelope transactions can be retrieved with a date range. */
+TEST_F(SQLTransactionRepositoryTest, ShouldRetrieveEnvelopeSplitsForDateRange) {
+    createRepo();
+    populate();
+
+    auto splits = repo->getEnvelopeTransactions(QDate(2016, 12, 1), QDate(2017, 2, 28));
+    ASSERT_EQ(3u, splits.size());
+    EXPECT_EQ(2, splits.at(0).id());
+    EXPECT_EQ(3, splits.at(1).id());
+    EXPECT_EQ(4, splits.at(2).id());
 }
 
 } // ledger namespace

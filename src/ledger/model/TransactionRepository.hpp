@@ -96,6 +96,16 @@ public:
     getAccountTransactions(const Transaction & transaction) = 0;
 
     /**
+     * Retrieves all account transactions from the repository between the given dates.
+     *
+     * @param start Earliest date for which to retrieve transactions
+     * @param stop  Latest date for which to retrieve transactions
+     * @return Account transactions between the given dates
+     */
+    virtual std::vector<AccountTransaction> getAccountTransactions(const QDate & start,
+                                                                   const QDate & stop) = 0;
+
+    /**
      * Retrieves the total cash balance as of the specified date.
      *
      * @param[in] date     Date for which to calculate the balance
@@ -141,6 +151,16 @@ public:
      */
     virtual std::vector<EnvelopeTransaction>
     getEnvelopeTransactions(const Transaction & transaction) = 0;
+
+    /**
+     * Retrieves all envelope transactions from the repository between the given dates.
+     *
+     * @param start Earliest date for which to retrieve transactions
+     * @param stop  Latest date for which to retrieve transactions
+     * @return Envelope transactions between the given dates
+     */
+    virtual std::vector<EnvelopeTransaction> getEnvelopeTransactions(const QDate & start,
+                                                                     const QDate & stop) = 0;
 
     /**
      * Retrieves the reconciled balance of the given account as of the specified date.

@@ -29,6 +29,8 @@
 
 // UnderBudget include(s)
 #include <budget/model/Impact.hpp>
+#include <ledger/model/Account.hpp>
+#include <ledger/model/AccountTransaction.hpp>
 #include <ledger/model/Money.hpp>
 #include <ledger/ui/AccountModel.hpp>
 
@@ -45,8 +47,12 @@ class ProjectedIncomeModel : public ledger::AccountModel {
     Q_OBJECT
 
 public:
-    /** Account budgeted impact column */
-    static const int IMPACT = 1;
+    /** Projected impact column */
+    static const int PROJECTED = 1;
+    /** Actual expense column */
+    static const int ACTUAL = 2;
+    /** Difference column */
+    static const int DIFFERENCE = 3;
 
     /**
      * Initializes the projected income view model.
@@ -62,11 +68,23 @@ public:
     ledger::Account account(const QModelIndex & index) const;
 
     /**
-     * Updates the impacts to be represented by the model.
-     *
-     * @param impacts Impacts list
+     * Resets the model for new data.
      */
-    void setImpacts(const std::vector<budget::Impact> & impacts);
+    void reset();
+
+    /**
+     * Updates the projected impacts to be represented by the model.
+     *
+     * @param impacts Projected impacts list
+     */
+    void setProjectedImpacts(const std::vector<budget::Impact> & impacts);
+
+    /**
+     * Updates the actual incomes to be represented by the model.
+     *
+     * @param incomes Actual incomes list
+     */
+    void setActualIncomes(const std::vector<ledger::AccountTransaction> & income);
 
     /**
      * Updates the repositories used by the model.
@@ -86,8 +104,12 @@ private:
     QList<QString> headers_;
     /** Account repository */
     std::shared_ptr<ledger::AccountRepository> accounts_;
-    /** Impacts per account */
-    std::map<int64_t, ledger::Money> impacts_;
+    /** Projected impact per account */
+    std::map<int64_t, ledger::Money> projected_;
+    /** Actual impact per account */
+    std::map<int64_t, ledger::Money> actual_;
+    /** Differences per account */
+    std::map<int64_t, ledger::Money> difference_;
 };
 
 } // report namespace

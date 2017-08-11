@@ -48,11 +48,15 @@ public:
     MOCK_METHOD1(create, int64_t(const Transaction &));
     MOCK_METHOD1(getAccountTransaction, AccountTransaction(int64_t));
     MOCK_METHOD1(getAccountTransactions, std::vector<AccountTransaction>(const Transaction &));
+    MOCK_METHOD2(getAccountTransactions,
+                 std::vector<AccountTransaction>(const QDate &, const QDate &));
     MOCK_METHOD2(getBalance, Money(const QDate &, const Currency &));
     MOCK_METHOD2(getBalance, Money(const QDate &, const Account &));
     MOCK_METHOD2(getBalance, Money(const QDate &, const Envelope &));
     MOCK_METHOD1(getEnvelopeTransaction, EnvelopeTransaction(int64_t));
     MOCK_METHOD1(getEnvelopeTransactions, std::vector<EnvelopeTransaction>(const Transaction &));
+    MOCK_METHOD2(getEnvelopeTransactions,
+                 std::vector<EnvelopeTransaction>(const QDate &, const QDate &));
     MOCK_METHOD2(getReconciledBalance, Money(const QDate &, const Account &));
     MOCK_METHOD1(getTransaction, Transaction(int64_t));
     MOCK_METHOD1(getTransactions, std::vector<AccountTransaction>(const Account &));
