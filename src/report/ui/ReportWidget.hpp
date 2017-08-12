@@ -27,6 +27,7 @@
 
 // UnderBudget include(s)
 #include <budget/model/Budget.hpp>
+#include <ledger/model/EnvelopeTransaction.hpp>
 #include <report/model/Compiler.hpp>
 
 // Forward declaration(s)
@@ -87,18 +88,32 @@ signals:
     void error(const QString & message) const;
 
     /**
-     * Emitted to display the incomes for the given account.
+     * Emitted to display the budgeted incomes for the given account.
      *
      * @param account Account to be shown
      */
     void showAccountIncomes(const ledger::Account & account);
 
     /**
-     * Emitted to display the expenses for the given envelope.
+     * Emitted to display the ledger transactions for the given account.
+     *
+     * @param account Account to be shown
+     */
+    void showAccountTransactions(const ledger::Account & account);
+
+    /**
+     * Emitted to display the budgeted expenses for the given envelope.
      *
      * @param envelope Envelope to be shown
      */
     void showEnvelopeExpenses(const ledger::Envelope & envelope);
+
+    /**
+     * Emitted to display the ledger transactions for the given envelope.
+     *
+     * @param envelope Envelope to be shown
+     */
+    void showEnvelopeTransactions(const ledger::Envelope & envelope);
 
 private slots:
     /**
@@ -133,6 +148,8 @@ private:
 
     /** Cash flow chart */
     QtCharts::QChart * cash_flow_;
+    /** Expense distribution chart */
+    QtCharts::QChart * expense_distro_;
 
     /** Projected expenses model */
     ProjectedExpenseModel * projected_expenses_;
@@ -149,6 +166,14 @@ private:
      * Populates the cash flow chart report.
      */
     void populateCashFlowChart();
+
+    /**
+     * Populates the expense distribution pie chart report.
+     *
+     * @param expenses Expense envelope splits
+     */
+    void
+    populateExpenseDistributionChart(const std::vector<ledger::EnvelopeTransaction> & expenses);
 };
 
 } // report namespace

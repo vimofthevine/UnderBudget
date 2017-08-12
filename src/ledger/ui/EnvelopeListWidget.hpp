@@ -86,6 +86,14 @@ signals:
      */
     void deleteTransaction(const Transaction & transaction);
 
+public slots:
+    /**
+     * Selects the given envelope.
+     *
+     * @param envelope Envelope to be shown
+     */
+    void showEnvelope(const ledger::Envelope & envelope);
+
 private slots:
     /**
      * Prompts the user to confirm deletion of the requested envelope.

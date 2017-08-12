@@ -96,5 +96,10 @@ void EnvelopeListWidget::deleteEnvelopeTransaction(const QModelIndex & index) {
     emit deleteTransaction(transactions_->transaction(index));
 }
 
+//--------------------------------------------------------------------------------------------------
+void EnvelopeListWidget::showEnvelope(const ledger::Envelope & envelope) {
+    tree_->select(model_->index(envelope));
+}
+
 } // ledger namespace
 } // ub namespace

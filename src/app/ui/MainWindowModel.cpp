@@ -118,10 +118,23 @@ MainWindowModel::MainWindowModel(MainWindow * window)
 
     connect(reports_, &report::ReportWidget::showAccountIncomes, income_list_,
             &budget::IncomeListWidget::showAccount);
-    connect(reports_, &report::ReportWidget::showAccountIncomes, this, &MainWindowModel::showBudgetedIncomes);
+    connect(reports_, &report::ReportWidget::showAccountIncomes, this,
+            &MainWindowModel::showBudgetedIncomes);
+
+    connect(reports_, &report::ReportWidget::showAccountTransactions, account_list_,
+            &ledger::AccountListWidget::showAccount);
+    connect(reports_, &report::ReportWidget::showAccountTransactions, this,
+            &MainWindowModel::showAccounts);
+
     connect(reports_, &report::ReportWidget::showEnvelopeExpenses, expense_list_,
             &budget::ExpenseListWidget::showEnvelope);
-    connect(reports_, &report::ReportWidget::showEnvelopeExpenses, this, &MainWindowModel::showBudgetedExpenses);
+    connect(reports_, &report::ReportWidget::showEnvelopeExpenses, this,
+            &MainWindowModel::showBudgetedExpenses);
+
+    connect(reports_, &report::ReportWidget::showEnvelopeTransactions, envelope_list_,
+            &ledger::EnvelopeListWidget::showEnvelope);
+    connect(reports_, &report::ReportWidget::showEnvelopeTransactions, this,
+            &MainWindowModel::showEnvelopes);
 
     connect(expense_model_, &budget::ExpenseModel::error, this, &MainWindowModel::showError);
     connect(reports_, &report::ReportWidget::error, this, &MainWindowModel::showError);

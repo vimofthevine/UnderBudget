@@ -23,8 +23,8 @@
 #include <vector>
 
 // Qt include(s)
-#include <QtCharts>
 #include <QDate>
+#include <QtCharts>
 
 // UnderBudget include(s)
 #include <budget/model/Impact.hpp>
@@ -105,6 +105,8 @@ private:
     std::map<QDate, std::vector<budget::Impact>> impacts_by_date_;
     /** Historical balance by date */
     std::map<QDate, ledger::Money> balance_by_date_;
+    /** Expense totals by envelope */
+    std::map<int64_t, ledger::Money> expenses_by_envelope_;
     /** Beginning date of the compiled report data */
     QDate beginning_date_;
     /** Ending date of the compiled report data */

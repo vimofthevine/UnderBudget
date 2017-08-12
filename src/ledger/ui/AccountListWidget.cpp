@@ -96,5 +96,10 @@ void AccountListWidget::deleteAccountTransaction(const QModelIndex & index) {
     emit deleteTransaction(transactions_->transaction(index));
 }
 
+//--------------------------------------------------------------------------------------------------
+void AccountListWidget::showAccount(const ledger::Account & account) {
+    tree_->select(model_->index(account));
+}
+
 } // ledger namespace
 } // ub namespace

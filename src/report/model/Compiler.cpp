@@ -75,6 +75,7 @@ void Compiler::compile(const QDate & start, const QDate & stop,
     ending_date_ = stop;
     impacts_by_date_.clear();
     balance_by_date_.clear();
+    expenses_by_envelope_.clear();
 
     std::set<QDate> dates;
     // Add an initial point with the balance as of the day prior to the beginning date

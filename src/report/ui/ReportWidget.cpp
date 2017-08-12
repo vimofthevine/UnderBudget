@@ -45,7 +45,7 @@ ReportWidget::ReportWidget(QWidget * parent)
           actual_beginning_balance_(new QLineEdit(this)),
           actual_ending_balance_(new QLineEdit(this)),
           budgeted_ending_balance_(new QLineEdit(this)), cash_flow_(new QChart),
-          projected_expenses_(new ProjectedExpenseModel),
+          expense_distro_(new QChart), projected_expenses_(new ProjectedExpenseModel),
           projected_expenses_filter_(new QSortFilterProxyModel),
           projected_incomes_(new ProjectedIncomeModel), expanded_impacts_(new ImpactModel),
           expanded_impact_filter_(new QSortFilterProxyModel) {
@@ -69,6 +69,12 @@ ReportWidget::ReportWidget(QWidget * parent)
     auto cash_flow = new QChartView(cash_flow_);
     cash_flow->setRenderHint(QPainter::Antialiasing, true);
 
+    expense_distro_->setTitle(tr("Expense Distribution"));
+    expense_distro_->legend()->setVisible(false);
+    expense_distro_->setAnimationOptions(QChart::SeriesAnimations);
+    auto expense_distro = new QChartView(expense_distro_);
+    expense_distro->setRenderHint(QPainter::Antialiasing, true);
+
     auto projected_expenses = new QTreeView;
     projected_expenses_filter_->setSourceModel(projected_expenses_);
     projected_expenses_filter_->sort(0);
@@ -82,7 +88,7 @@ ReportWidget::ReportWidget(QWidget * parent)
     connect(projected_expenses_, &QAbstractItemModel::modelReset, projected_expenses,
             &QTreeView::expandAll);
     connect(projected_expenses, &QTreeView::doubleClicked, this, [this](const QModelIndex & index) {
-        emit showEnvelopeExpenses(
+        emit showEnvelopeTransactions(
             projected_expenses_->envelope(projected_expenses_filter_->mapToSource(index)));
     });
 
@@ -97,7 +103,7 @@ ReportWidget::ReportWidget(QWidget * parent)
     connect(projected_incomes_, &QAbstractItemModel::modelReset, projected_incomes,
             &QTreeView::expandAll);
     connect(projected_incomes, &QTreeView::doubleClicked, this, [this](const QModelIndex & index) {
-        emit showAccountIncomes(projected_incomes_->account(index));
+        emit showAccountTransactions(projected_incomes_->account(index));
     });
 
     expanded_impact_filter_->setSourceModel(expanded_impacts_);
@@ -114,6 +120,7 @@ ReportWidget::ReportWidget(QWidget * parent)
 
     content_->addWidget(cash_flow);
     content_->addWidget(projected_expenses);
+    content_->addWidget(expense_distro);
     content_->addWidget(projected_incomes);
     content_->addWidget(projected);
 
@@ -122,6 +129,7 @@ ReportWidget::ReportWidget(QWidget * parent)
             &QStackedWidget::setCurrentIndex);
     report->addItem(tr("Cash Flow Report"));
     report->addItem(tr("Expenses by Envelope"));
+    report->addItem(tr("Expense Distribution"));
     report->addItem(tr("Incomes by Account"));
     report->addItem(tr("Projected Expenses and Incomes by Date"));
 
@@ -222,6 +230,7 @@ void ReportWidget::refresh() {
     }
 
     populateCashFlowChart();
+    populateExpenseDistributionChart(envelope_splits);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -256,6 +265,46 @@ void ReportWidget::populateCashFlowChart() {
     historical->attachAxis(y_axis);
     budgeted->attachAxis(x_axis);
     budgeted->attachAxis(y_axis);
+}
+
+//--------------------------------------------------------------------------------------------------
+void ReportWidget::populateExpenseDistributionChart(
+    const std::vector<ledger::EnvelopeTransaction> & expenses) {
+    for (auto & series : expense_distro_->series()) {
+        expense_distro_->removeSeries(series);
+    }
+
+    std::map<int64_t, ledger::Money> totals;
+    std::map<int64_t, QString> names;
+    std::map<int64_t, ledger::Envelope> envelopes;
+    ledger::Money total;
+
+    for (auto expense : expenses) {
+        if (expense.amount().isNegative()) {
+            total -= expense.amount();
+            auto envelope = expense.envelope();
+            envelopes[envelope.id()] = envelope;
+            totals[envelope.id()] -= expense.amount(); // negate to get positive numbers
+            names[envelope.id()] = envelope.name();
+        }
+    }
+
+    double total_amount = total.amount();
+    auto series = new QPieSeries;
+    for (auto iter : totals) {
+        int percentage = static_cast<int>((iter.second.amount() / total_amount) * 100);
+        if (percentage > 1) {
+            auto envelope = envelopes[iter.first];
+            auto slice = new QPieSlice;
+            slice->setLabel(QString("%1 (%2%)").arg(names[iter.first]).arg(percentage));
+            slice->setValue(iter.second.amount());
+            slice->setLabelVisible(true);
+            connect(slice, &QPieSlice::doubleClicked, slice,
+                    [this, envelope]() { emit showEnvelopeTransactions(envelope); });
+            series->append(slice);
+        }
+    }
+    expense_distro_->addSeries(series);
 }
 
 //--------------------------------------------------------------------------------------------------
