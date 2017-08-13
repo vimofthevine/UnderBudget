@@ -17,7 +17,11 @@
  */
 
 // Standard include(s)
+#include <algorithm>
+#include <map>
 #include <memory>
+#include <utility>
+#include <vector>
 
 // Qt include(s)
 #include <QtCharts>
@@ -289,9 +293,18 @@ void ReportWidget::populateExpenseDistributionChart(
         }
     }
 
+    // Sort the envelopes by largest to smallest
+    typedef std::pair<int64_t, ledger::Money> PairType;
+    std::vector<PairType> sorted;
+    for (auto iter : totals) {
+        sorted.push_back(iter);
+    }
+    sort(sorted.begin(), sorted.end(),
+         [](PairType & a, PairType & b) { return a.second > b.second; });
+
     double total_amount = total.amount();
     auto series = new QPieSeries;
-    for (auto iter : totals) {
+    for (auto iter : sorted) {
         int percentage = static_cast<int>((iter.second.amount() / total_amount) * 100);
         if (percentage > 1) {
             auto envelope = envelopes[iter.first];
