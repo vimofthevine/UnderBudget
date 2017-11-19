@@ -65,7 +65,7 @@ bool ExpenseModel::create(const Expense & expense) {
 
     beginResetModel();
     auto id = expenses_->create(expense);
-    cache_ = expenses_->expenses(envelope_);
+    rebuildCache();
     endResetModel();
 
     if (id <= 0) {
@@ -81,7 +81,7 @@ bool ExpenseModel::update(const Expense & expense, const QModelIndex & index) {
 
     beginResetModel();
     bool success = expenses_->update(expense);
-    cache_ = expenses_->expenses(envelope_);
+    rebuildCache();
     endResetModel();
 
     if (not success) {
@@ -99,7 +99,7 @@ bool ExpenseModel::remove(const QModelIndex & index) {
 
     beginResetModel();
     bool success = expenses_->remove(this->expense(index));
-    cache_ = expenses_->expenses(envelope_);
+    rebuildCache();
     endResetModel();
 
     if (not success) {
@@ -114,7 +114,18 @@ void ExpenseModel::filterForEnvelope(const ledger::Envelope & envelope) {
     beginResetModel();
     envelope_ = envelope;
     if (expenses_) {
-        cache_ = expenses_->expenses(envelope);
+        rebuildCache();
+    }
+    endResetModel();
+}
+
+//--------------------------------------------------------------------------------------------------
+void ExpenseModel::filterForDates(const QDate & begin, const QDate & end) {
+    beginResetModel();
+    beginning_date_ = begin;
+    ending_date_ = end;
+    if (expenses_) {
+        rebuildCache();
     }
     endResetModel();
 }
@@ -177,6 +188,52 @@ int ExpenseModel::rowCount(const QModelIndex & parent) const {
     }
 
     return cache_.size();
+}
+
+//--------------------------------------------------------------------------------------------------
+void ExpenseModel::rebuildCache() {
+    auto unfiltered = expenses_->expenses(envelope_);
+    cache_.clear();
+    if (beginning_date_.isValid() and ending_date_.isValid()) {
+        for (auto & expense : unfiltered) {
+            // Omit expenses that end prior to beginning date
+            if (expense.endingDate().isValid() and (expense.endingDate() < beginning_date_)) {
+                continue;
+            }
+            // Omit expenses that start after ending date
+            if (expense.beginningDate() > ending_date_) {
+                continue;
+            }
+
+            // Check for recurrence of expense within date filter
+            auto date = expense.beginningDate().addDays(-1);
+            date = expense.recurrence().nextOccurrence(date);
+            if (not date.isValid()) {
+                // Not a recurring expense, only care about the beginning date of the non-recurring
+                // expenses
+                date = expense.beginningDate();
+                if ((date < beginning_date_) or (date > ending_date_)) {
+                    continue;
+                }
+            } else {
+                auto end = expense.endingDate();
+                bool omit = true;
+                while ((not end.isValid() or (date <= end)) and (date <= ending_date_)) {
+                    if (date >= beginning_date_) {
+                        omit = false;
+                    }
+                    date = expense.recurrence().nextOccurrence(date);
+                }
+                if (omit) {
+                    continue;
+                }
+            }
+
+            cache_.push_back(expense);
+        }
+    } else {
+        cache_ = unfiltered;
+    }
 }
 
 } // budget namespace

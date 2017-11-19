@@ -65,7 +65,7 @@ bool IncomeModel::create(const Income & income) {
 
     beginResetModel();
     auto id = incomes_->create(income);
-    cache_ = incomes_->incomes(account_);
+    rebuildCache();
     endResetModel();
 
     if (id <= 0) {
@@ -81,7 +81,7 @@ bool IncomeModel::update(const Income & income, const QModelIndex & index) {
 
     beginResetModel();
     bool success = incomes_->update(income);
-    cache_ = incomes_->incomes(account_);
+    rebuildCache();
     endResetModel();
 
     if (not success) {
@@ -99,7 +99,7 @@ bool IncomeModel::remove(const QModelIndex & index) {
 
     beginResetModel();
     bool success = incomes_->remove(this->income(index));
-    cache_ = incomes_->incomes(account_);
+    rebuildCache();
     endResetModel();
 
     if (not success) {
@@ -114,7 +114,18 @@ void IncomeModel::filterForAccount(const ledger::Account & account) {
     beginResetModel();
     account_ = account;
     if (incomes_) {
-        cache_ = incomes_->incomes(account);
+        rebuildCache();
+    }
+    endResetModel();
+}
+
+//--------------------------------------------------------------------------------------------------
+void IncomeModel::filterForDates(const QDate & begin, const QDate & end) {
+    beginResetModel();
+    beginning_date_ = begin;
+    ending_date_ = end;
+    if (incomes_) {
+        rebuildCache();
     }
     endResetModel();
 }
@@ -177,6 +188,52 @@ int IncomeModel::rowCount(const QModelIndex & parent) const {
     }
 
     return cache_.size();
+}
+
+//--------------------------------------------------------------------------------------------------
+void IncomeModel::rebuildCache() {
+    auto unfiltered = incomes_->incomes(account_);
+    cache_.clear();
+    if (beginning_date_.isValid() and ending_date_.isValid()) {
+        for (auto & income : unfiltered) {
+            // Omit incomes that end prior to beginning date
+            if (income.endingDate().isValid() and (income.endingDate() < beginning_date_)) {
+                continue;
+            }
+            // Omit incomes that start after ending date
+            if (income.beginningDate() > ending_date_) {
+                continue;
+            }
+
+            // Check for recurrence of income within date filter
+            auto date = income.beginningDate().addDays(-1);
+            date = income.recurrence().nextOccurrence(date);
+            if (not date.isValid()) {
+                // Not a recurring income, only care about the beginning date of the non-recurring
+                // incomes
+                date = income.beginningDate();
+                if ((date < beginning_date_) or (date > ending_date_)) {
+                    continue;
+                }
+            } else {
+                auto end = income.endingDate();
+                bool omit = true;
+                while ((not end.isValid() or (date <= end)) and (date <= ending_date_)) {
+                    if (date >= beginning_date_) {
+                        omit = false;
+                    }
+                    date = income.recurrence().nextOccurrence(date);
+                }
+                if (omit) {
+                    continue;
+                }
+            }
+
+            cache_.push_back(income);
+        }
+    } else {
+        cache_ = unfiltered;
+    }
 }
 
 } // budget namespace

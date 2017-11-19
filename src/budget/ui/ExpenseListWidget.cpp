@@ -37,7 +37,9 @@ ExpenseListWidget::ExpenseListWidget(ledger::EnvelopeModel * envelopes, ExpenseM
         : QSplitter(Qt::Horizontal, parent), envelopes_(envelopes), expenses_(expenses),
           envelope_details_(new ledger::EnvelopeDetailsDialog(envelopes_, parent)),
           expense_details_(new ExpenseDetailsDialog(expenses_, parent)),
-          tree_(new ledger::TreeView(this)), table_(new BudgetTableView(this)) {
+          beginning_date_(new QDateEdit(this)), ending_date_(new QDateEdit(this)),
+          filter_by_date_(new QCheckBox(this)), tree_(new ledger::TreeView(this)),
+          table_(new BudgetTableView(this)) {
     tree_->setModel(envelopes_);
     table_->setModel(expenses_);
 
@@ -62,8 +64,36 @@ ExpenseListWidget::ExpenseListWidget(ledger::EnvelopeModel * envelopes, ExpenseM
             &ExpenseDetailsDialog::duplicateExpense);
     connect(table_, &BudgetTableView::deleteItem, this, &ExpenseListWidget::deleteExpense);
 
+    connect(filter_by_date_, &QCheckBox::toggled, beginning_date_, &QDateEdit::setEnabled);
+    connect(filter_by_date_, &QCheckBox::toggled, ending_date_, &QDateEdit::setEnabled);
+    connect(beginning_date_, &QDateEdit::dateChanged, this, &ExpenseListWidget::refresh);
+    connect(ending_date_, &QDateEdit::dateChanged, this, &ExpenseListWidget::refresh);
+    connect(filter_by_date_, &QCheckBox::toggled, this, &ExpenseListWidget::refresh);
+
+    auto today = QDate::currentDate();
+    beginning_date_->setCalendarPopup(true);
+    beginning_date_->setDate(QDate(today.year(), today.month(), 1));
+    ending_date_->setCalendarPopup(true);
+    ending_date_->setDate(QDate(today.year(), today.month(), 1).addMonths(1).addDays(-1));
+    filter_by_date_->setText(tr("Enable Date Filter"));
+    filter_by_date_->setChecked(true);
+
+    auto params = new QHBoxLayout;
+    params->addWidget(new QLabel(tr("Begin")));
+    params->addWidget(beginning_date_);
+    params->addWidget(new QLabel(tr("End")));
+    params->addWidget(ending_date_);
+    params->addStretch();
+    params->addWidget(filter_by_date_);
+
+    auto side_layout = new QVBoxLayout;
+    side_layout->addLayout(params);
+    side_layout->addWidget(table_);
+    auto side = new QWidget;
+    side->setLayout(side_layout);
+
     addWidget(tree_);
-    addWidget(table_);
+    addWidget(side);
 
     // Give expense list stretch priority
     setStretchFactor(1, 1);
@@ -107,6 +137,15 @@ void ExpenseListWidget::deleteExpense(const QModelIndex & index) {
                               tr("Are you sure you want to delete %0?").arg(expense.description()));
     if (answer == QMessageBox::Yes) {
         expenses_->remove(index);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+void ExpenseListWidget::refresh() {
+    if (filter_by_date_->isChecked()) {
+        expenses_->filterForDates(beginning_date_->date(), ending_date_->date());
+    } else {
+        expenses_->filterForDates(QDate(), QDate());
     }
 }
 

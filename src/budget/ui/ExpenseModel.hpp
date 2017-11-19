@@ -24,6 +24,7 @@
 
 // Qt include(s)
 #include <QAbstractTableModel>
+#include <QDate>
 #include <QList>
 #include <QModelIndex>
 #include <QString>
@@ -127,6 +128,14 @@ public slots:
     void filterForEnvelope(const ledger::Envelope & envelope);
 
     /**
+     * Limits expenses presented by the model to those occuring within the given date range.
+     *
+     * @param begin Beginning date
+     * @param end   Ending date
+     */
+    void filterForDates(const QDate & begin, const QDate & end);
+
+    /**
      * Resets the model with updated data from the repository.
      */
     void refresh();
@@ -140,6 +149,15 @@ private:
     ledger::Envelope envelope_;
     /** Cached expenses */
     std::vector<Expense> cache_;
+    /** Beginning date for which to filter displayed expenses */
+    QDate beginning_date_;
+    /** Ending date for which to filter displayed expenses */
+    QDate ending_date_;
+
+    /**
+     * Rebuilds the cache of expenses for display
+     */
+    void rebuildCache();
 };
 
 } // budget namespace

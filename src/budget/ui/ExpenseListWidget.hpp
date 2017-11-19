@@ -21,11 +21,13 @@
 // Qt include(s)
 #include <QSplitter>
 
-// Forward declaration(s)
-class QWidget;
-
 // UnderBudget include(s)
 #include <ledger/model/Envelope.hpp>
+
+// Forward declaration(s)
+class QCheckBox;
+class QDateEdit;
+class QWidget;
 
 namespace ub {
 
@@ -58,8 +60,7 @@ public:
      * @param[in] expenses  Budgeted expenses model
      * @param[in] parent    Parent widget
      */
-    ExpenseListWidget(ledger::EnvelopeModel * envelopes, ExpenseModel * expenses,
-                      QWidget * parent);
+    ExpenseListWidget(ledger::EnvelopeModel * envelopes, ExpenseModel * expenses, QWidget * parent);
 
 signals:
     /**
@@ -78,7 +79,7 @@ public slots:
      */
     void showEnvelope(const ledger::Envelope & envelope);
 
-protected slots:
+private slots:
     /**
      * Prompts the user to confirm deletion of the requested envelope.
      *
@@ -106,6 +107,11 @@ protected slots:
      */
     void deleteExpense(const QModelIndex & index);
 
+    /**
+     * Refreshes the displayed expenses to those within the specified date selections.
+     */
+    void refresh();
+
 private:
     /** Envelope model */
     ledger::EnvelopeModel * envelopes_;
@@ -116,6 +122,13 @@ private:
     ledger::EnvelopeDetailsDialog * envelope_details_;
     /** Expense details dialog */
     ExpenseDetailsDialog * expense_details_;
+
+    /** Beginning date selection widget */
+    QDateEdit * beginning_date_;
+    /** Ending date selection widget */
+    QDateEdit * ending_date_;
+    /** Date filter checkbox */
+    QCheckBox * filter_by_date_;
     /** Envelope tree view */
     ledger::TreeView * tree_;
     /** Budgeted expense table view */

@@ -24,6 +24,7 @@
 
 // Qt include(s)
 #include <QAbstractTableModel>
+#include <QDate>
 #include <QList>
 #include <QModelIndex>
 #include <QString>
@@ -127,6 +128,14 @@ public slots:
     void filterForAccount(const ledger::Account & account);
 
     /**
+     * Limits incomes presented by the model to those occuring within the given date range.
+     *
+     * @param begin Beginning date
+     * @param end   Ending date
+     */
+    void filterForDates(const QDate & begin, const QDate & end);
+
+    /**
      * Resets the model with updated data from the repository.
      */
     void refresh();
@@ -140,6 +149,15 @@ private:
     ledger::Account account_;
     /** Cached incomes */
     std::vector<Income> cache_;
+    /** Beginning date for which to filter displayed incomes */
+    QDate beginning_date_;
+    /** Ending date for which to filter displayed incomes */
+    QDate ending_date_;
+
+    /**
+     * Rebuilds the cache of incomes for display
+     */
+    void rebuildCache();
 };
 
 } // budget namespace

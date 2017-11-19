@@ -22,6 +22,8 @@
 #include <QSplitter>
 
 // Forward declaration(s)
+class QCheckBox;
+class QDateEdit;
 class QWidget;
 
 // UnderBudget include(s)
@@ -58,8 +60,7 @@ public:
      * @param[in] incomes  Budgeted incomes model
      * @param[in] parent   Parent widget
      */
-    IncomeListWidget(ledger::AccountModel * accounts, IncomeModel * incomes,
-                      QWidget * parent);
+    IncomeListWidget(ledger::AccountModel * accounts, IncomeModel * incomes, QWidget * parent);
 
 signals:
     /**
@@ -78,7 +79,7 @@ public slots:
      */
     void showAccount(const ledger::Account & account);
 
-protected slots:
+private slots:
     /**
      * Prompts the user to confirm deletion of the requested account.
      *
@@ -106,6 +107,11 @@ protected slots:
      */
     void deleteIncome(const QModelIndex & index);
 
+    /**
+     * Refreshes the displayed incomes to those within the specified date selections.
+     */
+    void refresh();
+
 private:
     /** Account model */
     ledger::AccountModel * accounts_;
@@ -116,6 +122,13 @@ private:
     ledger::AccountDetailsDialog * account_details_;
     /** Income details dialog */
     IncomeDetailsDialog * income_details_;
+
+    /** Beginning date selection widget */
+    QDateEdit * beginning_date_;
+    /** Ending date selection widget */
+    QDateEdit * ending_date_;
+    /** Date filter checkbox */
+    QCheckBox * filter_by_date_;
     /** Account tree view */
     ledger::TreeView * tree_;
     /** Budgeted income table view */
