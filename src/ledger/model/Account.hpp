@@ -81,6 +81,13 @@ public:
     Currency currency() const;
 
     /**
+     * Returns the external ID for this currency.
+     *
+     * @return External ID
+     */
+    QString externalId() const;
+
+    /**
      * Returns the ID of this account.
      *
      * @return Account ID
@@ -123,6 +130,13 @@ public:
     void setCurrency(const Currency & currency);
 
     /**
+     * Sets the external ID of this currency.
+     *
+     * @param[in] id External ID
+     */
+    void setExternalId(const QString & id);
+
+    /**
      * Updates the name of this account.
      *
      * @param[in] name New account name
@@ -145,11 +159,13 @@ private:
     std::vector<int64_t> children_;
     /** Currency */
     Currency currency_;
+    /** External ID */
+    QString ext_id_;
     /** Account ID */
     int64_t id_;
     /** Parent ID */
     int64_t parent_;
 };
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

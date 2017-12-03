@@ -54,6 +54,7 @@ SQLAccountRepository::SQLAccountRepository(QSqlDatabase & db) : db_(db) {
                               "lft INTEGER NOT NULL, "
                               "rgt INTEGER NOT NULL, "
                               "archived BOOLEAN DEFAULT 0, "
+                              "ext_id VARCHAR, "
                               "FOREIGN KEY(currency_id) REFERENCES currency(id) "
                               "ON DELETE SET DEFAULT);");
 
@@ -80,12 +81,12 @@ void SQLAccountRepository::cache() {
     accounts_.clear();
 
     QSqlQuery query(db_);
-    query.exec("SELECT account.id,account.name,account.currency_id,currency.code,account.lft,"
-               "account.rgt FROM " +
-               table_name_ + " JOIN currency on account.currency_id=currency.id ORDER BY lft;");
+    query.exec(QString("SELECT %1.*, %2.code, %2.ext_id AS curr_ext_id FROM %1 JOIN %2 ON "
+                       "%1.currency_id=%2.id ORDER BY lft;")
+                   .arg(table_name_)
+                   .arg("currency"));
 
     QSqlRecord record;
-
     std::stack<NestedSetAccount> parents;
     while (query.next()) {
         record = query.record();
@@ -93,7 +94,9 @@ void SQLAccountRepository::cache() {
         NestedSetAccount account(record.value("id").value<int64_t>());
         account.setName(record.value("name").toString());
         account.setCurrency(Currency(record.value("currency_id").value<int64_t>(),
-                                     record.value("code").toString()));
+                                     record.value("code").toString(),
+                                     record.value("curr_ext_id").toString()));
+        account.setExternalId(record.value("ext_id").toString());
         account.lft = record.value("lft").value<int64_t>();
         account.rgt = record.value("rgt").value<int64_t>();
 
@@ -144,12 +147,14 @@ int64_t SQLAccountRepository::create(const Account & account, const Account & pa
         return -1;
     }
 
-    query.prepare("INSERT INTO " + table_name_ + "(name, currency_id, lft, rgt) "
-                                                 "VALUES(:name, :currency, :lft, :rgt);");
+    query.prepare("INSERT INTO " + table_name_ +
+                  "(name, currency_id, lft, rgt, ext_id) "
+                  "VALUES(:name, :currency, :lft, :rgt, :ext);");
     query.bindValue(":name", account.name());
     query.bindValue(":currency", QVariant::fromValue(account.currency().id()));
     query.bindValue(":lft", QVariant::fromValue(rgt));
     query.bindValue(":rgt", QVariant::fromValue(rgt + 1));
+    query.bindValue(":ext", account.externalId());
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -355,10 +360,11 @@ bool SQLAccountRepository::remove(const Account & account) {
 //--------------------------------------------------------------------------------------------------
 bool SQLAccountRepository::update(const Account & account) {
     QSqlQuery query(db_);
-    query.prepare("UPDATE " + table_name_ + " SET name=:name, "
-                                            "currency_id=:currency WHERE id=:id;");
+    query.prepare("UPDATE " + table_name_ +
+                  " SET name=:name, currency_id=:currency, ext_id=:ext WHERE id=:id;");
     query.bindValue(":name", account.name());
     query.bindValue(":currency", QVariant::fromValue(account.currency().id()));
+    query.bindValue(":ext", account.externalId());
     query.bindValue(":id", QVariant::fromValue(account.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
@@ -368,5 +374,5 @@ bool SQLAccountRepository::update(const Account & account) {
     return true;
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

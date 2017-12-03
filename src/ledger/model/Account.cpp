@@ -51,6 +51,11 @@ Currency Account::currency() const {
 }
 
 //------------------------------------------------------------------------------
+QString Account::externalId() const {
+    return ext_id_;
+}
+
+//------------------------------------------------------------------------------
 int64_t Account::id() const {
     return id_;
 }
@@ -81,6 +86,11 @@ void Account::setCurrency(const Currency & currency) {
 }
 
 //------------------------------------------------------------------------------
+void Account::setExternalId(const QString & id) {
+    ext_id_ = id;
+}
+
+//------------------------------------------------------------------------------
 void Account::setName(const QString & name) {
     account_name_ = name;
 }
@@ -90,5 +100,5 @@ void Account::setParent(int64_t id) {
     parent_ = id;
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

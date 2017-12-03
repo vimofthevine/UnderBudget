@@ -36,10 +36,11 @@ QString SQLCurrencyRepository::table_name_ = "currency";
 //--------------------------------------------------------------------------------------------------
 SQLCurrencyRepository::SQLCurrencyRepository(QSqlDatabase & db) : db_(db) {
     QSqlQuery query(db_);
-    bool success =
-        query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ + "("
-                                                                 "id INTEGER PRIMARY KEY, "
-                                                                 "code VARCHAR);");
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS " + table_name_ +
+                              "("
+                              "id INTEGER PRIMARY KEY, "
+                              "code VARCHAR, "
+                              "ext_id VARCHAR);");
 
     if (not success) {
         last_error_ = query.lastError().text();
@@ -76,8 +77,9 @@ int64_t SQLCurrencyRepository::create(const Currency & currency) {
 
     {
         QSqlQuery query(db_);
-        query.prepare("INSERT INTO " + table_name_ + "(code) VALUES(:code);");
+        query.prepare("INSERT INTO " + table_name_ + "(code, ext_id) VALUES(:code, :ext);");
         query.bindValue(":code", currency.code());
+        query.bindValue(":ext", currency.externalId());
 
         if (query.exec()) {
             return query.lastInsertId().value<int64_t>();
@@ -96,7 +98,8 @@ Currency SQLCurrencyRepository::getCurrency(int64_t id) {
     query.bindValue(":id", QVariant::fromValue(id));
     if (query.exec() && query.first()) {
         QSqlRecord record = query.record();
-        return Currency(record.value("id").value<int64_t>(), record.value("code").toString());
+        return Currency(record.value("id").value<int64_t>(), record.value("code").toString(),
+                        record.value("ext_id").toString());
     }
     last_error_ = query.lastError().text();
     throw std::invalid_argument(last_error_.toStdString());
@@ -125,8 +128,9 @@ bool SQLCurrencyRepository::update(const Currency & currency) {
         throw std::invalid_argument("Cannot update non-default currency");
     }
     QSqlQuery query(db_);
-    query.prepare("UPDATE " + table_name_ + " SET code=:code WHERE id=1;");
+    query.prepare("UPDATE " + table_name_ + " SET code=:code, ext_id=:ext WHERE id=1;");
     query.bindValue(":code", currency.code());
+    query.bindValue(":ext", currency.externalId());
     if (query.exec()) {
         return true;
     }
@@ -134,5 +138,5 @@ bool SQLCurrencyRepository::update(const Currency & currency) {
     return false;
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

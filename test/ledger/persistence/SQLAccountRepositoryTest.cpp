@@ -56,7 +56,7 @@ protected:
         dropAllTables();
 
         QSqlQuery query(db);
-        query.exec("create table currency(id integer primary key, code varchar);");
+        query.exec("create table currency(id integer primary key, code varchar, ext_id varchar);");
         query.exec("insert into currency(id, code) values(1, 'USD')");
         query.exec("insert into currency(id, code) values(2, 'UAH')");
     }
@@ -309,5 +309,5 @@ TEST_F(SQLAccountRepositoryTest, ShouldUpdateAccountInDatabase) {
     EXPECT_EQ("Fred", updated.name().toStdString());
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

@@ -45,8 +45,9 @@ public:
      *
      * @param[in] id   Currency ID
      * @param[in] code ISO 4217 currency code
+     * @param[in] ext  External ID
      */
-    Currency(int64_t id, const QString & code);
+    Currency(int64_t id, const QString & code, const QString & ext = "");
 
     /**
      * Initializes a currency with the given ISO 4217 code.
@@ -87,6 +88,13 @@ public:
     QString code() const;
 
     /**
+     * Returns the external ID for this currency.
+     *
+     * @return External ID
+     */
+    QString externalId() const;
+
+    /**
      * Formats the given value according to this currency and the current locale.
      *
      * @param[in] value Decimal value to be formatted
@@ -101,6 +109,13 @@ public:
     int64_t id() const;
 
     /**
+     * Sets the external ID of this currency.
+     *
+     * @param[in] id External ID
+     */
+    void setExternalId(const QString & id);
+
+    /**
      * Returns the UTF symbol for this currency.
      *
      * @return UTF symbol
@@ -108,14 +123,16 @@ public:
     QString symbol() const;
 
 private:
+    /** External ID */
+    QString ext_id_;
     /** Currency ID */
     int64_t id_;
     /** ISO 4217 currency code */
     QString iso4217_;
 };
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub
 
 // Make Currency known to QMetaType
 Q_DECLARE_METATYPE(ub::ledger::Currency)

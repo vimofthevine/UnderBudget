@@ -231,7 +231,8 @@ const QMap<QString, QString> & symbols() {
 Currency::Currency() : id_(1), iso4217_(QLocale().currencySymbol(QLocale::CurrencyIsoCode)) {}
 
 //--------------------------------------------------------------------------------------------------
-Currency::Currency(int64_t id, const QString & code) : id_(id), iso4217_(code) {}
+Currency::Currency(int64_t id, const QString & code, const QString & ext)
+        : ext_id_(ext), id_(id), iso4217_(code) {}
 
 //--------------------------------------------------------------------------------------------------
 bool Currency::operator==(const Currency & that) const {
@@ -249,6 +250,11 @@ QString Currency::code() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+QString Currency::externalId() const {
+    return ext_id_;
+}
+
+//--------------------------------------------------------------------------------------------------
 QString Currency::format(double value) const {
     return QLocale().toCurrencyString(value, symbol());
 }
@@ -259,9 +265,14 @@ int64_t Currency::id() const {
 }
 
 //--------------------------------------------------------------------------------------------------
+void Currency::setExternalId(const QString & id) {
+    ext_id_ = id;
+}
+
+//--------------------------------------------------------------------------------------------------
 QString Currency::symbol() const {
     return symbols().value(iso4217_, QString('?'));
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub
