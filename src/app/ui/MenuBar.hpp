@@ -44,6 +44,9 @@ signals:
     /** Emitted when the open menu action is triggered. */
     void openDatabase();
 
+    /** Emitted when the import menu action is triggered. */
+    void importData();
+
     /** Emitted when the exit menu action is triggered. */
     void exitApplication();
 
@@ -72,4 +75,4 @@ signals:
     void aboutQt();
 };
 
-} // ub namespace
+} // namespace ub

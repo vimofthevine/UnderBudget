@@ -24,6 +24,7 @@ if (WIN32)
 endif (WIN32)
 
 # Add source sub-directories
+add_subdirectory(adapter)
 add_subdirectory(app)
 add_subdirectory(app/resources)
 add_subdirectory(budget)

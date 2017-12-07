@@ -91,6 +91,20 @@ QIcon exit();
 QIcon expenses();
 
 /**
+ * Creates an icon for an export-data action.
+ *
+ * @return export-data action
+ */
+QIcon exportData();
+
+/**
+ * Creates an icon for an import-data action.
+ *
+ * @return import-data action icon
+ */
+QIcon importData();
+
+/**
  * Creates an icon for a view-incomes action.
  *
  * @return view-incomes action icon
@@ -118,5 +132,5 @@ QIcon remove();
  */
 QIcon reports();
 
-} // Icon namespace
-} // ub namespace
+} // namespace Icon
+} // namespace ub

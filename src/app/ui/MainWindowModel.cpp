@@ -20,6 +20,7 @@
 #include <QtWidgets>
 
 // UnderBudget include(s)
+#include <adapter/wizard/ImportDataWizard.hpp>
 #include <app/model/Repositories.hpp>
 #include <budget/ui/ExpenseListWidget.hpp>
 #include <budget/ui/ExpenseModel.hpp>
@@ -67,6 +68,7 @@ MainWindowModel::MainWindowModel(MainWindow * window)
 
     auto menu = window_->menu();
     connect(menu, &MenuBar::openDatabase, this, &MainWindowModel::openDatabase);
+    connect(menu, &MenuBar::importData, this, &MainWindowModel::importData);
     connect(menu, &MenuBar::addTransaction, journal_entry_,
             &ledger::JournalEntryDialog::prepareForNewEntry);
     connect(menu, &MenuBar::viewAccounts, this, &MainWindowModel::showAccounts);
@@ -142,6 +144,7 @@ MainWindowModel::MainWindowModel(MainWindow * window)
 
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories) {
+    repos_ = repositories;
     account_model_->setRepository(repositories);
     account_transaction_model_->setRepository(repositories);
     envelope_model_->setRepository(repositories);
@@ -155,6 +158,15 @@ void MainWindowModel::setRepositories(std::shared_ptr<Repositories> repositories
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::openDatabase() {
     auto file = ub::DatabaseFileChooser::getFileToOpen(window_);
+}
+
+//--------------------------------------------------------------------------------------------------
+void MainWindowModel::importData() {
+    if (repos_) {
+        auto wizard = new adapter::ImportDataWizard(repos_, window_);
+        connect(wizard, &QWizard::accepted, this, [this]() { setRepositories(repos_); });
+        wizard->show();
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -187,4 +199,4 @@ void MainWindowModel::showError(const QString & message) {
     QMessageBox::warning(window_, tr("Error"), message);
 }
 
-} // ub namespace
+} // namespace ub

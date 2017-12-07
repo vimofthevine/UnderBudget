@@ -32,6 +32,10 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
     open->setStatusTip(tr("Open database"));
     connect(open, &QAction::triggered, this, &MenuBar::openDatabase);
 
+    auto import_data = new QAction(Icon::importData(), tr("&Import..."), this);
+    import_data->setStatusTip(tr("Import data"));
+    connect(import_data, &QAction::triggered, this, &MenuBar::importData);
+
     auto exit = new QAction(Icon::exit(), tr("E&xit"), this);
     exit->setShortcut(QKeySequence::Quit);
     exit->setStatusTip(tr("Quit the application"));
@@ -77,6 +81,7 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
 
     auto file = addMenu(tr("&File"));
     file->addAction(open);
+    file->addAction(import_data);
     file->addSeparator();
     file->addAction(exit);
 
@@ -97,4 +102,4 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent) {
     help->addAction(aboutqt);
 }
 
-} // ub namespace
+} // namespace ub

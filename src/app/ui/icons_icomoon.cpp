@@ -78,6 +78,16 @@ QIcon expenses() {
 }
 
 //------------------------------------------------------------------------------
+QIcon exportData() {
+    return get("198-download2");
+}
+
+//------------------------------------------------------------------------------
+QIcon importData() {
+    return get("199-upload2");
+}
+
+//------------------------------------------------------------------------------
 QIcon incomes() {
     return get("060-coin-dollar");
 }
@@ -97,5 +107,5 @@ QIcon reports() {
     return get("156-stats-dots");
 }
 
-} // Icon namespace
-} // ub namespace
+} // namespace Icon
+} // namespace ub

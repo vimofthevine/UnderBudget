@@ -37,7 +37,7 @@ class ExpenseListWidget;
 class ExpenseModel;
 class IncomeListWidget;
 class IncomeModel;
-}
+} // namespace budget
 
 namespace ledger {
 // Forward declaration(s)
@@ -48,12 +48,12 @@ class EnvelopeListWidget;
 class EnvelopeModel;
 class EnvelopeTransactionModel;
 class JournalEntryDialog;
-}
+} // namespace ledger
 
 namespace report {
 // Forward declaration(s)
 class ReportWidget;
-}
+} // namespace report
 
 /**
  * Main application window model.
@@ -81,6 +81,11 @@ protected slots:
      * Prompts the user to select a database file to be opened.
      */
     void openDatabase();
+
+    /**
+     * Prompts the user to select an import source.
+     */
+    void importData();
 
     /**
      * Displays the accounts list view.
@@ -115,6 +120,9 @@ protected slots:
     void showError(const QString & message);
 
 private:
+    /** Application repositories */
+    std::shared_ptr<Repositories> repos_;
+
     /** Account model */
     ledger::AccountModel * account_model_;
     /** Account transaction model */
@@ -144,4 +152,4 @@ private:
     report::ReportWidget * reports_;
 };
 
-} // ub namespace
+} // namespace ub
