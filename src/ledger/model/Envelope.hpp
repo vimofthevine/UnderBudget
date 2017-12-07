@@ -78,6 +78,13 @@ public:
     Currency currency() const;
 
     /**
+     * Returns the external ID for this envelope.
+     *
+     * @return External ID
+     */
+    QString externalId() const;
+
+    /**
      * Returns the ID of this envelope.
      *
      * @return Envelope ID
@@ -120,6 +127,13 @@ public:
     void setCurrency(const Currency & currency);
 
     /**
+     * Sets the external ID of this account.
+     *
+     * @param[in] id External ID
+     */
+    void setExternalId(const QString & id);
+
+    /**
      * Updates the name of this envelope.
      *
      * @param[in] name New envelope name
@@ -140,6 +154,8 @@ private:
     std::vector<int64_t> children_;
     /** Currency */
     Currency currency_;
+    /** External ID */
+    QString ext_id_;
     /** Envelope ID */
     int64_t id_;
     /** Envelope name */
@@ -148,5 +164,5 @@ private:
     int64_t parent_;
 };
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

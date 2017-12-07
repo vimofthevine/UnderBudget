@@ -54,6 +54,7 @@ SQLEnvelopeRepository::SQLEnvelopeRepository(QSqlDatabase & db) : db_(db) {
                               "lft INTEGER NOT NULL, "
                               "rgt INTEGER NOT NULL, "
                               "archived BOOLEAN DEFAULT 0, "
+                              "ext_id VARCHAR, "
                               "FOREIGN KEY(currency_id) REFERENCES currency(id) "
                               "ON DELETE SET DEFAULT);");
 
@@ -80,9 +81,10 @@ void SQLEnvelopeRepository::cache() {
     envelopes_.clear();
 
     QSqlQuery query(db_);
-    query.exec("SELECT envelope.id,envelope.name,envelope.currency_id,currency.code,envelope.lft,"
-               "envelope.rgt FROM " +
-               table_name_ + " JOIN currency on envelope.currency_id=currency.id ORDER BY lft;");
+    query.exec(QString("SELECT %1.*, %2.code FROM %1 JOIN %2 ON "
+                       "%1.currency_id=%2.id ORDER BY lft;")
+                   .arg(table_name_)
+                   .arg("currency"));
 
     QSqlRecord record;
 
@@ -94,6 +96,7 @@ void SQLEnvelopeRepository::cache() {
         envelope.setName(record.value("name").toString());
         envelope.setCurrency(Currency(record.value("currency_id").value<int64_t>(),
                                       record.value("code").toString()));
+        envelope.setExternalId(record.value("ext_id").toString());
         envelope.lft = record.value("lft").value<int64_t>();
         envelope.rgt = record.value("rgt").value<int64_t>();
 
@@ -144,12 +147,14 @@ int64_t SQLEnvelopeRepository::create(const Envelope & envelope, const Envelope 
         return -1;
     }
 
-    query.prepare("INSERT INTO " + table_name_ + "(name, currency_id, lft, rgt) "
-                                                 "VALUES(:name, :currency, :lft, :rgt);");
+    query.prepare("INSERT INTO " + table_name_ +
+                  "(name, currency_id, lft, rgt, ext_id) "
+                  "VALUES(:name, :currency, :lft, :rgt, :ext);");
     query.bindValue(":name", envelope.name());
     query.bindValue(":currency", QVariant::fromValue(envelope.currency().id()));
     query.bindValue(":lft", QVariant::fromValue(rgt));
     query.bindValue(":rgt", QVariant::fromValue(rgt + 1));
+    query.bindValue(":ext", envelope.externalId());
     if (not query.exec()) {
         last_error_ = query.lastError().text();
         db_.rollback();
@@ -355,10 +360,11 @@ bool SQLEnvelopeRepository::remove(const Envelope & envelope) {
 //--------------------------------------------------------------------------------------------------
 bool SQLEnvelopeRepository::update(const Envelope & envelope) {
     QSqlQuery query(db_);
-    query.prepare("UPDATE " + table_name_ + " SET name=:name, "
-                                            "currency_id=:currency WHERE id=:id;");
+    query.prepare("UPDATE " + table_name_ +
+                  " SET name=:name, currency_id=:currency, ext_id=:ext WHERE id=:id;");
     query.bindValue(":name", envelope.name());
     query.bindValue(":currency", QVariant::fromValue(envelope.currency().id()));
+    query.bindValue(":ext", envelope.externalId());
     query.bindValue(":id", QVariant::fromValue(envelope.id()));
     if (not query.exec()) {
         last_error_ = query.lastError().text();
@@ -368,5 +374,5 @@ bool SQLEnvelopeRepository::update(const Envelope & envelope) {
     return true;
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

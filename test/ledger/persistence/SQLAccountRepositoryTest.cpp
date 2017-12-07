@@ -56,7 +56,7 @@ protected:
         dropAllTables();
 
         QSqlQuery query(db);
-        query.exec("create table currency(id integer primary key, code varchar, ext_id varchar);");
+        query.exec("create table currency(id integer primary key, code varchar);");
         query.exec("insert into currency(id, code) values(1, 'USD')");
         query.exec("insert into currency(id, code) values(2, 'UAH')");
     }

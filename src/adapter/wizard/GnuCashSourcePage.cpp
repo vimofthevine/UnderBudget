@@ -40,13 +40,6 @@ GnuCashSourcePage::GnuCashSourcePage(QWidget * parent)
     sqlite_type_->setChecked(true);
     xml_type_->setEnabled(false);
 
-    QSettings settings;
-    auto last = settings.value(LAST_IMPORTED_GNUCASH_FILE).toString();
-    QFileInfo info(last);
-    if (info.exists()) {
-        file_selection_->setText(last);
-    }
-
     auto browse = new QPushButton(tr("Browse"));
     connect(browse, &QPushButton::clicked, this, &GnuCashSourcePage::selectFile);
 
@@ -66,6 +59,16 @@ GnuCashSourcePage::GnuCashSourcePage(QWidget * parent)
     registerField("file_name*", file_selection_);
 
     setFinalPage(true);
+}
+
+//--------------------------------------------------------------------------------------------------
+void GnuCashSourcePage::initializePage() {
+    QSettings settings;
+    auto last = settings.value(LAST_IMPORTED_GNUCASH_FILE).toString();
+    QFileInfo info(last);
+    if (info.exists()) {
+        file_selection_->setText(last);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

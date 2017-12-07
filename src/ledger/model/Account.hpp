@@ -81,7 +81,7 @@ public:
     Currency currency() const;
 
     /**
-     * Returns the external ID for this currency.
+     * Returns the external ID for this account.
      *
      * @return External ID
      */
@@ -130,7 +130,7 @@ public:
     void setCurrency(const Currency & currency);
 
     /**
-     * Sets the external ID of this currency.
+     * Sets the external ID of this account.
      *
      * @param[in] id External ID
      */

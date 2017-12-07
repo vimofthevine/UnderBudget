@@ -39,7 +39,7 @@ namespace adapter {
 GnuCashImporter::GnuCashImporter(std::shared_ptr<Repositories> repos) : repos_(repos) {}
 
 //--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importFromSqlite(const QString & db) {
+bool GnuCashImporter::importFromSqlite(const QString & db, bool envelopes) {
     qDebug() << "Importing" << db;
     QSqlDatabase gnucash = QSqlDatabase::addDatabase("QSQLITE", db);
     gnucash.setDatabaseName(db);
@@ -68,17 +68,20 @@ bool GnuCashImporter::importFromSqlite(const QString & db) {
         }
     }
 
-    // Import accounts
+    // Import accounts and envelopes
     accounts_.clear();
+    envelopes_.clear();
     {
-        auto repo = repos_->accounts();
+        auto accts_repo = repos_->accounts();
+        auto env_repo = repos_->envelopes();
         QSqlQuery query(gnucash);
         query.exec("SELECT * FROM accounts WHERE name=\"Root Account\";");
         if (query.first()) {
             auto record = query.record();
             auto ext_id = record.value("guid").toString();
-            accounts_[ext_id] = repo->getAccount(1);
-            if (not importChildAccountsOf(ext_id, gnucash)) {
+            accounts_[ext_id] = accts_repo->getAccount(1);
+            envelopes_[ext_id] = env_repo->getEnvelope(1);
+            if (not importChildAccountsOf(ext_id, gnucash, envelopes)) {
                 return false;
             }
         } else {
@@ -90,7 +93,8 @@ bool GnuCashImporter::importFromSqlite(const QString & db) {
 }
 
 //--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db) {
+bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db,
+                                            bool envelopes) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM accounts WHERE parent_guid=:id;");
     query.bindValue(":id", parent_ext_id);
@@ -101,19 +105,29 @@ bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlD
     while (query.next()) {
         auto record = query.record();
         auto ext_id = record.value("guid").toString();
-        ledger::Account account;
-        account.setCurrency(currencies_[record.value("commodity_guid").toString()]);
-        account.setExternalId(ext_id);
-        account.setName(record.value("name").toString());
-        account.setParent(accounts_[parent_ext_id].id());
-        auto id = repos_->accounts()->create(account, accounts_[parent_ext_id]);
-        accounts_[ext_id] = repos_->accounts()->getAccount(id);
-        if (not importChildAccountsOf(ext_id, db)) {
+        if (envelopes and (record.value("account_type") == QString("EXPENSE"))) {
+            ledger::Envelope envelope;
+            envelope.setCurrency(currencies_[record.value("commodity_guid").toString()]);
+            envelope.setExternalId(ext_id);
+            envelope.setName(record.value("name").toString());
+            envelope.setParent(envelopes_[parent_ext_id].id());
+            auto id = repos_->envelopes()->create(envelope, envelopes_[parent_ext_id]);
+            envelopes_[ext_id] = repos_->envelopes()->getEnvelope(id);
+        } else {
+            ledger::Account account;
+            account.setCurrency(currencies_[record.value("commodity_guid").toString()]);
+            account.setExternalId(ext_id);
+            account.setName(record.value("name").toString());
+            account.setParent(accounts_[parent_ext_id].id());
+            auto id = repos_->accounts()->create(account, accounts_[parent_ext_id]);
+            accounts_[ext_id] = repos_->accounts()->getAccount(id);
+        }
+        if (not importChildAccountsOf(ext_id, db, envelopes)) {
             return false;
         }
     }
     return true;
-}
+} // namespace adapter
 
 } // namespace adapter
 } // namespace ub

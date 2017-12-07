@@ -28,6 +28,7 @@
 // UnderBudget include(s)
 #include <app/model/Repositories.hpp>
 #include <ledger/model/Account.hpp>
+#include <ledger/model/Envelope.hpp>
 
 // Forward declaration(s)
 class QSqlDatabase;
@@ -50,10 +51,11 @@ public:
     /**
      * Imports from the specified GnuCash SQLite database location
      *
-     * @param db GnuCash SQLite database location
+     * @param db        GnuCash SQLite database location
+     * @param envelopes if @c true, import expense accounts as envelopes
      * @return @c true if successful
      */
-    bool importFromSqlite(const QString & db);
+    bool importFromSqlite(const QString & db, bool envelopes);
 
 private:
     /** Application repositories */
@@ -62,15 +64,18 @@ private:
     std::map<QString, ledger::Currency> currencies_;
     /** Imported accounts */
     std::map<QString, ledger::Account> accounts_;
+    /** Imported envelopes */
+    std::map<QString, ledger::Envelope> envelopes_;
 
     /**
      * Recursively imports child accounts of the specified parent account
      *
      * @param parent_ext_id GnuCash ID of the parent account
      * @param db            GnuCash database
+     * @param envelopes     if @c true, import expense accounts as envelopes
      * @return @c true if successful
      */
-    bool importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db);
+    bool importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db, bool envelopes);
 };
 
 } // namespace adapter

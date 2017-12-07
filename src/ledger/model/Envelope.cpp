@@ -51,6 +51,11 @@ Currency Envelope::currency() const {
 }
 
 //------------------------------------------------------------------------------
+QString Envelope::externalId() const {
+    return ext_id_;
+}
+
+//------------------------------------------------------------------------------
 int64_t Envelope::id() const {
     return id_;
 }
@@ -81,6 +86,11 @@ void Envelope::setCurrency(const Currency & currency) {
 }
 
 //------------------------------------------------------------------------------
+void Envelope::setExternalId(const QString & id) {
+    ext_id_ = id;
+}
+
+//------------------------------------------------------------------------------
 void Envelope::setName(const QString & name) {
     name_ = name;
 }
@@ -90,5 +100,5 @@ void Envelope::setParent(int64_t id) {
     parent_ = id;
 }
 
-} // ledger namespace
-} // ub namespace
+} // namespace ledger
+} // namespace ub

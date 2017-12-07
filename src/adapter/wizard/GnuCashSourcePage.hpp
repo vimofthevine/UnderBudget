@@ -43,6 +43,11 @@ public:
     GnuCashSourcePage(QWidget * parent = 0);
 
     /**
+     * Sets default values for all inputs.
+     */
+    void initializePage() override;
+
+    /**
      * Verifies that all parameters are valid.
      *
      * @return @c true if parameters are valid
