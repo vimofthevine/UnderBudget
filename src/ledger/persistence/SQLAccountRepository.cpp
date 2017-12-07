@@ -81,7 +81,7 @@ void SQLAccountRepository::cache() {
     accounts_.clear();
 
     QSqlQuery query(db_);
-    query.exec(QString("SELECT %1.*, %2.code, %2.ext_id AS curr_ext_id FROM %1 JOIN %2 ON "
+    query.exec(QString("SELECT %1.*, %2.code FROM %1 JOIN %2 ON "
                        "%1.currency_id=%2.id ORDER BY lft;")
                    .arg(table_name_)
                    .arg("currency"));
@@ -94,8 +94,7 @@ void SQLAccountRepository::cache() {
         NestedSetAccount account(record.value("id").value<int64_t>());
         account.setName(record.value("name").toString());
         account.setCurrency(Currency(record.value("currency_id").value<int64_t>(),
-                                     record.value("code").toString(),
-                                     record.value("curr_ext_id").toString()));
+                                     record.value("code").toString()));
         account.setExternalId(record.value("ext_id").toString());
         account.lft = record.value("lft").value<int64_t>();
         account.rgt = record.value("rgt").value<int64_t>();
