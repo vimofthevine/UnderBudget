@@ -27,7 +27,10 @@
 // UnderBudget include(s)
 #include <app/model/Repositories.hpp>
 #include <ledger/model/Account.hpp>
+#include <ledger/model/AccountTransaction.hpp>
 #include <ledger/model/Currency.hpp>
+#include <ledger/model/Envelope.hpp>
+#include <ledger/model/EnvelopeTransaction.hpp>
 #include <ledger/model/JournalEntry.hpp>
 #include <ledger/model/Transaction.hpp>
 #include "GnuCashImporter.hpp"
@@ -89,6 +92,90 @@ bool GnuCashImporter::importFromSqlite(const QString & db, bool envelopes) {
         }
     }
 
+    // Import transactions
+    {
+        QSqlQuery query(gnucash);
+        if (query.exec("SELECT * FROM transactions;")) {
+            while (query.next()) {
+                if (not importTransaction(query.record(), gnucash)) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool GnuCashImporter::importTransaction(QSqlRecord trn_record, QSqlDatabase & db) {
+    ledger::JournalEntry je(repos_->transactions());
+    auto currency = currencies_[trn_record.value("currency_guid").toString()];
+
+    auto trn_id = trn_record.value("guid").toString();
+    ledger::Transaction transaction;
+    transaction.setPayee(trn_record.value("description").toString());
+    transaction.setDate(
+        QDateTime::fromString(trn_record.value("post_date").toString(), "yyyy-MM-dd HH:mm:ss")
+            .date());
+    // TODO transaction external ID
+    je.updateTransaction(transaction);
+
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM splits WHERE tx_guid=:id;");
+    query.bindValue(":id", trn_id);
+    if (query.exec()) {
+        while (query.next()) {
+            auto record = query.record();
+            auto split_id = record.value("guid").toString();
+            auto acct_id = record.value("account_guid").toString();
+            auto num = record.value("value_num").toDouble();
+            auto denom = record.value("value_denom").toDouble();
+            auto amount = num / denom;
+            if (envelopes_.count(acct_id) == 1u) {
+                ledger::EnvelopeTransaction split;
+                split.setEnvelope(envelopes_[acct_id]);
+                split.setAmount(ledger::Money(amount, currency));
+                split.setMemo(record.value("memo").toString());
+                split.setTransaction(transaction);
+                je.addSplit(split);
+                qDebug() << "Importing envelope split" << split.amount().toString()
+                         << split.envelope().name();
+            } else if (accounts_.count(acct_id) == 1u) {
+                ledger::AccountTransaction split;
+                split.setAccount(accounts_[acct_id]);
+                split.setAmount(ledger::Money(amount, currency));
+                bool cleared = (record.value("reconcile_state").toString() != "n");
+                split.setCleared(cleared);
+                split.setMemo(record.value("memo").toString());
+                split.setTransaction(transaction);
+                je.addSplit(split);
+                qDebug() << "Importing account split" << split.amount().toString()
+                         << split.account().name();
+            } else {
+                qDebug() << "Unknown account ID" << acct_id;
+            }
+        }
+    } else {
+        qWarning() << query.lastError().text();
+        return false;
+    }
+
+    if (not je.isValid()) {
+        qWarning() << "Journal entry for transaction" << trn_id << "is not valid." << je.lastError()
+                   << "Account imbalance is" << je.accountImbalance().toString()
+                   << "Envelope imbalance is" << je.envelopeImbalance().toString();
+        return false;
+    } else {
+        if (not je.save()) {
+            qWarning() << "Unable to save journal entry for transaction" << trn_id
+                       << je.lastError();
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -105,7 +192,10 @@ bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlD
     while (query.next()) {
         auto record = query.record();
         auto ext_id = record.value("guid").toString();
-        if (envelopes and (record.value("account_type") == QString("EXPENSE"))) {
+        auto type = record.value("account_type").toString();
+        if (envelopes and (type == QString("INCOME"))) {
+            // Do nothing
+        } else if (envelopes and (record.value("account_type") == QString("EXPENSE"))) {
             ledger::Envelope envelope;
             envelope.setCurrency(currencies_[record.value("commodity_guid").toString()]);
             envelope.setExternalId(ext_id);

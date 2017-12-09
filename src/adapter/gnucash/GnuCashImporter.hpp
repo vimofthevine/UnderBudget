@@ -23,6 +23,8 @@
 #include <memory>
 
 // Qt include(s)
+#include <QSqlDatabase>
+#include <QSqlRecord>
 #include <QString>
 
 // UnderBudget include(s)
@@ -76,6 +78,15 @@ private:
      * @return @c true if successful
      */
     bool importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db, bool envelopes);
+
+    /**
+     * Imports the transaction in the given record from the transactions table
+     *
+     * @param trn_record Transaction table record
+     * @param db         GnuCash database
+     * @return @c true if successful
+     */
+    bool importTransaction(QSqlRecord trn_record, QSqlDatabase & db);
 };
 
 } // namespace adapter
