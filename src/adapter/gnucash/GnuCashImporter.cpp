@@ -42,7 +42,7 @@ namespace adapter {
 GnuCashImporter::GnuCashImporter(std::shared_ptr<Repositories> repos) : repos_(repos) {}
 
 //--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importFromSqlite(const QString & db, bool envelopes) {
+bool GnuCashImporter::importFromSqlite(const QString & db) {
     qDebug() << "Importing" << db;
     QSqlDatabase gnucash = QSqlDatabase::addDatabase("QSQLITE", db);
     gnucash.setDatabaseName(db);
@@ -84,7 +84,7 @@ bool GnuCashImporter::importFromSqlite(const QString & db, bool envelopes) {
             auto ext_id = record.value("guid").toString();
             accounts_[ext_id] = accts_repo->getAccount(1);
             envelopes_[ext_id] = env_repo->getEnvelope(1);
-            if (not importChildAccountsOf(ext_id, gnucash, envelopes)) {
+            if (not importChildAccountsOf(ext_id, gnucash)) {
                 return false;
             }
         } else {
@@ -180,8 +180,7 @@ bool GnuCashImporter::importTransaction(QSqlRecord trn_record, QSqlDatabase & db
 }
 
 //--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db,
-                                            bool envelopes) {
+bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM accounts WHERE parent_guid=:id;");
     query.bindValue(":id", parent_ext_id);
@@ -193,26 +192,16 @@ bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlD
         auto record = query.record();
         auto ext_id = record.value("guid").toString();
         auto type = record.value("account_type").toString();
-        if (envelopes and (type == QString("INCOME"))) {
-            // Do nothing
-        } else if (envelopes and (record.value("account_type") == QString("EXPENSE"))) {
-            ledger::Envelope envelope;
-            envelope.setCurrency(currencies_[record.value("commodity_guid").toString()]);
-            envelope.setExternalId(ext_id);
-            envelope.setName(record.value("name").toString());
-            envelope.setParent(envelopes_[parent_ext_id].id());
-            auto id = repos_->envelopes()->create(envelope, envelopes_[parent_ext_id]);
-            envelopes_[ext_id] = repos_->envelopes()->getEnvelope(id);
-        } else {
-            ledger::Account account;
-            account.setCurrency(currencies_[record.value("commodity_guid").toString()]);
-            account.setExternalId(ext_id);
-            account.setName(record.value("name").toString());
-            account.setParent(accounts_[parent_ext_id].id());
-            auto id = repos_->accounts()->create(account, accounts_[parent_ext_id]);
-            accounts_[ext_id] = repos_->accounts()->getAccount(id);
-        }
-        if (not importChildAccountsOf(ext_id, db, envelopes)) {
+
+        ledger::Account account;
+        account.setCurrency(currencies_[record.value("commodity_guid").toString()]);
+        account.setExternalId(ext_id);
+        account.setName(record.value("name").toString());
+        account.setParent(accounts_[parent_ext_id].id());
+        auto id = repos_->accounts()->create(account, accounts_[parent_ext_id]);
+        accounts_[ext_id] = repos_->accounts()->getAccount(id);
+
+        if (not importChildAccountsOf(ext_id, db)) {
             return false;
         }
     }

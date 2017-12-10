@@ -55,7 +55,7 @@ void ImportDataWizard::accept() {
         if (info.exists()) {
             if (field("gnucash_sqlite").toBool()) {
                 GnuCashImporter importer(repos_);
-                importer.importFromSqlite(name, false);
+                importer.importFromSqlite(name);
             } else {
                 qWarning() << "Importing GnuCash XML not yet supported";
             }

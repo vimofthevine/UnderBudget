@@ -54,10 +54,9 @@ public:
      * Imports from the specified GnuCash SQLite database location
      *
      * @param db        GnuCash SQLite database location
-     * @param envelopes if @c true, import expense accounts as envelopes
      * @return @c true if successful
      */
-    bool importFromSqlite(const QString & db, bool envelopes);
+    bool importFromSqlite(const QString & db);
 
 private:
     /** Application repositories */
@@ -74,10 +73,9 @@ private:
      *
      * @param parent_ext_id GnuCash ID of the parent account
      * @param db            GnuCash database
-     * @param envelopes     if @c true, import expense accounts as envelopes
      * @return @c true if successful
      */
-    bool importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db, bool envelopes);
+    bool importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db);
 
     /**
      * Imports the transaction in the given record from the transactions table
