@@ -19,6 +19,7 @@
 // Standard include(s)
 #include <map>
 #include <memory>
+#include <stdexcept>
 
 // Qt include(s)
 #include <QtDebug>
@@ -33,85 +34,126 @@
 #include <ledger/model/EnvelopeTransaction.hpp>
 #include <ledger/model/JournalEntry.hpp>
 #include <ledger/model/Transaction.hpp>
+#include <ledger/persistence/SQLAccountRepository.hpp>
+#include <ledger/persistence/SQLCurrencyRepository.hpp>
+#include <ledger/persistence/SQLEnvelopeRepository.hpp>
+#include <ledger/persistence/SQLTransactionRepository.hpp>
 #include "GnuCashImporter.hpp"
 
 namespace ub {
 namespace adapter {
 
 //--------------------------------------------------------------------------------------------------
-GnuCashImporter::GnuCashImporter(std::shared_ptr<Repositories> repos) : repos_(repos) {}
-
-//--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importFromSqlite(const QString & db) {
-    qDebug() << "Importing" << db;
-    QSqlDatabase gnucash = QSqlDatabase::addDatabase("QSQLITE", db);
-    gnucash.setDatabaseName(db);
-    if (not gnucash.open()) {
-        qCritical() << "Unable to open GnuCash database file:" << db
-                    << "error:" << gnucash.lastError();
-        return false;
-    }
-
-    // Import currencies
-    currencies_.clear();
-    {
-        auto repo = repos_->currencies();
-        QSqlQuery query(gnucash);
-        QSqlRecord record;
-        if (not query.exec("SELECT * FROM commodities WHERE namespace=\"CURRENCY\";")) {
-            qWarning() << query.lastError().text();
-            return false;
-        }
-        while (query.next()) {
-            record = query.record();
-            ledger::Currency currency(0, record.value("mnemonic").toString(),
-                                      record.value("guid").toString());
-            auto id = repo->create(currency);
-            currencies_[currency.externalId()] = repo->getCurrency(id);
-        }
-    }
-
-    // Import accounts and envelopes
-    accounts_.clear();
-    envelopes_.clear();
-    {
-        auto accts_repo = repos_->accounts();
-        auto env_repo = repos_->envelopes();
-        QSqlQuery query(gnucash);
-        query.exec("SELECT * FROM accounts WHERE name=\"Root Account\";");
-        if (query.first()) {
-            auto record = query.record();
-            auto ext_id = record.value("guid").toString();
-            accounts_[ext_id] = accts_repo->getAccount(1);
-            envelopes_[ext_id] = env_repo->getEnvelope(1);
-            if (not importChildAccountsOf(ext_id, gnucash)) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    // Import transactions
-    {
-        QSqlQuery query(gnucash);
-        if (query.exec("SELECT * FROM transactions;")) {
-            while (query.next()) {
-                if (not importTransaction(query.record(), gnucash)) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-
-    return true;
+GnuCashImporter::GnuCashImporter(const QString & name, QObject * parent) : QThread(parent) {
+    app_db_ = QSqlDatabase::cloneDatabase(QSqlDatabase::database(name), "GnuCashImport");
 }
 
 //--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importTransaction(QSqlRecord trn_record, QSqlDatabase & db) {
-    ledger::JournalEntry je(repos_->transactions());
+GnuCashImporter::~GnuCashImporter() {
+    terminated_ = true;
+    wait();
+    if (app_db_.isOpen()) {
+        app_db_.close();
+    }
+    if (gnucash_db_.isOpen()) {
+        gnucash_db_.close();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+void GnuCashImporter::importFromSqlite(const QString & loc) {
+    qDebug() << "Importing" << loc;
+    gnucash_db_ = QSqlDatabase::addDatabase("QSQLITE", loc);
+    gnucash_db_.setDatabaseName(loc);
+    start();
+}
+
+//--------------------------------------------------------------------------------------------------
+void GnuCashImporter::run() {
+    try {
+        if (not app_db_.open()) {
+            throw std::runtime_error("Unable to open database: " +
+                                     app_db_.lastError().text().toStdString());
+        }
+
+        if (not gnucash_db_.open()) {
+            throw std::runtime_error("Unable to open GnuCash database: " +
+                                     gnucash_db_.lastError().text().toStdString());
+        }
+
+        account_repo_.reset(new ledger::SQLAccountRepository(app_db_));
+        currency_repo_.reset(new ledger::SQLCurrencyRepository(app_db_));
+        auto envelope_repo = std::make_shared<ledger::SQLEnvelopeRepository>(app_db_);
+        transaction_repo_.reset(
+            new ledger::SQLTransactionRepository(app_db_, account_repo_, envelope_repo));
+
+        // Import currencies
+        {
+            QSqlQuery query(gnucash_db_);
+            QSqlRecord record;
+            if (not query.exec("SELECT * FROM commodities WHERE namespace=\"CURRENCY\";")) {
+                throw std::runtime_error(query.lastError().text().toStdString());
+            }
+            while (query.next()) {
+                record = query.record();
+                ledger::Currency currency(0, record.value("mnemonic").toString(),
+                                          record.value("guid").toString());
+                auto id = currency_repo_->create(currency);
+                currencies_[currency.externalId()] = currency_repo_->getCurrency(id);
+            }
+        }
+
+        // Import accounts
+        {
+            QSqlQuery query(gnucash_db_);
+            query.exec("SELECT * FROM accounts WHERE name=\"Root Account\";");
+            if (query.first()) {
+                auto record = query.record();
+                auto ext_id = record.value("guid").toString();
+                accounts_[ext_id] = account_repo_->getAccount(1);
+                importChildAccountsOf(ext_id);
+            } else {
+                throw std::runtime_error(query.lastError().text().toStdString());
+            }
+        }
+
+        // Import transactions
+        {
+            QSqlQuery query(gnucash_db_);
+            if (query.exec("SELECT * FROM transactions;")) {
+                while (query.next()) {
+                    if (terminated_) {
+                        break;
+                    }
+                    importTransaction(query.record());
+                    ++num_transactions_;
+                }
+            } else {
+                throw std::runtime_error(query.lastError().text().toStdString());
+            }
+        }
+
+        emit finished(not terminated_);
+        if (not terminated_) {
+            qDebug() << "Imported" << currencies_.size() << "currencies," << accounts_.size()
+                     << "accounts, and" << num_transactions_ << "transactions";
+        }
+    } catch (std::runtime_error & e) {
+        qWarning() << e.what();
+        emit finished(false);
+    }
+
+    if (app_db_.isOpen()) {
+        app_db_.close();
+    }
+    if (gnucash_db_.isOpen()) {
+        gnucash_db_.close();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+void GnuCashImporter::importTransaction(QSqlRecord trn_record) {
+    ledger::JournalEntry je(transaction_repo_);
     auto currency = currencies_[trn_record.value("currency_guid").toString()];
 
     auto trn_id = trn_record.value("guid").toString();
@@ -123,7 +165,7 @@ bool GnuCashImporter::importTransaction(QSqlRecord trn_record, QSqlDatabase & db
     // TODO transaction external ID
     je.updateTransaction(transaction);
 
-    QSqlQuery query(db);
+    QSqlQuery query(gnucash_db_);
     query.prepare("SELECT * FROM splits WHERE tx_guid=:id;");
     query.bindValue(":id", trn_id);
     if (query.exec()) {
@@ -134,16 +176,7 @@ bool GnuCashImporter::importTransaction(QSqlRecord trn_record, QSqlDatabase & db
             auto num = record.value("value_num").toDouble();
             auto denom = record.value("value_denom").toDouble();
             auto amount = num / denom;
-            if (envelopes_.count(acct_id) == 1u) {
-                ledger::EnvelopeTransaction split;
-                split.setEnvelope(envelopes_[acct_id]);
-                split.setAmount(ledger::Money(amount, currency));
-                split.setMemo(record.value("memo").toString());
-                split.setTransaction(transaction);
-                je.addSplit(split);
-                qDebug() << "Importing envelope split" << split.amount().toString()
-                         << split.envelope().name();
-            } else if (accounts_.count(acct_id) == 1u) {
+            if (accounts_.count(acct_id) == 1u) {
                 ledger::AccountTransaction split;
                 split.setAccount(accounts_[acct_id]);
                 split.setAmount(ledger::Money(amount, currency));
@@ -159,34 +192,31 @@ bool GnuCashImporter::importTransaction(QSqlRecord trn_record, QSqlDatabase & db
             }
         }
     } else {
-        qWarning() << query.lastError().text();
-        return false;
+        throw std::runtime_error(query.lastError().text().toStdString());
     }
 
     if (not je.isValid()) {
-        qWarning() << "Journal entry for transaction" << trn_id << "is not valid." << je.lastError()
-                   << "Account imbalance is" << je.accountImbalance().toString()
-                   << "Envelope imbalance is" << je.envelopeImbalance().toString();
-        return false;
+        throw std::runtime_error("Journal entry for transaction " + trn_id.toStdString() +
+                                 " is not valid: " + je.lastError().toStdString());
     } else {
         if (not je.save()) {
-            qWarning() << "Unable to save journal entry for transaction" << trn_id
-                       << je.lastError();
-            return false;
+            throw std::runtime_error("Unable to save journal entry for transaction " +
+                                     trn_id.toStdString() + ": " + je.lastError().toStdString());
         }
     }
-
-    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db) {
-    QSqlQuery query(db);
+void GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id) {
+    if (terminated_) {
+        return;
+    }
+
+    QSqlQuery query(gnucash_db_);
     query.prepare("SELECT * FROM accounts WHERE parent_guid=:id;");
     query.bindValue(":id", parent_ext_id);
     if (not query.exec()) {
-        qWarning() << query.lastError().text();
-        return false;
+        throw std::runtime_error(query.lastError().text().toStdString());
     }
     while (query.next()) {
         auto record = query.record();
@@ -198,15 +228,12 @@ bool GnuCashImporter::importChildAccountsOf(const QString & parent_ext_id, QSqlD
         account.setExternalId(ext_id);
         account.setName(record.value("name").toString());
         account.setParent(accounts_[parent_ext_id].id());
-        auto id = repos_->accounts()->create(account, accounts_[parent_ext_id]);
-        accounts_[ext_id] = repos_->accounts()->getAccount(id);
+        auto id = account_repo_->create(account, accounts_[parent_ext_id]);
+        accounts_[ext_id] = account_repo_->getAccount(id);
 
-        if (not importChildAccountsOf(ext_id, db)) {
-            return false;
-        }
+        importChildAccountsOf(ext_id);
     }
-    return true;
-} // namespace adapter
+}
 
 } // namespace adapter
 } // namespace ub

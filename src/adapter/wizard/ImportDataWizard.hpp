@@ -24,9 +24,6 @@
 // Qt include(s)
 #include <QWizard>
 
-// UnderBudget include(s)
-#include <app/model/Repositories.hpp>
-
 namespace ub {
 namespace adapter {
 
@@ -40,19 +37,34 @@ public:
     /**
      * Initializes the wizard.
      *
-     * @param repos  Application repositories
      * @param parent Parent widget
      */
-    ImportDataWizard(std::shared_ptr<Repositories> repos, QWidget * parent = 0);
+    ImportDataWizard(QWidget * parent = 0);
+
+    /**
+     * Opens the wizard and, if applicable, performs the import into the given
+     * database.
+     *
+     * @param name Database connection name
+     */
+    void importInto(const QString & name);
 
     /**
      * Performs the import with the selected parameters.
      */
     void accept() override;
 
+signals:
+    /**
+     * Emitted when the import has completed.
+     *
+     * @param success @c true if successful
+     */
+    void finished(bool success);
+
 private:
-    /** Application repositories */
-    std::shared_ptr<Repositories> repos_;
+    /** Database connection name */
+    QString db_name_;
 };
 
 } // namespace adapter

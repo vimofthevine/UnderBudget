@@ -163,9 +163,14 @@ void MainWindowModel::openDatabase() {
 //--------------------------------------------------------------------------------------------------
 void MainWindowModel::importData() {
     if (repos_) {
-        auto wizard = new adapter::ImportDataWizard(repos_, window_);
-        connect(wizard, &QWizard::accepted, this, [this]() { setRepositories(repos_); });
-        wizard->show();
+        auto wizard = new adapter::ImportDataWizard(window_);
+        connect(wizard, &adapter::ImportDataWizard::finished, this, [this](bool success) {
+            if (success) {
+                // TODO refresh account repository
+                setRepositories(repos_);
+            }
+        });
+        wizard->importInto(repos_->location());
     }
 }
 

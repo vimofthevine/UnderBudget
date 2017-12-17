@@ -24,7 +24,6 @@
 
 // UnderBudget include(s)
 #include <adapter/gnucash/GnuCashImporter.hpp>
-#include <app/model/Repositories.hpp>
 #include "GnuCashSourcePage.hpp"
 #include "ImportDataWizard.hpp"
 #include "SourceSelectionPage.hpp"
@@ -34,8 +33,7 @@ namespace ub {
 namespace adapter {
 
 //--------------------------------------------------------------------------------------------------
-ImportDataWizard::ImportDataWizard(std::shared_ptr<Repositories> repos, QWidget * parent)
-        : QWizard(parent), repos_(repos) {
+ImportDataWizard::ImportDataWizard(QWidget * parent) : QWizard(parent) {
 #ifndef Q_OS_MAC
     setWizardStyle(ModernStyle);
 #endif
@@ -48,14 +46,21 @@ ImportDataWizard::ImportDataWizard(std::shared_ptr<Repositories> repos, QWidget 
 }
 
 //--------------------------------------------------------------------------------------------------
+void ImportDataWizard::importInto(const QString & name) {
+    db_name_ = name;
+    show();
+}
+
+//--------------------------------------------------------------------------------------------------
 void ImportDataWizard::accept() {
     if (field("gnucash_selected").toBool()) {
         auto name = field("file_name").toString();
         QFileInfo info(name);
         if (info.exists()) {
             if (field("gnucash_sqlite").toBool()) {
-                GnuCashImporter importer(repos_);
-                importer.importFromSqlite(name);
+                auto importer = new GnuCashImporter(db_name_, this);
+                connect(importer, &GnuCashImporter::finished, this, &ImportDataWizard::finished);
+                importer->importFromSqlite(name);
             } else {
                 qWarning() << "Importing GnuCash XML not yet supported";
             }

@@ -19,6 +19,7 @@
 #pragma once
 
 // Standard include(s)
+#include <atomic>
 #include <map>
 #include <memory>
 
@@ -26,65 +27,106 @@
 #include <QSqlDatabase>
 #include <QSqlRecord>
 #include <QString>
+#include <QThread>
 
 // UnderBudget include(s)
-#include <app/model/Repositories.hpp>
 #include <ledger/model/Account.hpp>
-#include <ledger/model/Envelope.hpp>
+#include <ledger/model/Currency.hpp>
+#include <ledger/persistence/SQLAccountRepository.hpp>
+#include <ledger/persistence/SQLCurrencyRepository.hpp>
+#include <ledger/persistence/SQLTransactionRepository.hpp>
 
 // Forward declaration(s)
 class QSqlDatabase;
 
 namespace ub {
+
+namespace ledger {
+class SQLAccountRepository;
+class SQLCurrencyRepository;
+class SQLTransactionRepository;
+} // namespace ledger
+
 namespace adapter {
 
 /**
  * Importer of accounts and transactions from GnuCash
  */
-class GnuCashImporter {
+class GnuCashImporter : public QThread {
+    Q_OBJECT
+
 public:
     /**
      * Initializes the importer with the given application repositories
      *
-     * @param repos Application repositories
+     * @param name   Database connection name
+     * @param parent Parent object
      */
-    GnuCashImporter(std::shared_ptr<Repositories> repos);
+    GnuCashImporter(const QString & name, QObject * parent = 0);
+
+    /**
+     * Closes all database connections.
+     */
+    ~GnuCashImporter();
 
     /**
      * Imports from the specified GnuCash SQLite database location
      *
-     * @param db        GnuCash SQLite database location
-     * @return @c true if successful
+     * @param loc GnuCash SQLite database location
      */
-    bool importFromSqlite(const QString & db);
+    void importFromSqlite(const QString & loc);
+
+signals:
+    /**
+     * Emitted when the import has completed.
+     *
+     * @param success @c true if successful
+     */
+    void finished(bool success);
+
+protected:
+    /**
+     * Performs the import operation.
+     */
+    void run() override;
 
 private:
-    /** Application repositories */
-    std::shared_ptr<Repositories> repos_;
+    /** Thread terminated */
+    std::atomic<bool> terminated_{false};
+
+    /** Application SQL database */
+    QSqlDatabase app_db_;
+    /** Account repository */
+    std::shared_ptr<ledger::SQLAccountRepository> account_repo_;
+    /** Currency repository */
+    std::shared_ptr<ledger::SQLCurrencyRepository> currency_repo_;
+    /** Transaction repository */
+    std::shared_ptr<ledger::SQLTransactionRepository> transaction_repo_;
+
+    /** GnuCash SQL database */
+    QSqlDatabase gnucash_db_;
     /** Imported currencies */
     std::map<QString, ledger::Currency> currencies_;
     /** Imported accounts */
     std::map<QString, ledger::Account> accounts_;
-    /** Imported envelopes */
-    std::map<QString, ledger::Envelope> envelopes_;
+    /** Number of imported transactions */
+    int num_transactions_{0};
 
     /**
      * Recursively imports child accounts of the specified parent account
      *
      * @param parent_ext_id GnuCash ID of the parent account
-     * @param db            GnuCash database
-     * @return @c true if successful
+     * @throw @c std::runtime_error if error occurs
      */
-    bool importChildAccountsOf(const QString & parent_ext_id, QSqlDatabase & db);
+    void importChildAccountsOf(const QString & parent_ext_id);
 
     /**
      * Imports the transaction in the given record from the transactions table
      *
      * @param trn_record Transaction table record
-     * @param db         GnuCash database
-     * @return @c true if successful
+     * @throw @c std::runtime_error if error occurs
      */
-    bool importTransaction(QSqlRecord trn_record, QSqlDatabase & db);
+    void importTransaction(QSqlRecord trn_record);
 };
 
 } // namespace adapter
