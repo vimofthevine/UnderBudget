@@ -169,7 +169,10 @@ void MainWindowModel::importData() {
         connect(wizard, &adapter::ImportDataWizard::progress, window_, &MainWindow::showProgress);
         connect(wizard, &adapter::ImportDataWizard::finished, this, [this](bool success) {
             if (success) {
-                // TODO refresh account repository
+                // Pseudo-hack to refresh the accounts list
+                auto accounts = repos_->accounts();
+                auto root = accounts->getRoot();
+                accounts->update(root);
                 setRepositories(repos_);
             }
         });
