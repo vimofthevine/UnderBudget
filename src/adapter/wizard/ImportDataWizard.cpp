@@ -59,7 +59,12 @@ void ImportDataWizard::accept() {
         if (info.exists()) {
             if (field("gnucash_sqlite").toBool()) {
                 auto importer = new GnuCashImporter(db_name_, this);
+                connect(importer, &GnuCashImporter::message, this, &ImportDataWizard::message);
                 connect(importer, &GnuCashImporter::finished, this, &ImportDataWizard::finished);
+                connect(importer, &GnuCashImporter::progress, this, &ImportDataWizard::progress);
+                connect(importer, &GnuCashImporter::error, this, [this](const QString & message) {
+                    QMessageBox::warning(parentWidget(), tr("Import error"), message);
+                });
                 importer->importFromSqlite(name);
             } else {
                 qWarning() << "Importing GnuCash XML not yet supported";

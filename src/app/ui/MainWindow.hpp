@@ -23,6 +23,7 @@
 
 // Forward declaration(s)
 class QCloseEvent;
+class QProgressBar;
 class QStackedWidget;
 
 namespace ub {
@@ -64,6 +65,26 @@ public:
      */
     QStackedWidget * contentWidget() const;
 
+public slots:
+    /**
+     * Displays the given message temporarily in the window status bar
+     *
+     * @param message Temporary status message
+     */
+    void showStatusMessage(const QString & message);
+
+    /**
+     * Displays the specified progress percentage in the window status bar
+     *
+     * If value and max are 0, then an indefinite, or busy, progress will be displayed.
+     *
+     * If both value and max are the same, the progress bar will be hidden.
+     *
+     * @param value Current progress value
+     * @param max   Maximum progress value
+     */
+    void showProgress(int value, int max);
+
 protected:
     /**
      * Intercepts the window closing event to save window state.
@@ -72,7 +93,7 @@ protected:
      */
     void closeEvent(QCloseEvent * event);
 
-protected slots:
+private slots:
     /**
      * Displays information about the application.
      */
@@ -85,6 +106,8 @@ private:
     ToolBar * toolbar_;
     /** Stacked content widget */
     QStackedWidget * content_;
+    /** Progress bar */
+    QProgressBar * progress_bar_;
 
     /**
      * Stores current windows settings, such as size, geometry, etc.
@@ -97,4 +120,4 @@ private:
     void restoreSettings();
 };
 
-} // ub namespace
+} // namespace ub

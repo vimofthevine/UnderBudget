@@ -71,14 +71,19 @@ void GnuCashImporter::importFromSqlite(const QString & loc) {
 //--------------------------------------------------------------------------------------------------
 void GnuCashImporter::run() {
     try {
+        emit message(tr("Importing from %1").arg(gnucash_db_.databaseName()));
+        emit progress(0, 0);
+
         if (not app_db_.open()) {
-            throw std::runtime_error("Unable to open database: " +
-                                     app_db_.lastError().text().toStdString());
+            throw std::runtime_error(
+                tr("Unable to open database: %1").arg(app_db_.lastError().text()).toStdString());
         }
 
         if (not gnucash_db_.open()) {
-            throw std::runtime_error("Unable to open GnuCash database: " +
-                                     gnucash_db_.lastError().text().toStdString());
+            throw std::runtime_error(tr("Unable to open GnuCash database (%1): %2")
+                                         .arg(gnucash_db_.databaseName())
+                                         .arg(gnucash_db_.lastError().text())
+                                         .toStdString());
         }
 
         account_repo_.reset(new ledger::SQLAccountRepository(app_db_));
@@ -120,6 +125,10 @@ void GnuCashImporter::run() {
         // Import transactions
         {
             QSqlQuery query(gnucash_db_);
+            int num = -1;
+            if (query.exec("SELECT count(guid) FROM transactions;") and query.first()) {
+                num = query.record().value(0).toInt();
+            }
             if (query.exec("SELECT * FROM transactions;")) {
                 while (query.next()) {
                     if (terminated_) {
@@ -127,20 +136,27 @@ void GnuCashImporter::run() {
                     }
                     importTransaction(query.record());
                     ++num_transactions_;
+                    if (num > 0) {
+                        emit progress(num_transactions_, num);
+                    }
                 }
             } else {
                 throw std::runtime_error(query.lastError().text().toStdString());
             }
         }
 
+        emit message(tr("Import complete"));
         emit finished(not terminated_);
+        emit progress(1, 1);
         if (not terminated_) {
             qDebug() << "Imported" << currencies_.size() << "currencies," << accounts_.size()
                      << "accounts, and" << num_transactions_ << "transactions";
         }
     } catch (std::runtime_error & e) {
         qWarning() << e.what();
+        emit error(e.what());
         emit finished(false);
+        emit progress(1, 1);
     }
 
     if (app_db_.isOpen()) {
@@ -196,12 +212,16 @@ void GnuCashImporter::importTransaction(QSqlRecord trn_record) {
     }
 
     if (not je.isValid()) {
-        throw std::runtime_error("Journal entry for transaction " + trn_id.toStdString() +
-                                 " is not valid: " + je.lastError().toStdString());
+        throw std::runtime_error(tr("Journal entry for transaction %1 is not valid: %2")
+                                     .arg(trn_id)
+                                     .arg(je.lastError())
+                                     .toStdString());
     } else {
         if (not je.save()) {
-            throw std::runtime_error("Unable to save journal entry for transaction " +
-                                     trn_id.toStdString() + ": " + je.lastError().toStdString());
+            throw std::runtime_error(tr("Unable to save journal entry for transaction %1: %2")
+                                         .arg(trn_id)
+                                         .arg(je.lastError())
+                                         .toStdString());
         }
     }
 }

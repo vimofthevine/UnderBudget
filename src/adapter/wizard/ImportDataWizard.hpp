@@ -56,11 +56,26 @@ public:
 
 signals:
     /**
+     * Emitted to display a status message.
+     *
+     * @param message Status message
+     */
+    void message(const QString & message);
+
+    /**
      * Emitted when the import has completed.
      *
      * @param success @c true if successful
      */
     void finished(bool success);
+
+    /**
+     * Emitted to update progress of the import.
+     *
+     * @param value Current progress value
+     * @param max   Maximum progress value
+     */
+    void progress(int value, int max);
 
 private:
     /** Database connection name */

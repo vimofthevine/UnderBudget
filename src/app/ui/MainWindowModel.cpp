@@ -164,6 +164,9 @@ void MainWindowModel::openDatabase() {
 void MainWindowModel::importData() {
     if (repos_) {
         auto wizard = new adapter::ImportDataWizard(window_);
+        connect(wizard, &adapter::ImportDataWizard::message, window_,
+                &MainWindow::showStatusMessage);
+        connect(wizard, &adapter::ImportDataWizard::progress, window_, &MainWindow::showProgress);
         connect(wizard, &adapter::ImportDataWizard::finished, this, [this](bool success) {
             if (success) {
                 // TODO refresh account repository
