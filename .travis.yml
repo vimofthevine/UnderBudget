@@ -5,6 +5,8 @@ env:
   global:
     # Encrypted COVERITY_SCAN_TOKEN
     - secure: "VgJE/OzDvDdxK+arumGwyx+rCh7eSoo9B4/ZVZ+jn0uI4wSteKCvJcPeyV86LXj8U/r6Jk5VTzhyKnv2Ac6RpgO3OL8M+rSFHdKlVLq/oNKwBWBcFzTryVnGjYDmHCbGsp99VqtG21go7vYSKaBIi5xyLyRxzSXU6X1lyyKtYtw="
+    - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+    - GTEST_ROOT="${DEPS_DIR}/gtest-1.8.0"
 
 
 matrix:
@@ -35,25 +37,21 @@ matrix:
           build_command: "cmake --build ."
           branch_pattern: coverity_scan
       env:
-          - CC=gcc-4.9 CXX=g++-4.9
+          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
+before_install:
+  - eval "${MATRIX_EVAL}"
 install:
-  - if [[ "${CXX_COMPILER}" != "" ]]; then export CXX=${CXX_COMPILER}; fi
-  - if [[ "${C_COMPILER}" != "" ]]; then export CC=${C_COMPILER}; fi
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
   - wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
   - tar xf release-1.8.0.tar.gz
   - cd googletest-release-1.8.0
-  - cmake -DCMAKE_INSTALL_PREFIX="${DEPS_DIR}/gtest-1.8.0" -DBUILD_SHARED_LIBS=ON .
+  - cmake -DCMAKE_INSTALL_PREFIX="${GTEST_ROOT}" -DBUILD_SHARED_LIBS=ON .
   - cmake --build .
   - cmake --build . --target install
   - cd "${TRAVIS_BUILD_DIR}"
 before_script:
-  - export GTEST_ROOT=${TRAVIS_BUILD_DIR}/deps/gtest-1.8.0
   - source $(find /opt -name "qt*-env.sh")
-  - if [[ "${CXX_COMPILER}" != "" ]]; then export CXX=${CXX_COMPILER}; fi
-  - if [[ "${C_COMPILER}" != "" ]]; then export CC=${C_COMPILER}; fi
   - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then cmake . ; fi
 script:
   - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then cmake --build . -- VERBOSE=1; fi
