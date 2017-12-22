@@ -1,44 +1,41 @@
 language: c++
 dist: trusty
 
-cache:
-  directories:
-    - ${TRAVIS_BUILD_DIR}/deps/gtest-1.8.0
-
 env:
   global:
     # Encrypted COVERITY_SCAN_TOKEN
     - secure: "VgJE/OzDvDdxK+arumGwyx+rCh7eSoo9B4/ZVZ+jn0uI4wSteKCvJcPeyV86LXj8U/r6Jk5VTzhyKnv2Ac6RpgO3OL8M+rSFHdKlVLq/oNKwBWBcFzTryVnGjYDmHCbGsp99VqtG21go7vYSKaBIi5xyLyRxzSXU6X1lyyKtYtw="
 
-addons:
-  apt:
-    packages:
-      - g++-6
-      - libsqlite3-dev
-      - mesa-common-dev
-      - qt58base
-      - qt58charts-no-lgpl
-      - qt58script
-      - qt58xmlpatterns
-      - xvfb
-    sources:
-      - ubuntu-sdk-team
-      - ubuntu-toolchain-r-test
-      - sourceline: 'ppa:beineri/opt-qt58-trusty'
-  coverity_scan:
-    project:
-      name: "vimofthevine/UnderBudget"
-      description: "Personal finance and budget manager"
-    notification_email: kyle@vimofthevine.com
-    build_command_prepend: "export GTEST_ROOT=${TRAVIS_BUILD_DIR}/deps/gtest-1.8.0; export CXX=${CXX_COMPILER}; export CC=${C_COMPILER}; cmake ."
-    build_command: "make -j 4"
-    branch_pattern: coverity_scan
 
 matrix:
   include:
     - os: linux
-      env: CXX_COMPILER=g++-6 C_COMPILER=gcc-6
-      compiler: gcc
+      addons:
+        compiler: gcc
+        apt:
+          sources:
+            - ubuntu-sdk-team
+            - ubuntu-toolchain-r-test
+            - sourceline: 'ppa:beineri/opt-qt58-trusty'
+          packages:
+            - g++-4.9
+            - libsqlite3-dev
+            - mesa-common-dev
+            - qt58base
+            - qt58charts-no-lgpl
+            - qt58script
+            - qt58xmlpatterns
+            - xvfb
+        coverity_scan:
+          project:
+            name: "vimofthevine/UnderBudget"
+            description: "Personal finance and budget manager"
+          notification_email: kyle@vimofthevine.com
+          build_command_prepend: "export GTEST_ROOT=${TRAVIS_BUILD_DIR}/deps/gtest-1.8.0; cmake ."
+          build_command: "cmake --build ."
+          branch_pattern: coverity_scan
+      env:
+          - CC=gcc-4.9 CXX=g++-4.9
 
 install:
   - if [[ "${CXX_COMPILER}" != "" ]]; then export CXX=${CXX_COMPILER}; fi
@@ -49,8 +46,8 @@ install:
   - tar xf release-1.8.0.tar.gz
   - cd googletest-release-1.8.0
   - cmake -DCMAKE_INSTALL_PREFIX="${DEPS_DIR}/gtest-1.8.0" -DBUILD_SHARED_LIBS=ON .
-  - make
-  - make install
+  - cmake --build .
+  - cmake --build . --target install
   - cd "${TRAVIS_BUILD_DIR}"
 before_script:
   - export GTEST_ROOT=${TRAVIS_BUILD_DIR}/deps/gtest-1.8.0
@@ -59,5 +56,5 @@ before_script:
   - if [[ "${C_COMPILER}" != "" ]]; then export CC=${C_COMPILER}; fi
   - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then cmake . ; fi
 script:
-  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then make VERBOSE=1 -j 4; fi
-  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then xvfb-run make CTEST_OUTPUT_ON_FAILURE=1 test; fi
+  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then cmake --build . -- VERBOSE=1; fi
+  - if [[ ${COVERITY_SCAN_BRANCH} != 1 ]]; then xvfb-run ctest --output-on-failure; fi
