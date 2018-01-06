@@ -1,12 +1,10 @@
-# Application model source CMake configuration
-
-# Specify application model source files
-set(app_model_srcs
-    DatabaseRepositories.cpp
-    Demo.cpp
-)
-
 # Build application model library
-add_library(app_model ${app_model_srcs})
+define_library(app_model
+    DatabaseRepositories.cpp
+    DatabaseRepositories.hpp
+    Demo.hpp
+    Demo.cpp
+    Repositories.hpp
+)
 qt5_use_modules(app_model Core)
-target_link_libraries(app_model ledger_persistence)
+target_link_libraries(app_model budget_persistence ledger_persistence)

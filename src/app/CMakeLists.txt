@@ -1,5 +1,3 @@
-# Application source CMake configuration
-
-# Add application source sub-directories
+# Add application sub-directories
 add_subdirectory(model)
 add_subdirectory(ui)
