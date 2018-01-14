@@ -5,9 +5,3 @@
  * UnderBudget application.
  */
 
-/**
- * @defgroup accounting Accounting
- *
- * Classes supporting financial operations.
- */
-

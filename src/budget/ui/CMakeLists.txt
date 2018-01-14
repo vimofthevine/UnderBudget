@@ -1,18 +1,22 @@
-# Budget UI source CMake configuration
-
-# Specify budget UI source files
-set(budget_ui_srcs
-    BudgetTableView.cpp
-    ExpenseDetailsDialog.cpp
-    ExpenseListWidget.cpp
-    ExpenseModel.cpp
-    IncomeDetailsDialog.cpp
-    IncomeListWidget.cpp
-    IncomeModel.cpp
-    RecurrenceEditWidget.cpp
-)
-
 # Build budget UI library
-add_library(budget_ui ${budget_ui_srcs})
+define_library(budget_ui
+    BudgetTableView.cpp
+    BudgetTableView.hpp
+    ExpenseDetailsDialog.cpp
+    ExpenseDetailsDialog.hpp
+    ExpenseListWidget.cpp
+    ExpenseListWidget.hpp
+    ExpenseModel.cpp
+    ExpenseModel.hpp
+    IncomeDetailsDialog.cpp
+    IncomeDetailsDialog.hpp
+    IncomeListWidget.cpp
+    IncomeListWidget.hpp
+    IncomeModel.cpp
+    IncomeModel.hpp
+    RecurrenceEditWidget.cpp
+    RecurrenceEditWidget.hpp
+)
 qt5_use_modules(budget_ui Core Widgets)
 target_link_libraries(budget_ui budget_persistence budget_model ledger_ui)
+set_target_properties(budget_ui PROPERTIES AUTOMOC ON)

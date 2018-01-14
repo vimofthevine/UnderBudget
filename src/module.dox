@@ -1,4 +1,5 @@
 /**
- * @defgroup main Core Application
- * @brief Application initialization and startup types and functions.
+ * @defgroup main UnderBudget::Main
+ *
+ * Data types and functions to support application startup.
  */

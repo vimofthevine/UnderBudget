@@ -1,18 +1,22 @@
-# Ledger model source CMake configuration
-
-# Specify ledger model source files
-set(ledger_model_srcs
-    Account.cpp
-    AccountTransaction.cpp
-    Currency.cpp
-    Envelope.cpp
-    EnvelopeTransaction.cpp
-    JournalEntry.cpp
-    Money.cpp
-    Reconciliation.cpp
-    Transaction.cpp
-)
-
 # Build ledger model library
-add_library(ledger_model ${ledger_model_srcs})
+define_library(ledger_model
+    Account.cpp
+    Account.hpp
+    AccountTransaction.cpp
+    AccountTransaction.hpp
+    Currency.cpp
+    Currency.hpp
+    Envelope.cpp
+    Envelope.hpp
+    EnvelopeTransaction.cpp
+    EnvelopeTransaction.hpp
+    JournalEntry.cpp
+    JournalEntry.hpp
+    Money.cpp
+    Money.hpp
+    Reconciliation.cpp
+    Reconciliation.hpp
+    Transaction.cpp
+    Transaction.hpp
+)
 qt5_use_modules(ledger_model Core)
