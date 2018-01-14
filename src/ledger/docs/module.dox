@@ -1,0 +1,9 @@
+/**
+ * @defgroup ledger UnderBudget::Ledger
+ * Data types and functions to support financial ledger modeling, persistence, and user interfaces.
+ */
+
+/**
+ * @namespace ub::ledger
+ * All classes, functions, and definitions necessary to implement the ledger module.
+ */

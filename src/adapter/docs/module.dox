@@ -1,0 +1,10 @@
+/**
+ * @defgroup adapter UnderBudget::Adapter
+ * Data types and functions to support importing and exporting of financial data with 3rd party
+ * applications and systems.
+ */
+
+/**
+ * @namespace ub::adapter
+ * All classes, functions, and definitions necessary to implement the adapter module.
+ */

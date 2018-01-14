@@ -1,0 +1,9 @@
+/**
+ * @defgroup report UnderBudget::Report
+ * Data types and functions to support financial report modeling and user interfaces.
+ */
+
+/**
+ * @namespace ub::report
+ * All classes, functions, and definitions necessary to implement the report module.
+ */

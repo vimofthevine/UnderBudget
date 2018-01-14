@@ -1,0 +1,9 @@
+/**
+ * @defgroup budget UnderBudget::Budget
+ * Data types and functions to support financial budget modeling, persistence, and user interfaces.
+ */
+
+/**
+ * @namespace ub::budget
+ * All classes, functions, and definitions necessary to implement the budget module.
+ */
