@@ -1,3 +1,20 @@
+# UnderBudget
+# Copyright 2018 Kyle Treubig
+#
+# UnderBudget is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# UnderBudget is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
+
+
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QByteArray
@@ -9,6 +26,7 @@ from PyQt5.QtWidgets import qApp
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QStackedWidget
 from PyQt5.QtWidgets import QToolBar
 
 
@@ -29,6 +47,7 @@ class MainWindow(QMainWindow):
     view_reports = pyqtSignal()
 
     def __init__(self):
+        """Initialize the main window, menu, toolbar, and status bar"""
         super().__init__()
         self.restore_settings()
 
@@ -44,6 +63,8 @@ class MainWindow(QMainWindow):
 
         self._setup_menu_bar()
         self._setup_tool_bar()
+
+        self.content = QStackedWidget(self)
 
         self.statusBar().showMessage('Ready')
 
@@ -72,14 +93,19 @@ class MainWindow(QMainWindow):
         If both value and max are the same, the progress bar will be hidden.
         """
         if max_ == 0:
-            self._progress_bar.setVisible(true)
+            self._progress_bar.setVisible(True)
         else:
             self._progress_bar.setVisible(value != max_)
         self._progress_bar.setMinimum(0)
         self._progress_bar.setMaximum(max_)
         self._progress_bar.setValue(value)
 
+    def show_status_message(self, message):
+        """Display the given message temporarily in the window status bar."""
+        self.statusBar().showMessage(message, 2000)
+
     def _show_about(self):
+        """Show about dialog with information about the application."""
         title = self.tr('About {0}').format(qApp.applicationName())
         about = '<html><b><p>{name}</p></b>' \
             + '<p>{description}</p>' \
