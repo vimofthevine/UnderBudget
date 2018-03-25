@@ -7,6 +7,7 @@
 CMakeLists.txt.user*
 
 # Temporary files
+*.pyc
 *.swp
 
 # Build output
@@ -19,6 +20,8 @@ _site/
 underbudget-*.pkg.tar.xz
 doc/html/
 tags
+venv/
+__pycache__/
 
 # Personal files
 data/template.xml
