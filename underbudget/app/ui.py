@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import qApp
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QToolBar
 
 
 class MainWindow(QMainWindow):
@@ -20,19 +21,17 @@ class MainWindow(QMainWindow):
 
     open_database = pyqtSignal()
     import_data = pyqtSignal()
-    exit_application = pyqtSignal()
     add_transaction = pyqtSignal()
     view_accounts = pyqtSignal()
     view_envelopes = pyqtSignal()
     view_budgeted_incomes = pyqtSignal()
     view_budgeted_expenses = pyqtSignal()
     view_reports = pyqtSignal()
-    about_application = pyqtSignal()
-    about_qt = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        self.restoreSettings()
+        self.restore_settings()
+
         self.setWindowTitle(qApp.applicationName())
         self.setUnifiedTitleAndToolBarOnMac(True)
 
@@ -43,28 +42,44 @@ class MainWindow(QMainWindow):
         self._progress_bar.setVisible(False)
         self.statusBar().addPermanentWidget(self._progress_bar)
 
-        self._setupMenuBar()
+        self._setup_menu_bar()
+        self._setup_tool_bar()
 
         self.statusBar().showMessage('Ready')
 
     def closeEvent(self, event):
         """Save window state before closing the window"""
-        self.saveSettings()
+        self.save_settings()
         super().closeEvent(event)
 
-    def restoreSettings(self):
+    def restore_settings(self):
         """Restore saved window settings."""
         settings = QSettings()
         self.restoreState(settings.value(self.MAIN_WINDOW_STATE, QByteArray(), type=QByteArray))
         self.resize(settings.value(self.MAIN_WINDOW_SIZE, QSize(800, 700), type=QSize))
 
-    def saveSettings(self):
+    def save_settings(self):
         """Store current window settings, such as size, geometry, etc."""
         settings = QSettings()
         settings.setValue(self.MAIN_WINDOW_SIZE, self.size())
         settings.setValue(self.MAIN_WINDOW_STATE, self.saveState())
 
-    def _about(self):
+    def show_progress(self, value, max_):
+        """Display the specified progress percentage in the window status bar.
+
+        If value and max are 0, then an indefinite, or busy, progress will be displayed.
+
+        If both value and max are the same, the progress bar will be hidden.
+        """
+        if max_ == 0:
+            self._progress_bar.setVisible(true)
+        else:
+            self._progress_bar.setVisible(value != max_)
+        self._progress_bar.setMinimum(0)
+        self._progress_bar.setMaximum(max_)
+        self._progress_bar.setValue(value)
+
+    def _show_about(self):
         title = self.tr('About {0}').format(qApp.applicationName())
         about = '<html><b><p>{name}</p></b>' \
             + '<p>{description}</p>' \
@@ -85,19 +100,19 @@ class MainWindow(QMainWindow):
         msg = QMessageBox()
         msg.about(self, title, about)
 
-    def _setupMenuBar(self):
+    def _setup_menu_bar(self):
         """Creates menu bar actions"""
-        open_action = QAction(self.tr('&Open...'), self)
-        open_action.setShortcut(QKeySequence.Open)
-        open_action.setStatusTip(self.tr('Open database'))
+        open_ = QAction(self.tr('&Open...'), self)
+        open_.setShortcut(QKeySequence.Open)
+        open_.setStatusTip(self.tr('Open database'))
 
-        import_data = QAction(self.tr('&Import...'), self)
-        import_data.setStatusTip(self.tr('Import data'))
+        import_ = QAction(self.tr('&Import...'), self)
+        import_.setStatusTip(self.tr('Import data'))
 
-        exit_action = QAction(self.tr('E&xit'), self)
-        exit_action.setShortcut(QKeySequence.Quit)
-        exit_action.setStatusTip(self.tr('Quit the application'))
-        exit_action.triggered.connect(qApp.closeAllWindows)
+        exit_ = QAction(self.tr('E&xit'), self)
+        exit_.setShortcut(QKeySequence.Quit)
+        exit_.setStatusTip(self.tr('Quit the application'))
+        exit_.triggered.connect(qApp.closeAllWindows)
 
         add_trn = QAction(self.tr('&Add Transaction...'), self)
         add_trn.setShortcut(QKeySequence.New)
@@ -125,17 +140,17 @@ class MainWindow(QMainWindow):
 
         about = QAction(self.tr('&About {0}').format(qApp.applicationName()), self)
         about.setStatusTip(self.tr('About the application'))
-        about.triggered.connect(self._about)
+        about.triggered.connect(self._show_about)
 
         about_qt = QAction(self.tr('About &Qt'), self)
         about_qt.setStatusTip(self.tr('About the Qt library'))
         about_qt.triggered.connect(qApp.aboutQt)
 
         file = self.menuBar().addMenu(self.tr('&File'))
-        file.addAction(open_action)
-        file.addAction(import_data)
+        file.addAction(open_)
+        file.addAction(import_)
         file.addSeparator()
-        file.addAction(exit_action)
+        file.addAction(exit_)
 
         edit = self.menuBar().addMenu(self.tr('&Edit'))
         edit.addAction(add_trn)
@@ -152,3 +167,38 @@ class MainWindow(QMainWindow):
         help = self.menuBar().addMenu(self.tr('&Help'))
         help.addAction(about)
         help.addAction(about_qt)
+
+    def _setup_tool_bar(self):
+        """Creates tool bar actions"""
+        add_trn = QAction(self.tr('&Add Transaction...'), self)
+        add_trn.setStatusTip(self.tr('Create a new transaction'))
+
+        accounts = QAction(self.tr('&Accounts'), self)
+        accounts.setStatusTip(self.tr('View accounts'))
+
+        envelopes = QAction(self.tr('&Envelopes'), self)
+        envelopes.setStatusTip(self.tr('View envelopes'))
+
+        incomes = QAction(self.tr('Budgeted &Incomes'), self)
+        incomes.setStatusTip(self.tr('View budgeted incomes'))
+
+        expenses = QAction(self.tr('Budgeted E&xpenses'), self)
+        expenses.setStatusTip(self.tr('View budgeted expenses'))
+
+        reports = QAction(self.tr('&Reports'), self)
+        reports.setShortcut(QKeySequence(Qt.Key_F9))
+        reports.setStatusTip(self.tr('View reports'))
+
+        tool_bar = QToolBar(self)
+        tool_bar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        tool_bar.setFloatable(False)
+        tool_bar.setMovable(False)
+
+        tool_bar.addAction(add_trn)
+        tool_bar.addSeparator()
+        tool_bar.addAction(accounts)
+        tool_bar.addAction(envelopes)
+        tool_bar.addAction(incomes)
+        tool_bar.addAction(expenses)
+        tool_bar.addAction(reports)
+        self.addToolBar(tool_bar)
