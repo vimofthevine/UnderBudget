@@ -15,4 +15,5 @@
 # along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from .mainwindow import MainWindow
+from .model import Currency
+from .model import Money

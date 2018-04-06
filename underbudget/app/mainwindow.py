@@ -216,6 +216,7 @@ class MainWindow(QMainWindow):
         reports.setStatusTip(self.tr('View reports'))
 
         tool_bar = QToolBar(self)
+        tool_bar.setObjectName('MainToolBar')
         tool_bar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         tool_bar.setFloatable(False)
         tool_bar.setMovable(False)
