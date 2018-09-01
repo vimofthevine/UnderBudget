@@ -74,6 +74,7 @@ def setup():
         trn1 = ledger.Transaction(date=date(2017, 2, 25), payee='electric bill')
         trn1.account_transactions.append(ledger.AccountTransaction(account=acct1a, amount=-52.33))
         trn1.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=env2b, amount=-52.33))
+        print(ledger.validate(trn1))
 
         session.add(trn1)
 

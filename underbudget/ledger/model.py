@@ -15,20 +15,18 @@
 # along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from money import Money as MoneyBase
+from money import Money
 
-from sqlalchemy import Boolean, Date
+from sqlalchemy import Boolean
 from sqlalchemy import Column
+from sqlalchemy import Date
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
-from sqlalchemy import select
 from sqlalchemy import String
 from sqlalchemy import and_
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import aliased, composite
+from sqlalchemy.orm import aliased
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.expression import func
 
 from underbudget.db import Base
@@ -47,20 +45,6 @@ class Currency(Base):
         self.id = 1
         self.code = 'USD'
         super().__init__(**kwargs)
-
-
-class Money(MoneyBase):
-    """A discrete amount of money in a specific currency."""
-
-    def __init__(self, amount=0.0, currency=Currency()):
-        """Initialize the money.
-
-        Keyword arguments:
-        amount   -- money amount
-        currency -- Currency object instance
-        """
-        super().__init__(amount=amount, currency=currency.code)
-        self._currency_obj = currency
 
 
 class Account(Base):
@@ -122,7 +106,7 @@ class Reconciliation(Base):
 
     @beginning_balance.setter
     def beginning_balance(self, value):
-        if type(value) in [Money, MoneyBase]:
+        if type(value) is Money:
             self._beginning_balance = value.amount
         else:
             self._beginning_balance = int(value)
@@ -133,7 +117,7 @@ class Reconciliation(Base):
 
     @ending_balance.setter
     def ending_balance(self, value):
-        if type(value) in [Money, MoneyBase]:
+        if type(value) is Money:
             self._ending_balance = value.amount
         else:
             self._ending_balance = int(value)
@@ -149,7 +133,6 @@ class Transaction(Base):
     payee = Column(String)
     account_transactions = relationship('AccountTransaction', back_populates='transaction')
     envelope_transactions = relationship('EnvelopeTransaction', back_populates='transaction')
-    balance = Money()
 
     def __repr__(self):
         return '{0} {1} ({2})'.format(self.date, self.payee, self.id)
@@ -173,11 +156,11 @@ class AccountTransaction(Base):
 
     @property
     def amount(self):
-        return Money(self._amount, self.account.currency)
+        return Money(self._amount, self.account.currency.code)
 
     @amount.setter
     def amount(self, value):
-        if type(value) in [Money, MoneyBase]:
+        if type(value) is Money:
             self._amount = value.amount
         else:
             self._amount = int(value)
@@ -198,26 +181,14 @@ class EnvelopeTransaction(Base):
 
     @property
     def amount(self):
-        return Money(self._amount, self.account.currency)
+        return Money(self._amount, self.envelope.currency.code)
 
     @amount.setter
     def amount(self, value):
-        if type(value) in [Money, MoneyBase]:
+        if type(value) is Money:
             self._amount = value.amount
         else:
             self._amount = int(value)
-
-
-class JournalEntry(object):
-    """A journal entry with account and envelope transactions.
-
-    The journal entry ensures that the transaction has all required splits (account or
-    envelope transactions) and has a zero-sum. That is, the sum of all account transactions
-    less the sum of all envelope transactions is zero.
-    """
-
-    def __init__(self, transactions, transaction=None, copy=False):
-        self._transactions = transactions
 
 
 def init(session):
@@ -280,6 +251,55 @@ def get_account_transaction(session, id):
     trn = session.query(AccountTransaction).filter(AccountTransaction.id == id).one()
     # TODO set balance
     return trn
+
+
+def copy(transaction):
+    """Creates a copy of the given transaction"""
+    copy_trn = Transaction(date=transaction.date, payee=transaction.payee)
+    for trn in transaction.account_transactions:
+        copy_trn.account_transactions.append(
+            AccountTransaction(account=trn.account, amount=trn.amount, cleared=trn.cleared,
+                               memo=trn.memo)
+        )
+    for trn in transaction.envelope_transactions:
+        copy_trn.envelope_transactions.append(
+            EnvelopeTransaction(envelope=trn.envelope, amount=trn.amount, memo=trn.memo)
+        )
+    return copy_trn
+
+
+def validate(transaction):
+    """Verifies if the given transaction is a valid double-entry transaction"""
+    num_acct_splits = len(transaction.account_transactions)
+    num_env_splits = len(transaction.envelope_transactions)
+
+    if num_acct_splits == 0 and num_env_splits == 0:
+        return "No account or envelope splits defined"
+
+    if num_acct_splits > 1 and num_env_splits > 1:
+        return "Multiple account and multiple envelope splits defined"
+
+    if num_acct_splits == 0:
+        currency = transaction.envelope_transactions[0].envelope.currency
+    else:
+        currency = transaction.account_transactions[0].account.currency
+    acct_total = Money(amount=0, currency=currency.code)
+    env_total = Money(amount=0, currency=currency.code)
+
+    for trn in transaction.account_transactions:
+        if currency != trn.account.currency:
+            return "Currency conversion would be required but is not supported"
+        acct_total += trn.amount
+
+    for trn in transaction.envelope_transactions:
+        if currency != trn.envelope.currency:
+            return "Currency conversion would be required but is not supported"
+        env_total += trn.amount
+
+    if acct_total - env_total != Money(amount=0, currency=currency.code):
+        return "Account split sum less the envelope split sum must equal zero"
+
+    return None
 
 
 def get_balance(session, date, currency=Currency(), account=None, envelope=None, cleared=None):
