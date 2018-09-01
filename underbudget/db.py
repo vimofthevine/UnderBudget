@@ -14,6 +14,26 @@
 # You should have received a copy of the GNU General Public License
 # along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
 
+from contextlib import contextmanager
 
-from underbudget.app.mainwindow import MainWindow
-from underbudget.app.repositories import DatabaseRepositories
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
+
+Session = sessionmaker()
+
+
+@contextmanager
+def session_scope():
+    """Provide transactional scope"""
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()

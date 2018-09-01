@@ -1,9 +1,8 @@
-# Eclipse project files
+# IDE files
 .classpath
 .project
 .settings
-
-# Qt Creator project files
+.idea
 CMakeLists.txt.user*
 
 # Temporary files
