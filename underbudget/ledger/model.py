@@ -53,13 +53,13 @@ class Account(Base):
     __tablename__ = 'account'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     currency_id = Column(Integer, ForeignKey('currency.id', ondelete='SET DEFAULT'),
-                         default=1)
+                         server_default='1')
     currency = relationship('Currency', foreign_keys='[Account.currency_id]')
-    archived = Column(Boolean, default=False)
+    archived = Column(Boolean, default=False, nullable=False)
     external_id = Column('ext_id', String)
-    parent_id = Column(Integer, ForeignKey('account.id'), default=1)
+    parent_id = Column(Integer, ForeignKey('account.id'))
     children = relationship('Account', cascade='all, delete, delete-orphan',
                             backref=backref('parent', remote_side=[id]))
 
@@ -73,13 +73,13 @@ class Envelope(Base):
     __tablename__ = 'envelope'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     currency_id = Column(Integer, ForeignKey('currency.id', ondelete='SET DEFAULT'),
-                         default=1)
+                         server_default='1')
     currency = relationship('Currency', foreign_keys='[Envelope.currency_id]')
-    archived = Column(Boolean, default=False)
+    archived = Column(Boolean, default=False, nullable=False)
     external_id = Column('ext_id', String)
-    parent_id = Column(Integer, ForeignKey('envelope.id'), default=1)
+    parent_id = Column(Integer, ForeignKey('envelope.id'))
     children = relationship('Envelope', cascade='all, delete, delete-orphan',
                             backref=backref('parent', remote_side=[id]))
 
@@ -154,6 +154,10 @@ class AccountTransaction(Base):
     reconciliation_id = Column(Integer, ForeignKey('reconciliation.id', ondelete='SET NULL'))
     reconciliation = relationship('Reconciliation')
 
+    def __init__(self, **kwargs):
+        self._amount = 0
+        super().__init__(**kwargs)
+
     @property
     def amount(self):
         return Money(self._amount, self.account.currency.code)
@@ -179,6 +183,10 @@ class EnvelopeTransaction(Base):
     _amount = Column('amount', Integer)
     memo = Column(String)
 
+    def __init__(self, **kwargs):
+        self._amount = 0
+        super().__init__(**kwargs)
+
     @property
     def amount(self):
         return Money(self._amount, self.envelope.currency.code)
@@ -197,16 +205,16 @@ def init(session):
         usd = Currency(id=1, code='USD')
         session.add(usd)
     if not session.query(Account).filter(Account.id == 1).one_or_none():
-        root = Account(id=1, name='root', parent_id=0)
+        root = Account(id=1, name='root')
         session.add(root)
     if not session.query(Envelope).filter(Envelope.id == 1).one_or_none():
-        root = Envelope(id=1, name='root', parent_id=0)
+        root = Envelope(id=1, name='root')
         session.add(root)
 
 
 def get_account(session, id):
     """Retrieves the requested account"""
-    return session.query(Account).filter(Account.id == id).one()
+    return session.query(Account).filter(Account.id == id).one_or_none()
 
 
 def get_leaf_accounts(session):
@@ -227,7 +235,7 @@ def get_root_account(session):
 
 def get_envelope(session, id):
     """Retrieves the requested envelope"""
-    return session.query(Envelope).filter(Envelope.id == id).one()
+    return session.query(Envelope).filter(Envelope.id == id).one_or_none()
 
 
 def get_leaf_envelopes(session):

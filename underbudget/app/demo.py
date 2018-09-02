@@ -23,11 +23,8 @@ from underbudget import db
 from underbudget.ledger import model as ledger
 
 
-def setup():
-    engine = create_engine('sqlite://')
-    db.Session.configure(bind=engine)
-    db.Base.metadata.create_all(engine)
-
+def setup(verbose=False):
+    db.open('sqlite://', verbose)
     session = db.Session()
 
     ledger.init(session)

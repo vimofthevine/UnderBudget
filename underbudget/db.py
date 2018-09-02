@@ -16,6 +16,7 @@
 
 from contextlib import contextmanager
 
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -23,6 +24,17 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 Session = sessionmaker()
+
+
+def open(loc, verbose=False):
+    """Opens the database from the given location and configures the session factory"""
+    engine = create_engine(loc, echo=verbose)
+    Session.configure(bind=engine)
+    if 'sqlite' in loc:
+        session = Session()
+        session.execute('PRAGMA foreign_keys=ON;')
+        session.commit()
+    Base.metadata.create_all(engine)
 
 
 @contextmanager
