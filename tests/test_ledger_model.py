@@ -15,7 +15,10 @@
 # along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from datetime import date
 import unittest
+
+from money import Money
 
 from underbudget import db
 from underbudget.ledger import model as ledger
@@ -30,6 +33,7 @@ class Base(unittest.TestCase):
         ledger.init(self.session)
 
     def populate(self):
+        self.usd = ledger.Currency(id=1, code='USD')
         self.uah = ledger.Currency(id=2, code='UAH')
         self.bank = ledger.Account(name='bank')
         self.credit = ledger.Account(name='credit card')
@@ -41,6 +45,124 @@ class Base(unittest.TestCase):
         self.session.add(self.food)
         self.session.add(self.utilities)
         self.session.commit()
+
+
+class Balance(Base):
+    """Unit test case for balance calculations"""
+
+    def populate(self):
+        super().populate()
+        trn1 = ledger.Transaction(date=date(2018, 8, 31), payee='paycheck')
+        trn1.account_transactions.append(
+            ledger.AccountTransaction(account=self.bank, amount=100, cleared=True))
+        trn1.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=self.food, amount=60))
+        trn1.envelope_transactions.append(
+            ledger.EnvelopeTransaction(envelope=self.utilities, amount=40))
+        self.session.add(trn1)
+
+        trn2 = ledger.Transaction(date=date(2018, 9, 1), payee='grocer')
+        trn2.account_transactions.append(
+            ledger.AccountTransaction(account=self.credit, amount=-12.75))
+        trn2.envelope_transactions.append(
+            ledger.EnvelopeTransaction(envelope=self.food, amount=-12.75))
+        self.session.add(trn2)
+
+        trn3 = ledger.Transaction(date=date(2018, 9, 2), payee='electric')
+        trn3.account_transactions.append(
+            ledger.AccountTransaction(account=self.bank, amount=-38.97))
+        trn3.envelope_transactions.append(
+            ledger.EnvelopeTransaction(envelope=self.utilities, amount=-38.97))
+        self.session.add(trn3)
+
+        trn4 = ledger.Transaction(date=date(2018, 9, 3), payee='credit card payment')
+        trn4.account_transactions.append(
+            ledger.AccountTransaction(account=self.bank, amount=-12))
+        trn4.account_transactions.append(
+            ledger.AccountTransaction(account=self.credit, amount=12))
+        self.session.add(trn4)
+
+        self.session.commit()
+
+    def test_overall_uncleared_balance(self):
+        self.populate()
+        self.assertEqual(Money(0, 'USD'), ledger.get_balance(self.session, date(2018, 8, 29)))
+        self.assertEqual(Money(0, 'USD'), ledger.get_balance(self.session, date(2018, 8, 30)))
+        self.assertEqual(Money(100, 'USD'), ledger.get_balance(self.session, date(2018, 8, 31)))
+        self.assertEqual(Money(87.25, 'USD'), ledger.get_balance(self.session, date(2018, 9, 1)))
+        self.assertEqual(Money(48.28, 'USD'), ledger.get_balance(self.session, date(2018, 9, 2)))
+        self.assertEqual(Money(48.28, 'USD'), ledger.get_balance(self.session, date(2018, 9, 3)))
+        self.assertEqual(Money(48.28, 'USD'), ledger.get_balance(self.session, date(2018, 9, 4)))
+
+    def test_overall_cleared_balance(self):
+        self.populate()
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 29), cleared=True))
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 30), cleared=True))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 31), cleared=True))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 1), cleared=True))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 2), cleared=True))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 3), cleared=True))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 4), cleared=True))
+
+    def test_account_balance(self):
+        self.populate()
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 30), account=self.bank))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 31), account=self.bank))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 1), account=self.bank))
+        self.assertEqual(Money(61.03, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 2), account=self.bank))
+        self.assertEqual(Money(49.03, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 3), account=self.bank))
+        self.assertEqual(Money(49.03, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 4), account=self.bank))
+        self.assertEqual(Money(100, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 4), account=self.bank, cleared=True))
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 30), account=self.credit))
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 31), account=self.credit))
+        self.assertEqual(Money(-12.75, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 1), account=self.credit))
+        self.assertEqual(Money(-12.75, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 2), account=self.credit))
+        self.assertEqual(Money(-0.75, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 3), account=self.credit))
+        self.assertEqual(Money(-0.75, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 4), account=self.credit))
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 4), account=self.credit, cleared=True))
+
+    def test_envelope_balance(self):
+        self.populate()
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 30), envelope=self.food))
+        self.assertEqual(Money(60, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 31), envelope=self.food))
+        self.assertEqual(Money(47.25, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 1), envelope=self.food))
+        self.assertEqual(Money(47.25, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 2), envelope=self.food))
+        self.assertEqual(Money(47.25, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 3), envelope=self.food))
+        self.assertEqual(Money(0, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 30), envelope=self.utilities))
+        self.assertEqual(Money(40, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 8, 31), envelope=self.utilities))
+        self.assertEqual(Money(40, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 1), envelope=self.utilities))
+        self.assertEqual(Money(1.03, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 2), envelope=self.utilities))
+        self.assertEqual(Money(1.03, 'USD'),
+                         ledger.get_balance(self.session, date(2018, 9, 3), envelope=self.utilities))
 
 
 class TransactionValidation(Base):

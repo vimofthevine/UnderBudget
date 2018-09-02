@@ -102,25 +102,19 @@ class Reconciliation(Base):
 
     @property
     def beginning_balance(self):
-        return Money(self._beginning_balance, self.account.currency)
+        return create_money(self._beginning_balance, self.account.currency)
 
     @beginning_balance.setter
     def beginning_balance(self, value):
-        if type(value) is Money:
-            self._beginning_balance = value.amount
-        else:
-            self._beginning_balance = int(value)
+        self._beginning_balance = get_scaled(value)
 
     @property
     def ending_balance(self):
-        return Money(self._ending_balance, self.account.currency)
+        return create_money(self._ending_balance, self.account.currency)
 
     @ending_balance.setter
     def ending_balance(self, value):
-        if type(value) is Money:
-            self._ending_balance = value.amount
-        else:
-            self._ending_balance = int(value)
+        self._ending_balance = get_scaled(value)
 
 
 class Transaction(Base):
@@ -160,14 +154,11 @@ class AccountTransaction(Base):
 
     @property
     def amount(self):
-        return Money(self._amount, self.account.currency.code)
+        return create_money(self._amount, self.account.currency)
 
     @amount.setter
     def amount(self, value):
-        if type(value) is Money:
-            self._amount = value.amount
-        else:
-            self._amount = int(value)
+        self._amount = get_scaled(value)
 
 
 class EnvelopeTransaction(Base):
@@ -189,14 +180,11 @@ class EnvelopeTransaction(Base):
 
     @property
     def amount(self):
-        return Money(self._amount, self.envelope.currency.code)
+        return create_money(self._amount, self.envelope.currency)
 
     @amount.setter
     def amount(self, value):
-        if type(value) is Money:
-            self._amount = value.amount
-        else:
-            self._amount = int(value)
+        self._amount = get_scaled(value)
 
 
 def init(session):
@@ -210,6 +198,26 @@ def init(session):
     if not session.query(Envelope).filter(Envelope.id == 1).one_or_none():
         root = Envelope(id=1, name='root')
         session.add(root)
+
+
+def create_money(scaled, currency):
+    """Creates a money object from the scaled value"""
+    if type(currency) is Currency:
+        code = currency.code
+    else:
+        code = currency
+    if scaled is None:
+        return Money(amount=0, currency=code)
+    else:
+        return Money(amount=float(scaled) / 10000.0, currency=code)
+
+
+def get_scaled(value):
+    """Extracts the scalar value from the given money object"""
+    if type(value) is Money:
+        return int(value.amount * 10000)
+    else:
+        return int(value * 10000)
 
 
 def get_account(session, id):
@@ -291,8 +299,8 @@ def validate(transaction):
         currency = transaction.envelope_transactions[0].envelope.currency
     else:
         currency = transaction.account_transactions[0].account.currency
-    acct_total = Money(amount=0, currency=currency.code)
-    env_total = Money(amount=0, currency=currency.code)
+    acct_total = create_money(0, currency)
+    env_total = create_money(0, currency)
 
     for trn in transaction.account_transactions:
         if currency != trn.account.currency:
@@ -304,7 +312,7 @@ def validate(transaction):
             return "Currency conversion would be required but is not supported"
         env_total += trn.amount
 
-    if acct_total - env_total != Money(amount=0, currency=currency.code):
+    if acct_total - env_total != create_money(0, currency):
         return "Account split sum less the envelope split sum must equal zero"
 
     return None
@@ -330,6 +338,6 @@ def get_balance(session, date, currency=Currency(), account=None, envelope=None,
             .filter(and_(Transaction.date <= date, Account.currency == currency))
         if cleared is not None:
             query = query.filter(AccountTransaction.cleared == cleared)
-    return Money(amount=query.scalar(), currency=currency)
+    return create_money(query.scalar(), currency)
 
 
