@@ -4,8 +4,8 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from underbudget.app import MainWindow
-from underbudget.app import demo
+from underbudget import demo
+from underbudget.ui import MainWindow
 
 
 __version__ = '4.0.0-dev-py'

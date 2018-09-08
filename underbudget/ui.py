@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
         self._setup_tool_bar()
 
         self.content = QStackedWidget(self)
+        self.setCentralWidget(self.content)
 
         self.statusBar().showMessage('Ready')
 
@@ -190,9 +191,9 @@ class MainWindow(QMainWindow):
 
         self.menuBar().addSeparator()
 
-        help = self.menuBar().addMenu(self.tr('&Help'))
-        help.addAction(about)
-        help.addAction(about_qt)
+        help_ = self.menuBar().addMenu(self.tr('&Help'))
+        help_.addAction(about)
+        help_.addAction(about_qt)
 
     def _setup_tool_bar(self):
         """Creates tool bar actions"""

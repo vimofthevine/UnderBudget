@@ -15,5 +15,4 @@
 # along with UnderBudget.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from underbudget.app.mainwindow import MainWindow
 from underbudget.app.repositories import DatabaseRepositories
