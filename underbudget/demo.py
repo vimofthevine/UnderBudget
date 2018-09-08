@@ -102,6 +102,7 @@ def setup(verbose=False):
         trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=rent, amount=120))
         trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=unallocated,
                                                                      amount=50))
+        add_if_valid(session, trn4)
 
         # --- Done
 

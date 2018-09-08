@@ -29,6 +29,10 @@ from PyQt5.QtWidgets import QProgressBar
 from PyQt5.QtWidgets import QStackedWidget
 from PyQt5.QtWidgets import QToolBar
 
+from underbudget import db
+from underbudget.ledger import model as ledger_model
+from underbudget.ledger import ui as ledger_ui
+
 
 class MainWindow(QMainWindow):
     """Main application window"""
@@ -63,11 +67,14 @@ class MainWindow(QMainWindow):
 
         self._setup_menu_bar()
         self._setup_tool_bar()
-
-        self.content = QStackedWidget(self)
-        self.setCentralWidget(self.content)
+        self._setup_content()
 
         self.statusBar().showMessage('Ready')
+
+    def refresh(self):
+        """Refresh all content with data from the database"""
+        session = db.Session()
+        self._accounts.set_root(ledger_model.get_root_account(session))
 
     def closeEvent(self, event):
         """Save window state before closing the window"""
@@ -230,3 +237,12 @@ class MainWindow(QMainWindow):
         tool_bar.addAction(expenses)
         tool_bar.addAction(reports)
         self.addToolBar(tool_bar)
+
+    def _setup_content(self):
+        """Creates central content widgets"""
+        self._content = QStackedWidget()
+        self.setCentralWidget(self._content)
+
+        self._accounts = ledger_ui.AccountModel()
+        self._account_view = ledger_ui.AccountView(self._accounts)
+        self._content.addWidget(self._account_view)
