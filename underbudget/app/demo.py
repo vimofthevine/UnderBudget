@@ -17,13 +17,21 @@
 
 from datetime import date
 
-from sqlalchemy import create_engine
-
 from underbudget import db
 from underbudget.ledger import model as ledger
 
 
+def add_if_valid(session, transaction):
+    """Validates the transaction and adds it to the session"""
+    error = ledger.validate(transaction)
+    if error:
+        print(error)
+    else:
+        session.add(transaction)
+
+
 def setup(verbose=False):
+    """Sets up the demo database"""
     db.open('sqlite://', verbose)
     session = db.Session()
 
@@ -36,44 +44,64 @@ def setup(verbose=False):
 
         # --- Accounts
 
-        acct1 = ledger.Account(name='Credit Cards', parent=root_acct)
-        acct1a = ledger.Account(name='Red Card', parent=acct1)
-        acct1b = ledger.Account(name='Blue Card', parent=acct1)
-        acct2 = ledger.Account(name='Bank', parent=root_acct)
-        acct3 = ledger.Account(name='Cash', parent=root_acct)
+        credit_cards = ledger.Account(name='Credit Cards', parent=root_acct)
+        red_card = ledger.Account(name='Red Card', parent=credit_cards)
+        blue_card = ledger.Account(name='Blue Card', parent=credit_cards)
+        bank = ledger.Account(name='Bank', parent=root_acct)
+        cash = ledger.Account(name='Cash', parent=root_acct)
 
-        session.add(acct1)
-        session.add(acct1a)
-        session.add(acct1b)
-        session.add(acct2)
-        session.add(acct3)
+        session.add(credit_cards)
+        session.add(red_card)
+        session.add(blue_card)
+        session.add(bank)
+        session.add(cash)
 
         # --- Envelopes
 
         root_env = ledger.get_root_envelope(session)
 
-        env1 = ledger.Envelope(name='Food', parent=root_env)
-        env2 = ledger.Envelope(name='Utilities', parent=root_env)
-        env2a = ledger.Envelope(name='Rent', parent=env2)
-        env2b = ledger.Envelope(name='Electric', parent=env2)
-        env3 = ledger.Envelope(name='Gifts', parent=root_env)
-        env4 = ledger.Envelope(name='Unallocated', parent=root_env)
+        food = ledger.Envelope(name='Food', parent=root_env)
+        utilities = ledger.Envelope(name='Utilities', parent=root_env)
+        rent = ledger.Envelope(name='Rent', parent=utilities)
+        electric = ledger.Envelope(name='Electric', parent=utilities)
+        gifts = ledger.Envelope(name='Gifts', parent=root_env)
+        unallocated = ledger.Envelope(name='Unallocated', parent=root_env)
 
-        session.add(env1)
-        session.add(env2)
-        session.add(env2a)
-        session.add(env2b)
-        session.add(env3)
-        session.add(env4)
+        session.add(food)
+        session.add(utilities)
+        session.add(rent)
+        session.add(electric)
+        session.add(gifts)
+        session.add(unallocated)
 
         # --- Transactions
 
         trn1 = ledger.Transaction(date=date(2017, 2, 25), payee='electric bill')
-        trn1.account_transactions.append(ledger.AccountTransaction(account=acct1a, amount=-52.33))
-        trn1.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=env2b, amount=-52.33))
-        print(ledger.validate(trn1))
+        trn1.account_transactions.append(ledger.AccountTransaction(account=red_card, amount=-52.33))
+        trn1.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=electric,
+                                                                     amount=-52.33))
+        add_if_valid(session, trn1)
 
-        session.add(trn1)
+        trn2 = ledger.Transaction(date=date(2017, 2, 24), payee='Grocer')
+        trn2.account_transactions.append(ledger.AccountTransaction(account=cash, amount=-100))
+        trn2.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=gifts, amount=-20,
+                                                                     memo='Flowers'))
+        trn2.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=food, amount=-80))
+        add_if_valid(session, trn2)
+
+        trn3 = ledger.Transaction(date=date(2017, 2, 24), payee='Cash withdrawal')
+        trn3.account_transactions.append(ledger.AccountTransaction(account=bank, amount=-150))
+        trn3.account_transactions.append(ledger.AccountTransaction(account=cash, amount=150))
+        add_if_valid(session, trn3)
+
+        trn4 = ledger.Transaction(date=date(2017, 2, 23), payee='payday')
+        trn4.account_transactions.append(ledger.AccountTransaction(account=bank, amount=350))
+        trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=food, amount=100))
+        trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=gifts, amount=25))
+        trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=electric, amount=55))
+        trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=rent, amount=120))
+        trn4.envelope_transactions.append(ledger.EnvelopeTransaction(envelope=unallocated,
+                                                                     amount=50))
 
         # --- Done
 
