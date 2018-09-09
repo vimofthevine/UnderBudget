@@ -20,6 +20,7 @@ from datetime import date
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QAbstractItemModel
+from PyQt5.QtCore import QAbstractTableModel
 from PyQt5.QtCore import QEvent
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtCore import QModelIndex
@@ -28,6 +29,7 @@ from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QSplitter
+from PyQt5.QtWidgets import QTableView
 from PyQt5.QtWidgets import QTreeView
 
 from underbudget import db
@@ -111,8 +113,72 @@ class TreeView(QTreeView):
                 self.delete_item.emit(self._filter.mapToSource(index))
             elif key == Qt.Key_A:
                 self.create_item.emit(self._filter.mapToSource(index))
+        return super().eventFilter(obj, event)
 
-        return super().eventFilter(obj, event);
+
+class TransactionView(QTableView):
+    """Customized table view for transactions"""
+
+    modify_item = pyqtSignal(['QModelIndex'])
+    duplicate_item = pyqtSignal(['QModelIndex'])
+    delete_item = pyqtSignal(['QModelIndex'])
+
+    def __init__(self):
+        super().__init__()
+        self._filter = QSortFilterProxyModel()
+        self.setModel(self._filter)
+        self.setSortingEnabled(True)
+
+        self.setSelectionBehavior(self.SelectRows)
+        self.setSelectionMode(self.SingleSelection)
+
+        self.setAlternatingRowColors(True)
+
+        self.doubleClicked.connect(
+            lambda index: self.modify_item.emit(self._filter.mapToSource(index)))
+
+        self.installEventFilter(self)
+
+    def set_model(self, model):
+        """Sets the source model for the table"""
+        self._filter.setSourceModel(model)
+        self.sortByColumn(model.DATE, Qt.AscendingOrder)
+        # Give the payee and memo columns the most weight
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(model.PAYEE, QHeaderView.Stretch)
+        self.horizontalHeader().setSectionResizeMode(model.MEMO, QHeaderView.Stretch)
+
+    def contextMenuEvent(self, event):
+        event_index = self.indexAt(event.pos())
+        if event_index.isValid():
+            index = self._filter.mapToSource(event_index)
+
+            mod = QAction(self.tr('Edit'))
+            mod.triggered.connect(lambda: self.modify_item.emit(index))
+
+            dup = QAction(self.tr('Duplicate'))
+            dup.triggered.connect(lambda: self.duplicate_item.emit(index))
+
+            del_ = QAction(self.tr('Delete'))
+            del_.triggered.connect(lambda: self.delete_item.emit(index))
+
+            menu = QMenu()
+            menu.addAction(mod)
+            menu.addAction(dup)
+            menu.addAction(del_)
+            menu.exec(event.globalPos())
+
+    def eventFilter(self, obj, event):
+        index = self.currentIndex()
+        if index.isValid() and event.type() == QEvent.KeyPress:
+            key = event.key()
+            if key == Qt.Key_Enter or key == Qt.Key_Return:
+                self.modify_item.emit(self._filter.mapToSource(index))
+            elif key == Qt.Key_Delete:
+                self.delete_item.emit(self._filter.mapToSource(index))
+            elif key == Qt.Key_D:
+                self.duplicate_item.emit(self._filter.mapToSource(index))
+        return super().eventFilter(obj, event)
 
 
 class AccountModel(QAbstractItemModel):
@@ -123,7 +189,6 @@ class AccountModel(QAbstractItemModel):
 
     def __init__(self):
         super().__init__()
-
         self._headers = [self.tr('Name'), self.tr('Balance')]
         self._root = None
         self._cache = {}
@@ -222,17 +287,97 @@ class AccountModel(QAbstractItemModel):
             self._add_to_cache(child)
 
 
+class AccountTransactionModel(QAbstractTableModel):
+    """Account transaction model"""
+
+    DATE = 0
+    PAYEE = 1
+    MEMO = 2
+    DEBIT = 3
+    CREDIT = 4
+    BALANCE = 5
+
+    def __init__(self):
+        super().__init__()
+        self._headers = [self.tr('Date'), self.tr('Payee'), self.tr('Memo'), self.tr('Debit'),
+                         self.tr('Credit'), self.tr('Balance')]
+        self._transactions = []
+
+    def filter(self, account):
+        self.beginResetModel()
+        if account:
+            self._transactions = ledger.get_account_transactions(db.Session(), account)
+        else:
+            self._transactions = []
+        self.endResetModel()
+
+    def columnCount(self, parent=None):
+        return len(self._headers)
+
+    def headerData(self, section, orientation, role):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return self._headers[section]
+        return None
+
+    def data(self, index, role):
+        if not index.isValid():
+            return None
+
+        if role != Qt.DisplayRole and role != Qt.EditRole:
+            return None
+
+        row = index.row()
+        if row < 0 or row >= len(self._transactions):
+            return None
+
+        trn = self._transactions[row]
+        col = index.column()
+        if col == self.DATE:
+            return str(trn.transaction.date)
+        elif col == self.PAYEE:
+            return trn.transaction.payee
+        elif col == self.MEMO:
+            return trn.memo
+        elif col == self.DEBIT and trn.amount.amount >= 0:
+            return trn.amount.format('en_US')
+        elif col == self.CREDIT and trn.amount.amount < 0:
+            return trn.amount.format('en_US')
+        elif col == self.BALANCE:
+            return trn.balance.format('en_US')
+        return None
+
+    def rowCount(self, parent):
+        if parent.column() > 0:
+            return 0
+        return len(self._transactions)
+
+
 class AccountView(QSplitter):
     """Account view widget"""
 
-    def __init__(self, accounts):
+    def __init__(self, accounts, transactions):
         super().__init__()
 
         self._accounts = accounts
+        self._transactions = transactions
 
         self._tree = TreeView()
         self._tree.set_model(self._accounts)
 
+        self._table = TransactionView()
+        self._table.set_model(self._transactions)
+
         self.addWidget(self._tree)
+        self.addWidget(self._table)
+        # Give transaction list stretch priority
+        self.setStretchFactor(1, 1)
+
+        self._tree.select_item.connect(self.setTransactionFilter)
+
+    def setTransactionFilter(self, current, previous):
+        account = self._accounts.get_account(current)
+        if account:
+            self._transactions.filter(account)
+            self._table.scrollToBottom()
 
 

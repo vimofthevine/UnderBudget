@@ -147,6 +147,7 @@ class AccountTransaction(Base):
     cleared = Column(Boolean)
     reconciliation_id = Column(Integer, ForeignKey('reconciliation.id', ondelete='SET NULL'))
     reconciliation = relationship('Reconciliation')
+    balance = None
 
     def __init__(self, **kwargs):
         self._amount = 0
@@ -173,6 +174,7 @@ class EnvelopeTransaction(Base):
     envelope = relationship('Envelope')
     _amount = Column('amount', Integer)
     memo = Column(String)
+    balance = None
 
     def __init__(self, **kwargs):
         self._amount = 0
@@ -264,9 +266,20 @@ def get_root_envelope(session):
 
 def get_account_transaction(session, id):
     """Retrieves the requested account transaction"""
-    trn = session.query(AccountTransaction).filter(AccountTransaction.id == id).one()
-    # TODO set balance
+    trn = session.query(AccountTransaction).join(AccountTransaction.transaction) \
+        .filter(AccountTransaction.id == id).one_or_none()
+    if trn:
+        trn.balance = get_balance(session, trn.transaction.date, account=trn.account)
     return trn
+
+
+def get_account_transactions(session, account):
+    """Retrieves all account transactions for a single account"""
+    trns = session.query(AccountTransaction).join(AccountTransaction.transaction) \
+        .filter(AccountTransaction.account == account).all()
+    for trn in trns:
+        trn.balance = get_balance(session, trn.transaction.date, account=trn.account)
+    return trns
 
 
 def copy(transaction):

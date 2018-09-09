@@ -244,5 +244,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self._content)
 
         self._accounts = ledger_ui.AccountModel()
-        self._account_view = ledger_ui.AccountView(self._accounts)
+        self._account_transactions = ledger_ui.AccountTransactionModel()
+        self._account_view = ledger_ui.AccountView(self._accounts, self._account_transactions)
         self._content.addWidget(self._account_view)
