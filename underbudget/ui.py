@@ -75,6 +75,7 @@ class MainWindow(QMainWindow):
         """Refresh all content with data from the database"""
         session = db.Session()
         self._accounts.set_root(ledger_model.get_root_account(session))
+        self._envelopes.set_root(ledger_model.get_root_envelope(session))
 
     def closeEvent(self, event):
         """Save window state before closing the window"""
@@ -155,10 +156,12 @@ class MainWindow(QMainWindow):
         accounts = QAction(self.tr('&Accounts'), self)
         accounts.setShortcut(QKeySequence(Qt.Key_F5))
         accounts.setStatusTip(self.tr('View accounts'))
+        accounts.triggered.connect(lambda: self._content.setCurrentWidget(self._account_view))
 
         envelopes = QAction(self.tr('&Envelopes'), self)
         envelopes.setShortcut(QKeySequence(Qt.Key_F6))
         envelopes.setStatusTip(self.tr('View envelopes'))
+        envelopes.triggered.connect(lambda: self._content.setCurrentWidget(self._envelope_view))
 
         incomes = QAction(self.tr('Budgeted &Incomes'), self)
         incomes.setShortcut(QKeySequence(Qt.Key_F7))
@@ -209,9 +212,11 @@ class MainWindow(QMainWindow):
 
         accounts = QAction(self.tr('&Accounts'), self)
         accounts.setStatusTip(self.tr('View accounts'))
+        accounts.triggered.connect(lambda: self._content.setCurrentWidget(self._account_view))
 
         envelopes = QAction(self.tr('&Envelopes'), self)
         envelopes.setStatusTip(self.tr('View envelopes'))
+        envelopes.triggered.connect(lambda: self._content.setCurrentWidget(self._envelope_view))
 
         incomes = QAction(self.tr('Budgeted &Incomes'), self)
         incomes.setStatusTip(self.tr('View budgeted incomes'))
@@ -245,5 +250,11 @@ class MainWindow(QMainWindow):
 
         self._accounts = ledger_ui.AccountModel()
         self._account_transactions = ledger_ui.AccountTransactionModel()
-        self._account_view = ledger_ui.AccountView(self._accounts, self._account_transactions)
+        self._account_view = ledger_ui.EntityView(self._accounts, self._account_transactions)
+
+        self._envelopes = ledger_ui.EnvelopeModel()
+        self._envelope_transactions = ledger_ui.EnvelopeTransactionModel()
+        self._envelope_view = ledger_ui.EntityView(self._envelopes, self._envelope_transactions)
+
         self._content.addWidget(self._account_view)
+        self._content.addWidget(self._envelope_view)

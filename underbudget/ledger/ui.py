@@ -181,8 +181,8 @@ class TransactionView(QTableView):
         return super().eventFilter(obj, event)
 
 
-class AccountModel(QAbstractItemModel):
-    """Account model"""
+class EntityModel(QAbstractItemModel):
+    """Entity item model"""
 
     NAME = 0
     BALANCE = 1
@@ -194,20 +194,24 @@ class AccountModel(QAbstractItemModel):
         self._cache = {}
 
     def set_root(self, root):
-        """Updates the account tree wrapped by the model"""
+        """Updates the entity tree wrapped by the model"""
         self.beginResetModel()
         self._cache.clear()
         self._root = root
         self._add_to_cache(root)
         self.endResetModel()
 
-    def get_account(self, index):
-        """Retrieves the account identified by the index"""
+    def get(self, index):
+        """Retrieves the entity identified by the index"""
         if not self._root:
             return None
         if not index.isValid():
             return self._root
         return self._cache[index.internalId()]
+
+    def get_balance(self, entity):
+        """Retrieves the balance of the given entity"""
+        return None
 
     def columnCount(self, parent=None):
         return len(self._headers)
@@ -224,27 +228,27 @@ class AccountModel(QAbstractItemModel):
         if role != Qt.DisplayRole:
             return None
 
-        account = self.get_account(index)
-        if not account:
+        entity = self.get(index)
+        if not entity:
             return None
 
         col = index.column()
         if col == self.NAME:
-            return account.name
+            return entity.name
         elif col == self.BALANCE:
-            if len(account.children) > 0:
+            if len(entity.children) > 0:
                 return None
             else:
-                return ledger.get_balance(db.Session(), date=date.today(), account=account).format('en_US')
+                return self.get_balance(entity)
         else:
             return None
 
     def rowCount(self, parent):
         if not self._root or parent.column() > 0:
             return 0
-        account = self.get_account(parent)
-        if account:
-            return len(account.children)
+        entity = self.get(parent)
+        if entity:
+            return len(entity.children)
         else:
             return 0
 
@@ -252,11 +256,11 @@ class AccountModel(QAbstractItemModel):
         if not self._root or not self.hasIndex(row, column, parent):
             return QModelIndex()
 
-        account = self.get_account(parent)
-        if not account:
+        entity = self.get(parent)
+        if not entity:
             return QModelIndex()
         else:
-            children = account.children
+            children = entity.children
 
         if row < 0 or row >= len(children):
             return QModelIndex()
@@ -267,13 +271,13 @@ class AccountModel(QAbstractItemModel):
         if not self._root or not child.isValid():
             return QModelIndex()
 
-        account = self.get_account(child)
-        if not account:
+        entity = self.get(child)
+        if not entity:
             return QModelIndex()
 
-        if not account.parent:
+        if not entity.parent:
             return QModelIndex()
-        parent = account.parent
+        parent = entity.parent
 
         if not parent.parent:
             return QModelIndex()
@@ -281,14 +285,26 @@ class AccountModel(QAbstractItemModel):
 
         return self.createIndex(grandparent.children.index(parent), 0, parent.id)
 
-    def _add_to_cache(self, account):
-        self._cache[account.id] = account
-        for child in account.children:
+    def _add_to_cache(self, entity):
+        self._cache[entity.id] = entity
+        for child in entity.children:
             self._add_to_cache(child)
 
 
-class AccountTransactionModel(QAbstractTableModel):
-    """Account transaction model"""
+class AccountModel(EntityModel):
+
+    def get_balance(self, entity):
+        return ledger.get_balance(db.Session(), date=date.today(), account=entity).format('en_US')
+
+
+class EnvelopeModel(EntityModel):
+
+    def get_balance(self, entity):
+        return ledger.get_balance(db.Session(), date=date.today(), envelope=entity).format('en_US')
+
+
+class TransactionModel(QAbstractTableModel):
+    """Transaction model"""
 
     DATE = 0
     PAYEE = 1
@@ -303,10 +319,14 @@ class AccountTransactionModel(QAbstractTableModel):
                          self.tr('Credit'), self.tr('Balance')]
         self._transactions = []
 
-    def filter(self, account):
+    def get_transactions(self, entity):
+        """Retrieves transactions for the given entity"""
+        return []
+
+    def filter(self, entity):
         self.beginResetModel()
-        if account:
-            self._transactions = ledger.get_account_transactions(db.Session(), account)
+        if entity:
+            self._transactions = self.get_transactions(entity)
         else:
             self._transactions = []
         self.endResetModel()
@@ -352,17 +372,29 @@ class AccountTransactionModel(QAbstractTableModel):
         return len(self._transactions)
 
 
-class AccountView(QSplitter):
-    """Account view widget"""
+class AccountTransactionModel(TransactionModel):
 
-    def __init__(self, accounts, transactions):
+    def get_transactions(self, entity):
+        return ledger.get_account_transactions(db.Session(), entity)
+
+
+class EnvelopeTransactionModel(TransactionModel):
+
+    def get_transactions(self, entity):
+        return ledger.get_envelope_transactions(db.Session(), entity)
+
+
+class EntityView(QSplitter):
+    """Entity (envelope or account) widget with hierarchy tree and transaction table"""
+
+    def __init__(self, entities, transactions):
         super().__init__()
 
-        self._accounts = accounts
+        self._entities = entities
         self._transactions = transactions
 
         self._tree = TreeView()
-        self._tree.set_model(self._accounts)
+        self._tree.set_model(self._entities)
 
         self._table = TransactionView()
         self._table.set_model(self._transactions)
@@ -372,12 +404,12 @@ class AccountView(QSplitter):
         # Give transaction list stretch priority
         self.setStretchFactor(1, 1)
 
-        self._tree.select_item.connect(self.setTransactionFilter)
+        self._tree.select_item.connect(self.set_transaction_filter)
 
-    def setTransactionFilter(self, current, previous):
-        account = self._accounts.get_account(current)
-        if account:
-            self._transactions.filter(account)
+    def set_transaction_filter(self, current, previous):
+        entity = self._entities.get(current)
+        if entity:
+            self._transactions.filter(entity)
             self._table.scrollToBottom()
 
 

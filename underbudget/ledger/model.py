@@ -282,6 +282,15 @@ def get_account_transactions(session, account):
     return trns
 
 
+def get_envelope_transactions(session, envelope):
+    """Retrieves all account transactions for a single envelope"""
+    trns = session.query(EnvelopeTransaction).join(EnvelopeTransaction.transaction) \
+        .filter(EnvelopeTransaction.envelope == envelope).all()
+    for trn in trns:
+        trn.balance = get_balance(session, trn.transaction.date, envelope=trn.envelope)
+    return trns
+
+
 def copy(transaction):
     """Creates a copy of the given transaction"""
     copy_trn = Transaction(date=transaction.date, payee=transaction.payee)
