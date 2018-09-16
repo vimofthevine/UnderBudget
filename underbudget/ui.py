@@ -21,6 +21,7 @@ from PyQt5.QtCore import QByteArray
 from PyQt5.QtCore import QSettings
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import qApp
 from PyQt5.QtWidgets import QMainWindow
@@ -30,6 +31,7 @@ from PyQt5.QtWidgets import QStackedWidget
 from PyQt5.QtWidgets import QToolBar
 
 from underbudget import db
+from underbudget import qrc
 from underbudget.ledger import model as ledger_model
 from underbudget.ledger import ui as ledger_ui
 
@@ -55,6 +57,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.restore_settings()
 
+        self.setWindowIcon(QIcon(':/icons/logo'))
         self.setWindowTitle(qApp.applicationName())
         self.setUnifiedTitleAndToolBarOnMac(True)
 
@@ -137,49 +140,50 @@ class MainWindow(QMainWindow):
 
     def _setup_menu_bar(self):
         """Creates menu bar actions"""
-        open_ = QAction(self.tr('&Open...'), self)
+        open_ = QAction(QIcon(':/icons/open'), self.tr('&Open...'), self)
         open_.setShortcut(QKeySequence.Open)
         open_.setStatusTip(self.tr('Open database'))
 
-        import_ = QAction(self.tr('&Import...'), self)
+        import_ = QAction(QIcon(':/icons/import'), self.tr('&Import...'), self)
         import_.setStatusTip(self.tr('Import data'))
 
-        exit_ = QAction(self.tr('E&xit'), self)
+        exit_ = QAction(QIcon(':/icons/exit'), self.tr('E&xit'), self)
         exit_.setShortcut(QKeySequence.Quit)
         exit_.setStatusTip(self.tr('Quit the application'))
         exit_.triggered.connect(qApp.closeAllWindows)
 
-        add_trn = QAction(self.tr('&Add Transaction...'), self)
+        add_trn = QAction(QIcon(':/icons/add'), self.tr('&Add Transaction...'), self)
         add_trn.setShortcut(QKeySequence.New)
         add_trn.setStatusTip(self.tr('Create a new transaction'))
 
-        accounts = QAction(self.tr('&Accounts'), self)
+        accounts = QAction(QIcon(':/icons/account'), self.tr('&Accounts'), self)
         accounts.setShortcut(QKeySequence(Qt.Key_F5))
         accounts.setStatusTip(self.tr('View accounts'))
         accounts.triggered.connect(lambda: self._content.setCurrentWidget(self._account_view))
 
-        envelopes = QAction(self.tr('&Envelopes'), self)
+        envelopes = QAction(QIcon(':/icons/envelope'), self.tr('&Envelopes'), self)
         envelopes.setShortcut(QKeySequence(Qt.Key_F6))
         envelopes.setStatusTip(self.tr('View envelopes'))
         envelopes.triggered.connect(lambda: self._content.setCurrentWidget(self._envelope_view))
 
-        incomes = QAction(self.tr('Budgeted &Incomes'), self)
+        incomes = QAction(QIcon(':/icons/income'), self.tr('Budgeted &Incomes'), self)
         incomes.setShortcut(QKeySequence(Qt.Key_F7))
         incomes.setStatusTip(self.tr('View budgeted incomes'))
 
-        expenses = QAction(self.tr('Budgeted E&xpenses'), self)
+        expenses = QAction(QIcon(':/icons/expense'), self.tr('Budgeted E&xpenses'), self)
         expenses.setShortcut(QKeySequence(Qt.Key_F8))
         expenses.setStatusTip(self.tr('View budgeted expenses'))
 
-        reports = QAction(self.tr('&Reports'), self)
+        reports = QAction(QIcon(':/icons/report'), self.tr('&Reports'), self)
         reports.setShortcut(QKeySequence(Qt.Key_F9))
         reports.setStatusTip(self.tr('View reports'))
 
-        about = QAction(self.tr('&About {0}').format(qApp.applicationName()), self)
+        about = QAction(QIcon(':/icons/logo'),
+                        self.tr('&About {0}').format(qApp.applicationName()), self)
         about.setStatusTip(self.tr('About the application'))
         about.triggered.connect(self._show_about)
 
-        about_qt = QAction(self.tr('About &Qt'), self)
+        about_qt = QAction(QIcon(':/icons/qt'), self.tr('About &Qt'), self)
         about_qt.setStatusTip(self.tr('About the Qt library'))
         about_qt.triggered.connect(qApp.aboutQt)
 
@@ -207,24 +211,24 @@ class MainWindow(QMainWindow):
 
     def _setup_tool_bar(self):
         """Creates tool bar actions"""
-        add_trn = QAction(self.tr('&Add Transaction...'), self)
+        add_trn = QAction(QIcon(':/icons/add'), self.tr('&Transaction'), self)
         add_trn.setStatusTip(self.tr('Create a new transaction'))
 
-        accounts = QAction(self.tr('&Accounts'), self)
+        accounts = QAction(QIcon(':/icons/account'), self.tr('&Accounts'), self)
         accounts.setStatusTip(self.tr('View accounts'))
         accounts.triggered.connect(lambda: self._content.setCurrentWidget(self._account_view))
 
-        envelopes = QAction(self.tr('&Envelopes'), self)
+        envelopes = QAction(QIcon(':/icons/envelope'), self.tr('&Envelopes'), self)
         envelopes.setStatusTip(self.tr('View envelopes'))
         envelopes.triggered.connect(lambda: self._content.setCurrentWidget(self._envelope_view))
 
-        incomes = QAction(self.tr('Budgeted &Incomes'), self)
+        incomes = QAction(QIcon(':/icons/income'), self.tr('&Incomes'), self)
         incomes.setStatusTip(self.tr('View budgeted incomes'))
 
-        expenses = QAction(self.tr('Budgeted E&xpenses'), self)
+        expenses = QAction(QIcon(':/icons/expense'), self.tr('E&xpenses'), self)
         expenses.setStatusTip(self.tr('View budgeted expenses'))
 
-        reports = QAction(self.tr('&Reports'), self)
+        reports = QAction(QIcon(':/icons/report'), self.tr('&Reports'), self)
         reports.setShortcut(QKeySequence(Qt.Key_F9))
         reports.setStatusTip(self.tr('View reports'))
 

@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="icons">
+        <file alias="edit">underbudget/resources/icons/icomoon/006-pencil.svg</file>
+        <file alias="expense">underbudget/resources/icons/icomoon/059-cart.svg</file>
+        <file alias="income">underbudget/resources/icons/icomoon/060-coin-dollar.svg</file>
+        <file alias="account">underbudget/resources/icons/icomoon/064-credit-card.svg</file>
+        <file alias="envelope">underbudget/resources/icons/icomoon/070-envelop.svg</file>
+        <file alias="open">underbudget/resources/icons/icomoon/101-database.svg</file>
+        <file alias="report">underbudget/resources/icons/icomoon/156-stats-dots.svg</file>
+        <file alias="delete">underbudget/resources/icons/icomoon/173-bin.svg</file>
+        <file alias="export">underbudget/resources/icons/icomoon/198-download2.svg</file>
+        <file alias="import">underbudget/resources/icons/icomoon/199-upload2.svg</file>
+        <file alias="add">underbudget/resources/icons/icomoon/267-plus.svg</file>
+        <file alias="about">underbudget/resources/icons/icomoon/269-info.svg</file>
+        <file alias="exit">underbudget/resources/icons/icomoon/277-exit.svg</file>
+        <file alias="logo">underbudget/resources/icons/logo.svg</file>
+        <file alias="qt">underbudget/resources/icons/Qt.png</file>
+    </qresource>
+</RCC>
