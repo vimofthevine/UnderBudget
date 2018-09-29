@@ -47,6 +47,8 @@ class TreeView(QTreeView):
     select_item = pyqtSignal(['QModelIndex', 'QModelIndex'])
     create_item = pyqtSignal(['QModelIndex'])
     modify_item = pyqtSignal(['QModelIndex'])
+    archive_item = pyqtSignal(['QModelIndex'])
+    unarchive_item = pyqtSignal(['QModelIndex'])
     delete_item = pyqtSignal(['QModelIndex'])
 
     def __init__(self):
@@ -54,6 +56,7 @@ class TreeView(QTreeView):
         self._filter = QSortFilterProxyModel()
         self.setModel(self._filter)
         self._filter.sort(0)
+        self._filter_archived = True
 
         self.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.setSelectionBehavior(self.SelectRows)
@@ -68,9 +71,12 @@ class TreeView(QTreeView):
         """Sets the source model for the tree"""
         self._filter.setSourceModel(model)
         model.modelReset.connect(lambda: self.expandAll())
-        # Give the first column the most weight
+        # Hide archived entities by default
+        self._filter.setFilterKeyColumn(model.ARCHIVED)
+        self.filter_archived(True)
+        # Give the name column the most weight
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.header().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.header().setSectionResizeMode(model.NAME, QHeaderView.Stretch)
         # Can't set this up until after the model has been set
         self.selectionModel().currentRowChanged.connect(
             lambda current, previous: self.select_item.emit(self._filter.mapToSource(current),
@@ -88,23 +94,42 @@ class TreeView(QTreeView):
 
         if event_index.isValid():
             index = self._filter.mapToSource(event_index)
+            entity = self._filter.sourceModel().get(index)
 
-            mod = QAction(self.tr('Edit'))
-            mod.triggered.connect(lambda: self.modify_item.emit(index))
+            if entity.archived:
+                unarchive = QAction(self.tr('Unarchive'))
+                unarchive.triggered.connect(lambda: self.unarchive_item.emit(index))
+                menu.addAction(unarchive)
+            else:
+                mod = QAction(self.tr('Edit'))
+                mod.triggered.connect(lambda: self.modify_item.emit(index))
 
-            add = QAction(self.tr('Add child'))
-            add.triggered.connect(lambda: self.create_item.emit(index))
+                add = QAction(self.tr('Add child'))
+                add.triggered.connect(lambda: self.create_item.emit(index))
 
-            del_ = QAction(self.tr('Delete'))
-            del_.triggered.connect(lambda: self.delete_item.emit(index))
+                archive = QAction(self.tr('Archive'))
+                archive.triggered.connect(lambda: self.archive_item.emit(index))
 
-            menu.addAction(mod)
-            menu.addAction(add)
-            menu.addAction(del_)
+                del_ = QAction(self.tr('Delete'))
+                del_.triggered.connect(lambda: self.delete_item.emit(index))
+
+                menu.addAction(mod)
+                menu.addAction(add)
+                menu.addAction(archive)
+                menu.addAction(del_)
         else:
             add = QAction(self.tr('Add top-level item'))
             add.triggered.connect(lambda: self.create_item.emit(QModelIndex()))
             menu.addAction(add)
+
+        if self._filter_archived:
+            filter = QAction(self.tr('Show archived'))
+            filter.triggered.connect(lambda : self.filter_archived(False))
+        else:
+            filter = QAction(self.tr('Hide archived'))
+            filter.triggered.connect(lambda : self.filter_archived(True))
+        menu.addSeparator()
+        menu.addAction(filter)
 
         menu.exec(event.globalPos())
 
@@ -119,6 +144,16 @@ class TreeView(QTreeView):
             elif key == Qt.Key_A:
                 self.create_item.emit(self._filter.mapToSource(index))
         return super().eventFilter(obj, event)
+
+    def filter_archived(self, filter):
+        self._filter_archived = filter
+        if filter:
+            self._filter.setFilterFixedString(self.tr('false'))
+            self.hideColumn(self._filter.sourceModel().ARCHIVED)
+        else:
+            self._filter.setFilterFixedString('')
+            self.showColumn(self._filter.sourceModel().ARCHIVED)
+        self.expandAll()
 
 
 class TransactionView(QTableView):
@@ -191,10 +226,11 @@ class EntityModel(QAbstractItemModel):
 
     NAME = 0
     BALANCE = 1
+    ARCHIVED = 2
 
     def __init__(self):
         super().__init__()
-        self._headers = [self.tr('Name'), self.tr('Balance')]
+        self._headers = [self.tr('Name'), self.tr('Balance'), self.tr('Archived')]
         self._root = None
         self._cache = {}
 
@@ -229,6 +265,11 @@ class EntityModel(QAbstractItemModel):
                 self._add_to_cache(entity)
             self.endInsertRows()
 
+    def archive(self, entity, index):
+        """Archives the entity at the specified index"""
+        with db.open_ui_session():
+            self._archive_recursive(entity, index)
+
     def delete(self, entity, index):
         """Removes the entity at the specified index"""
         self.beginRemoveRows(index.parent(), index.row(), index.row())
@@ -237,8 +278,13 @@ class EntityModel(QAbstractItemModel):
             self._remove_from_cache(entity)
         self.endRemoveRows()
 
+    def unarchive(self, entity, index):
+        """Unarchives the entity at the specified index"""
+        with db.open_ui_session():
+            self._unarchive(entity, index)
+
     def update(self, entity, index):
-        """Updates the specified index"""
+        """Updates the entity at the specified index"""
         if entity in db.ui_session.dirty:
             db.ui_session.commit()
             self.dataChanged.emit(self.index(index.row(), 0, index.parent()),
@@ -274,7 +320,9 @@ class EntityModel(QAbstractItemModel):
             if len(entity.children) > 0:
                 return None
             else:
-                return self.get_balance(entity)
+                return self.get_balance(entity).format('en_US')
+        elif col == self.ARCHIVED:
+            return entity.archived
         else:
             return None
 
@@ -325,22 +373,36 @@ class EntityModel(QAbstractItemModel):
         for child in entity.children:
             self._add_to_cache(child)
 
+    def _archive_recursive(self, entity, index):
+        entity.archived = True
+        self.dataChanged.emit(self.index(index.row(), 0, index.parent()),
+                              self.index(index.row(), self.columnCount(index) - 1, index.parent()))
+        for child in entity.children:
+            self._archive_recursive(child, self.index(entity.children.index(child), 0, index))
+
     def _remove_from_cache(self, entity):
         self._cache.pop(entity.id, None)
         for child in entity.children:
             self._remove_from_cache(child)
 
+    def _unarchive(self, entity, index):
+        entity.archived = False
+        self.dataChanged.emit(self.index(index.row(), 0, index.parent()),
+                              self.index(index.row(), self.columnCount(index) - 1, index.parent()))
+        if entity.parent.archived:
+            self._unarchive(entity.parent, index.parent())
+
 
 class AccountModel(EntityModel):
 
     def get_balance(self, entity):
-        return ledger.get_balance(db.ui_session, date=date.today(), account=entity).format('en_US')
+        return ledger.get_balance(db.ui_session, date=date.today(), account=entity)
 
 
 class EnvelopeModel(EntityModel):
 
     def get_balance(self, entity):
-        return ledger.get_balance(db.ui_session, date=date.today(), envelope=entity).format('en_US')
+        return ledger.get_balance(db.ui_session, date=date.today(), envelope=entity)
 
 
 class TransactionModel(QAbstractTableModel):
@@ -494,6 +556,8 @@ class EntityView(QSplitter):
         self._tree.select_item.connect(self.set_transaction_filter)
         self._tree.create_item.connect(self.create)
         self._tree.modify_item.connect(self.modify)
+        self._tree.archive_item.connect(self.archive)
+        self._tree.unarchive_item.connect(self.unarchive)
         self._tree.delete_item.connect(self.delete)
 
     def set_transaction_filter(self, current, previous):
@@ -502,13 +566,25 @@ class EntityView(QSplitter):
             self._transactions.filter(entity)
             self._table.scrollToBottom()
 
+    def archive(self, index):
+        entity = self._entities.get(index)
+        entity_type = 'Account' if type(self._entities) is AccountModel else 'Envelope'
+        if self._has_balance(entity):
+            QMessageBox.warning(self.parentWidget(),
+                                self.tr('Unable To Archive {}'.format(entity_type)),
+                                self.tr('Cannot archive {} since it, or a descendant, has a non-zero balance.')
+                                .format(entity.name))
+        else:
+            answer = QMessageBox.question(self.parentWidget(),
+                                          self.tr('Archive {}?'.format(entity_type)),
+                                          self.tr('Are you sure you want to archive {}?')
+                                          .format(entity.name))
+            if answer == QMessageBox.Yes:
+                self._entities.archive(entity, index)
+
     def create(self, parent):
         entity = ledger.Account() if type(self._entities) is AccountModel else ledger.Envelope()
         self._details.reset(entity, None, parent)
-        self._details.show()
-
-    def modify(self, index):
-        self._details.reset(self._entities.get(index), index)
         self._details.show()
 
     def delete(self, index):
@@ -526,6 +602,28 @@ class EntityView(QSplitter):
                                           .format(entity.name))
             if answer == QMessageBox.Yes:
                 self._entities.delete(entity, index)
+
+    def modify(self, index):
+        self._details.reset(self._entities.get(index), index)
+        self._details.show()
+
+    def unarchive(self, index):
+        entity = self._entities.get(index)
+        entity_type = 'Account' if type(self._entities) is AccountModel else 'Envelope'
+        answer = QMessageBox.question(self.parentWidget(),
+                                      self.tr('Unarchive {}?'.format(entity_type)),
+                                      self.tr('Are you sure you want to unarchive {}?')
+                                      .format(entity.name))
+        if answer == QMessageBox.Yes:
+            self._entities.unarchive(entity, index)
+
+    def _has_balance(self, entity):
+        if self._entities.get_balance(entity) != ledger.create_money(0, entity.currency):
+            return True
+        for child in entity.children:
+            if self._has_balance(child):
+                return True
+        return False
 
     def _has_transactions(self, entity):
         if self._transactions.get_transactions(entity):
