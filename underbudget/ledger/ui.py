@@ -26,7 +26,11 @@ from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtCore import QSortFilterProxyModel
 from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.QtWidgets import QFormLayout
 from PyQt5.QtWidgets import QHeaderView
+from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QSplitter
 from PyQt5.QtWidgets import QTableView
@@ -98,7 +102,7 @@ class TreeView(QTreeView):
             menu.addAction(del_)
         else:
             add = QAction(self.tr('Add top-level item'))
-            add.triggered.connect(lambda: self.create_item(QModelIndex()))
+            add.triggered.connect(lambda: self.create_item.emit(QModelIndex()))
             menu.addAction(add)
 
         menu.exec(event.globalPos())
@@ -209,6 +213,26 @@ class EntityModel(QAbstractItemModel):
             return self._root
         return self._cache[index.internalId()]
 
+    def add(self, entity, index=None):
+        """Adds a new entity under the given parent index"""
+        if self._root:
+            if not index:
+                index = QModelIndex()
+            rows = self.rowCount(index)
+            self.beginInsertRows(index, rows, rows)
+            with db.open_ui_session() as session:
+                parent = self.get(index)
+                parent.children.append(entity)
+                session.add(entity)
+            if entity.id:
+                self._add_to_cache(entity)
+            self.endInsertRows()
+
+    def update(self, index):
+        """Updates the specified index"""
+        self.dataChanged(self.index(index.row(), 0, index.parent()),
+                         self.index(index.row(), self.columnCount(index) - 1, index.parent()))
+
     def get_balance(self, entity):
         """Retrieves the balance of the given entity"""
         return None
@@ -294,13 +318,13 @@ class EntityModel(QAbstractItemModel):
 class AccountModel(EntityModel):
 
     def get_balance(self, entity):
-        return ledger.get_balance(db.Session(), date=date.today(), account=entity).format('en_US')
+        return ledger.get_balance(db.ui_session, date=date.today(), account=entity).format('en_US')
 
 
 class EnvelopeModel(EntityModel):
 
     def get_balance(self, entity):
-        return ledger.get_balance(db.Session(), date=date.today(), envelope=entity).format('en_US')
+        return ledger.get_balance(db.ui_session, date=date.today(), envelope=entity).format('en_US')
 
 
 class TransactionModel(QAbstractTableModel):
@@ -361,7 +385,7 @@ class TransactionModel(QAbstractTableModel):
         elif col == self.DEBIT and trn.amount.amount >= 0:
             return trn.amount.format('en_US')
         elif col == self.CREDIT and trn.amount.amount < 0:
-            return trn.amount.format('en_US')
+            return (-trn.amount).format('en_US')
         elif col == self.BALANCE:
             return trn.balance.format('en_US')
         return None
@@ -384,11 +408,54 @@ class EnvelopeTransactionModel(TransactionModel):
         return ledger.get_envelope_transactions(db.Session(), entity)
 
 
+class EntityDetailsDialog(QDialog):
+    """Entity details dialog"""
+
+    def __init__(self, type, model, parent):
+        super().__init__(parent)
+        self._model = model
+        self._parent_index = None
+        self._entity_index = None
+        self._entity = None
+
+        self._name = QLineEdit()
+        self._name.setPlaceholderText(self.tr('{0} name'.format(type)))
+
+        self._buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Reset |
+                                         QDialogButtonBox.Cancel)
+        self._buttons.clicked.connect(self.clicked)
+
+        form = QFormLayout()
+        form.addRow(self.tr('Name'), self._name)
+        form.addRow('', self._buttons)
+        self.setLayout(form)
+        self.setWindowTitle(self.tr(type))
+
+    def reset(self, entity, index, parent=None):
+        self._entity = entity
+        self._entity_index = index
+        self._parent_index = parent
+        self._name.setText(self._entity.name)
+
+    def clicked(self, button):
+        if button is self._buttons.button(QDialogButtonBox.Save):
+            self._entity.name = self._name.text()
+            if self._parent_index:
+                self._model.add(self._entity, self._parent_index)
+            self.accept()
+        elif button is self._buttons.button(QDialogButtonBox.Reset):
+            self._name.setText(self._entity.name if self._entity else '')
+        elif button is self._buttons.button(QDialogButtonBox.Cancel):
+            self.reject()
+
+
 class EntityView(QSplitter):
     """Entity (envelope or account) widget with hierarchy tree and transaction table"""
 
     def __init__(self, entities, transactions):
         super().__init__()
+
+        self._type = 'Account' if type(entities) is AccountModel else 'Envelope'
 
         self._entities = entities
         self._transactions = transactions
@@ -399,17 +466,27 @@ class EntityView(QSplitter):
         self._table = TransactionView()
         self._table.set_model(self._transactions)
 
+        self._details = EntityDetailsDialog(self._type, self._entities, self)
+
         self.addWidget(self._tree)
         self.addWidget(self._table)
         # Give transaction list stretch priority
         self.setStretchFactor(1, 1)
 
         self._tree.select_item.connect(self.set_transaction_filter)
+        self._tree.create_item.connect(self.create)
+        #self._tree.modify_item = pyqtSignal(['QModelIndex'])
+        #self._tree.delete_item = pyqtSignal(['QModelIndex'])
 
     def set_transaction_filter(self, current, previous):
         entity = self._entities.get(current)
         if entity:
             self._transactions.filter(entity)
             self._table.scrollToBottom()
+
+    def create(self, parent):
+        entity = ledger.Account() if type(self._entities) is AccountModel else ledger.Envelope()
+        self._details.reset(entity, None, parent)
+        self._details.show()
 
 

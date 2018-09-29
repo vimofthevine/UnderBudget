@@ -25,6 +25,8 @@ Base = declarative_base()
 
 Session = sessionmaker()
 
+ui_session = None
+
 
 def open(loc, verbose=False):
     """Opens the database from the given location and configures the session factory"""
@@ -35,11 +37,13 @@ def open(loc, verbose=False):
         session.execute('PRAGMA foreign_keys=ON;')
         session.commit()
     Base.metadata.create_all(engine)
+    global ui_session
+    ui_session = Session()
 
 
 @contextmanager
-def session_scope():
-    """Provide transactional scope"""
+def open_session():
+    """Provide transactional scoped session"""
     session = Session()
     try:
         yield session
@@ -49,3 +53,15 @@ def session_scope():
         raise
     finally:
         session.close()
+
+
+@contextmanager
+def open_ui_session():
+    """Provide transactional scoped UI session"""
+    try:
+        yield ui_session
+        ui_session.commit()
+    except:
+        ui_session.rollback()
+        raise
+

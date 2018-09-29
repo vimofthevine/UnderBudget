@@ -76,9 +76,8 @@ class MainWindow(QMainWindow):
 
     def refresh(self):
         """Refresh all content with data from the database"""
-        session = db.Session()
-        self._accounts.set_root(ledger_model.get_root_account(session))
-        self._envelopes.set_root(ledger_model.get_root_envelope(session))
+        self._accounts.set_root(ledger_model.get_root_account(db.ui_session))
+        self._envelopes.set_root(ledger_model.get_root_envelope(db.ui_session))
 
     def closeEvent(self, event):
         """Save window state before closing the window"""
