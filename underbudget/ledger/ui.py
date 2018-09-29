@@ -32,6 +32,7 @@ from PyQt5.QtWidgets import QFormLayout
 from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QSplitter
 from PyQt5.QtWidgets import QTableView
 from PyQt5.QtWidgets import QTreeView
@@ -228,10 +229,20 @@ class EntityModel(QAbstractItemModel):
                 self._add_to_cache(entity)
             self.endInsertRows()
 
-    def update(self, index):
+    def delete(self, entity, index):
+        """Removes the entity at the specified index"""
+        self.beginRemoveRows(index.parent(), index.row(), index.row())
+        with db.open_ui_session() as session:
+            session.delete(entity)
+            self._remove_from_cache(entity)
+        self.endRemoveRows()
+
+    def update(self, entity, index):
         """Updates the specified index"""
-        self.dataChanged(self.index(index.row(), 0, index.parent()),
-                         self.index(index.row(), self.columnCount(index) - 1, index.parent()))
+        if entity in db.ui_session.dirty:
+            db.ui_session.commit()
+            self.dataChanged.emit(self.index(index.row(), 0, index.parent()),
+                                  self.index(index.row(), self.columnCount(index) - 1, index.parent()))
 
     def get_balance(self, entity):
         """Retrieves the balance of the given entity"""
@@ -313,6 +324,11 @@ class EntityModel(QAbstractItemModel):
         self._cache[entity.id] = entity
         for child in entity.children:
             self._add_to_cache(child)
+
+    def _remove_from_cache(self, entity):
+        self._cache.pop(entity.id, None)
+        for child in entity.children:
+            self._remove_from_cache(child)
 
 
 class AccountModel(EntityModel):
@@ -442,6 +458,8 @@ class EntityDetailsDialog(QDialog):
             self._entity.name = self._name.text()
             if self._parent_index:
                 self._model.add(self._entity, self._parent_index)
+            elif self._entity_index:
+                self._model.update(self._entity, self._entity_index)
             self.accept()
         elif button is self._buttons.button(QDialogButtonBox.Reset):
             self._name.setText(self._entity.name if self._entity else '')
@@ -475,8 +493,8 @@ class EntityView(QSplitter):
 
         self._tree.select_item.connect(self.set_transaction_filter)
         self._tree.create_item.connect(self.create)
-        #self._tree.modify_item = pyqtSignal(['QModelIndex'])
-        #self._tree.delete_item = pyqtSignal(['QModelIndex'])
+        self._tree.modify_item.connect(self.modify)
+        self._tree.delete_item.connect(self.delete)
 
     def set_transaction_filter(self, current, previous):
         entity = self._entities.get(current)
@@ -488,5 +506,33 @@ class EntityView(QSplitter):
         entity = ledger.Account() if type(self._entities) is AccountModel else ledger.Envelope()
         self._details.reset(entity, None, parent)
         self._details.show()
+
+    def modify(self, index):
+        self._details.reset(self._entities.get(index), index)
+        self._details.show()
+
+    def delete(self, index):
+        entity = self._entities.get(index)
+        entity_type = 'Account' if type(self._entities) is AccountModel else 'Envelope'
+        if self._has_transactions(entity):
+            QMessageBox.warning(self.parentWidget(),
+                                self.tr('Unable To Delete {}'.format(entity_type)),
+                                self.tr('Cannot delete {} since it, or a descendant, has recorded transactions.')
+                                .format(entity.name))
+        else:
+            answer = QMessageBox.question(self.parentWidget(),
+                                          self.tr('Delete {}?'.format(entity_type)),
+                                          self.tr('Are you sure you want to delete {}?')
+                                          .format(entity.name))
+            if answer == QMessageBox.Yes:
+                self._entities.delete(entity, index)
+
+    def _has_transactions(self, entity):
+        if self._transactions.get_transactions(entity):
+            return True
+        for child in entity.children:
+            if self._has_transactions(child):
+                return True
+        return False
 
 

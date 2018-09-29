@@ -238,6 +238,7 @@ class AccountCascadeOperations(Base):
         gc1_id = gc1.id
         gc2_id = gc2.id
         self.session.delete(c1)
+        self.session.commit()
         self.assertIsNone(ledger.get_account(self.session, c1_id))
         self.assertIsNone(ledger.get_account(self.session, gc1_id))
         self.assertIsNone(ledger.get_account(self.session, gc2_id))
@@ -273,6 +274,7 @@ class EnvelopeCascadeOperations(Base):
         gc1_id = gc1.id
         gc2_id = gc2.id
         self.session.delete(c1)
+        self.session.commit()
         self.assertIsNone(ledger.get_envelope(self.session, c1_id))
         self.assertIsNone(ledger.get_envelope(self.session, gc1_id))
         self.assertIsNone(ledger.get_envelope(self.session, gc2_id))
