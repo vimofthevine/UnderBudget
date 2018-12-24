@@ -1,6 +1,7 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.11"
     id "org.jetbrains.dokka" version "0.9.17"
+    id "application"
 }
 
 group = 'com.vimofthevine'
@@ -8,11 +9,15 @@ version = '0.0.1'
 
 repositories {
     jcenter()
+    maven {
+        url  "https://dl.bintray.com/kotlin/squash" 
+    }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.javamoney:moneta:1.3"
+    compile "org.jetbrains.squash:squash-h2:0.2.4"
 }
 
 tasks.dokka {
@@ -20,13 +25,7 @@ tasks.dokka {
     outputDirectory = "$buildDir/javadoc"
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'com.vimofthevine.underbudget.ApplicationKt'
-    }
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
+application {
+    mainClassName = 'com.vimofthevine.underbudget.ApplicationKt'
 }
+
