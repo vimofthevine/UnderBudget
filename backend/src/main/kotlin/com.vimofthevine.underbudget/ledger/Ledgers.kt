@@ -5,10 +5,10 @@ import com.vimofthevine.underbudget.auth.Households
 
 import java.util.UUID
 
-import org.jetbrains.exposed.dae.EntityID
-import org.jetbrains.exposed.dae.UUIDEntity
-import org.jetbrains.exposed.dae.UUIDEntityClass
-import org.jetbrains.exposed.dae.UUIDTable
+import org.jetbrains.exposed.dao.EntityID
+import org.jetbrains.exposed.dao.UUIDEntity
+import org.jetbrains.exposed.dao.UUIDEntityClass
+import org.jetbrains.exposed.dao.UUIDTable
 import org.jetbrains.exposed.sql.SchemaUtils
 
 object Ledgers : UUIDTable("ledger") {
