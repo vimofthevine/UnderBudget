@@ -25,4 +25,8 @@ fun main(args: Array<String>) {
             .set(CurrencyStyle.SYMBOL)
             .build())
     println("Formatted is ${formatter.format(diff)}")
+    
+    for (curr in Monetary.getCurrencies()) {
+        println("Currency $curr (${curr.getNumericCode()})")
+    }
 }
