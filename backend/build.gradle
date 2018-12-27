@@ -2,6 +2,7 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.11"
     id "org.jetbrains.dokka" version "0.9.17"
     id "application"
+    id "com.github.johnrengelman.shadow" version "4.0.3"
 }
 
 group = 'com.vimofthevine'
@@ -22,7 +23,14 @@ tasks.dokka {
     outputDirectory = "$buildDir/javadoc"
 }
 
+mainClassName = 'com.vimofthevine.underbudget.ApplicationKt'
+
 application {
-    mainClassName = 'com.vimofthevine.underbudget.ApplicationKt'
+    mainClassName = mainClassName
 }
 
+shadowJar {
+	manifest {
+    	attributes 'Main-Class': mainClassName
+    }
+}
