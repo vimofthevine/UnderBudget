@@ -9,15 +9,12 @@ version = '0.0.1'
 
 repositories {
     jcenter()
-    maven {
-        url  "https://dl.bintray.com/kotlin/squash" 
-    }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.javamoney:moneta:1.3"
-    compile "org.jetbrains.squash:squash-h2:0.2.4"
+    compile "org.jetbrains.exposed:exposed:0.11.2"
 }
 
 tasks.dokka {

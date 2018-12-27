@@ -4,17 +4,32 @@ import com.vimofthevine.underbudget.Database
 
 import java.util.UUID
 
-import org.jetbrains.squash.connection.Transaction
-import org.jetbrains.squash.definition.TableDefinition
-import org.jetbrains.squash.definition.autoIncrement
-import org.jetbrains.squash.definition.primaryKey
-import org.jetbrains.squash.definition.uuid
-import org.jetbrains.squash.definition.varchar
+import javax.money.Monetary
 
-object Currencies : TableDefinition("currency") {
-    val id = uuid("id").primaryKey()
+import org.jetbrains.exposed.dao.EntityID
+import org.jetbrains.exposed.dao.UUIDEntity
+import org.jetbrains.exposed.dao.UUIDEntityClass
+import org.jetbrains.exposed.dao.UUIDTable
+import org.jetbrains.exposed.sql.SchemaUtils
+
+object Currencies : UUIDTable("currency") {
     val code = varchar("code", 10)
     val externalId = varchar("ext_id", 128)
 }
 
-data class Currency(val id : UUID, val code : String, val extId : String?)
+class Currency(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<Currency>(Currencies)
+    
+    var code by Currencies.code
+    var externalId by Currencies.externalId
+    val unit by lazy {
+        Monetary.getCurrency(code)
+    }
+}
+
+fun setupCurrencies() : Unit {
+    SchemaUtils.create(Currencies)
+    if (Currencies.selectAll().count() == 0) {
+        Currencies.insert 
+    }
+}

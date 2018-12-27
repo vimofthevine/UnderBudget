@@ -1,20 +1,26 @@
 package com.vimofthevine.underbudget.ledger.model
 
-import org.jetbrains.squash.definition.TableDefinition
-import org.jetbrains.squash.definition.autoIncrement
-import org.jetbrains.squash.definition.bool
-import org.jetbrains.squash.definition.default
-import org.jetbrains.squash.definition.integer
-import org.jetbrains.squash.definition.reference
-import org.jetbrains.squash.definition.primaryKey
-import org.jetbrains.squash.definition.uuid
-import org.jetbrains.squash.definition.varchar
+import java.util.UUID
 
-object Accounts: TableDefinition("account") {
-    val id = uuid("id").primaryKey()
+import org.jetbrains.exposed.dao.EntityID
+import org.jetbrains.exposed.dao.UUIDEntity
+import org.jetbrains.exposed.dao.UUIDEntityClass
+import org.jetbrains.exposed.dao.UUIDTable
+
+object Accounts : UUIDTable("account") {
     val name = varchar("name", 128)
-    val currencyId = reference(Currencies.id, "currency_id")
+    val currencyId = reference("currency_id", Currencies)
     val archived = bool("archived").default(false)
     val externalId = varchar("ext_id", 32)
-    val parentId = reference(id, "parent_id")
+    val parentId = reference("parent_id", Accounts)
+}
+
+class Account(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<Account>(Accounts)
+    
+    var name by Accounts.name
+    var currency by Currency referencedOn Accounts.currencyId
+    var archived by Accounts.archived
+    var externalId by Accounts.externalId
+    var parent by Account referencedOn Accounts.parentId
 }
