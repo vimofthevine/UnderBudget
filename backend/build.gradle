@@ -21,6 +21,7 @@ dependencies {
     compile "org.javamoney:moneta:1.3"
     compile "org.jetbrains.exposed:exposed:0.11.2"
     compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "com.h2database:h2:1.4.197"
 }
 
 tasks.dokka {
