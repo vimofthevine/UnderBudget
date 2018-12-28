@@ -25,6 +25,7 @@ class Account(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<Account>(Accounts)
     
     var parent by Account referencedOn Accounts.parentId
+    val children by Account referrersOn Accounts.parentId
     var household by Household referencedOn Accounts.householdId
     var name by Accounts.name
     private var currencyCode by Accounts.currency

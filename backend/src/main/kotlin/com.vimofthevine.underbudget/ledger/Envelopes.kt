@@ -23,6 +23,7 @@ class Envelope(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<Envelope>(Envelopes)
     
     var parent by Envelope referencedOn Envelopes.parentId
+    val children by Envelope referrersOn Envelopes.parentId
     var household by Household referencedOn Envelopes.householdId
     var name by Envelopes.name
     private var currencyCode by Envelopes.currency
