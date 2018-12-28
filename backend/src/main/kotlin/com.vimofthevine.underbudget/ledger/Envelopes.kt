@@ -10,29 +10,25 @@ import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.UUIDTable
 
-object Accounts : UUIDTable("account") {
-    val parentId = reference("parent_id", Accounts)
+object Envelopes : UUIDTable("envelope") {
+    val parentId = reference("parent_id", Envelopes)
     val householdId = reference("household_id", Households)
     val name = varchar("name", 128)
     val currency = integer("currency")
     val archived = bool("archived").default(false)
     val externalId = varchar("ext_id", 32).nullable()
-    val institution = varchar("institution", 128).nullable()
-    val number = varchar("number", 32).nullable()
 }
 
-class Account(id: EntityID<UUID>) : UUIDEntity(id) {
-    companion object : UUIDEntityClass<Account>(Accounts)
+class Envelope(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<Envelope>(Envelopes)
     
-    var parent by Account referencedOn Accounts.parentId
-    var household by Household referencedOn Accounts.householdId
-    var name by Accounts.name
-    private var currencyCode by Accounts.currency
+    var parent by Envelope referencedOn Envelopes.parentId
+    var household by Household referencedOn Envelopes.householdId
+    var name by Envelopes.name
+    private var currencyCode by Envelopes.currency
     var currency
     	get() = Currencies.get(currencyCode)
     	set(value) { currencyCode = value.getNumericCode() }
-    var archived by Accounts.archived
-    var externalId by Accounts.externalId
-    var institution by Accounts.institution
-    var number by Accounts.number
+    var archived by Envelopes.archived
+    var externalId by Envelopes.externalId
 }

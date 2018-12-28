@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 object Ledgers : UUIDTable("ledger") {
     val householdId = reference("household_id", Households).uniqueIndex()
     val rootAccountId = reference("root_account_id", Accounts).uniqueIndex()
+    val rootEnvelopeId = reference("root_envelope_id", Envelopes).uniqueIndex()
     val defaultCurrency = integer("default_currency")
 }
 
@@ -22,6 +23,7 @@ class Ledger(id: EntityID<UUID>) : UUIDEntity(id) {
     
     var household by Household referencedOn Ledgers.householdId
     var rootAccount by Account referencedOn Ledgers.rootAccountId
+    var rootEnvelope by Envelope referencedOn Ledgers.rootEnvelopeId
     private var defaultCurrencyCode by Ledgers.defaultCurrency
     var defaultCurrency
     	get() = Currencies.get(defaultCurrencyCode)
@@ -29,5 +31,5 @@ class Ledger(id: EntityID<UUID>) : UUIDEntity(id) {
 }
 
 fun setupLedgerTables() : Unit {
-    SchemaUtils.create(Accounts, Ledgers)
+    SchemaUtils.create(Accounts, Envelopes, Ledgers)
 }
