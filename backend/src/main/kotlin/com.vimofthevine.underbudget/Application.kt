@@ -34,5 +34,7 @@ fun Application.main() {
         get("/") {
             call.respondText("Hello, world!", ContentType.Text.Html)
         }
+        auth(db)
+        ledger(db)
     }
 }
