@@ -16,6 +16,7 @@ object Envelopes : UUIDTable("envelope") {
     val name = varchar("name", 128)
     val currency = integer("currency")
     val archived = bool("archived").default(false)
+    val time = datetime("time")
     val externalId = varchar("ext_id", 32).nullable()
 }
 
@@ -31,5 +32,6 @@ class Envelope(id: EntityID<UUID>) : UUIDEntity(id) {
     	get() = Currencies.get(currencyCode)
     	set(value) { currencyCode = value.getNumericCode() }
     var archived by Envelopes.archived
+    var time by Envelopes.time
     var externalId by Envelopes.externalId
 }

@@ -16,6 +16,7 @@ object Accounts : UUIDTable("account") {
     val name = varchar("name", 128)
     val currency = integer("currency")
     val archived = bool("archived").default(false)
+    val time = datetime("time")
     val externalId = varchar("ext_id", 32).nullable()
     val institution = varchar("institution", 128).nullable()
     val number = varchar("number", 32).nullable()
@@ -33,6 +34,7 @@ class Account(id: EntityID<UUID>) : UUIDEntity(id) {
     	get() = Currencies.get(currencyCode)
     	set(value) { currencyCode = value.getNumericCode() }
     var archived by Accounts.archived
+    var time by Accounts.time
     var externalId by Accounts.externalId
     var institution by Accounts.institution
     var number by Accounts.number

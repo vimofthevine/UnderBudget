@@ -10,12 +10,14 @@ import org.jetbrains.exposed.sql.SchemaUtils
 
 object Households : UUIDTable("household") {
     val name = varchar("name", 128)
+    val time = datetime("time")
 }
 
 class Household(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<Household>(Households)
     
     var name by Households.name
+    var time by Households.time
 }
 
 fun setupAuthTables() : Unit {

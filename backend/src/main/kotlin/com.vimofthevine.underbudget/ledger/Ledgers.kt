@@ -16,6 +16,7 @@ object Ledgers : UUIDTable("ledger") {
     val rootAccountId = reference("root_account_id", Accounts).uniqueIndex()
     val rootEnvelopeId = reference("root_envelope_id", Envelopes).uniqueIndex()
     val defaultCurrency = integer("default_currency")
+    val time = datetime("time")
 }
 
 class Ledger(id: EntityID<UUID>) : UUIDEntity(id) {
@@ -28,6 +29,7 @@ class Ledger(id: EntityID<UUID>) : UUIDEntity(id) {
     var defaultCurrency
     	get() = Currencies.get(defaultCurrencyCode)
     	set(value) { defaultCurrencyCode = value.getNumericCode() }
+    var time by Ledgers.time
 }
 
 fun setupLedgerTables() : Unit {
