@@ -18,6 +18,9 @@ fun DbService.create(ledger: Ledger): UUID =
 
 fun DbService.getLedgers(): List<Ledger> = Ledgers.selectAll().mapNotNull { toLedger(it) }
 
+fun DbService.getLedger(id: UUID): Ledger? =
+	Ledgers.select { Ledgers.id eq id }.mapNotNull { toLedger(it) }.singleOrNull()
+
 fun DbService.toLedger(row: ResultRow) = Ledger(
     name = row[Ledgers.name],
     defaultCurrency = Currencies.get(row[Ledgers.defaultCurrency]).getCurrencyCode(),

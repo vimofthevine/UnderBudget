@@ -7,6 +7,7 @@ import java.util.UUID
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
@@ -25,6 +26,22 @@ fun Routing.ledgerEndpoints(db: DbService, auth: Boolean) {
         call.respond(ledgers)
 	}
     get<LedgerResource> {
-        call.respondText("accounts for ledger ${it.ledger}", ContentType.Text.Html)
+        var ledger: Ledger? = db.transaction {
+            if (auth) {
+                null
+            } else {
+                getLedger(it.ledger)
+            }
+        }
+        if (ledger != null) {
+        	call.respond(ledger)
+    	}
 	}
+    post<LedgerResources> {
+        var ledger = call.receive<Ledger>()
+        var id = db.transaction {
+            create(ledger)
+        }
+        call.respond(id)
+    }
 }
