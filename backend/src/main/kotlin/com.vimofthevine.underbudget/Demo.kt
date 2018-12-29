@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory
 
 fun setupDemo() {
     val logger = LoggerFactory.getLogger("underbudget.demo")
+    if (Ledger.find { Ledgers.name eq "Demo Ledger" }.count() > 0) {
+        logger.info("DB is already populated with demo data")
+        return
+    }
     logger.info("Populating DB with demo data")
     
     val now = DateTime()

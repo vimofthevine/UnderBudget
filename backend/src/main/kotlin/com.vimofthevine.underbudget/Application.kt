@@ -7,6 +7,7 @@ import java.util.UUID
 
 import io.ktor.application.*
 import io.ktor.features.*
+import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.response.*
@@ -52,6 +53,11 @@ fun Application.main() {
             }
         }
     }
+    install(ContentNegotiation) {
+        gson {
+            
+        }
+    }
     install(StatusPages) {
         exception<NotImplementedError> {
             call.respond(HttpStatusCode.NotImplemented)
@@ -67,6 +73,6 @@ fun Application.main() {
             call.respondText("Hello, world!", ContentType.Text.Html)
         }
         auth(db)
-        ledger(db)
+        ledger(db, auth = !isDemo)
     }
 }
