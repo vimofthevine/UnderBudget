@@ -3,12 +3,15 @@ package com.vimofthevine.underbudget
 import com.vimofthevine.underbudget.auth.*
 import com.vimofthevine.underbudget.ledger.*
 
+import java.util.UUID
+
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.util.*
 
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +38,20 @@ fun Application.main() {
     install(DefaultHeaders)
     install(CallLogging)
     install(Locations)
+    install(DataConversion) {
+        convert<UUID> {
+            decode { values, _ ->
+            	values.singleOrNull()?.let { UUID.fromString(it) }
+			}
+            encode { value ->
+            	when (value) {
+                    null -> listOf()
+                    is UUID -> listOf(value.toString())
+                    else -> throw DataConversionException("Cannot convert $value as UUID")
+                }
+            }
+        }
+    }
     install(StatusPages) {
         exception<NotImplementedError> {
             call.respond(HttpStatusCode.NotImplemented)
