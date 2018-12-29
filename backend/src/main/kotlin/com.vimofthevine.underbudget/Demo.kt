@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 
-fun setupDemo(service: LedgerService) {
+fun setupDemo(service: DbService) {
     val logger = LoggerFactory.getLogger("underbudget.demo")
     if (Ledgers.select { Ledgers.name eq "Demo Ledger" }.count() > 0) {
         logger.info("DB is already populated with demo data")
