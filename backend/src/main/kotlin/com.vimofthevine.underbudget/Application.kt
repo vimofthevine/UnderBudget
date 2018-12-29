@@ -4,7 +4,9 @@ import com.vimofthevine.underbudget.auth.*
 import com.vimofthevine.underbudget.ledger.*
 
 import io.ktor.application.*
+import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
@@ -28,6 +30,19 @@ fun Application.main() {
     	transaction(db) {
             setupDemo()
     	}
+    }
+    
+    install(DefaultHeaders)
+    install(CallLogging)
+    install(Locations)
+    install(StatusPages) {
+        exception<NotImplementedError> {
+            call.respond(HttpStatusCode.NotImplemented)
+        }
+        exception<Throwable> { cause ->
+            call.respond(HttpStatusCode.InternalServerError)
+            throw cause
+        }
     }
     
     routing {
