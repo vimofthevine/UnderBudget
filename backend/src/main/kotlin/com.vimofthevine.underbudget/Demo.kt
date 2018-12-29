@@ -19,16 +19,8 @@ fun setupDemo() {
         time = now
     }
     
-    val rootAccount = Account.new {
-        name = "Root"
-        ledger = demoLedger
-        currency = usd
-        time = now
-    }
-    
     val creditCards = Account.new {
         name = "Credit Cards"
-        parent = rootAccount
         ledger = demoLedger
         currency = usd
         time = now
@@ -52,14 +44,6 @@ fun setupDemo() {
     
     val bank = Account.new {
         name = "Bank"
-        parent = rootAccount
-        ledger = demoLedger
-        currency = usd
-        time = now
-    }
-    
-    val rootEnvelope = Envelope.new {
-        name = "Root"
         ledger = demoLedger
         currency = usd
         time = now
@@ -67,7 +51,6 @@ fun setupDemo() {
     
     val food = Envelope.new {
         name = "Food"
-        parent = rootEnvelope
         ledger = demoLedger
         currency = usd
         time = now
@@ -75,7 +58,6 @@ fun setupDemo() {
     
     val utilities = Envelope.new {
         name = "Utilities"
-        parent = rootEnvelope
         ledger = demoLedger
         currency = usd
         time = now
@@ -99,7 +81,6 @@ fun setupDemo() {
     
     val gifts = Envelope.new {
         name = "Gifts"
-        parent = rootEnvelope
         ledger = demoLedger
         currency = usd
         time = now
@@ -107,7 +88,6 @@ fun setupDemo() {
     
     val unallocated = Envelope.new {
         name = "Unallocated"
-        parent = rootEnvelope
         ledger = demoLedger
         currency = usd
         time = now
