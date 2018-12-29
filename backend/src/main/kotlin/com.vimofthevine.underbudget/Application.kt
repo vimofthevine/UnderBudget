@@ -11,6 +11,7 @@ import io.ktor.routing.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 
+val Application.isDemo get() = environment.config.property("ktor.deployment.demo").getString() == "true"
 val Application.dbUrl get() = environment.config.property("database.url").getString()
 val Application.dbDriver get() = environment.config.property("database.driver").getString()
 val Application.dbUser get() = environment.config.property("database.user").getString()
@@ -21,6 +22,12 @@ fun Application.main() {
     transaction(db) {
         setupAuthTables()
         setupLedgerTables()
+    }
+    
+	if (isDemo) {
+    	transaction(db) {
+            setupDemo()
+    	}
     }
     
     routing {

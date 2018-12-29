@@ -11,7 +11,7 @@ import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.UUIDTable
 
 object Accounts : UUIDTable("account") {
-    val parentId = reference("parent_id", Accounts)
+    val parentId = reference("parent_id", Accounts).nullable()
     val householdId = reference("household_id", Households)
     val name = varchar("name", 128)
     val currency = integer("currency")
@@ -24,8 +24,8 @@ object Accounts : UUIDTable("account") {
 class Account(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<Account>(Accounts)
     
-    var parent by Account referencedOn Accounts.parentId
-    val children by Account referrersOn Accounts.parentId
+    var parent by Account optionalReferencedOn Accounts.parentId
+    val children by Account optionalReferrersOn Accounts.parentId
     var household by Household referencedOn Accounts.householdId
     var name by Accounts.name
     private var currencyCode by Accounts.currency
