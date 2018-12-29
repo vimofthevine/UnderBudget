@@ -1,8 +1,5 @@
 package com.vimofthevine.underbudget.ledger
 
-import com.vimofthevine.underbudget.auth.Household
-import com.vimofthevine.underbudget.auth.Households
-
 import java.util.UUID
 
 import org.jetbrains.exposed.dao.EntityID
@@ -12,7 +9,7 @@ import org.jetbrains.exposed.dao.UUIDTable
 
 object Accounts : UUIDTable("account") {
     val parentId = reference("parent_id", Accounts).nullable()
-    val householdId = reference("household_id", Households)
+    val ledgerId = reference("ledger_id", Ledgers)
     val name = varchar("name", 128)
     val currency = integer("currency")
     val archived = bool("archived").default(false)
@@ -27,7 +24,7 @@ class Account(id: EntityID<UUID>) : UUIDEntity(id) {
     
     var parent by Account optionalReferencedOn Accounts.parentId
     val children by Account optionalReferrersOn Accounts.parentId
-    var household by Household referencedOn Accounts.householdId
+    var ledger by Ledger referencedOn Accounts.ledgerId
     var name by Accounts.name
     private var currencyCode by Accounts.currency
     var currency

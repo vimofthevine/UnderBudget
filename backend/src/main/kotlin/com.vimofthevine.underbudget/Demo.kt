@@ -13,14 +13,15 @@ fun setupDemo() {
     val now = DateTime()
     val usd = Currencies.get("USD")
     
-    val demoHousehold = Household.new {
-        name = "Demo Household"
+    val demoLedger = Ledger.new {
+        name = "Demo Ledger"
+        defaultCurrency = usd
         time = now
     }
     
     val rootAccount = Account.new {
         name = "Root"
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -28,7 +29,7 @@ fun setupDemo() {
     val creditCards = Account.new {
         name = "Credit Cards"
         parent = rootAccount
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -36,7 +37,7 @@ fun setupDemo() {
     val redCard = Account.new {
         name = "Red Card"
         parent = creditCards
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -44,7 +45,7 @@ fun setupDemo() {
     val blueCard = Account.new {
         name = "Blue Card"
         parent = creditCards
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -52,14 +53,14 @@ fun setupDemo() {
     val bank = Account.new {
         name = "Bank"
         parent = rootAccount
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
     
     val rootEnvelope = Envelope.new {
         name = "Root"
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -67,7 +68,7 @@ fun setupDemo() {
     val food = Envelope.new {
         name = "Food"
         parent = rootEnvelope
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -75,7 +76,7 @@ fun setupDemo() {
     val utilities = Envelope.new {
         name = "Utilities"
         parent = rootEnvelope
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -83,7 +84,7 @@ fun setupDemo() {
     val rent = Envelope.new {
         name = "Rent"
         parent = utilities
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -91,7 +92,7 @@ fun setupDemo() {
     val electric = Envelope.new {
         name = "Electric"
         parent = utilities
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -99,7 +100,7 @@ fun setupDemo() {
     val gifts = Envelope.new {
         name = "Gifts"
         parent = rootEnvelope
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
@@ -107,7 +108,7 @@ fun setupDemo() {
     val unallocated = Envelope.new {
         name = "Unallocated"
         parent = rootEnvelope
-        household = demoHousehold
+        ledger = demoLedger
         currency = usd
         time = now
     }
