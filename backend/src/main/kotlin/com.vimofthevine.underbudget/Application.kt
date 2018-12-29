@@ -30,9 +30,11 @@ fun Application.main() {
         setupLedgerTables()
     }
     
+    val ledgerService = LedgerService(db)
+    
 	if (isDemo) {
     	transaction(db) {
-            setupDemo()
+            setupDemo(ledgerService)
     	}
     }
     
@@ -73,6 +75,6 @@ fun Application.main() {
             call.respondText("Hello, world!", ContentType.Text.Html)
         }
         auth(db)
-        ledger(db, auth = !isDemo)
+        ledger(db, ledgerService, auth = !isDemo)
     }
 }

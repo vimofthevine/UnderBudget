@@ -3,12 +3,13 @@ package com.vimofthevine.underbudget
 import com.vimofthevine.underbudget.auth.*
 import com.vimofthevine.underbudget.ledger.*
 
+import org.jetbrains.exposed.sql.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 
-fun setupDemo() {
+fun setupDemo(service: LedgerService) {
     val logger = LoggerFactory.getLogger("underbudget.demo")
-    if (Ledger.find { Ledgers.name eq "Demo Ledger" }.count() > 0) {
+    if (Ledgers.select { Ledgers.name eq "Demo Ledger" }.count() > 0) {
         logger.info("DB is already populated with demo data")
         return
     }
@@ -17,8 +18,9 @@ fun setupDemo() {
     val now = DateTime()
     val usd = Currencies.get("USD")
     
-    val demoLedger = Ledger.new {
-        name = "Demo Ledger"
+    val demoLedgerId = service.create(Ledger(name = "Demo Ledger", defaultCurrency = "USD"))
+    val demoLedger = LedgerDao.new {
+        name = "Demo Ledger from DAO"
         defaultCurrency = usd
         time = now
     }

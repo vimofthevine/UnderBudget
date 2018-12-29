@@ -24,7 +24,7 @@ class Account(id: EntityID<UUID>) : UUIDEntity(id) {
     
     var parent by Account optionalReferencedOn Accounts.parentId
     val children by Account optionalReferrersOn Accounts.parentId
-    var ledger by Ledger referencedOn Accounts.ledgerId
+    var ledger by LedgerDao referencedOn Accounts.ledgerId
     var name by Accounts.name
     private var currencyCode by Accounts.currency
     var currency

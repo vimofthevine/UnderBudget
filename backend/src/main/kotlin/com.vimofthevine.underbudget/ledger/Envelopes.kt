@@ -22,7 +22,7 @@ class Envelope(id: EntityID<UUID>) : UUIDEntity(id) {
     
     var parent by Envelope optionalReferencedOn Envelopes.parentId
     val children by Envelope optionalReferrersOn Envelopes.parentId
-    var ledger by Ledger referencedOn Envelopes.ledgerId
+    var ledger by LedgerDao referencedOn Envelopes.ledgerId
     var name by Envelopes.name
     private var currencyCode by Envelopes.currency
     var currency

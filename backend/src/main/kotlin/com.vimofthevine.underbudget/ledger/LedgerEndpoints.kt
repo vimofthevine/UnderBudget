@@ -11,23 +11,16 @@ import io.ktor.routing.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.*
 
-data class LedgerResponse(val id: UUID, val name: String)
-
-fun toLedger(dao: Ledger) = LedgerResponse(
-    id = dao.id.value,
-    name = dao.name
-)
-
-fun Routing.ledgerEndpoints(db: Database, auth: Boolean) {
+fun Routing.ledgerEndpoints(db: Database, service: LedgerService, auth: Boolean) {
     get<LedgerResources> {
         var ledgers: List<Ledger> = transaction(db) {
             if (auth) {
                 listOf()
             } else {
-				Ledger.all().toList()
+                service.getLedgers()
             }
         }
-        call.respond(ledgers.mapNotNull { toLedger(it) })
+        call.respond(ledgers)
 	}
     get<LedgerResource> {
         call.respondText("accounts for ledger ${it.ledger}", ContentType.Text.Html)

@@ -14,8 +14,8 @@ object Ledgers : UUIDTable("ledger") {
     val time = datetime("time")
 }
 
-class Ledger(id: EntityID<UUID>) : UUIDEntity(id) {
-    companion object : UUIDEntityClass<Ledger>(Ledgers)
+class LedgerDao(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<LedgerDao>(Ledgers)
     
     var name by Ledgers.name
     private var defaultCurrencyCode by Ledgers.defaultCurrency
