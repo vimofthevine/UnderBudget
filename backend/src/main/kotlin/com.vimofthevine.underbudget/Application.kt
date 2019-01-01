@@ -31,6 +31,7 @@ fun Application.main() {
     }
     
     val dbService = DbService(db)
+    val passwords = createPasswords()
     
 	if (isDemo) {
     	transaction(db) {
@@ -55,11 +56,7 @@ fun Application.main() {
             }
         }
     }
-    install(ContentNegotiation) {
-        gson {
-            
-        }
-    }
+    install(ContentNegotiation) { gson {} }
     install(StatusPages) {
         exception<NotImplementedError> {
             call.respond(HttpStatusCode.NotImplemented)
@@ -74,7 +71,7 @@ fun Application.main() {
         get("/") {
             call.respondText("Hello, world!", ContentType.Text.Html)
         }
-        auth(db)
+        auth(dbService, passwords)
         ledger(dbService, auth = !isDemo)
     }
 }
