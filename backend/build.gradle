@@ -20,6 +20,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.javamoney:moneta:1.3"
     compile "org.jetbrains.exposed:exposed:0.11.2"
+    compile "io.ktor:ktor-auth:$ktor_version"
+    compile "io.ktor:ktor-auth-jwt:$ktor_version"
     compile "io.ktor:ktor-gson:$ktor_version"
     compile "io.ktor:ktor-locations:$ktor_version"
     compile "io.ktor:ktor-server-netty:$ktor_version"

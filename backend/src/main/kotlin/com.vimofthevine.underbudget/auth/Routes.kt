@@ -5,6 +5,7 @@ import com.vimofthevine.underbudget.DbService
 import java.util.UUID
 
 import io.ktor.application.*
+import io.ktor.auth.UserPasswordCredential
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -18,18 +19,19 @@ class UsersEndpoint()
 @Location("/users/{user}")
 data class UserEndpoint(val user: UUID)
 
-@Location("/login")
-class LoginEndpoint()
+@Location("/tokens")
+class TokensEndpoint()
 
-data class UserInput(val name: String, val email: String, val password: String)
+data class UserInfoInput(val name: String, val email: String, val password: String)
 
 data class RegistrationResponse(val error: String? = null, val userId: UUID? = null)
+data class LoginResponse(val error: String? = null, val token: String? = null)
 
-fun Routing.auth(db: DbService, passwords: Passwords) {
+fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
 	val logger = LoggerFactory.getLogger("underbudget.auth")
 
     post<UsersEndpoint> {
-        val user = call.receive<UserInput>()
+        val user = call.receive<UserInfoInput>()
         val response = db.transaction {
             if (user.name.length < 6) {
                 RegistrationResponse(error = "Username must be at least 6 characters in length")
@@ -46,7 +48,6 @@ fun Routing.auth(db: DbService, passwords: Passwords) {
             } else {
                 val salt = passwords.generateSalt()
                 val hash = passwords.hash(user.password, salt)
-                logger.info("length of salt is ${salt.length} and password is ${hash.length}")
                 try {
                     val userId = db.createUser(user.name, user.email, salt, hash)
                     RegistrationResponse(userId = userId)
@@ -60,5 +61,25 @@ fun Routing.auth(db: DbService, passwords: Passwords) {
     }
     put<UserEndpoint> {
         // it.user
+    }
+    
+    post<TokensEndpoint> {
+        val login = call.receive<UserPasswordCredential>()
+        val response = db.transaction {
+            val user = db.findUserByName(login.name)
+            if (user == null) {
+                logger.info("Attempt to login with invalid username, ${login.name}")
+                LoginResponse(error = "Invalid login credentials")
+            } else {
+                val hash = passwords.hash(login.password, user.salt!!)
+                if (hash != user.password) {
+                    logger.info("Attempt to login as ${login.name} with invalid password")
+                	LoginResponse(error = "Invalid login credentials")
+                } else {
+                    LoginResponse(token = jwt.createToken(user))
+                }
+            }
+        }
+        call.respond(response)
     }
 }

@@ -31,7 +31,8 @@ fun Application.main() {
     }
     
     val dbService = DbService(db)
-    val passwords = createPasswords()
+    val passwdService = createPasswords()
+    val jwtService = createJwtService()
     
 	if (isDemo) {
     	transaction(db) {
@@ -71,7 +72,7 @@ fun Application.main() {
         get("/") {
             call.respondText("Hello, world!", ContentType.Text.Html)
         }
-        auth(dbService, passwords)
+        auth(dbService, passwdService, jwtService)
         ledger(dbService, auth = !isDemo)
     }
 }

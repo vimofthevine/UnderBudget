@@ -7,7 +7,8 @@ import java.util.UUID
 import org.jetbrains.exposed.sql.*
 import org.joda.time.DateTime
 
-data class User(val name: String, val email: String, val salt: String?, val password: String?)
+data class User(val id: UUID?, val name: String, val email: String, val salt: String?,
+                val password: String?)
 
 fun DbService.createUser(newName: String, newEmail: String, newSalt: String,
                          newPassword: String): UUID =
@@ -31,6 +32,7 @@ fun DbService.findUserByEmail(email: String): User? =
 	Users.select { Users.email eq email }.mapNotNull { toUser(it) }.singleOrNull()
 
 fun DbService.toUser(row: ResultRow) = User(
+    id = row[Users.id].value,
     name = row[Users.name],
     email = row[Users.email],
     salt = row[Users.salt],
