@@ -16,28 +16,20 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
 
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 
 val Application.isDemo get() = environment.config.property("ktor.deployment.demo").getString() == "true"
-val Application.dbUrl get() = environment.config.property("database.url").getString()
-val Application.dbDriver get() = environment.config.property("database.driver").getString()
-val Application.dbUser get() = environment.config.property("database.user").getString()
-val Application.dbPassword get() = environment.config.property("database.password").getString()
 
-fun Application.main() {
-    val db = Database.connect(url = dbUrl, driver = dbDriver, user = dbUser, password = dbPassword)
-    transaction(db) {
+fun Application.main(dbService: DbService = createDbService(),
+                     passwdService: Passwords = createPasswords(),
+                     jwtService: JwtService = createJwtService()) {
+    transaction(dbService.db) {
         setupAuthTables()
         setupLedgerTables()
     }
     
-    val dbService = DbService(db)
-    val passwdService = createPasswords()
-    val jwtService = createJwtService()
-    
 	if (isDemo) {
-    	transaction(db) {
+    	transaction(dbService.db) {
             setupDemo(dbService)
     	}
     }
@@ -83,9 +75,6 @@ fun Application.main() {
     }
     
     routing {
-        get("/") {
-            call.respondText("Hello, world!", ContentType.Text.Html)
-        }
         auth(dbService, passwdService, jwtService)
         authenticate("jwt") {
             ledger(dbService, auth = !isDemo)
