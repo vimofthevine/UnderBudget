@@ -6,6 +6,8 @@ import com.vimofthevine.underbudget.ledger.*
 import java.util.UUID
 
 import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.http.*
@@ -67,12 +69,26 @@ fun Application.main() {
             throw cause
         }
     }
+    install(Authentication) {
+        jwt("jwt") {
+            realm = jwtRealm
+            verifier(jwtService.verifier)
+            validate {
+                val user = it.payload.getClaim("userId")?.asString()?.let {
+                    dbService.transaction { getUser(UUID.fromString(it)) }
+                }
+                if (user != null) JWTPrincipal(it.payload) else null
+            }
+        }
+    }
     
     routing {
         get("/") {
             call.respondText("Hello, world!", ContentType.Text.Html)
         }
         auth(dbService, passwdService, jwtService)
-        ledger(dbService, auth = !isDemo)
+        authenticate("jwt") {
+            ledger(dbService, auth = !isDemo)
+        }
     }
 }

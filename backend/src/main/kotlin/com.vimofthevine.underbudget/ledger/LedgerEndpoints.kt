@@ -14,7 +14,7 @@ import io.ktor.routing.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.*
 
-fun Routing.ledgerEndpoints(db: DbService, auth: Boolean) {
+fun Route.ledgerEndpoints(db: DbService, auth: Boolean) {
     get<LedgerResources> {
         var ledgers: List<Ledger> = db.transaction {
             if (auth) {

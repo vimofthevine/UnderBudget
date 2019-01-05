@@ -23,6 +23,8 @@ class JwtService(private val issuer: String, private val secret: String) {
     	.sign(algorithm)
 }
 
+val Application.jwtRealm get() = environment.config.property("jwt.realm").getString()
+
 fun Application.createJwtService(): JwtService =
 	JwtService(
         environment.config.property("jwt.issuer").getString(),
