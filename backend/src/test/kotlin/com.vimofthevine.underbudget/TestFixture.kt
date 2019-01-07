@@ -3,6 +3,7 @@ package com.vimofthevine.underbudget
 import com.vimofthevine.underbudget.auth.*
 
 import io.ktor.application.*
+import io.ktor.config.*
 import io.ktor.server.testing.*
 
 import org.jetbrains.exposed.sql.Database
@@ -23,7 +24,7 @@ open class TestFixture {
     
     val testSalt = pwSvc.generateSalt()
     val testUserId = transaction(dbSvc.db) {
-        dbSvc.createUser("Test User", "user@test.com", testSalt,
+        dbSvc.createUser("testUser", "user@test.com", testSalt,
                          pwSvc.hash("testPassword", testSalt))
     }
     val testUser = transaction(dbSvc.db) {
@@ -31,7 +32,12 @@ open class TestFixture {
     }
     
     fun withServer(test: TestApplicationEngine.() -> Unit) =
-        withTestApplication({ main(dbService = dbSvc, passwdService = pwSvc, jwtService = jwtSvc) },
-                            test)
+        withTestApplication({
+            (environment.config as MapApplicationConfig).apply {
+                put("ktor.deployment.demo", "false")
+                put("jwt.realm", "UnitTest")
+            }
+            main(dbService = dbSvc, passwdService = pwSvc, jwtService = jwtSvc)
+        }, test)
 }
 
