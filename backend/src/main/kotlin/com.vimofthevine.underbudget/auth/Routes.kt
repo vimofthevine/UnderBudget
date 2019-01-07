@@ -5,7 +5,7 @@ import com.vimofthevine.underbudget.DbService
 import java.util.UUID
 
 import io.ktor.application.*
-import io.ktor.auth.UserPasswordCredential
+import io.ktor.auth.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -59,8 +59,11 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
         }
         call.respond(response)
     }
-    put<UserEndpoint> {
-        // it.user
+    
+    authenticate("jwt") {
+        put<UserEndpoint> {
+            // it.user
+        }
     }
     
     post<TokensEndpoint> {

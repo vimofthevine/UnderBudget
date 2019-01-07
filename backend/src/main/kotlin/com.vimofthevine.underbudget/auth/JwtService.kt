@@ -4,6 +4,7 @@ import com.auth0.jwt.*
 import com.auth0.jwt.algorithms.*
 
 import io.ktor.application.*
+import io.ktor.util.*
 
 import java.util.Date
 
@@ -19,6 +20,7 @@ class JwtService(private val issuer: String, private val secret: String) {
     	.withSubject("Authentication")
     	.withIssuer(issuer)
     	.withIssuedAt(Date())
+    	.withJWTId(generateNonce())
     	.withClaim("userId", user.id.toString())
     	.sign(algorithm)
 }
