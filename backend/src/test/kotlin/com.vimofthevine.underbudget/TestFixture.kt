@@ -24,11 +24,16 @@ open class TestFixture {
     
     val testSalt = pwSvc.generateSalt()
     val testUserId = transaction(dbSvc.db) {
-        dbSvc.createUser("testUser", "user@test.com", testSalt,
-                         pwSvc.hash("testPassword", testSalt))
+        dbSvc.createUser(User(
+            id = null,
+            name = "testUser",
+            email = "user@test.com",
+            salt = testSalt,
+            hashedPassword = pwSvc.hash("testPassword", testSalt)
+        ))
     }
     val testUser = transaction(dbSvc.db) {
-        dbSvc.getUser(testUserId)
+        dbSvc.findUserById(testUserId)
     }
     
     fun withServer(test: TestApplicationEngine.() -> Unit) =

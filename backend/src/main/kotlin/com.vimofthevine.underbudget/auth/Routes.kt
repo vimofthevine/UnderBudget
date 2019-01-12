@@ -6,6 +6,7 @@ import java.util.UUID
 
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -13,25 +14,11 @@ import io.ktor.routing.*
 
 import org.slf4j.LoggerFactory
 
-@Location("/users")
-class UsersEndpoint()
-
-@Location("/users/{user}")
-data class UserEndpoint(val user: UUID)
-
-@Location("/tokens")
-class TokensEndpoint()
-
-data class UserInfoInput(val name: String, val email: String, val password: String)
-
-data class RegistrationResponse(val error: String? = null, val userId: UUID? = null)
-data class LoginResponse(val error: String? = null, val token: String? = null)
-
 fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
 	val logger = LoggerFactory.getLogger("underbudget.auth")
 
-    post<UsersEndpoint> {
-        val user = call.receive<UserInfoInput>()
+    post<UserResources> {
+        val user = call.receive<UserData>()
         val response = db.transaction {
             if (user.name.length < 6) {
                 RegistrationResponse(error = "Username must be at least 6 characters in length")
@@ -49,7 +36,13 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
                 val salt = passwords.generateSalt()
                 val hash = passwords.hash(user.password, salt)
                 try {
-                    val userId = db.createUser(user.name, user.email, salt, hash)
+                    val userId = db.createUser(User(
+                        id = null,
+                        name = user.name,
+                        email = user.email,
+                        hashedPassword = hash,
+                        salt = salt
+                    ))
                     RegistrationResponse(userId = userId)
                 } catch (e: Throwable) {
                     logger.error("Failed to register user", e)
@@ -57,16 +50,12 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
                 }
             }
         }
-        call.respond(response)
+        call.respond(
+            if (response.error == null) HttpStatusCode.Created else HttpStatusCode.BadRequest,
+            response)
     }
     
-    authenticate("jwt") {
-        put<UserEndpoint> {
-            // it.user
-        }
-    }
-    
-    post<TokensEndpoint> {
+    post<TokenResources> {
         val login = call.receive<UserPasswordCredential>()
         val response = db.transaction {
             val user = db.findUserByName(login.name)
@@ -74,15 +63,29 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
                 logger.info("Attempt to login with invalid username, ${login.name}")
                 LoginResponse(error = "Invalid login credentials")
             } else {
-                val hash = passwords.hash(login.password, user.salt!!)
-                if (hash != user.password) {
+                val hash = passwords.hash(login.password, user.salt)
+                if (hash != user.hashedPassword) {
                     logger.info("Attempt to login as ${login.name} with invalid password")
                 	LoginResponse(error = "Invalid login credentials")
                 } else {
-                    LoginResponse(token = jwt.createToken(user))
+                    val token = jwt.createToken(user)
+                    LoginResponse(token = token)
                 }
             }
         }
-        call.respond(response)
+        call.respond(
+            if (response.error == null) HttpStatusCode.Created else HttpStatusCode.BadRequest,
+            response)
     }
+    
+    authenticate("jwt") {
+        get<TokenResources> {
+            
+        }
+        
+        put<UserResource> {
+            // it.user
+        }
+    }
+    
 }

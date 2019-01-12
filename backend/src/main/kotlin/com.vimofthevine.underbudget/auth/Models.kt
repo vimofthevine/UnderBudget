@@ -1,40 +1,19 @@
 package com.vimofthevine.underbudget.auth
 
-import com.vimofthevine.underbudget.DbService
-
 import java.util.UUID
 
-import org.jetbrains.exposed.sql.*
 import org.joda.time.DateTime
 
-data class User(val id: UUID?, val name: String, val email: String, val salt: String?,
-                val password: String?)
+/** Model of a user to be used within the backend. */
+data class User(val id: UUID?, val name: String, val email: String,
+               @Transient val hashedPassword: String, @Transient val salt: String)
 
-fun DbService.createUser(newName: String, newEmail: String, newSalt: String,
-                         newPassword: String): UUID =
-	Users.insertAndGetId {
-        it[name] = newName
-        it[email] = newEmail
-        it[salt] = newSalt
-        it[password] = newPassword
-        it[verified] = false
-        it[created] = DateTime()
-        it[last_updated] = DateTime()
-    }.value
+/** User-supplied information about themselves. */
+data class UserData(val name: String, val email: String, val password: String)
 
-fun DbService.getUser(id: UUID): User? =
-	Users.select { Users.id eq id }.mapNotNull { toUser(it) }.singleOrNull()
+data class Token(val id: UUID?, val jwtId: String, @Transient val userId: UUID,
+                 val issued: DateTime, val subject: String)
 
-fun DbService.findUserByName(name: String): User? =
-	Users.select { Users.name eq name }.mapNotNull { toUser(it) }.singleOrNull()
+data class RegistrationResponse(val error: String? = null, val userId: UUID? = null)
 
-fun DbService.findUserByEmail(email: String): User? =
-	Users.select { Users.email eq email }.mapNotNull { toUser(it) }.singleOrNull()
-
-fun DbService.toUser(row: ResultRow) = User(
-    id = row[Users.id].value,
-    name = row[Users.name],
-    email = row[Users.email],
-    salt = row[Users.salt],
-    password = row[Users.password]
-)
+data class LoginResponse(val error: String? = null, val token: String? = null)

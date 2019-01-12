@@ -3,6 +3,7 @@ package com.vimofthevine.underbudget
 import com.vimofthevine.underbudget.auth.*
 import com.vimofthevine.underbudget.ledger.*
 
+import java.lang.reflect.Modifier
 import java.util.UUID
 
 import io.ktor.application.*
@@ -51,7 +52,11 @@ fun Application.main(dbService: DbService = createDbService(),
             }
         }
     }
-    install(ContentNegotiation) { gson {} }
+    install(ContentNegotiation) {
+        gson {
+            excludeFieldsWithModifiers(Modifier.TRANSIENT)
+        }
+    }
     install(StatusPages) {
         exception<NotImplementedError> {
             call.respond(HttpStatusCode.NotImplemented)
@@ -67,7 +72,7 @@ fun Application.main(dbService: DbService = createDbService(),
             verifier(jwtService.verifier)
             validate {
                 val user = it.payload.getClaim("userId")?.asString()?.let {
-                    dbService.transaction { getUser(UUID.fromString(it)) }
+                    dbService.transaction { findUserById(UUID.fromString(it)) }
                 }
                 if (user != null) JWTPrincipal(it.payload) else null
             }
