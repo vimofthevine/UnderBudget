@@ -24,6 +24,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Username must be at least 6 characters in length"
     }
     
@@ -41,6 +42,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Username must be less than 128 characters in length"
     }
     
@@ -58,6 +60,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Username must contain only letters, numbers, dots, or underscores"
     }
     
@@ -75,6 +78,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Password must be at least 12 characters in length"
     }
     
@@ -92,6 +96,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Username is already in use"
     }
     
@@ -109,6 +114,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "User with given email address already exists"
     }
     
@@ -126,7 +132,7 @@ class CreateUserTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
-        req.response.content.shouldNotBeNullOrBlank() shouldNotContain "error"
+        req.response.status() shouldBe HttpStatusCode.Created
         req.response.content.shouldNotBeNullOrBlank() shouldContain "userId"
     }
 }

@@ -25,6 +25,7 @@ class LoginTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Invalid login credentials"
     }
     
@@ -41,6 +42,7 @@ class LoginTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
         req.response.content.shouldNotBeNullOrBlank() shouldContain "Invalid login credentials"
     }
     
@@ -57,7 +59,7 @@ class LoginTest : TestFixture() {
         }
         
         req.requestHandled shouldBe true
-        req.response.content.shouldNotBeNullOrBlank() shouldNotContain "error"
+        req.response.status() shouldBe HttpStatusCode.Created
         req.response.content.shouldNotBeNullOrBlank() shouldContain "token"
     }
     
