@@ -1,8 +1,7 @@
 package com.vimofthevine.underbudget.auth
 
+import java.util.Date
 import java.util.UUID
-
-import org.joda.time.DateTime
 
 /** Model of a user to be used within the backend. */
 data class User(val id: UUID?, val name: String, val email: String,
@@ -12,7 +11,9 @@ data class User(val id: UUID?, val name: String, val email: String,
 data class UserData(val name: String, val email: String, val password: String)
 
 data class Token(val id: UUID?, val jwtId: String, @Transient val userId: UUID,
-                 val issued: DateTime, val subject: String)
+                 val issued: Date, val subject: String)
+
+data class Tokens(val tokens: List<Token>)
 
 data class RegistrationResponse(val error: String? = null, val userId: UUID? = null)
 

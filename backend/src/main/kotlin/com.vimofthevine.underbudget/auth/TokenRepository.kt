@@ -12,7 +12,7 @@ fun DbService.createToken(token: Token): UUID =
 	TokenTable.insertAndGetId {
         it[jwtId] = token.jwtId
         it[userId] = EntityID<UUID>(token.userId, UserTable)
-        it[issued] = token.issued
+        it[issued] = DateTime(token.issued)
         it[subject] = token.subject
     }.value
 
@@ -20,7 +20,7 @@ fun DbService.toToken(row: ResultRow) = Token(
 	id = row[TokenTable.id].value,
     jwtId = row[TokenTable.jwtId],
     userId = row[TokenTable.userId].value,
-    issued = row[TokenTable.issued],
+    issued = row[TokenTable.issued].toDate(),
     subject = row[TokenTable.subject]
 )
 

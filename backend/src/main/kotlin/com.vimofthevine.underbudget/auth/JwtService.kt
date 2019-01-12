@@ -2,6 +2,7 @@ package com.vimofthevine.underbudget.auth
 
 import com.auth0.jwt.*
 import com.auth0.jwt.algorithms.*
+import com.auth0.jwt.interfaces.*
 
 import io.ktor.application.*
 import io.ktor.util.*
@@ -23,6 +24,8 @@ class JwtService(private val issuer: String, private val secret: String) {
     	.withJWTId(generateNonce())
     	.withClaim("userId", user.id.toString())
     	.sign(algorithm)
+    
+    fun decode(token: String): DecodedJWT = JWT.decode(token)
 }
 
 val Application.jwtRealm get() = environment.config.property("jwt.realm").getString()

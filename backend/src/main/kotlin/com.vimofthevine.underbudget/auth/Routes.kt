@@ -1,5 +1,6 @@
 package com.vimofthevine.underbudget.auth
 
+import com.auth0.jwt.interfaces.*
 import com.vimofthevine.underbudget.DbService
 
 import java.util.UUID
@@ -69,6 +70,14 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
                 	LoginResponse(error = "Invalid login credentials")
                 } else {
                     val token = jwt.createToken(user)
+                    val decoded = jwt.decode(token)
+                    db.createToken(Token(
+                        id = null,
+                        jwtId = decoded.getId(),
+                        userId = user.id!!,
+                        issued = decoded.getIssuedAt(),
+                        subject = ""
+                    ))
                     LoginResponse(token = token)
                 }
             }
@@ -80,7 +89,23 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
     
     authenticate("jwt") {
         get<TokenResources> {
-            
+            call.userId?.let {
+            	call.respond(Tokens(db.transaction { findTokensByUser(it) }))
+            }
+        }
+        
+        delete<TokenResource> {
+            call.respond(db.transaction {
+                val token = findTokenByJwtId(it.jwtId)
+                if (token == null) {
+                    HttpStatusCode.NotFound
+                } else if (token.userId != call.userId) {
+                    HttpStatusCode.Forbidden
+                } else {
+                	deleteTokenByJwtId(token.jwtId)
+                	HttpStatusCode.OK
+                }
+            })
         }
         
         put<UserResource> {

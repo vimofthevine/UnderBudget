@@ -23,17 +23,34 @@ open class TestFixture {
     val jwtSvc = JwtService("testIssuer", "testSecret")
     
     val testSalt = pwSvc.generateSalt()
-    val testUserId = transaction(dbSvc.db) {
-        dbSvc.createUser(User(
-            id = null,
-            name = "testUser",
-            email = "user@test.com",
-            salt = testSalt,
-            hashedPassword = pwSvc.hash("testPassword", testSalt)
-        ))
-    }
-    val testUser = transaction(dbSvc.db) {
-        dbSvc.findUserById(testUserId)
+    val testUser = createUser("testUser", "user@test.com", "testPassword")
+    val testUserId = testUser.id
+    
+    fun createUser(name: String, email: String, password: String) =
+        transaction(dbSvc.db) {
+            val id = dbSvc.createUser(User(
+                id = null,
+                name = name,
+                email = email,
+                salt = testSalt,
+                hashedPassword = pwSvc.hash(password, testSalt)
+            ))
+            dbSvc.findUserById(id)!!
+        }
+    
+    fun createToken(user: User = testUser): String {
+        val token = jwtSvc.createToken(user)
+        val decoded = jwtSvc.decode(token)
+        transaction(dbSvc.db) {
+            dbSvc.createToken(Token(
+                id = null,
+                jwtId = decoded.getId(),
+                userId = user.id!!,
+                issued = decoded.getIssuedAt(),
+                subject = ""
+            ))
+        }
+        return token
     }
     
     fun withServer(test: TestApplicationEngine.() -> Unit) =

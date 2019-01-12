@@ -18,6 +18,7 @@ import io.ktor.routing.*
 import io.ktor.util.*
 
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 
 val Application.isDemo get() = environment.config.property("ktor.deployment.demo").getString() == "true"
 
@@ -55,6 +56,8 @@ fun Application.main(dbService: DbService = createDbService(),
     install(ContentNegotiation) {
         gson {
             excludeFieldsWithModifiers(Modifier.TRANSIENT)
+            setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+            setPrettyPrinting()
         }
     }
     install(StatusPages) {
@@ -74,7 +77,8 @@ fun Application.main(dbService: DbService = createDbService(),
                 val user = it.payload.getClaim("userId")?.asString()?.let {
                     dbService.transaction { findUserById(UUID.fromString(it)) }
                 }
-                if (user != null) JWTPrincipal(it.payload) else null
+                val token = dbService.transaction { findTokenByJwtId(it.payload.getId()) }
+                if ((user != null) and (token != null)) JWTPrincipal(it.payload) else null
             }
         }
     }
