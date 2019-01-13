@@ -10,6 +10,57 @@ import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
 
 class CreateUserTest : TestFixture() {
+    @Test fun `should reject missing name`() = withServer {
+        val req = handleRequest {
+            method = HttpMethod.Post
+            uri = "/users"
+            setBody(
+                Gson().toJson(mapOf(
+                    "email" to "bob@test.com",
+                    "password" to "password123456"
+                ))
+            )
+        }
+        
+        req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
+        req.response.content.shouldNotBeNullOrBlank() shouldContain "Missing required field(s)"
+    }
+    
+    @Test fun `should reject missing email`() = withServer {
+        val req = handleRequest {
+            method = HttpMethod.Post
+            uri = "/users"
+            setBody(
+                Gson().toJson(mapOf(
+                    "name" to "robert",
+                    "password" to "password123456"
+                ))
+            )
+        }
+        
+        req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
+        req.response.content.shouldNotBeNullOrBlank() shouldContain "Missing required field(s)"
+    }
+    
+    @Test fun `should reject missing password`() = withServer {
+        val req = handleRequest {
+            method = HttpMethod.Post
+            uri = "/users"
+            setBody(
+                Gson().toJson(mapOf(
+                    "name" to "robert",
+                    "email" to "bob@test.com"
+                ))
+            )
+        }
+        
+        req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
+        req.response.content.shouldNotBeNullOrBlank() shouldContain "Missing required field(s)"
+    }
+    
     @Test fun `should reject short username`() = withServer {
         val req = handleRequest {
             method = HttpMethod.Post

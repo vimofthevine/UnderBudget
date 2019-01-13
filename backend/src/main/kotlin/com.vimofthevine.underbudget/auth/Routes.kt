@@ -21,7 +21,9 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
     post<UserResources> {
         val user = call.receive<UserData>()
         val response = db.transaction {
-            if (user.name.length < 6) {
+            if ((user.name == null) or (user.email == null) or (user.password == null)) {
+                RegistrationResponse(error = "Missing required field(s)")
+            } else if (user.name.length < 6) {
                 RegistrationResponse(error = "Username must be at least 6 characters in length")
             } else if (user.name.length > 128) {
                 RegistrationResponse(error = "Username must be less than 128 characters in length")
@@ -59,26 +61,30 @@ fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
     post<TokenResources> {
         val login = call.receive<UserPasswordCredential>()
         val response = db.transaction {
-            val user = db.findUserByName(login.name)
-            if (user == null) {
-                logger.info("Attempt to login with invalid username, ${login.name}")
-                LoginResponse(error = "Invalid login credentials")
+            if ((login.name == null) or (login.password == null)) {
+                LoginResponse(error = "Missing required field(s)")
             } else {
-                val hash = passwords.hash(login.password, user.salt)
-                if (hash != user.hashedPassword) {
-                    logger.info("Attempt to login as ${login.name} with invalid password")
-                	LoginResponse(error = "Invalid login credentials")
+                val user = db.findUserByName(login.name)
+                if (user == null) {
+                    logger.info("Attempt to login with invalid username, ${login.name}")
+                    LoginResponse(error = "Invalid login credentials")
                 } else {
-                    val token = jwt.createToken(user)
-                    val decoded = jwt.decode(token)
-                    db.createToken(Token(
-                        id = null,
-                        jwtId = decoded.getId(),
-                        userId = user.id!!,
-                        issued = decoded.getIssuedAt(),
-                        subject = ""
-                    ))
-                    LoginResponse(token = token)
+                    val hash = passwords.hash(login.password, user.salt)
+                    if (hash != user.hashedPassword) {
+                        logger.info("Attempt to login as ${login.name} with invalid password")
+                        LoginResponse(error = "Invalid login credentials")
+                    } else {
+                        val token = jwt.createToken(user)
+                        val decoded = jwt.decode(token)
+                        db.createToken(Token(
+                            id = null,
+                            jwtId = decoded.getId(),
+                            userId = user.id!!,
+                            issued = decoded.getIssuedAt(),
+                            subject = ""
+                        ))
+                        LoginResponse(token = token)
+                    }
                 }
             }
         }

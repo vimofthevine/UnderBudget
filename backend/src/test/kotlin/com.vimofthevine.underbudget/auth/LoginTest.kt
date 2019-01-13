@@ -12,6 +12,38 @@ import org.junit.jupiter.api.Test
 data class TokenResponse(val token: String)
 
 class LoginTest : TestFixture() {
+    @Test fun `should reject missing username`() = withServer {
+        val req = handleRequest {
+            method = HttpMethod.Post
+            uri = "/tokens"
+            setBody(
+                Gson().toJson(mapOf(
+                    "password" to "strongestAvenger"
+                ))
+            )
+        }
+        
+        req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
+        req.response.content.shouldNotBeNullOrBlank() shouldContain "Missing required field(s)"
+    }
+    
+    @Test fun `should reject missing password`() = withServer {
+        val req = handleRequest {
+            method = HttpMethod.Post
+            uri = "/tokens"
+            setBody(
+                Gson().toJson(mapOf(
+                    "name" to "incrhulk"
+                ))
+            )
+        }
+        
+        req.requestHandled shouldBe true
+        req.response.status() shouldBe HttpStatusCode.BadRequest
+        req.response.content.shouldNotBeNullOrBlank() shouldContain "Missing required field(s)"
+    }
+    
     @Test fun `should reject invalid username`() = withServer {
         val req = handleRequest {
             method = HttpMethod.Post

@@ -49,7 +49,6 @@ class DeleteTokenTest : TestFixture() {
     }
     
     @Test fun `should not delete invalid token`() = withServer {
-        val token = createToken()
         val req = handleRequest {
             method = HttpMethod.Delete
             uri = "/tokens/not-a-token-jwt-id"
