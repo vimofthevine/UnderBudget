@@ -1,6 +1,7 @@
 package com.vimofthevine.underbudget
 
 import com.vimofthevine.underbudget.auth.*
+import com.vimofthevine.underbudget.ledger.setupLedgerTables
 
 import io.ktor.application.*
 import io.ktor.config.*
@@ -24,7 +25,7 @@ open class TestFixture {
     
     val testSalt = pwSvc.generateSalt()
     val testUser = createUser("testUser", "user@test.com", "testPassword")
-    val testUserId = testUser.id
+    val testUserId = testUser.id!!
     
     fun createUser(name: String, email: String, password: String) =
         transaction(dbSvc.db) {
@@ -61,5 +62,12 @@ open class TestFixture {
             }
             main(dbService = dbSvc, passwdService = pwSvc, jwtService = jwtSvc)
         }, test)
+    
+    fun withDatabase(body: DbService.() -> Unit): Unit =
+    	transaction(dbSvc.db) {
+            setupAuthTables()
+            setupLedgerTables()
+            dbSvc.body()
+        }
 }
 
