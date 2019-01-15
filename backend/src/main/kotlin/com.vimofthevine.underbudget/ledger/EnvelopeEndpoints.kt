@@ -8,8 +8,10 @@ import io.ktor.routing.*
 
 import org.jetbrains.exposed.sql.Database
 
+/*
 fun Routing.envelopeEndpoints(db: Database) {
     get<EnvelopeResource> {
         call.respondText("envelope details for ${it.envelope}", ContentType.Text.Html)
     }
 }
+*/

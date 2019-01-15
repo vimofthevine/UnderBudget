@@ -8,8 +8,10 @@ import io.ktor.routing.*
 
 import org.jetbrains.exposed.sql.Database
 
+/*
 fun Routing.accountEndpoints(db: Database) {
     get<AccountResource> {
 		call.respondText("account details for ${it.account}", ContentType.Text.Html)
 	}
 }
+*/

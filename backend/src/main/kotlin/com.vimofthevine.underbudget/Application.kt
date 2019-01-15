@@ -86,7 +86,7 @@ fun Application.main(dbService: DbService = createDbService(),
     routing {
         auth(dbService, passwdService, jwtService)
         authenticate("jwt") {
-            ledger(dbService, auth = !isDemo)
+            ledger(dbService)
         }
     }
 }

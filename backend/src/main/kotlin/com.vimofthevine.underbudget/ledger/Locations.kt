@@ -7,11 +7,23 @@ import java.util.UUID
 @Location("/ledgers")
 class LedgerResources()
 
-@Location("/ledgers/{ledger}")
-data class LedgerResource(val ledger: UUID)
+@Location("/ledgers/{ledgerId}")
+data class LedgerResource(val ledgerId: UUID)
 
-@Location("/accounts/{account}")
-data class AccountResource(val account: UUID)
+@Location("/ledger-permissions")
+class LedgerPermissionResources()
 
-@Location("/envelopes/{envelope}")
-data class EnvelopeResource(val envelope: UUID)
+@Location("/ledger-permissions/{permissionId}")
+data class LedgerPermissionResource(val permissionId: UUID)
+
+@Location("/accounts")
+class AccountResources()
+
+@Location("/accounts/{accountId}")
+data class AccountResource(val accountId: UUID)
+
+@Location("/envelopes")
+class EnvelopeResources()
+
+@Location("/envelopes/{envelopeId}")
+data class EnvelopeResource(val envelopeId: UUID)

@@ -6,8 +6,8 @@ import io.ktor.routing.*
 
 import org.jetbrains.exposed.sql.Database
 
-fun Route.ledger(db: DbService, auth: Boolean) {
-    ledgerEndpoints(db, auth)
+fun Route.ledger(db: DbService) {
+    ledgerRoutes(db)
     //accountEndpoints(db)
     //envelopeEndpoints(db)
 }

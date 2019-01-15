@@ -1,5 +1,6 @@
 package com.vimofthevine.underbudget.ledger
 
+import com.vimofthevine.underbudget.auth.*
 import com.vimofthevine.underbudget.DbService
 
 import java.util.UUID
@@ -14,18 +15,21 @@ import io.ktor.routing.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.*
 
-fun Route.ledgerEndpoints(db: DbService, auth: Boolean) {
+fun Route.ledgerRoutes(db: DbService) {
     get<LedgerResources> {
-        var ledgers: List<Ledger> = db.transaction {
-            if (auth) {
-                listOf()
-            } else {
-                getLedgers()
-            }
+        call.userId?.let {
+			call.respond(Ledgers(db.transaction { findLedgersByUser(it) }))
         }
-        call.respond(ledgers)
 	}
+    
+    post<LedgerResources> {
+        var ledger = call.receive<Ledger>()
+        var id = db.transaction { createLedger(ledger) }
+        call.respond(id)
+    }
+    
     get<LedgerResource> {
+        /*
         var ledger: Ledger? = db.transaction {
             if (auth) {
                 null
@@ -36,12 +40,7 @@ fun Route.ledgerEndpoints(db: DbService, auth: Boolean) {
         if (ledger != null) {
         	call.respond(ledger)
     	}
+        */
 	}
-    post<LedgerResources> {
-        var ledger = call.receive<Ledger>()
-        var id = db.transaction {
-            create(ledger)
-        }
-        call.respond(id)
-    }
+    
 }

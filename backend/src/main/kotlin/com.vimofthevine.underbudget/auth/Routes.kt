@@ -15,7 +15,7 @@ import io.ktor.routing.*
 
 import org.slf4j.LoggerFactory
 
-fun Routing.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
+fun Route.auth(db: DbService, passwords: Passwords, jwt: JwtService) {
 	val logger = LoggerFactory.getLogger("underbudget.auth")
 
     post<UserResources> {
