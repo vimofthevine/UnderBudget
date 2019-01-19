@@ -23,24 +23,51 @@ fun Route.ledgerRoutes(db: DbService) {
 	}
     
     post<LedgerResources> {
-        var ledger = call.receive<Ledger>()
-        var id = db.transaction { createLedger(ledger) }
-        call.respond(id)
+        call.userId?.let {
+        	val ledger = call.receive<Ledger>()
+        	if ((ledger.name == null) or (ledger.defaultCurrency == null)) {
+            	call.respond(HttpStatusCode.BadRequest,
+                             CreateResponse(error = "Missing required field(s)"))
+            } else if (ledger.name.length > 128) {
+            	call.respond(HttpStatusCode.BadRequest,
+                             CreateResponse(error = "Ledger name must be less than 128 characters in length"))
+            } else if (!Currencies.isValid(ledger.defaultCurrency)) {
+                call.respond(HttpStatusCode.BadRequest,
+                             CreateResponse(error = "Invalid currency specified"))
+        	} else {
+        		val id = db.transaction { createLedger(ledger) }
+        		call.respond(HttpStatusCode.Created, CreateResponse(id = id))
+        	}
+        }
     }
     
-    get<LedgerResource> {
-        /*
-        var ledger: Ledger? = db.transaction {
-            if (auth) {
-                null
+    get<LedgerResource> { req ->
+        call.userId?.let { userId ->
+			val ledger = db.transaction {
+                if (hasLedgerPermission(req.ledgerId, userId)) {
+                    findLedgerById(req.ledgerId)
+                } else {
+                    null
+                }
+            } 
+            if (ledger == null) {
+                call.respond(HttpStatusCode.Forbidden)
             } else {
-                getLedger(it.ledger)
+                call.respond(ledger)
             }
         }
-        if (ledger != null) {
-        	call.respond(ledger)
-    	}
-        */
 	}
+    
+    get<LedgerPermissionResources>() {
+        // use ledgerId from query params
+    }
+    
+    post<LedgerPermissionResources>() {
+        
+    }
+    
+    delete<LedgerPermissionResource>() {
+        
+    }
     
 }
