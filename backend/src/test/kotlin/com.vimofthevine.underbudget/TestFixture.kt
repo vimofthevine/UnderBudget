@@ -63,7 +63,7 @@ open class TestFixture {
             main(dbService = dbSvc, passwdService = pwSvc, jwtService = jwtSvc)
         }, test)
     
-    fun withDatabase(setup: Boolean = true, body: DbService.() -> Unit): Unit =
+    fun <T> withDatabase(setup: Boolean = true, body: DbService.() -> T): T =
     	transaction(dbSvc.db) {
             if (setup) {
             	setupAuthTables()
