@@ -38,6 +38,10 @@ fun Application.main(dbService: DbService = createDbService(),
     
     install(DefaultHeaders)
     install(CallLogging)
+    install(CORS) {
+		method(HttpMethod.Options)
+		anyHost()
+	}
     install(Locations)
     install(DataConversion) {
         convert<UUID> {
