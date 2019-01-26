@@ -23,9 +23,9 @@ class LedgerRepositoryTest : TestFixture() {
     
     @Test fun `should delete ledger permission`() = withDatabase {
         val id = createLedger(Ledger(name = "ledger 1", defaultCurrency = "USD"))
-        createLedgerPermission(id, testUserId)
+        val permId = createLedgerPermission(id, testUserId)
         hasLedgerPermission(id, testUserId) shouldBe true
-        deleteLedgerPermission(id, testUserId)
+        deleteLedgerPermission(permId)
         hasLedgerPermission(id, testUserId) shouldBe false
     }
     
@@ -42,13 +42,13 @@ class LedgerRepositoryTest : TestFixture() {
         val id1 = createLedger(Ledger(name = "ledger 1", defaultCurrency = "USD"))
         val id2 = createLedger(Ledger(name = "ledger 2", defaultCurrency = "UAH"))
         findLedgersByUser(testUserId).size shouldEqual 0
-        createLedgerPermission(id1, testUserId)
+        val permId1 = createLedgerPermission(id1, testUserId)
         findLedgersByUser(testUserId).size shouldEqual 1
-        createLedgerPermission(id2, testUserId)
+        val permId2 = createLedgerPermission(id2, testUserId)
         findLedgersByUser(testUserId).size shouldEqual 2
-        deleteLedgerPermission(id1, testUserId)
+        deleteLedgerPermission(permId1)
         findLedgersByUser(testUserId).size shouldEqual 1
-        deleteLedgerPermission(id2, testUserId)
+        deleteLedgerPermission(permId2)
         findLedgersByUser(testUserId).size shouldEqual 0
     }
 }

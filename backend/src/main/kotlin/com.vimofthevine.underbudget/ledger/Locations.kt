@@ -11,7 +11,7 @@ class LedgerResources()
 data class LedgerResource(val ledgerId: UUID)
 
 @Location("/ledger-permissions")
-class LedgerPermissionResources()
+class LedgerPermissionResources(val ledgerId: UUID)
 
 @Location("/ledger-permissions/{permissionId}")
 data class LedgerPermissionResource(val permissionId: UUID)

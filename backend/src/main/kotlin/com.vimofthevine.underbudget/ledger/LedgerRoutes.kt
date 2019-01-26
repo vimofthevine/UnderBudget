@@ -58,12 +58,38 @@ fun Route.ledgerRoutes(db: DbService) {
         }
 	}
     
-    get<LedgerPermissionResources>() {
-        // use ledgerId from query params
+    get<LedgerPermissionResources>() { req ->
+        call.userId?.let { userId ->
+			val perms = db.transaction {
+                if (hasLedgerPermission(req.ledgerId, userId)) {
+                    findLedgerPermissionsByLedger(req.ledgerId)
+                } else {
+                    null
+                }
+            } 
+            if (perms == null) {
+                call.respond(HttpStatusCode.Forbidden)
+            } else {
+                call.respond(LedgerPermissions(perms))
+            }
+		}
     }
     
     post<LedgerPermissionResources>() {
-        
+        call.userId?.let { userId ->
+        	val perm = call.receive<LedgerPermissionInput>()
+			val response = db.transaction {
+                if ( ! hasLedgerPermission(perm.ledgerId, userId)) {
+                    //call.respond(HttpStatusCode.Forbidden)
+            	} else if (findLedgerById(perm.ledgerId) == null) {
+                    // respond bad request
+                } else if (findUserById(perm.userId) == null) {
+                    // respond bad request
+                } else {
+                    // created
+                }
+            }
+		}
     }
     
     delete<LedgerPermissionResource>() {
