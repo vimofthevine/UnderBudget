@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -8,8 +8,6 @@ import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import Link from '@material-ui/core/Link';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -47,13 +45,9 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
-  signup: {
-    marginTop: theme.spacing.unit * 3,
-    width: '100%'
-  }
 })
 
-class Login extends Component {
+class Register extends Component {
     state = {
         errorMsg: "",
         showError: false
@@ -76,15 +70,21 @@ class Login extends Component {
     
     handleSubmit(e) {
         e.preventDefault();
-        this.auth.login(this.state.username, this.state.password)
-            .then(res => {
-                this.props.history.replace('/');
+		this.auth.request('/users', {
+			method: 'POST',
+			body: JSON.stringify({
+				'name': this.state.username,
+				'email': this.state.email,
+				'password': this.state.password,
+			})
+		}).then(res => {
+            this.props.history.replace('/login');
+        })
+        .catch(err => {
+        	err.response.json().then(res => {
+                this.showError(res.error);
             })
-            .catch(err => {
-            	err.response.json().then(res => {
-                    this.showError(res.error);
-                })
-            })
+        })
     }
 
 	showError(msg) {
@@ -114,15 +114,20 @@ class Login extends Component {
         <main className={classes.main}>
           <Paper className={classes.paper}>
             <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
+              <AccountCircleIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Sign up
             </Typography>
             <form className={classes.form}>
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="username">Username</InputLabel>
                 <Input id="username" name="username" autoComplete="username" autoFocus
+                    onChange={this.handleChange} />
+              </FormControl>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="email">Email Address</InputLabel>
+                <Input id="email" name="email" autoComplete="email"
                     onChange={this.handleChange} />
               </FormControl>
               <FormControl margin="normal" required fullWidth>
@@ -132,17 +137,11 @@ class Login extends Component {
               </FormControl>
               <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}
                   onClick={this.handleSubmit}>
-                Sign in
+                Sign up
               </Button>
             </form>
-        
-        	<div className={classes.signup}>
-        	  <Typography variant="body1" align="right">
-        		Don't have an account? <Link color="secondary" component={RouterLink} to="/register">Sign up!</Link>
-        	  </Typography>
-        	</div>
           </Paper>
-        
+		
           <Snackbar
             anchorOrigin={{
               vertical: 'bottom',
@@ -164,4 +163,4 @@ class Login extends Component {
   }
 }
 
-export default withStyles(styles)(Login);
+export default withStyles(styles)(Register);

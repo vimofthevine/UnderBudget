@@ -41,6 +41,10 @@ export default class AuthService {
         })
     }
     
+    request(url, options) {
+        return this.fetch(`${this.domain}${url}`, options);
+    }
+    
     fetch(url, options) {
         const headers = {
             'Accept': 'application/json',

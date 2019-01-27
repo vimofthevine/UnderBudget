@@ -7,6 +7,7 @@ import { lightBlue, green } from '@material-ui/core/colors';
 import './index.css';
 import App from './App';
 import Login from './auth/Login';
+import Register from './auth/Register';
 import * as serviceWorker from './serviceWorker';
 
 const theme = createMuiTheme({
@@ -25,6 +26,7 @@ ReactDOM.render(
     		<CssBaseline />
     		<Route exact path='/' component={App} />
     		<Route exact path='/login' component={Login} />
+    		<Route exact path='/register' component={Register} />
     	</div>
     </Router>
   </MuiThemeProvider>,
