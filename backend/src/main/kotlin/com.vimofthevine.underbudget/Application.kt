@@ -39,8 +39,11 @@ fun Application.main(dbService: DbService = createDbService(),
     install(DefaultHeaders)
     install(CallLogging)
     install(CORS) {
+		header(HttpHeaders.Authorization)
+		method(HttpMethod.Delete)
 		method(HttpMethod.Options)
 		anyHost()
+		allowCredentials = true
 	}
     install(Locations)
     install(DataConversion) {

@@ -1,8 +1,11 @@
+import decode from 'jwt-decode'
+
 export default class AuthService {
     constructor(domain) {
         this.domain = domain || 'http://10.7.7.37:9090';
         this.fetch = this.fetch.bind(this);
         this.login = this.login.bind(this);
+        this.getProfile = this.getProfile.bind(this);
     }
     
     login(username, password) {
@@ -31,13 +34,21 @@ export default class AuthService {
         return localStorage.getItem('id_token');
     }
     
+    getProfile() {
+        return decode(this.getToken());
+    }
+    
     logout() {
-        const token = this.getToken();
-        localStorage.removeItem('id_token');
-        return this.fetch(`${this.domain}/tokens/${token}`, {
+        const headers = {
+            'Authorization': 'Bearer ' + this.getToken(),
+        };
+        
+        const profile = this.getProfile();
+       	localStorage.removeItem('id_token');
+        
+        return fetch(`${this.domain}/tokens/${profile.jti}`, {
+            headers,
             method: 'DELETE'
-        }).then(res => {
-            return Promise.resolve(res);
         })
     }
     

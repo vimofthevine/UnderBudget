@@ -99,6 +99,12 @@ class Register extends Component {
             showError: false
         });
     }
+
+	componentWillMount() {
+        if (this.auth.loggedIn()) {
+            this.props.history.replace('/');
+        }
+    }
     
   render() {
     const  { classes } = this.props;

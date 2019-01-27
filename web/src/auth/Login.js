@@ -81,9 +81,11 @@ class Login extends Component {
                 this.props.history.replace('/');
             })
             .catch(err => {
-            	err.response.json().then(res => {
-                    this.showError(res.error);
-                })
+				if (err.response) {
+            		err.response.json().then(res => {
+                    	this.showError(res.error);
+                	})
+				}
             })
     }
 
@@ -98,6 +100,12 @@ class Login extends Component {
         this.setState({
             showError: false
         });
+    }
+
+	componentWillMount() {
+        if (this.auth.loggedIn()) {
+            this.props.history.replace('/');
+        }
     }
     
   render() {
