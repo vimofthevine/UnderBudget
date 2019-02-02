@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import AccountIcon from '@material-ui/icons/AccountBalance'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import Divider from '@material-ui/core/Divider'
@@ -14,41 +15,45 @@ import ReportIcon from '@material-ui/icons/InsertChart'
 import Drawer from './Drawer'
 
 class AppDrawer extends React.Component {
+  handleNav = url => () => {
+    this.props.history.replace(url)
+  }
+  
   render() {
     return(
       <Drawer {...this.props}>
         <List>
-          <ListItem button key="Dashboard">
+          <ListItem button key="Dashboard" onClick={this.handleNav('/dashboard')}>
             <ListItemIcon><DashboardIcon /></ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          <ListItem button key="Ledgers">
+          <ListItem button key="Ledgers" onClick={this.handleNav('/ledgers')}>
             <ListItemIcon><LedgerIcon /></ListItemIcon>
             <ListItemText primary="Ledgers" />
           </ListItem>
         </List>
         <Divider />
         <List>
-          <ListItem button key="Accounts">
+          <ListItem button key="Accounts" onClick={this.handleNav('/accounts')}>
             <ListItemIcon><AccountIcon /></ListItemIcon>
             <ListItemText primary="Accounts" />
           </ListItem>
-          <ListItem button key="Envelopes">
+          <ListItem button key="Envelopes" onClick={this.handleNav('/envelopes')}>
             <ListItemIcon><EnvelopeIcon /></ListItemIcon>
             <ListItemText primary="Envelopes" />
           </ListItem>
-          <ListItem button key="Incomes">
+          <ListItem button key="Incomes" onClick={this.handleNav('/incomes')}>
             <ListItemIcon><IncomeIcon /></ListItemIcon>
             <ListItemText primary="Incomes" />
           </ListItem>
-          <ListItem button key="Expenses">
+          <ListItem button key="Expenses" onClick={this.handleNav('/expenses')}>
             <ListItemIcon><ExpenseIcon /></ListItemIcon>
             <ListItemText primary="Expenses" />
           </ListItem>
         </List>
         <Divider />
         <List>
-          <ListItem button key="Reports">
+          <ListItem button key="Reports" onClick={this.handleNav('/reports')}>
             <ListItemIcon><ReportIcon /></ListItemIcon>
             <ListItemText primary="Reports" />
           </ListItem>
@@ -56,6 +61,10 @@ class AppDrawer extends React.Component {
       </Drawer>
     )
   }
+}
+
+AppDrawer.propTypes = {
+  history: PropTypes.object
 }
 
 export default AppDrawer

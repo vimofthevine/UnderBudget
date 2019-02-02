@@ -47,12 +47,16 @@ class App extends React.Component {
           onDrawerOpen={this.handleDrawerOpen}
           onUserMenu={this.handleUserMenuOpen}
         />
+        <Drawer
+          history={this.props.history}
+          open={this.state.drawerOpen}
+          onDrawerClose={this.handleDrawerClose}
+        />
         <UserMenu
           history={this.props.history}
           anchor={this.state.userMenuAnchor}
           onClose={this.handleUserMenuClose}
         />
-        <Drawer open={this.state.drawerOpen} onDrawerClose={this.handleDrawerClose} />
         <main className={this.props.classes.main}>
           <div className={this.props.classes.toolbar} />
           <Switch>
