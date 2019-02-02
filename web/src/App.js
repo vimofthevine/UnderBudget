@@ -1,38 +1,68 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import AuthService from './auth/AuthService';
-import withAuth from './components/withAuth';
-import './App.css';
+import React from 'react'
+import { Route, Switch } from 'react-router-dom';
+import withStyles from '@material-ui/core/styles/withStyles'
+import AppBar from './components/AppBar/AppBar'
+import Dashboard from './components/Dashboard/Dashboard'
+import Drawer from './components/Drawer/AppDrawer'
+import Ledgers from './components/Ledgers/Ledgers'
+import UserMenu from './components/UserMenu/UserMenu'
+import withAuth from './components/withAuth'
 
-class App extends Component {
-    handleLogout() {
-        const auth = new AuthService()
-        auth.logout()
-       	this.props.history.replace('/login')
-    }
+const styles = theme => ({
+  toolbar: theme.mixins.toolbar,
+    
+  main: {
+    flexGrow: 1,
+    padding: theme.spacing.unit * 3
+  }
+})
+
+class App extends React.Component {
+  state = {
+    drawerOpen: false,
+    userMenuAnchor: null
+  }
+
+  handleDrawerOpen = () => {
+    this.setState({ drawerOpen: true })
+  }
+  
+  handleDrawerClose = () => {
+    this.setState({ drawerOpen: false })
+  }
+  
+  handleUserMenuOpen = event => {
+    this.setState({ userMenuAnchor: event.currentTarget })
+  }
+  
+  handleUserMenuClose = () => {
+    this.setState({ userMenuAnchor: null })
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <p>
-        	<button type="button" onClick={this.handleLogout.bind(this)}>Logout</button>
-          </p>
-        </header>
-      </div>
+      <React.Fragment>
+        <AppBar
+          drawerOpen={this.state.drawerOpen}
+          onDrawerOpen={this.handleDrawerOpen}
+          onUserMenu={this.handleUserMenuOpen}
+        />
+        <UserMenu
+          history={this.props.history}
+          anchor={this.state.userMenuAnchor}
+          onClose={this.handleUserMenuClose}
+        />
+        <Drawer open={this.state.drawerOpen} onDrawerClose={this.handleDrawerClose} />
+        <main className={this.props.classes.main}>
+          <div className={this.props.classes.toolbar} />
+          <Switch>
+           <Route path="/dashboard" component={Dashboard} />
+           <Route path="/ledgers" component={Ledgers} />
+          </Switch>
+        </main>
+      </React.Fragment>
     );
   }
 }
 
-export default withAuth(App);
+export default withAuth(withStyles(styles)(App))

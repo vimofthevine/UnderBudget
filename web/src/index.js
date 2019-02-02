@@ -1,12 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { blueGrey, green } from '@material-ui/core/colors';
-import './index.css';
 import App from './App';
-import Dashboard from './dashboard/Dashboard';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import * as serviceWorker from './serviceWorker';
@@ -23,13 +21,15 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <Router>
-    	<div>
-    		<CssBaseline />
-    		<Route exact path='/' component={App} />
-    		<Route path='/dashboard' component={Dashboard} />
-    		<Route path='/login' component={Login} />
-    		<Route path='/register' component={Register} />
-    	</div>
+      <div style={{display: 'flex'}}>
+        <CssBaseline />
+        <Switch>
+          <Redirect exact from='/' to='/dashboard' />
+          <Route path='/login' component={Login} />
+          <Route path='/register' component={Register} />
+          <Route component={App} />
+        </Switch> 
+      </div>
     </Router>
   </MuiThemeProvider>,
   document.getElementById('root'));
