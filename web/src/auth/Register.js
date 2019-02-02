@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
@@ -10,10 +9,10 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import AuthService from './AuthService'
+import AppBar from '../components/AppBar/AppBar'
 
 const styles = theme => ({
   main: {
@@ -28,7 +27,7 @@ const styles = theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing.unit * 16,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -110,13 +109,7 @@ class Register extends Component {
     const  { classes } = this.props;
     return (
       <Fragment>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography color="inherit" variant="h6">
-              UnderBudget
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <AppBar />
         <main className={classes.main}>
           <Paper className={classes.paper}>
             <Avatar className={classes.avatar}>
@@ -125,7 +118,7 @@ class Register extends Component {
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
-            <form className={classes.form}>
+            <form className={classes.form} onSubmit={this.handleSubmit}>
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="username">Username</InputLabel>
                 <Input id="username" name="username" autoComplete="username" autoFocus
@@ -141,8 +134,7 @@ class Register extends Component {
                 <Input id="password" name="password" type="password" autoComplete="current-password"
                     onChange={this.handleChange} />
               </FormControl>
-              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}
-                  onClick={this.handleSubmit}>
+              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                 Sign up
               </Button>
             </form>
