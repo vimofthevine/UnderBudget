@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import coinify from 'coinify'
-import Button from '@material-ui/core/Button'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -51,7 +50,7 @@ class LedgerForm extends React.Component {
     
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form id="ledger-form" onSubmit={this.handleSubmit}>
         <TextField
           id="name"
           name="name"
@@ -81,26 +80,12 @@ class LedgerForm extends React.Component {
             </MenuItem>
           ))}
         </TextField>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          className={this.props.classes.submit}
-        >
-          {this.props.actionText}
-        </Button>
       </form>
     )
   }
 }
 
-LedgerForm.defaultProps = {
-  actionText: "Create ledger"
-}
-
 LedgerForm.propTypes = {
-  actionText: PropTypes.string.isRequired,
   ledger: PropTypes.object,
   onSubmit: PropTypes.func
 }
