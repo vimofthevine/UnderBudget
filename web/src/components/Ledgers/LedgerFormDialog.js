@@ -47,7 +47,7 @@ class LedgerFormDialog extends React.Component {
         }
         
         <DialogContent>
-          <LedgerForm />
+          <LedgerForm onSubmit={this.props.onSubmit} />
         </DialogContent>
         
         {!this.props.fullScreen &&
@@ -70,7 +70,8 @@ LedgerFormDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  actionText: PropTypes.string.isRequired
+  actionText: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default withMobileDialog()(LedgerFormDialog)
