@@ -1,43 +1,45 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import AuthService from '../../auth/AuthService'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import AuthService from '../../auth/AuthService';
 
 class UserMenu extends React.Component {
   handleLogout = () => {
-    const auth = new AuthService()
-    auth.logout()
-    this.props.history.replace('/login')
+    const auth = new AuthService();
+    auth.logout();
+    const { history } = this.props;
+    history.replace('/login');
   }
-  
+
   render() {
-    const open = Boolean(this.props.anchor)
+    const { anchor, onClose } = this.props;
+    const open = Boolean(anchor);
     return (
       <Menu
-        anchorEl={this.props.anchor}
+        anchorEl={anchor}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         open={open}
-        onClose={this.props.onClose}
+        onClose={onClose}
       >
         <MenuItem>Profile</MenuItem>
         <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
       </Menu>
-    )
+    );
   }
 }
 
 UserMenu.propTypes = {
-  history: PropTypes.object,
-  anchor: PropTypes.object,
-  onClose: PropTypes.func
-}
+  history: PropTypes.object.isRequired,
+  anchor: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
 
-export default UserMenu
+export default UserMenu;

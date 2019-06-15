@@ -1,6 +1,6 @@
-import React from 'react'
-import LedgerForm from './LedgerForm'
+import React from 'react';
+import LedgerForm from './LedgerForm';
 
 export default function CreateLedger() {
-  return <LedgerForm />
+  return <LedgerForm />;
 }

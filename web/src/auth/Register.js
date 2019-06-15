@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -11,8 +12,8 @@ import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import AuthService from './AuthService'
-import AppBar from '../components/AppBar/AppBar'
+import AuthService from './AuthService';
+import AppBar from '../components/AppBar/AppBar';
 
 const styles = theme => ({
   main: {
@@ -44,69 +45,80 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
-})
+});
 
 class Register extends Component {
-    state = {
-        errorMsg: "",
-        showError: false
-    };
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+  };
 
-    constructor() {
-        super();
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.showError = this.showError.bind(this);
-        this.dismissError = this.dismissError.bind(this);
-        this.auth = new AuthService();
+  state = {
+    errorMsg: '',
+    showError: false,
+  };
+
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.showError = this.showError.bind(this);
+    this.dismissError = this.dismissError.bind(this);
+    this.auth = new AuthService();
+  }
+
+  componentWillMount() {
+    const { history } = this.props;
+    if (this.auth.loggedIn()) {
+      history.replace('/');
     }
-    
-    handleChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
+  }
+
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const { history } = this.props;
+    const { username, email, password } = this.state;
+    this.auth
+      .request('/users', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: username,
+          email,
+          password,
+        }),
+      })
+      .then(() => {
+        history.replace('/login');
+      })
+      .catch((err) => {
+        err.response.json().then((res) => {
+          this.showError(res.error);
         });
-    }
-    
-    handleSubmit(e) {
-        e.preventDefault();
-		this.auth.request('/users', {
-			method: 'POST',
-			body: JSON.stringify({
-				'name': this.state.username,
-				'email': this.state.email,
-				'password': this.state.password,
-			})
-		}).then(res => {
-            this.props.history.replace('/login');
-        })
-        .catch(err => {
-        	err.response.json().then(res => {
-                this.showError(res.error);
-            })
-        })
-    }
+      });
+  }
 
-	showError(msg) {
-        this.setState({
-            errorMsg: msg,
-            showError: true
-        });
-    }
+  showError(msg) {
+    this.setState({
+      errorMsg: msg,
+      showError: true,
+    });
+  }
 
-	dismissError() {
-        this.setState({
-            showError: false
-        });
-    }
+  dismissError() {
+    this.setState({
+      showError: false,
+    });
+  }
 
-	componentWillMount() {
-        if (this.auth.loggedIn()) {
-            this.props.history.replace('/');
-        }
-    }
-    
   render() {
-    const  { classes } = this.props;
+    const { classes } = this.props;
+    const { errorMsg, showError } = this.state;
     return (
       <Fragment>
         <AppBar />
@@ -115,46 +127,66 @@ class Register extends Component {
             <Avatar className={classes.avatar}>
               <AccountCircleIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component='h1' variant='h5'>
               Sign up
             </Typography>
             <form className={classes.form} onSubmit={this.handleSubmit}>
-              <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="username">Username</InputLabel>
-                <Input id="username" name="username" autoComplete="username" autoFocus
-                    onChange={this.handleChange} />
+              <FormControl margin='normal' required fullWidth>
+                <InputLabel htmlFor='username'>Username</InputLabel>
+                <Input
+                  id='username'
+                  name='username'
+                  autoComplete='username'
+                  autoFocus
+                  onChange={this.handleChange}
+                />
               </FormControl>
-              <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="email">Email Address</InputLabel>
-                <Input id="email" name="email" autoComplete="email"
-                    onChange={this.handleChange} />
+              <FormControl margin='normal' required fullWidth>
+                <InputLabel htmlFor='email'>Email Address</InputLabel>
+                <Input
+                  id='email'
+                  name='email'
+                  autoComplete='email'
+                  onChange={this.handleChange}
+                />
               </FormControl>
-              <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="password">Password</InputLabel>
-                <Input id="password" name="password" type="password" autoComplete="current-password"
-                    onChange={this.handleChange} />
+              <FormControl margin='normal' required fullWidth>
+                <InputLabel htmlFor='password'>Password</InputLabel>
+                <Input
+                  id='password'
+                  name='password'
+                  type='password'
+                  autoComplete='current-password'
+                  onChange={this.handleChange}
+                />
               </FormControl>
-              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                color='primary'
+                className={classes.submit}
+              >
                 Sign up
               </Button>
             </form>
           </Paper>
-		
+
           <Snackbar
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'center'
+              horizontal: 'center',
             }}
-            open={this.state.showError}
-        	autoHideDuration={10000}
+            open={showError}
+            autoHideDuration={10000}
             onClose={this.dismissError}
-        	message={<span>{this.state.errorMsg}</span>}
-        	action={
-        		<IconButton color="inherit" onClick={this.dismissError}>
-        			<CloseIcon />
-        		</IconButton>
-        	}
-        	/>
+            message={<span>{errorMsg}</span>}
+            action={(
+              <IconButton color='inherit' onClick={this.dismissError}>
+                <CloseIcon />
+              </IconButton>
+            )}
+          />
         </main>
       </Fragment>
     );
