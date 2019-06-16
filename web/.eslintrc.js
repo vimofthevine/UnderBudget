@@ -39,6 +39,12 @@ module.exports = {
     'react/forbid-prop-types': [
       0
     ],
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: ['**/*.stories.js'],
+      },
+    ],
   },
   overrides: [
     {
