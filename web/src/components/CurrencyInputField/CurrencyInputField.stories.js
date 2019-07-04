@@ -16,12 +16,9 @@ storiesOf('Input|CurrencyInputField', module)
   .add('with label', () => (
     <CurrencyInputField label='Money type' />
   ))
-  .add('with onChange', () => (
-    <CurrencyInputField onChange={action('onChange')} />
-  ))
   .add('with required=false', () => (
     <CurrencyInputField required={false} />
   ))
-  .add('with value', () => (
-    <CurrencyInputField value='UAH' />
+  .add('with field', () => (
+    <CurrencyInputField field={{ value: 'UAH', onChange: action('onChange') }} />
   ));
