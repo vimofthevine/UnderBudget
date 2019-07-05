@@ -3,7 +3,7 @@ import { Form, Field } from 'formik';
 import SubmitButton from '../SubmitButton/SubmitButton';
 import TextInputField from '../TextInputField/TextInputField';
 
-const UserLoginForm = () => (
+const UserRegisrationForm = () => (
   <Form>
     <Field
       id='username'
@@ -14,6 +14,13 @@ const UserLoginForm = () => (
       component={TextInputField}
     />
     <Field
+      id='email'
+      name='email'
+      label='Email Address'
+      autoComplete='email'
+      component={TextInputField}
+    />
+    <Field
       id='password'
       name='password'
       label='Password'
@@ -21,8 +28,8 @@ const UserLoginForm = () => (
       autoComplete='current-password'
       component={TextInputField}
     />
-    <SubmitButton text='Sign in' />
+    <SubmitButton text='Sign up' />
   </Form>
 );
 
-export default UserLoginForm;
+export default UserRegisrationForm;
