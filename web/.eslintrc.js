@@ -36,6 +36,12 @@ module.exports = {
         extensions: ['.js', '.jsx'],
       },
     ],
+    'no-param-reassign': [
+      'error',
+      {
+        ignorePropertyModificationsFor: ['nextState'],
+      },
+    ],
     'react/forbid-prop-types': [
       0
     ],
