@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
+import SimpleAppBar from '../AppBar/SimpleAppBar';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -22,7 +23,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
+      3,
+    )}px`,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -37,19 +40,18 @@ const useStyles = makeStyles(theme => ({
 const SingleElementPage = ({ avatar, title, children }) => {
   const classes = useStyles();
   return (
-    <main className={classes.main}>
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          {avatar}
-        </Avatar>
-        <Typography component='h1' variant='h5'>
-          {title}
-        </Typography>
-        <div className={classes.content}>
-          {children}
-        </div>
-      </Paper>
-    </main>
+    <Fragment>
+      <SimpleAppBar />
+      <main className={classes.main}>
+        <Paper className={classes.paper}>
+          <Avatar className={classes.avatar}>{avatar}</Avatar>
+          <Typography component='h1' variant='h5'>
+            {title}
+          </Typography>
+          <div className={classes.content}>{children}</div>
+        </Paper>
+      </main>
+    </Fragment>
   );
 };
 
