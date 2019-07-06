@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import AccountIcon from '@material-ui/icons/AccountBalance';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import Divider from '@material-ui/core/Divider';
@@ -14,80 +16,85 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ReportIcon from '@material-ui/icons/InsertChart';
 import BaseDrawer from './BaseDrawer';
 
-class Drawer extends React.Component {
-  handleNav = url => () => {
-    const { history } = this.props;
-    history.replace(url);
-  };
+const DrawerItem = ({
+  dest,
+  icon,
+  onClick,
+  text,
+}) => (
+  <ListItem button key={text} onClick={() => onClick(dest)}>
+    <ListItemIcon>{icon}</ListItemIcon>
+    <ListItemText primary={text} />
+  </ListItem>
+);
 
-  render() {
-    return (
-      <BaseDrawer {...this.props}>
-        <List>
-          <ListItem
-            button
-            key='Dashboard'
-            onClick={this.handleNav('/dashboard')}
-          >
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary='Dashboard' />
-          </ListItem>
-          <ListItem button key='Ledgers' onClick={this.handleNav('/ledgers')}>
-            <ListItemIcon>
-              <LedgerIcon />
-            </ListItemIcon>
-            <ListItemText primary='Ledgers' />
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          <ListItem button key='Accounts' onClick={this.handleNav('/accounts')}>
-            <ListItemIcon>
-              <AccountIcon />
-            </ListItemIcon>
-            <ListItemText primary='Accounts' />
-          </ListItem>
-          <ListItem
-            button
-            key='Envelopes'
-            onClick={this.handleNav('/envelopes')}
-          >
-            <ListItemIcon>
-              <EnvelopeIcon />
-            </ListItemIcon>
-            <ListItemText primary='Envelopes' />
-          </ListItem>
-          <ListItem button key='Incomes' onClick={this.handleNav('/incomes')}>
-            <ListItemIcon>
-              <IncomeIcon />
-            </ListItemIcon>
-            <ListItemText primary='Incomes' />
-          </ListItem>
-          <ListItem button key='Expenses' onClick={this.handleNav('/expenses')}>
-            <ListItemIcon>
-              <ExpenseIcon />
-            </ListItemIcon>
-            <ListItemText primary='Expenses' />
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          <ListItem button key='Reports' onClick={this.handleNav('/reports')}>
-            <ListItemIcon>
-              <ReportIcon />
-            </ListItemIcon>
-            <ListItemText primary='Reports' />
-          </ListItem>
-        </List>
-      </BaseDrawer>
-    );
-  }
-}
-
-Drawer.propTypes = {
-  history: PropTypes.object.isRequired,
+DrawerItem.propTypes = {
+  dest: PropTypes.string.isRequired,
+  icon: PropTypes.element.isRequired,
+  onClick: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired,
 };
 
-export default Drawer;
+const Drawer = ({ navigate }) => (
+  <BaseDrawer>
+    <List>
+      <DrawerItem
+        dest='/dashboard'
+        icon={<DashboardIcon />}
+        onClick={navigate}
+        text='Dashboard'
+      />
+      <DrawerItem
+        dest='/ledgers'
+        icon={<LedgerIcon />}
+        onClick={navigate}
+        text='Ledgers'
+      />
+    </List>
+    <Divider />
+    <List>
+      <DrawerItem
+        dest='/accounts'
+        icon={<AccountIcon />}
+        onClick={navigate}
+        text='Accounts'
+      />
+      <DrawerItem
+        dest='/envelopes'
+        icon={<EnvelopeIcon />}
+        onClick={navigate}
+        text='Envelopes'
+      />
+      <DrawerItem
+        dest='/incomes'
+        icon={<IncomeIcon />}
+        onClick={navigate}
+        text='Incomes'
+      />
+      <DrawerItem
+        dest='/expenses'
+        icon={<ExpenseIcon />}
+        onClick={navigate}
+        text='Expenses'
+      />
+    </List>
+    <Divider />
+    <List>
+      <DrawerItem
+        dest='/reports'
+        icon={<ReportIcon />}
+        onClick={navigate}
+        text='Reports'
+      />
+    </List>
+  </BaseDrawer>
+);
+
+Drawer.propTypes = {
+  navigate: PropTypes.func.isRequired,
+};
+
+export default connect(
+  null,
+  { navigate: push },
+)(Drawer);

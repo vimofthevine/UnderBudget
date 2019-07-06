@@ -5,6 +5,7 @@ import { PureAppBar } from './AppBar';
 
 const openDrawer = action('open drawer');
 
+// eslint-disable-next-line react/prop-types
 const AppBar = ({ title = undefined }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   return (
