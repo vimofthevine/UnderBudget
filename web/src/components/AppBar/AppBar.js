@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import MuiAppBar from '@material-ui/core/AppBar';
+import { connect } from 'react-redux';
+// import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '@material-ui/styles';
+import { openDrawer } from '../../state/ducks/nav';
 
 const drawerWidth = 240;
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   appbar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -19,7 +21,6 @@ const styles = theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-
   drawerOpen: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -28,70 +29,62 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-
   menuButton: {
-    marginLeft: 12,
-    marginRight: 36,
+    marginRight: theme.spacing(2),
   },
-
   hide: {
     display: 'none',
   },
+}));
 
-  grow: {
-    flexGrow: 1,
-  },
-});
-
-const AppBar = ({
-  classes,
-  drawerOpen,
-  onDrawerOpen,
-  onUserMenu,
-  title,
-}) => (
-  <MuiAppBar
-    position='fixed'
-    className={classNames(classes.appbar, {
-      [classes.drawerOpen]: drawerOpen,
-    })}
-  >
-    <Toolbar disableGutters={onDrawerOpen && !drawerOpen}>
-      {onDrawerOpen && (
+export const PureAppBar = ({ isDrawerOpen, onDrawerOpen, title }) => {
+  const classes = useStyles();
+  return (
+    <AppBar
+      position='fixed'
+      className={classNames(classes.appbar, {
+        [classes.drawerOpen]: isDrawerOpen,
+      })}
+    >
+      <Toolbar>
         <IconButton
           color='inherit'
           onClick={onDrawerOpen}
+          edge='start'
           className={classNames(classes.menuButton, {
-            [classes.hide]: drawerOpen,
+            [classes.hide]: isDrawerOpen,
           })}
         >
           <MenuIcon />
         </IconButton>
-      )}
-      <Typography
-        component='h1'
-        variant='h6'
-        color='inherit'
-        noWrap
-        className={classes.grow}
-      >
-        {title}
-      </Typography>
-      {onUserMenu && (
-        <IconButton color='inherit' onClick={onUserMenu}>
-          <AccountCircleIcon />
-        </IconButton>
-      )}
-    </Toolbar>
-  </MuiAppBar>
-);
-
-AppBar.propTypes = {
-  title: PropTypes.string.isRequired,
-  classes: PropTypes.object.isRequired,
-  drawerOpen: PropTypes.bool.isRequired,
-  onDrawerOpen: PropTypes.func.isRequired,
-  onUserMenu: PropTypes.func.isRequired,
+        <Typography color='inherit' variant='h6' noWrap>
+          {title}
+        </Typography>
+      </Toolbar>
+    </AppBar>
+  );
 };
 
-export default withStyles(styles)(AppBar);
+// <IconButton color='inherit' onClick={onUserMenu}>
+//   <AccountCircleIcon />
+// </IconButton>
+
+PureAppBar.propTypes = {
+  title: PropTypes.string,
+  isDrawerOpen: PropTypes.bool.isRequired,
+  onDrawerOpen: PropTypes.func.isRequired,
+};
+
+PureAppBar.defaultProps = {
+  title: 'UnderBudget',
+};
+
+const mapStateToProps = state => ({
+  isDrawerOpen: state.nav.isDrawerOpen,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onDrawerOpen: dispatch(openDrawer()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PureAppBar);
