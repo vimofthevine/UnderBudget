@@ -1,82 +1,93 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import AccountIcon from '@material-ui/icons/AccountBalance';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MuiDrawer from '@material-ui/core/Drawer';
-import withStyles from '@material-ui/core/styles/withStyles';
+import EnvelopeIcon from '@material-ui/icons/Mail';
+import ExpenseIcon from '@material-ui/icons/ShoppingCart';
+import IncomeIcon from '@material-ui/icons/MonetizationOn';
+import LedgerIcon from '@material-ui/icons/Folder';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ReportIcon from '@material-ui/icons/InsertChart';
+import BaseDrawer from './BaseDrawer';
 
-const drawerWidth = 240;
+class Drawer extends React.Component {
+  handleNav = url => () => {
+    const { history } = this.props;
+    history.replace(url);
+  };
 
-const styles = theme => ({
-  drawer: {
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-  },
-
-  drawerOpen: {
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-
-  drawerClosed: {
-    overflowX: 'hidden',
-    width: theme.spacing.unit * 7 + 1,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-
-  toolbar: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
-  },
-});
-
-const Drawer = ({
-  children,
-  classes,
-  onDrawerClose,
-  open,
-}) => (
-  <MuiDrawer
-    variant='permanent'
-    className={classNames(classes.drawer, {
-      [classes.drawerOpen]: open,
-      [classes.drawerClosed]: !open,
-    })}
-    classes={{
-      paper: classNames({
-        [classes.drawerOpen]: open,
-        [classes.drawerClosed]: !open,
-      }),
-    }}
-    open={open}
-  >
-    <div className={classes.toolbar}>
-      <IconButton onClick={onDrawerClose}>
-        <ChevronLeftIcon />
-      </IconButton>
-    </div>
-    <Divider />
-    {children}
-  </MuiDrawer>
-);
+  render() {
+    return (
+      <BaseDrawer {...this.props}>
+        <List>
+          <ListItem
+            button
+            key='Dashboard'
+            onClick={this.handleNav('/dashboard')}
+          >
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary='Dashboard' />
+          </ListItem>
+          <ListItem button key='Ledgers' onClick={this.handleNav('/ledgers')}>
+            <ListItemIcon>
+              <LedgerIcon />
+            </ListItemIcon>
+            <ListItemText primary='Ledgers' />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem button key='Accounts' onClick={this.handleNav('/accounts')}>
+            <ListItemIcon>
+              <AccountIcon />
+            </ListItemIcon>
+            <ListItemText primary='Accounts' />
+          </ListItem>
+          <ListItem
+            button
+            key='Envelopes'
+            onClick={this.handleNav('/envelopes')}
+          >
+            <ListItemIcon>
+              <EnvelopeIcon />
+            </ListItemIcon>
+            <ListItemText primary='Envelopes' />
+          </ListItem>
+          <ListItem button key='Incomes' onClick={this.handleNav('/incomes')}>
+            <ListItemIcon>
+              <IncomeIcon />
+            </ListItemIcon>
+            <ListItemText primary='Incomes' />
+          </ListItem>
+          <ListItem button key='Expenses' onClick={this.handleNav('/expenses')}>
+            <ListItemIcon>
+              <ExpenseIcon />
+            </ListItemIcon>
+            <ListItemText primary='Expenses' />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem button key='Reports' onClick={this.handleNav('/reports')}>
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary='Reports' />
+          </ListItem>
+        </List>
+      </BaseDrawer>
+    );
+  }
+}
 
 Drawer.propTypes = {
-  children: PropTypes.array.isRequired,
-  classes: PropTypes.object.isRequired,
-  open: PropTypes.bool.isRequired,
-  onDrawerClose: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Drawer);
+export default Drawer;
