@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import SimpleAppBar from './SimpleAppBar';
 
-storiesOf('Layout|AppBar', module)
+storiesOf('Layout|Header/AppBar', module)
   .add('simple', () => (
     <SimpleAppBar />
   ))

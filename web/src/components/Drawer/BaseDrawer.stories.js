@@ -38,7 +38,7 @@ const Drawer = () => {
   );
 };
 
-storiesOf('Layout|Drawer', module)
+storiesOf('Layout|Header/Drawer', module)
   .add('base', () => (
     <Drawer />
   ));

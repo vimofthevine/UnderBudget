@@ -80,7 +80,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDrawerClose: dispatch(closeDrawer()),
+  onDrawerClose: () => dispatch(closeDrawer()),
 });
 
 export default connect(

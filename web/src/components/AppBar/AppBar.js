@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-// import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -37,7 +37,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const PureAppBar = ({ isDrawerOpen, onDrawerOpen, title }) => {
+export const PureAppBar = ({
+  isDrawerOpen,
+  onDrawerOpen,
+  onOpenUserMenu,
+  title,
+}) => {
   const classes = useStyles();
   return (
     <AppBar
@@ -57,22 +62,31 @@ export const PureAppBar = ({ isDrawerOpen, onDrawerOpen, title }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography color='inherit' variant='h6' noWrap>
+        <Typography
+          color='inherit'
+          variant='h6'
+          noWrap
+          style={{ flexGrow: 1 }}
+        >
           {title}
         </Typography>
+        <IconButton
+          color='inherit'
+          onClick={onOpenUserMenu}
+          edge='end'
+        >
+          <AccountCircleIcon />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );
 };
 
-// <IconButton color='inherit' onClick={onUserMenu}>
-//   <AccountCircleIcon />
-// </IconButton>
-
 PureAppBar.propTypes = {
   title: PropTypes.string,
   isDrawerOpen: PropTypes.bool.isRequired,
   onDrawerOpen: PropTypes.func.isRequired,
+  onOpenUserMenu: PropTypes.func.isRequired,
 };
 
 PureAppBar.defaultProps = {
@@ -84,7 +98,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDrawerOpen: dispatch(openDrawer()),
+  onDrawerOpen: () => dispatch(openDrawer()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PureAppBar);

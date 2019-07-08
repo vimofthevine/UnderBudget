@@ -14,7 +14,7 @@ const store = {
   dispatch: action('dispatch'),
 };
 
-storiesOf('Layout|Drawer', module)
+storiesOf('Layout|Header/Drawer', module)
   .addDecorator(storyFn => <Provider store={store}>{storyFn()}</Provider>)
   .add('default app drawer', () => (
     <Drawer />

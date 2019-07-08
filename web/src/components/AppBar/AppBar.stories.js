@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { PureAppBar } from './AppBar';
 
 const openDrawer = action('open drawer');
+const openUserMenu = action('open user menu');
 
 // eslint-disable-next-line react/prop-types
 const AppBar = ({ title = undefined }) => {
@@ -14,6 +15,7 @@ const AppBar = ({ title = undefined }) => {
         title={title}
         isDrawerOpen={drawerOpen}
         onDrawerOpen={openDrawer}
+        onOpenUserMenu={openUserMenu}
       />
       <button
         type='button'
@@ -26,7 +28,7 @@ const AppBar = ({ title = undefined }) => {
   );
 };
 
-storiesOf('Layout|AppBar', module)
+storiesOf('Layout|Header/AppBar', module)
   .add('full', () => (
     <AppBar />
   ))
