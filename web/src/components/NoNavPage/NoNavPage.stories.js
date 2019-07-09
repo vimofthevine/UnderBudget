@@ -2,22 +2,22 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import SingleElementPage from './SingleElementPage';
+import NoNavPage from './NoNavPage';
 
-storiesOf('Layout|SingleElementPage', module)
+storiesOf('Layout|NoNavPage', module)
   .add('Login', () => (
-    <SingleElementPage
+    <NoNavPage
       avatar={<LockOutlinedIcon />}
       title='Sign in'
     >
       Login form
-    </SingleElementPage>
+    </NoNavPage>
   ))
   .add('Register', () => (
-    <SingleElementPage
+    <NoNavPage
       avatar={<AccountCircleIcon />}
       title='Sign up'
     >
       Registration form
-    </SingleElementPage>
+    </NoNavPage>
   ));

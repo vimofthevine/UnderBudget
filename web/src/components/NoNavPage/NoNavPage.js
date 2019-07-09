@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SingleElementPage = ({ avatar, title, children }) => {
+const NoNavPage = ({ avatar, title, children }) => {
   const classes = useStyles();
   return (
     <Fragment>
@@ -55,10 +55,10 @@ const SingleElementPage = ({ avatar, title, children }) => {
   );
 };
 
-SingleElementPage.propTypes = {
+NoNavPage.propTypes = {
   avatar: PropTypes.element.isRequired,
   title: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
 };
 
-export default SingleElementPage;
+export default NoNavPage;
