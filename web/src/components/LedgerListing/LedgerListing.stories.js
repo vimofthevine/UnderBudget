@@ -1,6 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions'; 
 import LedgerListing from './LedgerListing';
+
+const handleSelect = action('select');
 
 const ledger1 = {
   id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
@@ -52,17 +55,24 @@ const createLedgers = (num) => {
 
 storiesOf('Ledger|Ledgers/LedgerListing', module)
   .add('no ledgers', () => (
-    <LedgerListing ledgers={[]} />
+    <LedgerListing onSelect={handleSelect} ledgers={[]} />
   ))
   .add('one ledger', () => (
-    <LedgerListing ledgers={[ledger1]} />
+    <LedgerListing onSelect={handleSelect} ledgers={[ledger1]} />
   ))
   .add('multiple ledgers', () => (
-    <LedgerListing ledgers={[ledger1, ledger2, ledger3]} />
+    <LedgerListing onSelect={handleSelect} ledgers={[ledger1, ledger2, ledger3]} />
+  ))
+  .add('selected ledger', () => (
+    <LedgerListing
+      onSelect={handleSelect}
+      ledgers={[ledger1, ledger2, ledger3]}
+      selectedLedger='yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'
+    />
   ))
   .add('5 ledgers', () => (
-    <LedgerListing ledgers={createLedgers(5)} />
+    <LedgerListing onSelect={handleSelect} ledgers={createLedgers(5)} />
   ))
   .add('50 ledgers', () => (
-    <LedgerListing ledgers={createLedgers(50)} />
+    <LedgerListing onSelect={handleSelect} ledgers={createLedgers(50)} />
   ));

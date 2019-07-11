@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
-const LedgerListing = ({ ledgers }) => {
+const LedgerListing = ({ ledgers, onSelect, selectedLedger }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -26,6 +27,7 @@ const LedgerListing = ({ ledgers }) => {
             <TableCell>Default Currency</TableCell>
             <TableCell>Created</TableCell>
             <TableCell>Owner</TableCell>
+            <TableCell>Select</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -36,6 +38,17 @@ const LedgerListing = ({ ledgers }) => {
                 <TableCell>{ledger.currency}</TableCell>
                 <TableCell>{ledger.created}</TableCell>
                 <TableCell>{ledger.owner.name}</TableCell>
+                <TableCell>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    size='small'
+                    disabled={selectedLedger === ledger.id}
+                    onClick={() => onSelect(ledger.id)}
+                  >
+                    Select
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>
@@ -67,6 +80,8 @@ LedgerListing.propTypes = {
       name: PropTypes.string,
     }),
   })).isRequired,
+  onSelect: PropTypes.func.isRequired,
+  selectedLedger: PropTypes.string.isRequired,
 };
 
 export default LedgerListing;
