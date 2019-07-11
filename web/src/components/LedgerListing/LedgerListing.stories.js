@@ -1,8 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions'; 
+import { action } from '@storybook/addon-actions';
 import LedgerListing from './LedgerListing';
 
+const handleArchive = action('archive');
+const handleEdit = action('edit');
 const handleSelect = action('select');
 
 const ledger1 = {
@@ -55,24 +57,55 @@ const createLedgers = (num) => {
 
 storiesOf('Ledger|Ledgers/LedgerListing', module)
   .add('no ledgers', () => (
-    <LedgerListing onSelect={handleSelect} ledgers={[]} />
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      ledgers={[]}
+    />
   ))
   .add('one ledger', () => (
-    <LedgerListing onSelect={handleSelect} ledgers={[ledger1]} />
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      ledgers={[ledger1]}
+      selectedLedger=''
+    />
   ))
   .add('multiple ledgers', () => (
-    <LedgerListing onSelect={handleSelect} ledgers={[ledger1, ledger2, ledger3]} />
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      ledgers={[ledger1, ledger2, ledger3]}
+      selectedLedger=''
+    />
   ))
   .add('selected ledger', () => (
     <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
       onSelect={handleSelect}
       ledgers={[ledger1, ledger2, ledger3]}
       selectedLedger='yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'
     />
   ))
   .add('5 ledgers', () => (
-    <LedgerListing onSelect={handleSelect} ledgers={createLedgers(5)} />
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      ledgers={createLedgers(5)}
+      selectedLedger=''
+    />
   ))
   .add('50 ledgers', () => (
-    <LedgerListing onSelect={handleSelect} ledgers={createLedgers(50)} />
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      ledgers={createLedgers(50)}
+      selectedLedger=''
+    />
   ));

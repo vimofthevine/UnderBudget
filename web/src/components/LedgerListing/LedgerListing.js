@@ -1,14 +1,24 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import CheckIcon from '@material-ui/icons/Check';
+import EditIcon from '@material-ui/icons/Edit';
 
-const LedgerListing = ({ ledgers, onSelect, selectedLedger }) => {
+const LedgerListing = ({
+  ledgers,
+  onArchive,
+  onEdit,
+  onSelect,
+  selectedLedger,
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -27,7 +37,7 @@ const LedgerListing = ({ ledgers, onSelect, selectedLedger }) => {
             <TableCell>Default Currency</TableCell>
             <TableCell>Created</TableCell>
             <TableCell>Owner</TableCell>
-            <TableCell>Select</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -39,15 +49,24 @@ const LedgerListing = ({ ledgers, onSelect, selectedLedger }) => {
                 <TableCell>{ledger.created}</TableCell>
                 <TableCell>{ledger.owner.name}</TableCell>
                 <TableCell>
-                  <Button
-                    variant='outlined'
-                    color='primary'
-                    size='small'
-                    disabled={selectedLedger === ledger.id}
-                    onClick={() => onSelect(ledger.id)}
-                  >
-                    Select
-                  </Button>
+                  <Tooltip title='Edit ledger'>
+                    <IconButton onClick={() => onEdit(ledger.id)}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title='Archive ledger'>
+                    <IconButton onClick={() => onArchive(ledger.id)}>
+                      <ArchiveIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title='Select ledger'>
+                    <IconButton
+                      disabled={selectedLedger === ledger.id}
+                      onClick={() => onSelect(ledger.id)}
+                    >
+                      <CheckIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
@@ -80,6 +99,8 @@ LedgerListing.propTypes = {
       name: PropTypes.string,
     }),
   })).isRequired,
+  onArchive: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   selectedLedger: PropTypes.string.isRequired,
 };
