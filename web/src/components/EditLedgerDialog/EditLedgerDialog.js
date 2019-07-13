@@ -4,13 +4,14 @@ import { Formik } from 'formik';
 import Dialog from '../Dialog/Dialog';
 import LedgerForm from '../LedgerForm/LedgerForm';
 
-const CreateLedgerDialog = ({ onClose, ...props }) => (
+const EditLedgerDialog = ({ ledger, onClose, ...props }) => (
   <Formik
-    initialValues={{ currency: 'USD', name: '' }}
+    initialValues={ledger}
+    enableReinitialize
     render={({ handleReset, handleSubmit }) => (
       <Dialog
-        actionText='Create'
-        title='Create Ledger'
+        actionText='Save'
+        title='Modify Ledger'
         onSubmit={handleSubmit}
         onClose={() => {
           handleReset();
@@ -24,8 +25,12 @@ const CreateLedgerDialog = ({ onClose, ...props }) => (
   />
 );
 
-CreateLedgerDialog.propTypes = {
+EditLedgerDialog.propTypes = {
+  ledger: PropTypes.shape({
+    name: PropTypes.string,
+    currency: PropTypes.string,
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-export default CreateLedgerDialog;
+export default EditLedgerDialog;

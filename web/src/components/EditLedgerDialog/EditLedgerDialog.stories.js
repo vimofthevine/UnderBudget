@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import CreateLedgerDialog from './CreateLedgerDialog';
+import { withKnobs, object } from '@storybook/addon-knobs';
+import EditLedgerDialog from './EditLedgerDialog';
 
 const DialogDemo = () => {
   const [open, setOpen] = useState(false);
@@ -9,7 +10,8 @@ const DialogDemo = () => {
 
   return (
     <Fragment>
-      <CreateLedgerDialog
+      <EditLedgerDialog
+        ledger={object('ledger', { currency: 'USD', name: 'Demo Ledger' })}
         onClose={handleClose}
         open={open}
       />
@@ -18,7 +20,8 @@ const DialogDemo = () => {
   );
 };
 
-storiesOf('Ledger|Ledgers/CreateLedgerDialog', module)
+storiesOf('Ledger|Ledgers/EditLedgerDialog', module)
+  .addDecorator(withKnobs)
   .add('default', () => (
     <DialogDemo />
   ));
