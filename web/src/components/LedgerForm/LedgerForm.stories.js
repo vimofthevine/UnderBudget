@@ -5,12 +5,12 @@ import LedgerForm from './LedgerForm';
 
 storiesOf('Ledger|Ledgers/LedgerForm', module)
   .add('new ledger', () => (
-    <Formik initialValues={{ currency: 'USD' }}>
+    <Formik initialValues={{ defaultCurrency: 'USD' }}>
       <LedgerForm />
     </Formik>
   ))
   .add('existing ledger', () => (
-    <Formik initialValues={{ name: 'Foreign', currency: 'UAH' }}>
+    <Formik initialValues={{ name: 'Foreign', defaultCurrency: 'UAH' }}>
       <LedgerForm />
     </Formik>
   ));

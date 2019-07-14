@@ -45,7 +45,7 @@ const LedgerListing = ({
             .map(ledger => (
               <TableRow key={ledger.id}>
                 <TableCell component='th' scope='row'>{ledger.name}</TableCell>
-                <TableCell>{ledger.currency}</TableCell>
+                <TableCell>{ledger.defaultCurrency}</TableCell>
                 <TableCell>{ledger.created}</TableCell>
                 <TableCell>{ledger.owner.name}</TableCell>
                 <TableCell>
@@ -92,7 +92,7 @@ LedgerListing.propTypes = {
   ledgers: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
-    currency: PropTypes.string,
+    defaultCurrency: PropTypes.string,
     created: PropTypes.string,
     owner: PropTypes.shape({
       id: PropTypes.string,

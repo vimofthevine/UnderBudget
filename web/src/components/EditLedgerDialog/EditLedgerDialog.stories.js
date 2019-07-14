@@ -11,7 +11,7 @@ const DialogDemo = () => {
   return (
     <Fragment>
       <EditLedgerDialog
-        ledger={object('ledger', { currency: 'USD', name: 'Demo Ledger' })}
+        ledger={object('ledger', { defaultCurrency: 'USD', name: 'Demo Ledger' })}
         onClose={handleClose}
         open={open}
       />

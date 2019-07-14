@@ -28,7 +28,7 @@ const EditLedgerDialog = ({ ledger, onClose, ...props }) => (
 EditLedgerDialog.propTypes = {
   ledger: PropTypes.shape({
     name: PropTypes.string,
-    currency: PropTypes.string,
+    defaultCurrency: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };

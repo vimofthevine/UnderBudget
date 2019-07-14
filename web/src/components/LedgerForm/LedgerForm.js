@@ -6,15 +6,13 @@ import TextInputField from '../TextInputField/TextInputField';
 const LedgerForm = () => (
   <Form>
     <Field
-      id='name'
       name='name'
       label='Name'
       autoFocus
       component={TextInputField}
     />
     <Field
-      id='currency'
-      name='currency'
+      name='defaultCurrency'
       label='Default currency'
       helperText='Default currency to use for accounts and envelopes in the ledger'
       component={CurrencyInputField}

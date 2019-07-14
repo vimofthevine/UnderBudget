@@ -10,7 +10,7 @@ const handleSelect = action('select');
 const ledger1 = {
   id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
   name: 'My Ledger',
-  currency: 'USD',
+  defaultCurrency: 'USD',
   created: '2019-07-09',
   owner: {
     id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
@@ -20,7 +20,7 @@ const ledger1 = {
 const ledger2 = {
   id: 'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy',
   name: 'Your Ledger',
-  currency: 'UAH',
+  defaultCurrency: 'UAH',
   created: '2019-07-10',
   owner: {
     id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
@@ -30,7 +30,7 @@ const ledger2 = {
 const ledger3 = {
   id: 'zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz',
   name: 'Our Ledger',
-  currency: 'USD',
+  defaultCurrency: 'USD',
   created: '2019-06-30',
   owner: {
     id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
@@ -44,7 +44,7 @@ const createLedgers = (num) => {
     ledgers.push({
       id: `00000000-0000-0000-0000-0000000000${i}`,
       name: `Ledger ${i}`,
-      currency: 'USD',
+      defaultCurrency: 'USD',
       created: '2019-07-11',
       owner: {
         id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
