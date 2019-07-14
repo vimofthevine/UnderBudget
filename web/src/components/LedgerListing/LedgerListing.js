@@ -1,6 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,13 +13,17 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ArchiveIcon from '@material-ui/icons/Archive';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
+import { makeGetLedgers, selectLedger } from '../../state/ducks/ledgers';
 
-const LedgerListing = ({
+export const PureLedgerListing = ({
+  isLoading,
   ledgers,
   onArchive,
   onEdit,
   onSelect,
-  selectedLedger,
+  onUnarchive,
+  selectedLedgerId,
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -50,19 +56,28 @@ const LedgerListing = ({
                 <TableCell>{ledger.owner.name}</TableCell>
                 <TableCell>
                   <Tooltip title='Edit ledger'>
-                    <IconButton onClick={() => onEdit(ledger.id)}>
+                    <IconButton onClick={() => onEdit(ledger)}>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title='Archive ledger'>
-                    <IconButton onClick={() => onArchive(ledger.id)}>
-                      <ArchiveIcon />
-                    </IconButton>
-                  </Tooltip>
+                  {ledger.archived && (
+                    <Tooltip title='Unarchive ledger'>
+                      <IconButton onClick={() => onUnarchive(ledger)}>
+                        <UnarchiveIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {!ledger.archived && (
+                    <Tooltip title='Archive ledger'>
+                      <IconButton onClick={() => onArchive(ledger)}>
+                        <ArchiveIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   <Tooltip title='Select ledger'>
                     <IconButton
-                      disabled={selectedLedger === ledger.id}
-                      onClick={() => onSelect(ledger.id)}
+                      disabled={selectedLedgerId === ledger.id}
+                      onClick={() => onSelect(ledger)}
                     >
                       <CheckIcon />
                     </IconButton>
@@ -72,6 +87,7 @@ const LedgerListing = ({
             ))}
         </TableBody>
       </Table>
+      {isLoading && <LinearProgress />}
       {ledgers.length > 5 && (
         <TablePagination
           component='div'
@@ -88,11 +104,13 @@ const LedgerListing = ({
   );
 };
 
-LedgerListing.propTypes = {
+PureLedgerListing.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
   ledgers: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
     defaultCurrency: PropTypes.string,
+    archived: PropTypes.bool,
     created: PropTypes.string,
     owner: PropTypes.shape({
       id: PropTypes.string,
@@ -102,7 +120,20 @@ LedgerListing.propTypes = {
   onArchive: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  selectedLedger: PropTypes.string.isRequired,
+  onUnarchive: PropTypes.func.isRequired,
+  selectedLedgerId: PropTypes.string.isRequired,
 };
 
-export default LedgerListing;
+const getLedgers = makeGetLedgers();
+
+const mapStateToProps = (state, props) => ({
+  isLoading: state.ledgers.isLoading,
+  ledgers: getLedgers(state, props),
+  selectedLedgerId: state.ledgers.selectedLedgerId,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSelect: ledger => dispatch(selectLedger(ledger)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PureLedgerListing);

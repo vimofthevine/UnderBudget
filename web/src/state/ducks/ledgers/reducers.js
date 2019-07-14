@@ -13,7 +13,7 @@ const initialState = {
   isCreateOpen: false,
   isModifyOpen: false,
 
-  ledgersById: {},
+  byId: {},
   allIds: [],
 
   selectedLedgerId: null,
@@ -26,8 +26,8 @@ const reducer = createReducer(initialState, {
   },
   [types.RECEIVE_FETCH_LEDGERS]: (state, action) => {
     state.isLoading = false;
-    state.ledgersById = action.payload.ledgers;
-    state.allIds = Object.keys(state.ledgersById);
+    state.byId = action.payload.ledgers;
+    state.allIds = Object.keys(state.byId);
   },
   [types.FAILED_FETCH_LEDGERS]: (state) => {
     state.isLoading = false;
@@ -41,7 +41,7 @@ const reducer = createReducer(initialState, {
   [types.RECEIVE_CREATE_LEDGER]: (state, action) => {
     state.isCreatePending = false;
     state.isCreateOpen = false;
-    state.ledgersById[action.payload.id] = action.payload;
+    state.byId[action.payload.id] = action.payload;
     state.allIds.push(action.payload.id);
   },
   [types.FAILED_CREATE_LEDGER]: (state) => {
@@ -56,7 +56,7 @@ const reducer = createReducer(initialState, {
   [types.RECEIVE_MODIFY_LEDGER]: (state, action) => {
     state.isUpdatePending = true;
     state.isModifyOpen = true;
-    state.ledgersById[action.payload.id] = action.payload;
+    state.byId[action.payload.id] = action.payload;
   },
   [types.FAILED_MODIFY_LEDGER]: (state) => {
     state.isUpdatePending = false;

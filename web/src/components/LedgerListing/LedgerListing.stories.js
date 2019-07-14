@@ -1,11 +1,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import LedgerListing from './LedgerListing';
+import { PureLedgerListing as LedgerListing } from './LedgerListing';
 
 const handleArchive = action('archive');
 const handleEdit = action('edit');
 const handleSelect = action('select');
+const handleUnarchive = action('unarchive');
 
 const ledger1 = {
   id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
@@ -56,11 +57,22 @@ const createLedgers = (num) => {
 };
 
 storiesOf('Ledger|Ledgers/LedgerListing', module)
+  .add('loading ledgers', () => (
+    <LedgerListing
+      isLoading
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
+      ledgers={[]}
+    />
+  ))
   .add('no ledgers', () => (
     <LedgerListing
       onArchive={handleArchive}
       onEdit={handleEdit}
       onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
       ledgers={[]}
     />
   ))
@@ -69,8 +81,9 @@ storiesOf('Ledger|Ledgers/LedgerListing', module)
       onArchive={handleArchive}
       onEdit={handleEdit}
       onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
       ledgers={[ledger1]}
-      selectedLedger=''
+      selectedLedgerId=''
     />
   ))
   .add('multiple ledgers', () => (
@@ -78,8 +91,9 @@ storiesOf('Ledger|Ledgers/LedgerListing', module)
       onArchive={handleArchive}
       onEdit={handleEdit}
       onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
       ledgers={[ledger1, ledger2, ledger3]}
-      selectedLedger=''
+      selectedLedgerId=''
     />
   ))
   .add('selected ledger', () => (
@@ -87,8 +101,18 @@ storiesOf('Ledger|Ledgers/LedgerListing', module)
       onArchive={handleArchive}
       onEdit={handleEdit}
       onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
       ledgers={[ledger1, ledger2, ledger3]}
-      selectedLedger='yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'
+      selectedLedgerId='yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'
+    />
+  ))
+  .add('with archived ledger', () => (
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
+      ledgers={[ledger1, ledger2, { archived: true, ...ledger3 }]}
     />
   ))
   .add('5 ledgers', () => (
@@ -96,8 +120,9 @@ storiesOf('Ledger|Ledgers/LedgerListing', module)
       onArchive={handleArchive}
       onEdit={handleEdit}
       onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
       ledgers={createLedgers(5)}
-      selectedLedger=''
+      selectedLedgerId=''
     />
   ))
   .add('50 ledgers', () => (
@@ -105,7 +130,8 @@ storiesOf('Ledger|Ledgers/LedgerListing', module)
       onArchive={handleArchive}
       onEdit={handleEdit}
       onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
       ledgers={createLedgers(50)}
-      selectedLedger=''
+      selectedLedgerId=''
     />
   ));
