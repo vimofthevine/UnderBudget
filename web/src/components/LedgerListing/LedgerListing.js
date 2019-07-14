@@ -14,7 +14,12 @@ import ArchiveIcon from '@material-ui/icons/Archive';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import UnarchiveIcon from '@material-ui/icons/Unarchive';
-import { makeGetLedgers, selectLedger } from '../../state/ducks/ledgers';
+import {
+  makeGetLedgers,
+  modifyLedger,
+  selectLedger,
+  showModifyLedger,
+} from '../../state/ducks/ledgers';
 
 export const PureLedgerListing = ({
   isLoading,
@@ -133,7 +138,10 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onArchive: ledger => dispatch(modifyLedger({ ...ledger, archived: true })),
+  onEdit: ledger => dispatch(showModifyLedger(ledger)),
   onSelect: ledger => dispatch(selectLedger(ledger)),
+  onUnarchive: ledger => dispatch(modifyLedger({ ...ledger, archived: false })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PureLedgerListing);

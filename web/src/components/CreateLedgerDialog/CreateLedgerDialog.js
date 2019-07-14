@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import Dialog from '../Dialog/Dialog';
 import LedgerForm from '../LedgerForm/LedgerForm';
-import { createLedger } from '../../state/ducks/ledgers';
+import { createLedger, hideCreateLedger } from '../../state/ducks/ledgers';
 
 const schema = yup.object().shape({
   name: yup.string().max(128, 'Too long').required('Required'),
@@ -49,6 +49,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onClose: () => dispatch(hideCreateLedger()),
   onCreate: ledger => dispatch(createLedger(ledger)),
 });
 

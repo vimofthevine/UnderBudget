@@ -47,12 +47,17 @@ export const hideCreateLedger = () => ({
   type: types.HIDE_CREATE_LEDGER,
 });
 
-export const showModifyLedger = () => ({
+export const showModifyLedger = ({ id }) => ({
   type: types.SHOW_MODIFY_LEDGER,
+  payload: id,
 });
 
 export const hideModifyLedger = () => ({
   type: types.HIDE_MODIFY_LEDGER,
+});
+
+export const dismissLedgerError = () => ({
+  type: types.DISMISS_LEDGER_ERROR,
 });
 
 export const selectLedger = ({ id }) => ({

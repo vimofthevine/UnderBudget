@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import Dialog from '../Dialog/Dialog';
 import LedgerForm from '../LedgerForm/LedgerForm';
-import { modifyLedger } from '../../state/ducks/ledgers';
+import { hideModifyLedger, makeGetModifyLedger, modifyLedger } from '../../state/ducks/ledgers';
 
 const schema = yup.object().shape({
   name: yup.string().max(128, 'Too long').required('Required'),
@@ -14,7 +14,7 @@ const schema = yup.object().shape({
 
 export const PureEditLedgerDialog = ({
   isOpen,
-  ledger: { id, ...ledger },
+  ledger,
   onClose,
   onUpdate,
 }) => (
@@ -22,9 +22,7 @@ export const PureEditLedgerDialog = ({
     initialValues={ledger}
     enableReinitialize
     validationSchema={schema}
-    onSubmit={(values) => {
-      onUpdate({ id, ...values });
-    }}
+    onSubmit={onUpdate}
     render={({ handleReset, handleSubmit }) => (
       <Dialog
         actionText='Save'
@@ -52,11 +50,15 @@ PureEditLedgerDialog.propTypes = {
   onUpdate: PropTypes.func.isRequired,
 };
 
+const getModifyLedger = makeGetModifyLedger();
+
 const mapStateToProps = state => ({
   isOpen: state.ledgers.isModifyOpen,
+  ledger: getModifyLedger(state),
 });
 
 const mapDispatchToProps = dispatch => ({
+  onClose: () => dispatch(hideModifyLedger()),
   onUpdate: ledger => dispatch(modifyLedger(ledger)),
 });
 

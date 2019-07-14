@@ -16,4 +16,6 @@ export const HIDE_CREATE_LEDGER = 'underbudget/ledgers/HIDE_CREATE_LEDGER';
 export const SHOW_MODIFY_LEDGER = 'underbudget/ledgers/SHOW_MODIFY_LEDGER';
 export const HIDE_MODIFY_LEDGER = 'underbudget/ledgers/HIDE_MODIFY_LEDGER';
 
+export const DISMISS_LEDGER_ERROR = 'underbudget/ledgers/DISMISS_LEDGER_ERROR';
+
 export const SELECT_LEDGER = 'underbudget/ledgers/SELECT_LEDGER';
