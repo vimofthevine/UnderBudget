@@ -21,4 +21,12 @@ storiesOf('Input|TextInputField', module)
   ))
   .add('with field', () => (
     <TextInputField field={{ value: 'hi there', onChange: action('onChange') }} />
+  ))
+  .add('with error', () => (
+    <TextInputField
+      label='Value'
+      helperText='Must be a good value'
+      field={{ name: 'err', value: 'bad input' }}
+      form={{ errors: { err: 'Bad value' } }}
+    />
   ));

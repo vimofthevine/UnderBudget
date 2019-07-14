@@ -4,12 +4,14 @@ import coinify from 'coinify';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 
-const CurrencyInputField = ({ field, ...props }) => (
+const CurrencyInputField = ({ field, form, helperText, ...props }) => (
   <TextField
     margin='normal'
     required
     fullWidth
     select
+    error={form.errors[field.name]}
+    helperText={form.errors[field.name] || helperText}
     {...field}
     {...props}
   >
@@ -23,10 +25,14 @@ const CurrencyInputField = ({ field, ...props }) => (
 
 CurrencyInputField.propTypes = {
   field: PropTypes.object,
+  form: PropTypes.object,
+  helperText: null,
 };
 
 CurrencyInputField.defaultProps = {
-  field: null,
+  field: { name: '' },
+  form: { errors: {} },
+  helperText: null,
 };
 
 export default CurrencyInputField;

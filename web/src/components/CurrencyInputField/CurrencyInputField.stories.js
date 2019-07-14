@@ -21,4 +21,11 @@ storiesOf('Input|CurrencyInputField', module)
   ))
   .add('with field', () => (
     <CurrencyInputField field={{ value: 'UAH', onChange: action('onChange') }} />
+  ))
+  .add('with error', () => (
+    <CurrencyInputField
+      label='Money type'
+      field={{ name: 'mon_type', value: 'UAH' }}
+      form={{ errors: { mon_type: 'Bad type' } }}
+    />
   ));
