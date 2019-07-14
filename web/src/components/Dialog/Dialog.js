@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import MuiDialog from '@material-ui/core/Dialog';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -24,6 +25,7 @@ const Dialog = ({
   onClose,
   onSubmit,
   open,
+  pending,
   title,
 }) => (
   <MuiDialog
@@ -42,7 +44,7 @@ const Dialog = ({
           <Typography variant='h6' color='inherit' style={{ flex: 1 }}>
             {title}
           </Typography>
-          <Button color='inherit' onClick={onSubmit}>
+          <Button color='inherit' disabled={pending} onClick={onSubmit}>
             {actionText}
           </Button>
         </Toolbar>
@@ -56,7 +58,10 @@ const Dialog = ({
     {!fullScreen && (
       <DialogActions>
         <Button color='primary' onClick={onClose}>Cancel</Button>
-        <Button color='primary' onClick={onSubmit}>{actionText}</Button>
+        <Button color='primary' disabled={pending} onClick={onSubmit}>
+          {pending && <CircularProgress />}
+          {!pending && actionText}
+        </Button>
       </DialogActions>
     )}
   </MuiDialog>
@@ -69,7 +74,12 @@ Dialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
+  pending: PropTypes.bool,
   title: PropTypes.string.isRequired,
+};
+
+Dialog.defaultProps = {
+  pending: false,
 };
 
 export default withMobileDialog()(Dialog);

@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import Dialog from './Dialog';
 
-const DialogDemo = () => {
+const DialogDemo = (props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -17,6 +17,7 @@ const DialogDemo = () => {
         onSubmit={handleSubmit}
         open={open}
         title='Demo Dialog'
+        {...props}
       >
         <p>Hi</p>
       </Dialog>
@@ -28,4 +29,13 @@ const DialogDemo = () => {
 storiesOf('Layout|Dialog', module)
   .add('default', () => (
     <DialogDemo />
+  ))
+  .add('mobile', () => (
+    <DialogDemo fullScreen />
+  ))
+  .add('pending', () => (
+    <DialogDemo open pending />
+  ))
+  .add('mobile pending', () => (
+    <DialogDemo fullScreen open pending />
   ));
