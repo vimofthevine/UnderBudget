@@ -26,17 +26,33 @@ export const createLedger = ledger => ({
   },
 });
 
-export const updateLedger = ({ id, ...ledger }) => ({
+export const modifyLedger = ({ id, ...ledger }) => ({
   [RSAA]: {
     endpoint: `/ledgers/${id}`,
     method: 'PUT',
     body: JSON.stringify(ledger),
     types: [
-      types.REQUEST_UPDATE_LEDGER,
-      types.RECEIVE_UPDATE_LEDGER,
-      types.FAILED_UPDATE_LEDGER,
+      types.REQUEST_MODIFY_LEDGER,
+      types.RECEIVE_MODIFY_LEDGER,
+      types.FAILED_MODIFY_LEDGER,
     ],
   },
+});
+
+export const showCreateLedger = () => ({
+  type: types.SHOW_CREATE_LEDGER,
+});
+
+export const hideCreateLedger = () => ({
+  type: types.HIDE_CREATE_LEDGER,
+});
+
+export const showModifyLedger = () => ({
+  type: types.SHOW_MODIFY_LEDGER,
+});
+
+export const hideModifyLedger = () => ({
+  type: types.HIDE_MODIFY_LEDGER,
 });
 
 export const selectLedger = ({ id }) => ({

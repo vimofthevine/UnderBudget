@@ -13,17 +13,14 @@ const schema = yup.object().shape({
 });
 
 export const PureCreateLedgerDialog = ({
+  isOpen,
   onClose,
   onCreate,
-  ...props
 }) => (
   <Formik
     initialValues={{ defaultCurrency: 'USD', name: '' }}
     validationSchema={schema}
-    onSubmit={(values) => {
-      onCreate(values);
-      onClose();
-    }}
+    onSubmit={onCreate}
     render={({ handleReset, handleSubmit }) => (
       <Dialog
         actionText='Create'
@@ -33,7 +30,7 @@ export const PureCreateLedgerDialog = ({
           handleReset();
           onClose();
         }}
-        {...props}
+        open={isOpen}
       >
         <LedgerForm />
       </Dialog>
@@ -42,12 +39,17 @@ export const PureCreateLedgerDialog = ({
 );
 
 PureCreateLedgerDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  isOpen: state.ledgers.isCreateOpen,
+});
 
 const mapDispatchToProps = dispatch => ({
   onCreate: ledger => dispatch(createLedger(ledger)),
 });
 
-export default connect(null, mapDispatchToProps)(PureCreateLedgerDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(PureCreateLedgerDialog);

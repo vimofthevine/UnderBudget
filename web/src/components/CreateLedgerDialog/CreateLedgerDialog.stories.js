@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { PureCreateLedgerDialog } from './CreateLedgerDialog';
 
-const DialogDemo = (props) => {
+const DialogDemo = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -11,10 +11,9 @@ const DialogDemo = (props) => {
   return (
     <Fragment>
       <PureCreateLedgerDialog
+        isOpen={open}
         onClose={handleClose}
         onCreate={action('create')}
-        open={open}
-        {...props}
       />
       <button type='button' onClick={handleOpen}>Open</button>
     </Fragment>

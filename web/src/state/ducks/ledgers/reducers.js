@@ -5,11 +5,18 @@ const initialState = {
   loadError: false,
   createError: false,
   updateError: false,
+
   isLoading: false,
   isCreatePending: false,
   isUpdatePending: false,
-  allLedgers: {},
-  selectedLedger: null,
+
+  isCreateOpen: false,
+  isModifyOpen: false,
+
+  ledgersById: {},
+  allIds: [],
+
+  selectedLedgerId: null,
 };
 
 const reducer = createReducer(initialState, {
@@ -19,7 +26,8 @@ const reducer = createReducer(initialState, {
   },
   [types.RECEIVE_FETCH_LEDGERS]: (state, action) => {
     state.isLoading = false;
-    state.allLedgers = action.payload.ledgers;
+    state.ledgersById = action.payload.ledgers;
+    state.allIds = Object.keys(state.ledgersById);
   },
   [types.FAILED_FETCH_LEDGERS]: (state) => {
     state.isLoading = false;
@@ -32,28 +40,45 @@ const reducer = createReducer(initialState, {
   },
   [types.RECEIVE_CREATE_LEDGER]: (state, action) => {
     state.isCreatePending = false;
-    state.allLedgers[action.payload.id] = action.payload;
+    state.isCreateOpen = false;
+    state.ledgersById[action.payload.id] = action.payload;
+    state.allIds.push(action.payload.id);
   },
   [types.FAILED_CREATE_LEDGER]: (state) => {
     state.isCreatePendingea = false;
     state.createError = true;
   },
 
-  [types.REQUEST_UPDATE_LEDGER]: (state) => {
+  [types.REQUEST_MODIFY_LEDGER]: (state) => {
     state.isUpdatePending = true;
     state.updateError = false;
   },
-  [types.RECEIVE_UPDATE_LEDGER]: (state, action) => {
+  [types.RECEIVE_MODIFY_LEDGER]: (state, action) => {
     state.isUpdatePending = true;
-    state.allLedgers[action.payload.id] = action.payload;
+    state.isModifyOpen = true;
+    state.ledgersById[action.payload.id] = action.payload;
   },
-  [types.FAILED_UPDATE_LEDGER]: (state) => {
+  [types.FAILED_MODIFY_LEDGER]: (state) => {
     state.isUpdatePending = false;
     state.updateError = true;
   },
 
+  [types.SHOW_CREATE_LEDGER]: (state) => {
+    state.isCreateOpen = true;
+  },
+  [types.HIDE_CREATE_LEDGER]: (state) => {
+    state.isCreateOpen = false;
+  },
+
+  [types.SHOW_MODIFY_LEDGER]: (state) => {
+    state.isModifyOpen = true;
+  },
+  [types.HIDE_MODIFY_LEDGER]: (state) => {
+    state.isModifyOpen = false;
+  },
+
   [types.SELECT_LEDGER]: (state, action) => {
-    state.selectedLedger = state.allLedgers[action.payload];
+    state.selectedLedgerId = action.payload;
   },
 });
 

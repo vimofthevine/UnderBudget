@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, object } from '@storybook/addon-knobs';
-import EditLedgerDialog from './EditLedgerDialog';
+import { action } from '@storybook/addon-actions';
+import { PureEditLedgerDialog } from './EditLedgerDialog';
 
 const DialogDemo = () => {
   const [open, setOpen] = useState(false);
@@ -10,10 +11,11 @@ const DialogDemo = () => {
 
   return (
     <Fragment>
-      <EditLedgerDialog
-        ledger={object('ledger', { defaultCurrency: 'USD', name: 'Demo Ledger' })}
+      <PureEditLedgerDialog
+        isOpen={open}
+        ledger={object('ledger', { id: 'id1', defaultCurrency: 'USD', name: 'Demo Ledger' })}
         onClose={handleClose}
-        open={open}
+        onUpdate={action('update')}
       />
       <button type='button' onClick={handleOpen}>Open</button>
     </Fragment>

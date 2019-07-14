@@ -6,8 +6,14 @@ export const REQUEST_CREATE_LEDGER = 'underbudget/ledgers/REQUEST_CREATE_LEDGER'
 export const RECEIVE_CREATE_LEDGER = 'underbudget/ledgers/RECEIVE_CREATE_LEDGER';
 export const FAILED_CREATE_LEDGER = 'underbudget/ledgers/FAILED_CREATE_LEDGER';
 
-export const REQUEST_UPDATE_LEDGER = 'underbudget/ledgers/REQUEST_UPDATE_LEDGER';
-export const RECEIVE_UPDATE_LEDGER = 'underbudget/ledgers/RECEIVE_UPDATE_LEDGER';
-export const FAILED_UPDATE_LEDGER = 'underbudget/ledgers/FAILED_UPDATE_LEDGER';
+export const REQUEST_MODIFY_LEDGER = 'underbudget/ledgers/REQUEST_MODIFY_LEDGER';
+export const RECEIVE_MODIFY_LEDGER = 'underbudget/ledgers/RECEIVE_MODIFY_LEDGER';
+export const FAILED_MODIFY_LEDGER = 'underbudget/ledgers/FAILED_MODIFY_LEDGER';
+
+export const SHOW_CREATE_LEDGER = 'underbudget/ledgers/SHOW_CREATE_LEDGER';
+export const HIDE_CREATE_LEDGER = 'underbudget/ledgers/HIDE_CREATE_LEDGER';
+
+export const SHOW_MODIFY_LEDGER = 'underbudget/ledgers/SHOW_MODIFY_LEDGER';
+export const HIDE_MODIFY_LEDGER = 'underbudget/ledgers/HIDE_MODIFY_LEDGER';
 
 export const SELECT_LEDGER = 'underbudget/ledgers/SELECT_LEDGER';
