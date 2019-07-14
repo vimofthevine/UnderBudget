@@ -1,17 +1,20 @@
 import React, { Fragment, useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import CreateLedgerDialog from './CreateLedgerDialog';
+import { action } from '@storybook/addon-actions';
+import { PureCreateLedgerDialog } from './CreateLedgerDialog';
 
-const DialogDemo = () => {
+const DialogDemo = (props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return (
     <Fragment>
-      <CreateLedgerDialog
+      <PureCreateLedgerDialog
         onClose={handleClose}
+        onCreate={action('create')}
         open={open}
+        {...props}
       />
       <button type='button' onClick={handleOpen}>Open</button>
     </Fragment>

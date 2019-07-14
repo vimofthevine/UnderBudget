@@ -1,12 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Formik } from 'formik';
+import * as yup from 'yup';
 import Dialog from '../Dialog/Dialog';
 import LedgerForm from '../LedgerForm/LedgerForm';
+import { createLedger } from '../../state/ducks/ledgers';
 
-const CreateLedgerDialog = ({ onClose, ...props }) => (
+const schema = yup.object().shape({
+  name: yup.string().max(128, 'Too long').required('Required'),
+  defaultCurrency: yup.string().required('Required'),
+});
+
+export const PureCreateLedgerDialog = ({
+  onClose,
+  onCreate,
+  ...props
+}) => (
   <Formik
-    initialValues={{ currency: 'USD', name: '' }}
+    initialValues={{ defaultCurrency: 'USD', name: '' }}
+    validationSchema={schema}
+    onSubmit={(values) => {
+      onCreate(values);
+      onClose();
+    }}
     render={({ handleReset, handleSubmit }) => (
       <Dialog
         actionText='Create'
@@ -24,8 +41,13 @@ const CreateLedgerDialog = ({ onClose, ...props }) => (
   />
 );
 
-CreateLedgerDialog.propTypes = {
+PureCreateLedgerDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired,
 };
 
-export default CreateLedgerDialog;
+const mapDispatchToProps = dispatch => ({
+  onCreate: ledger => dispatch(createLedger(ledger)),
+});
+
+export default connect(null, mapDispatchToProps)(PureCreateLedgerDialog);
