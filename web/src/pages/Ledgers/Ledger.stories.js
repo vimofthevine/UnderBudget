@@ -4,7 +4,6 @@ import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import FullNavPage from '../../components/FullNavPage/FullNavPage';
 import Ledgers from './Ledgers';
-import { createLedger } from '../../state/ducks/ledgers';
 
 const makeStore = ({
   error = null,

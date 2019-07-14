@@ -131,9 +131,9 @@ PureLedgerListing.propTypes = {
 
 const getLedgers = makeGetLedgers();
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = state => ({
   isLoading: state.ledgers.isLoading,
-  ledgers: getLedgers(state, props),
+  ledgers: getLedgers(state),
   selectedLedgerId: state.ledgers.selectedLedgerId,
 });
 

@@ -1,9 +1,9 @@
 import { RSAA } from 'redux-api-middleware';
 import * as types from './types';
 
-export const fetchLedgers = () => ({
+export const fetchLedgers = ({ archived = false }) => ({
   [RSAA]: {
-    endpoint: '/ledgers',
+    endpoint: `/ledgers?archived=${archived}`,
     method: 'GET',
     types: [
       types.REQUEST_FETCH_LEDGERS,
