@@ -6,7 +6,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
-import { makeStyles } from '@material-ui/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { closeDrawer } from '../../state/ducks/nav';
 
 const drawerWidth = 240;
@@ -46,9 +47,11 @@ const useStyles = makeStyles(theme => ({
 
 export const PureBaseDrawer = ({ children, isDrawerOpen, onDrawerClose }) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Drawer
-      variant='permanent'
+      variant={mobile ? 'temporary' : 'permanent'}
       className={classNames(classes.drawer, {
         [classes.drawerOpen]: isDrawerOpen,
         [classes.drawerClosed]: !isDrawerOpen,
@@ -59,6 +62,7 @@ export const PureBaseDrawer = ({ children, isDrawerOpen, onDrawerClose }) => {
           [classes.drawerClosed]: !isDrawerOpen,
         }),
       }}
+      onClose={onDrawerClose}
       open={isDrawerOpen}
     >
       <div className={classes.toolbar}>

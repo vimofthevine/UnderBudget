@@ -8,15 +8,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { PureBaseDrawer } from './BaseDrawer';
 
-const closeDrawer = action('close drawer');
-
 const Drawer = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleClose = () => setDrawerOpen(false);
   return (
     <div style={{ display: 'flex' }}>
       <PureBaseDrawer
         isDrawerOpen={drawerOpen}
-        onDrawerClose={closeDrawer}
+        onDrawerClose={handleClose}
       >
         <List>
           <ListItem button>
