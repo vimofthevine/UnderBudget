@@ -26,11 +26,14 @@ const useStyles = makeStyles(theme => ({
   },
   drawerClosed: {
     overflowX: 'hidden',
-    width: theme.spacing(7) + 1,
+    width: 0,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(7) + 1,
+    },
   },
   toolbar: {
     alignItems: 'center',

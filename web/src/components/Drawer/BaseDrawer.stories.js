@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -13,7 +13,7 @@ const closeDrawer = action('close drawer');
 const Drawer = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   return (
-    <Fragment>
+    <div style={{ display: 'flex' }}>
       <PureBaseDrawer
         isDrawerOpen={drawerOpen}
         onDrawerClose={closeDrawer}
@@ -27,14 +27,19 @@ const Drawer = () => {
           </ListItem>
         </List>
       </PureBaseDrawer>
-      <button
-        type='button'
-        onClick={() => setDrawerOpen(!drawerOpen)}
-        style={{ marginLeft: '300px' }}
-      >
-        Toggle drawer
-      </button>
-    </Fragment>
+      <main>
+        <p>
+          Lorem ipsum dolor sit amet
+        </p>
+        <button
+          type='button'
+          onClick={() => setDrawerOpen(!drawerOpen)}
+          style={{ marginLeft: '250px' }}
+        >
+          Toggle drawer
+        </button>
+      </main>
+    </div>
   );
 };
 
