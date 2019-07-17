@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,26 +8,20 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Tooltip from '@material-ui/core/Tooltip';
-import ArchiveIcon from '@material-ui/icons/Archive';
-import CheckIcon from '@material-ui/icons/Check';
-import EditIcon from '@material-ui/icons/Edit';
-import UnarchiveIcon from '@material-ui/icons/Unarchive';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/styles';
 import {
   makeGetLedgers,
   modifyLedger,
   selectLedger,
   showModifyLedger,
 } from '../../state/ducks/ledgers';
+import LedgerActions from './LedgerActions';
 
 export const PureLedgerListing = ({
   isLoading,
   ledgers,
-  onArchive,
-  onEdit,
-  onSelect,
-  onUnarchive,
-  selectedLedgerId,
+  ...props
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -39,15 +32,22 @@ export const PureLedgerListing = ({
     setPage(0);
   };
 
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Fragment>
-      <Table>
+      <Table size={mobile ? 'small' : 'medium'}>
         <TableHead>
           <TableRow>
             <TableCell>Ledger</TableCell>
             <TableCell>Default Currency</TableCell>
-            <TableCell>Created</TableCell>
-            <TableCell>Owner</TableCell>
+            {!mobile && (
+              <Fragment>
+                <TableCell>Created</TableCell>
+                <TableCell>Owner</TableCell>
+              </Fragment>
+            )}
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -57,36 +57,14 @@ export const PureLedgerListing = ({
               <TableRow key={ledger.id}>
                 <TableCell component='th' scope='row'>{ledger.name}</TableCell>
                 <TableCell>{ledger.defaultCurrency}</TableCell>
-                <TableCell>{ledger.created}</TableCell>
-                <TableCell>{ledger.owner.name}</TableCell>
+                {!mobile && (
+                  <Fragment>
+                    <TableCell>{ledger.created}</TableCell>
+                    <TableCell>{ledger.owner.name}</TableCell>
+                  </Fragment>
+                )}
                 <TableCell>
-                  <Tooltip title='Edit ledger'>
-                    <IconButton onClick={() => onEdit(ledger)}>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {ledger.archived && (
-                    <Tooltip title='Unarchive ledger'>
-                      <IconButton onClick={() => onUnarchive(ledger)}>
-                        <UnarchiveIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {!ledger.archived && (
-                    <Tooltip title='Archive ledger'>
-                      <IconButton onClick={() => onArchive(ledger)}>
-                        <ArchiveIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  <Tooltip title='Select ledger'>
-                    <IconButton
-                      disabled={selectedLedgerId === ledger.id}
-                      onClick={() => onSelect(ledger)}
-                    >
-                      <CheckIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <LedgerActions isMobile={mobile} ledger={ledger} {...props} />
                 </TableCell>
               </TableRow>
             ))}
