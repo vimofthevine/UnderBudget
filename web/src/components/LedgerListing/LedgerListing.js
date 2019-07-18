@@ -21,6 +21,7 @@ import LedgerActions from './LedgerActions';
 export const PureLedgerListing = ({
   isLoading,
   ledgers,
+  paginationAbove,
   ...props
 }) => {
   const [page, setPage] = useState(0);
@@ -35,8 +36,22 @@ export const PureLedgerListing = ({
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const pagination = (
+    <TablePagination
+      component='div'
+      labelRowsPerPage='Ledgers per page:'
+      rowsPerPageOptions={[5, 15, 25]}
+      count={ledgers.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+    />
+  );
+
   return (
     <Fragment>
+      {ledgers.length > 5 && paginationAbove && pagination}
       <Table size={mobile ? 'small' : 'medium'}>
         <TableHead>
           <TableRow>
@@ -70,19 +85,8 @@ export const PureLedgerListing = ({
             ))}
         </TableBody>
       </Table>
+      {ledgers.length > 5 && !paginationAbove && pagination}
       {isLoading && <LinearProgress />}
-      {ledgers.length > 5 && (
-        <TablePagination
-          component='div'
-          labelRowsPerPage='Ledgers per page:'
-          rowsPerPageOptions={[5, 15, 25]}
-          count={ledgers.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      )}
     </Fragment>
   );
 };
@@ -104,6 +108,7 @@ PureLedgerListing.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   onUnarchive: PropTypes.func.isRequired,
+  paginationAbove: PropTypes.func.isRequired,
   selectedLedgerId: PropTypes.string.isRequired,
 };
 

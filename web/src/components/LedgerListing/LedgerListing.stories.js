@@ -134,4 +134,15 @@ storiesOf('Ledger|Ledgers/LedgerListing', module)
       ledgers={createLedgers(50)}
       selectedLedgerId=''
     />
+  ))
+  .add('pagination above', () => (
+    <LedgerListing
+      onArchive={handleArchive}
+      onEdit={handleEdit}
+      onSelect={handleSelect}
+      onUnarchive={handleUnarchive}
+      paginationAbove
+      ledgers={createLedgers(50)}
+      selectedLedgerId=''
+    />
   ));

@@ -50,7 +50,7 @@ const Ledgers = ({
           />
         </div>
       )}
-      <LedgerListing />
+      <LedgerListing paginationAbove={mobile} />
       <CreateLedgerDialog />
       <EditLedgerDialog />
       {mobile && (
