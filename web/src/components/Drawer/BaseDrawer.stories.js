@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

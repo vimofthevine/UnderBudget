@@ -4,10 +4,14 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Snackbar from '@material-ui/core/Snackbar';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import AddIcon from '@material-ui/icons/Add';
+import { useTheme } from '@material-ui/styles';
 import CreateLedgerDialog from '../../components/CreateLedgerDialog/CreateLedgerDialog';
 import EditLedgerDialog from '../../components/EditLedgerDialog/EditLedgerDialog';
+import Fab from '../../components/Fab/Fab';
 import LedgerListing from '../../components/LedgerListing/LedgerListing';
+import Snackbar from '../../components/Snackbar/Snackbar';
 import { dismissLedgerError, fetchLedgers, showCreateLedger } from '../../state/ducks/ledgers';
 
 const Ledgers = ({
@@ -23,29 +27,38 @@ const Ledgers = ({
     onFetch({ archived: showArchived });
   });
 
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Fragment>
-      <div style={{ display: 'flex' }}>
-        <Button
-          color='primary'
-          onClick={onShowCreate}
-          variant='contained'
-        >
-          Create new ledger
-        </Button>
-        <FormControlLabel
-          control={
-            <Checkbox checked={showArchived} onChange={handleChangeShowArchive} />
-          }
-          label='Show archived'
-          style={{ marginLeft: 'auto' }}
-        />
-      </div>
+      {!mobile && (
+        <div style={{ display: 'flex' }}>
+          <Button
+            color='primary'
+            onClick={onShowCreate}
+            variant='contained'
+          >
+            Create new ledger
+          </Button>
+          <FormControlLabel
+            control={
+              <Checkbox checked={showArchived} onChange={handleChangeShowArchive} />
+            }
+            label='Show archived'
+            style={{ marginLeft: 'auto' }}
+          />
+        </div>
+      )}
       <LedgerListing />
       <CreateLedgerDialog />
       <EditLedgerDialog />
+      {mobile && (
+        <Fab onClick={onShowCreate}>
+          <AddIcon />
+        </Fab>
+      )}
       <Snackbar
-        autoHideDuration={3000}
         message={ledgerError}
         onClose={onDismissError}
         open={ledgerError}
