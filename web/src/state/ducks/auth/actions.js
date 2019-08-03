@@ -29,3 +29,7 @@ export const register = user => withAuth(({ headers }) => ({
     types: [types.REQUEST_REGISTER, types.RECEIVE_REGISTER, types.FAILED_REGISTER],
   },
 }));
+
+export const dismissAuthError = () => ({
+  type: types.DISMISS_AUTH_ERROR,
+});

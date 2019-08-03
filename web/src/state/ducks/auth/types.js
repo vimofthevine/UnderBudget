@@ -9,3 +9,5 @@ export const FAILED_LOGOUT = 'underbudget/auth/FAILED_LOGOUT';
 export const REQUEST_REGISTER = 'underbudget/auth/REQUEST_REGISTER';
 export const RECEIVE_REGISTER = 'underbudget/auth/RECEIVE_REGISTER';
 export const FAILED_REGISTER = 'underbudget/auth/FAILED_REGISTER';
+
+export const DISMISS_AUTH_ERROR = 'underbudget/auth/DISMISS_AUTH_ERROR';

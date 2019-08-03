@@ -5,13 +5,13 @@ import { Provider } from 'react-redux';
 import Login from './Login';
 
 const makeStore = ({
+  error = null,
   loggedIn = false,
-  username = null,
 }) => ({
   getState: () => ({
     auth: {
+      error,
       loggedIn,
-      username,
     },
   }),
   subscribe: () => 0,
@@ -36,7 +36,12 @@ storiesOf('User|Login Page', module)
     </Provider>
   ))
   .add('already logged in', () => (
-    <Provider store={makeStore({ loggedIn: true, username: 'testuser' })}>
+    <Provider store={makeStore({ loggedIn: true })}>
       <DelayedPage />
+    </Provider>
+  ))
+  .add('login error', () => (
+    <Provider store={makeStore({ error: 'Error logging in' })}>
+      <Login />
     </Provider>
   ));
