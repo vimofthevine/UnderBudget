@@ -2,7 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 
-const TextInputField = ({ field, form, helperText, ...props }) => (
+const TextInputField = ({
+  field,
+  form,
+  helperText,
+  ...props
+}) => (
   <TextField
     margin='normal'
     required

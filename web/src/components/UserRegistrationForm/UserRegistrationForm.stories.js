@@ -1,11 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Formik } from 'formik';
-import UserRegistrationForm from './UserRegistrationForm';
+import { action } from '@storybook/addon-actions';
+import { PureUserRegistrationForm } from './UserRegistrationForm';
 
 storiesOf('User|UserRegistrationForm', module)
   .add('default', () => (
-    <Formik>
-      <UserRegistrationForm />
-    </Formik>
+    <PureUserRegistrationForm onRegister={action('register')} />
   ));

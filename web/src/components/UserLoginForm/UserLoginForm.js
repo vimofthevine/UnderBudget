@@ -17,25 +17,27 @@ export const PureUserLoginForm = ({ onLogin }) => (
     validationSchema={schema}
     onSubmit={onLogin}
   >
-    <Form>
-      <Field
-        id='username'
-        name='username'
-        label='Username'
-        autoComplete='username'
-        autoFocus
-        component={TextInputField}
-      />
-      <Field
-        id='password'
-        name='password'
-        label='Password'
-        type='password'
-        autoComplete='current-password'
-        component={TextInputField}
-      />
-      <SubmitButton text='Sign in' />
-    </Form>
+    {({ isSubmitting, isValid }) => (
+      <Form>
+        <Field
+          id='username'
+          name='username'
+          label='Username'
+          autoComplete='username'
+          autoFocus
+          component={TextInputField}
+        />
+        <Field
+          id='password'
+          name='password'
+          label='Password'
+          type='password'
+          autoComplete='current-password'
+          component={TextInputField}
+        />
+        <SubmitButton text='Sign in' disabled={isSubmitting || !isValid} />
+      </Form>
+    )}
   </Formik>
 );
 
