@@ -77,7 +77,7 @@ export const PureBaseDrawer = ({ children, isDrawerOpen, onDrawerClose }) => {
 };
 
 PureBaseDrawer.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.array.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   onDrawerClose: PropTypes.func.isRequired,
 };
