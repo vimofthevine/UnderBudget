@@ -14,6 +14,7 @@ const schema = yup.object().shape({
 
 export const PureUserLoginForm = ({ onLogin }) => (
   <Formik
+    validateOnBlur={false}
     validationSchema={schema}
     onSubmit={onLogin}
   >

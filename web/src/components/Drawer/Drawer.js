@@ -14,7 +14,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ReportIcon from '@material-ui/icons/InsertChart';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/styles';
 import BaseDrawer from './BaseDrawer';
+import { closeDrawer } from '../../state/ducks/nav';
 
 const DrawerItem = ({
   dest,
@@ -35,66 +38,81 @@ DrawerItem.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const Drawer = ({ navigate }) => (
-  <BaseDrawer>
-    <List>
-      <DrawerItem
-        dest='/dashboard'
-        icon={<DashboardIcon />}
-        onClick={navigate}
-        text='Dashboard'
-      />
-      <DrawerItem
-        dest='/ledgers'
-        icon={<LedgerIcon />}
-        onClick={navigate}
-        text='Ledgers'
-      />
-    </List>
-    <Divider />
-    <List>
-      <DrawerItem
-        dest='/accounts'
-        icon={<AccountIcon />}
-        onClick={navigate}
-        text='Accounts'
-      />
-      <DrawerItem
-        dest='/envelopes'
-        icon={<EnvelopeIcon />}
-        onClick={navigate}
-        text='Envelopes'
-      />
-      <DrawerItem
-        dest='/incomes'
-        icon={<IncomeIcon />}
-        onClick={navigate}
-        text='Incomes'
-      />
-      <DrawerItem
-        dest='/expenses'
-        icon={<ExpenseIcon />}
-        onClick={navigate}
-        text='Expenses'
-      />
-    </List>
-    <Divider />
-    <List>
-      <DrawerItem
-        dest='/reports'
-        icon={<ReportIcon />}
-        onClick={navigate}
-        text='Reports'
-      />
-    </List>
-  </BaseDrawer>
-);
+const Drawer = ({ onDrawerClose, onNavigate }) => {
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const handleClick = (dest) => {
+    onNavigate(dest);
+    if (mobile) {
+      onDrawerClose();
+    }
+  };
+
+  return (
+    <BaseDrawer>
+      <List>
+        <DrawerItem
+          dest='/dashboard'
+          icon={<DashboardIcon />}
+          onClick={handleClick}
+          text='Dashboard'
+        />
+        <DrawerItem
+          dest='/ledgers'
+          icon={<LedgerIcon />}
+          onClick={handleClick}
+          text='Ledgers'
+        />
+      </List>
+      <Divider />
+      <List>
+        <DrawerItem
+          dest='/accounts'
+          icon={<AccountIcon />}
+          onClick={handleClick}
+          text='Accounts'
+        />
+        <DrawerItem
+          dest='/envelopes'
+          icon={<EnvelopeIcon />}
+          onClick={handleClick}
+          text='Envelopes'
+        />
+        <DrawerItem
+          dest='/incomes'
+          icon={<IncomeIcon />}
+          onClick={handleClick}
+          text='Incomes'
+        />
+        <DrawerItem
+          dest='/expenses'
+          icon={<ExpenseIcon />}
+          onClick={handleClick}
+          text='Expenses'
+        />
+      </List>
+      <Divider />
+      <List>
+        <DrawerItem
+          dest='/reports'
+          icon={<ReportIcon />}
+          onClick={handleClick}
+          text='Reports'
+        />
+      </List>
+    </BaseDrawer>
+  );
+};
 
 Drawer.propTypes = {
-  navigate: PropTypes.func.isRequired,
+  onDrawerClose: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func.isRequired,
 };
 
 export default connect(
   null,
-  { navigate: push },
+  {
+    onDrawerClose: closeDrawer,
+    onNavigate: push,
+  },
 )(Drawer);

@@ -1,17 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  HashRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { Provider } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { blueGrey, green } from '@material-ui/core/colors';
 import App from './App';
-import Login from './auth/Login';
-import Register from './auth/Register';
+import history from './state/history';
+import store from './state/store';
 import * as serviceWorker from './serviceWorker';
 
 const theme = createMuiTheme({
@@ -25,17 +20,12 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <Router>
+    <Provider store={store}>
       <div style={{ display: 'flex' }}>
         <CssBaseline />
-        <Switch>
-          <Redirect exact from='/' to='/dashboard' />
-          <Route path='/login' component={Login} />
-          <Route path='/register' component={Register} />
-          <Route component={App} />
-        </Switch>
+        <App history={history} />
       </div>
-    </Router>
+    </Provider>
   </MuiThemeProvider>,
   document.getElementById('root'),
 );

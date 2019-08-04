@@ -58,7 +58,7 @@ const NoNavPage = ({ avatar, title, children }) => {
 NoNavPage.propTypes = {
   avatar: PropTypes.element.isRequired,
   title: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.array.isRequired,
 };
 
 export default NoNavPage;

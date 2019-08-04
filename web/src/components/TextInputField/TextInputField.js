@@ -12,7 +12,7 @@ const TextInputField = ({
     margin='normal'
     required
     fullWidth
-    error={form.errors[field.name]}
+    error={Boolean(form.errors[field.name])}
     helperText={form.errors[field.name] || helperText}
     {...field}
     {...props}

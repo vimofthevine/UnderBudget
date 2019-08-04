@@ -46,9 +46,13 @@ const Login = ({ authError, onDismissError, onSignUp }) => {
 };
 
 Login.propTypes = {
-  authError: PropTypes.string.isRequired,
+  authError: PropTypes.string,
   onDismissError: PropTypes.func.isRequired,
   onSignUp: PropTypes.func.isRequired,
+};
+
+Login.defaultProps = {
+  authError: null,
 };
 
 const mapState = state => ({

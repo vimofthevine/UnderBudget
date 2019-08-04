@@ -4,12 +4,15 @@ const OPEN_DRAWER = 'underbudget/drawer/OPEN_DRAWER';
 const CLOSE_DRAWER = 'underbudget/drawer/CLOSE_DRAWER';
 
 const initialState = {
-  drawerIsOpen: false,
+  isDrawerOpen: false,
 };
 
 const reducer = createReducer(initialState, {
   [OPEN_DRAWER]: (nextState) => {
-    nextState.drawerIsOpen = true;
+    nextState.isDrawerOpen = true;
+  },
+  [CLOSE_DRAWER]: (nextState) => {
+    nextState.isDrawerOpen = false;
   },
 });
 export default reducer;
