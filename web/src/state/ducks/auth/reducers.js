@@ -22,6 +22,10 @@ const reducer = createReducer(initialState, {
     state.error = 'Login failed';
   },
 
+  [types.FAILED_REGISTER]: (state) => {
+    state.error = 'Registration failed';
+  },
+
   [types.RECEIVE_LOGOUT]: (state) => {
     state.loggedIn = false;
     state.username = null;

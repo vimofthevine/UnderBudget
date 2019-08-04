@@ -3,10 +3,10 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 import FullNavPage from './components/FullNavPage/FullNavPage';
 import useAuthRequired from './hooks/useAuthRequired';
 
-const Register = () => <h2>Register</h2>;
 const Dashboard = () => <h2>Dashboard</h2>;
 const Ledgers = () => <h2>Ledgers</h2>;
 
