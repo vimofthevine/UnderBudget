@@ -122,7 +122,12 @@ class CreateLedgerTest : TestFixture() {
         req.requestHandled shouldBe true
         req.response.let {
             it.status() shouldBe HttpStatusCode.Created
-            it.content.shouldNotBeNullOrBlank() shouldContain "id"
+            val res = Gson().fromJson(it.content.shouldNotBeNullOrBlank(),
+                                      CreateResponse::class.java)
+            res.id.shouldNotBeNull()
+            withDatabase(false) {
+                hasLedgerPermission(res.id!!, testUserId) shouldBe true
+            }
         }
     }
 }

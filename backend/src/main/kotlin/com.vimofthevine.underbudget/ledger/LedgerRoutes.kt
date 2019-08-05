@@ -23,7 +23,7 @@ fun Route.ledgerRoutes(db: DbService) {
 	}
     
     post<LedgerResources> {
-        call.userId?.let {
+        call.userId?.let { userId ->
         	val ledger = call.receive<Ledger>()
         	if ((ledger.name == null) or (ledger.defaultCurrency == null)) {
             	call.respond(HttpStatusCode.BadRequest,
@@ -35,7 +35,11 @@ fun Route.ledgerRoutes(db: DbService) {
                 call.respond(HttpStatusCode.BadRequest,
                              CreateResponse(error = "Invalid currency specified"))
         	} else {
-        		val id = db.transaction { createLedger(ledger) }
+        		val id = db.transaction {
+					val id = createLedger(ledger)
+					createLedgerPermission(id, userId)
+					id
+				}
         		call.respond(HttpStatusCode.Created, CreateResponse(id = id))
         	}
         }
