@@ -6,7 +6,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoNavPage from '../../components/NoNavPage/NoNavPage';
 import UserRegistrationForm from '../../components/UserRegistrationForm/UserRegistrationForm';
 import useAuthRequired from '../../hooks/useAuthRequired';
-import { dismissAuthError } from '../../state/ducks/auth';
+import { dismissAuthError, getAuthError } from '../../state/ducks/auth';
 
 const Register = ({ authError, onDismissError }) => {
   useAuthRequired(false, '/');
@@ -34,7 +34,7 @@ Register.defaultProps = {
 };
 
 const mapState = state => ({
-  authError: state.auth.error,
+  authError: getAuthError(state),
 });
 
 const mapDispatch = dispatch => ({

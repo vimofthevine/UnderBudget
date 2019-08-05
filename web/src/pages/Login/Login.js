@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import NoNavPage from '../../components/NoNavPage/NoNavPage';
 import UserLoginForm from '../../components/UserLoginForm/UserLoginForm';
 import useAuthRequired from '../../hooks/useAuthRequired';
-import { dismissAuthError } from '../../state/ducks/auth';
+import { dismissAuthError, getAuthError } from '../../state/ducks/auth';
 
 const useStyles = makeStyles(theme => ({
   signup: {
@@ -56,7 +56,7 @@ Login.defaultProps = {
 };
 
 const mapState = state => ({
-  authError: state.auth.error,
+  authError: getAuthError(state),
 });
 
 const mapDispatch = dispatch => ({
