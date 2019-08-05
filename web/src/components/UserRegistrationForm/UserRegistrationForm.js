@@ -5,7 +5,7 @@ import { Formik, Form, Field } from 'formik';
 import * as yup from 'yup';
 import SubmitButton from '../SubmitButton/SubmitButton';
 import TextInputField from '../TextInputField/TextInputField';
-import { register } from '../../state/ducks/auth';
+import { getIsRegisterPending, register } from '../../state/ducks/auth';
 
 const schema = yup.object().shape({
   username: yup
@@ -25,7 +25,7 @@ const schema = yup.object().shape({
     .required('Required'),
 });
 
-export const PureUserRegistrationForm = ({ onRegister }) => (
+export const PureUserRegistrationForm = ({ isRegisterPending, onRegister }) => (
   <Formik
     validationSchema={schema}
     onSubmit={onRegister}
@@ -55,18 +55,23 @@ export const PureUserRegistrationForm = ({ onRegister }) => (
           autoComplete='current-password'
           component={TextInputField}
         />
-        <SubmitButton text='Sign up' disabled={isSubmitting || !isValid} />
+        <SubmitButton text='Sign up' disabled={isRegisterPending || !isValid} />
       </Form>
     )}
   </Formik>
 );
 
 PureUserRegistrationForm.propTypes = {
+  isRegisterPending: PropTypes.bool.isRequired,
   onRegister: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapState = state => ({
+  isRegisterPending: getIsRegisterPending(state),
+});
+
+const mapDispatch = dispatch => ({
   onRegister: user => dispatch(register(user)),
 });
 
-export default connect(null, mapDispatchToProps)(PureUserRegistrationForm);
+export default connect(mapState, mapDispatch)(PureUserRegistrationForm);

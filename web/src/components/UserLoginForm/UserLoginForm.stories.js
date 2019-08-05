@@ -4,6 +4,9 @@ import { action } from '@storybook/addon-actions';
 import { PureUserLoginForm } from './UserLoginForm';
 
 storiesOf('User|UserLoginForm', module)
-  .add('default', () => (
+  .add('initial state', () => (
     <PureUserLoginForm onLogin={action('login')} />
+  ))
+  .add('submission pending', () => (
+    <PureUserLoginForm isLoginPending onLogin={action('login')} />
   ));
